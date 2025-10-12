@@ -32,6 +32,7 @@ import {
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -242,7 +243,14 @@ function createPostgRESTValue(
   value: any
 ): { operator: SupabaseOperator; value: any } | null {
   if (value === null || value === undefined || value === '') return null
-  return { operator, value }
+  
+  // Para valores boolean, asegurar que se conviertan a string
+  let processedValue = value
+  if (typeof value === 'boolean') {
+    processedValue = String(value)
+  }
+  
+  return { operator, value: processedValue }
 }
 
 
@@ -827,7 +835,7 @@ function BooleanFilter({
   onChange: (value: string) => void
 }) {
   const handleValueChange = (newValue: string) => {
-    if (newValue === '__all__') {
+    if (newValue === '__all__' || newValue === '') {
       onChange('')
     } else {
       onChange(newValue)
@@ -837,16 +845,34 @@ function BooleanFilter({
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{config.label}</Label>
-      <Select value={value || '__all__'} onValueChange={handleValueChange}>
-        <SelectTrigger>
-          <SelectValue placeholder={config.placeholder} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="__all__">Todos</SelectItem>
-          <SelectItem value="true">Sí</SelectItem>
-          <SelectItem value="false">No</SelectItem>
-        </SelectContent>
-      </Select>
+      <ToggleGroup
+        type="single"
+        value={value || '__all__'}
+        onValueChange={handleValueChange}
+        className="justify-start"
+      >
+        <ToggleGroupItem 
+          value="__all__" 
+          variant="outline"
+          className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
+        >
+          Todos
+        </ToggleGroupItem>
+        <ToggleGroupItem 
+          value="true" 
+          variant="outline"
+          className="data-[state=on]:bg-green-500 data-[state=on]:text-white"
+        >
+          Sí
+        </ToggleGroupItem>
+        <ToggleGroupItem 
+          value="false" 
+          variant="outline"
+          className="data-[state=on]:bg-red-500 data-[state=on]:text-white"
+        >
+          No
+        </ToggleGroupItem>
+      </ToggleGroup>
     </div>
   )
 }
