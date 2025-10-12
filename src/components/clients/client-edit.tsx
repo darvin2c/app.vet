@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updateClientSchema, UpdateClientSchema } from '@/schemas/clients.schema'
-import { useUpdateClient } from '@/hooks/clients/use-update-client'
-import { useClientDetail } from '@/hooks/clients/use-client-detail'
+import useClientUpdate from '@/hooks/clients/use-client-update'
+import useClientDetail from '@/hooks/clients/use-client-detail'
 import { ClientForm } from './client-form'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
@@ -23,7 +23,7 @@ interface ClientEditProps {
 
 export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const updateClient = useUpdateClient()
+  const updateClient = useClientUpdate()
   const { data: client, isLoading } = useClientDetail(clientId)
 
   const form = useForm<UpdateClientSchema>({

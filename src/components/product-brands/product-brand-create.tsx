@@ -3,84 +3,68 @@
 import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createClientSchema, CreateClientSchema } from '@/schemas/clients.schema'
-import useClientCreate from '@/hooks/clients/use-client-create'
-import { ClientForm } from './client-form'
+import { createProductBrandSchema, CreateProductBrand } from '@/schemas/product-brands.schema'
+import { useProductBrandCreate } from '@/hooks/product-brands/use-product-brand-create'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Loader2 } from 'lucide-react'
+import { ProductBrandForm } from './product-brand-form'
 
-interface ClientCreateProps {
+interface ProductBrandCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
+export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreateProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const createClient = useClientCreate()
+  const { mutateAsync: createProductBrand } = useProductBrandCreate()
 
-  const form = useForm<CreateClientSchema>({
-    resolver: zodResolver(createClientSchema),
+  const form = useForm<CreateProductBrand>({
+    resolver: zodResolver(createProductBrandSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      address: '',
-      date_of_birth: '',
-      emergency_contact_name: '',
-      emergency_contact_phone: '',
-      notes: '',
-      is_active: true,
+      name: '',
+      description: '',
+      active: true,
     },
   })
 
-  const onSubmit = async (data: CreateClientSchema) => {
+  const onSubmit = async (data: CreateProductBrand) => {
     try {
       setIsSubmitting(true)
-      await createClient.mutateAsync(data)
+      await createProductBrand(data)
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      // Error ya manejado en el hook
+      console.error('Error al crear marca de producto:', error)
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleCancel = () => {
-    form.reset()
-    onOpenChange(false)
   }
 
   return (
     <DrawerForm
       open={open}
       onOpenChange={onOpenChange}
-      title="Crear Cliente"
-      description="Registra un nuevo cliente en el sistema"
+      title="Crear Marca de Producto"
+      description="Registra una nueva marca de producto en el sistema"
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ClientForm />
+          <ProductBrandForm />
           
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
+              loading={isSubmitting}
               disabled={isSubmitting}
-              className="w-full"
             >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Crear Cliente
+              Crear Marca
             </ResponsiveButton>
-            
             <ResponsiveButton
               type="button"
               variant="outline"
-              onClick={handleCancel}
+              onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
-              className="w-full"
             >
               Cancelar
             </ResponsiveButton>

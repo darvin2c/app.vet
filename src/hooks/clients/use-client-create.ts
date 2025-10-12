@@ -1,18 +1,24 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { TablesInsert } from '@/types/supabase.types'
 import { toast } from 'sonner'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type CreateClientData = Omit<TablesInsert<'clients'>, 'tenant_id'>
 
-export function useCreateClient() {
+export default function useClientCreate() {
   const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (data: CreateClientData) => {
+      if (!currentTenant?.id) {
+        throw new Error('No hay tenant seleccionado')
+      }
+
       const { data: result, error } = await supabase
         .from('clients')
-        .insert(data)
+        .insert({ ...data, tenant_id: currentTenant.id })
         .select()
         .single()
 

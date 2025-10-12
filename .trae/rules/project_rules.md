@@ -73,7 +73,7 @@ export function useResourceUpdate() {
     mutationFn: (data: Omit<TablesUpdate<'resources'>, 'tenant_id'>)
   })
 }
-export function useResourceDelete() {
+export function useUpdateResource() {
   return useMutation({
     mutationFn: (id: string)
   })

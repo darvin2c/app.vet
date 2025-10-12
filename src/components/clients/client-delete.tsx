@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useDeleteClient } from '@/hooks/clients/use-delete-client'
+import useClientDelete from '@/hooks/clients/use-client-delete'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { Tables } from '@/types/supabase.types'
 
@@ -15,7 +15,7 @@ interface ClientDeleteProps {
 
 export function ClientDelete({ client, open, onOpenChange }: ClientDeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false)
-  const deleteClient = useDeleteClient()
+  const deleteClient = useClientDelete()
 
   const handleDelete = async () => {
     try {

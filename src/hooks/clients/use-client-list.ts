@@ -1,24 +1,31 @@
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import { ClientFilters } from '@/schemas/clients.schema'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Client = Tables<'clients'>
 
-interface UseClientsOptions {
+interface UseClientListOptions {
   filters?: ClientFilters
   enabled?: boolean
 }
 
-export function useClients(options: UseClientsOptions = {}) {
+export default function useClientList(options: UseClientListOptions = {}) {
   const { filters = {}, enabled = true } = options
+  const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['clients', filters],
+    queryKey: ['clients', currentTenant?.id, filters],
     queryFn: async (): Promise<Client[]> => {
+      if (!currentTenant?.id) {
+        return []
+      }
+
       let query = supabase
         .from('clients')
         .select('*')
+        .eq('tenant_id', currentTenant.id)
         .order('created_at', { ascending: false })
 
       // Aplicar filtros

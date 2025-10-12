@@ -3,84 +3,78 @@
 import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createClientSchema, CreateClientSchema } from '@/schemas/clients.schema'
-import useClientCreate from '@/hooks/clients/use-client-create'
-import { ClientForm } from './client-form'
+import { createPetSchema, CreatePetSchema } from '@/schemas/pets.schema'
+import { usePetCreate } from '@/hooks/pets/use-pet-create'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Loader2 } from 'lucide-react'
+import { PetForm } from './pet-form'
 
-interface ClientCreateProps {
+interface PetCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  clientId?: string
 }
 
-export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
+export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const createClient = useClientCreate()
+  const { mutateAsync: createPet } = usePetCreate()
 
-  const form = useForm<CreateClientSchema>({
-    resolver: zodResolver(createClientSchema),
+  const form = useForm<CreatePetSchema>({
+    resolver: zodResolver(createPetSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
-      email: '',
-      phone: '',
-      address: '',
+      name: '',
+      species: '',
+      client_id: clientId || '',
+      gender: undefined,
       date_of_birth: '',
-      emergency_contact_name: '',
-      emergency_contact_phone: '',
-      notes: '',
+      weight: undefined,
+      color: '',
+      microchip_number: '',
+      is_sterilized: false,
+      allergies: '',
+      medical_notes: '',
       is_active: true,
     },
   })
 
-  const onSubmit = async (data: CreateClientSchema) => {
+  const onSubmit = async (data: CreatePetSchema) => {
     try {
       setIsSubmitting(true)
-      await createClient.mutateAsync(data)
+      await createPet(data)
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      // Error ya manejado en el hook
+      console.error('Error al crear mascota:', error)
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  const handleCancel = () => {
-    form.reset()
-    onOpenChange(false)
   }
 
   return (
     <DrawerForm
       open={open}
       onOpenChange={onOpenChange}
-      title="Crear Cliente"
-      description="Registra un nuevo cliente en el sistema"
+      title="Crear Mascota"
+      description="Registra una nueva mascota en el sistema"
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ClientForm />
+          <PetForm />
           
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
+              loading={isSubmitting}
               disabled={isSubmitting}
-              className="w-full"
             >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Crear Cliente
+              Crear Mascota
             </ResponsiveButton>
-            
             <ResponsiveButton
               type="button"
               variant="outline"
-              onClick={handleCancel}
+              onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
-              className="w-full"
             >
               Cancelar
             </ResponsiveButton>

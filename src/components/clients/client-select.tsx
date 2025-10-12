@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { useClients } from '@/hooks/clients/use-clients'
+import useClientList from '@/hooks/clients/use-client-list'
 import { Tables } from '@/types/supabase.types'
 
 type Client = Tables<'clients'>
@@ -41,7 +41,7 @@ export function ClientSelect({
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
   
-  const { data: clients = [], isLoading } = useClients({
+  const { data: clients = [], isLoading } = useClientList({
     filters: {
       search: search || undefined,
       is_active: true,

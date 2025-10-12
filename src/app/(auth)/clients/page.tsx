@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Search, Filter, Grid, List, Table } from 'lucide-react'
-import { useClients } from '@/hooks/clients/use-clients'
+import useClientList from '@/hooks/clients/use-client-list'
 import { ClientFilters } from '@/schemas/clients.schema'
 import { ClientList } from '@/components/clients/client-list'
 import { ClientCreateButton } from '@/components/clients/client-create-button'
@@ -33,7 +33,7 @@ export default function ClientsPage() {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
   const [selectedClient, setSelectedClient] = useState<Client | null>(null)
 
-  const { data: clients = [], isLoading } = useClients({ filters })
+  const { data: clients = [], isLoading } = useClientList({ filters })
 
   const handleSearchChange = (search: string) => {
     setFilters(prev => ({

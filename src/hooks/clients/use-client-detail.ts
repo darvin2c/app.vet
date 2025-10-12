@@ -1,19 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Client = Tables<'clients'>
 
-export function useClientDetail(clientId: string | undefined) {
+export default function useClientDetail(clientId: string | undefined) {
+  const { currentTenant } = useCurrentTenantStore()
+
   return useQuery({
-    queryKey: ['client', clientId],
+    queryKey: ['client', currentTenant?.id, clientId],
     queryFn: async (): Promise<Client | null> => {
-      if (!clientId) return null
+      if (!clientId || !currentTenant?.id) return null
 
       const { data, error } = await supabase
         .from('clients')
         .select('*')
         .eq('id', clientId)
+        .eq('tenant_id', currentTenant.id)
         .single()
 
       if (error) {
@@ -26,6 +30,6 @@ export function useClientDetail(clientId: string | undefined) {
 
       return data
     },
-    enabled: !!clientId,
+    enabled: !!clientId && !!currentTenant?.id,
   })
 }
