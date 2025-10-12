@@ -93,7 +93,7 @@ export default function ProductsPage() {
         />
       }
     >
-      <ProductList filters={filters} />
+      <ProductList />
     </PageBase>
   )
 }

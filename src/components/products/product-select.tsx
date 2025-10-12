@@ -39,10 +39,18 @@ export function ProductSelect({
 }: ProductSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const { data: products = [], isLoading } = useProducts({
-    search: searchTerm,
-    is_active: true, // Solo mostrar productos activos
-  })
+  const { data: products = [], isLoading } = useProducts([
+    {
+      field: 'search',
+      operator: 'ilike',
+      value: searchTerm,
+    },
+    {
+      field: 'is_active',
+      operator: 'eq',
+      value: true,
+    },
+  ])
 
   const selectedProduct = products.find((product) => product.id === value)
 

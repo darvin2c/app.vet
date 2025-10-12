@@ -77,7 +77,32 @@ function parseAsOrderByMultiple() {
   }
 }
 
-export function useOrderBy(config: OrderByConfig) {
+export function useOrderBy(config?: OrderByConfig) {
+  // Si no hay configuración, retornar valores por defecto
+  if (!config) {
+    return {
+      // Estado actual
+      currentSort: [],
+      appliedSorts: [],
+      
+      // Funciones de control (no-op)
+      setSort: () => {},
+      removeSort: () => {},
+      clearSort: () => {},
+      
+      // Funciones de consulta
+      getSortDirection: () => null,
+      isSorted: () => false,
+      
+      // Integración con Supabase
+      getSupabaseSorts: () => [],
+      
+      // Configuración
+      config: undefined,
+      isMultiSort: false,
+    }
+  }
+
   // Determinar si usar ordenamiento múltiple o simple
   const isMultiSort = config.multiSort ?? false
 
