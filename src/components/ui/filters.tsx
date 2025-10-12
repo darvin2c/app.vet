@@ -32,7 +32,7 @@ import {
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { ButtonGroup } from '@/components/ui/button-group'
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
@@ -243,17 +243,15 @@ function createPostgRESTValue(
   value: any
 ): { operator: SupabaseOperator; value: any } | null {
   if (value === null || value === undefined || value === '') return null
-  
+
   // Para valores boolean, asegurar que se conviertan a string
   let processedValue = value
   if (typeof value === 'boolean') {
     processedValue = String(value)
   }
-  
+
   return { operator, value: processedValue }
 }
-
-
 
 interface FiltersProps extends FiltersConfig {
   className?: string
@@ -835,7 +833,8 @@ function BooleanFilter({
   onChange: (value: string) => void
 }) {
   const handleValueChange = (newValue: string) => {
-    if (newValue === '__all__' || newValue === '') {
+    // Si el valor actual es el mismo que se está clickeando, deseleccionar
+    if (value === newValue) {
       onChange('')
     } else {
       onChange(newValue)
@@ -845,34 +844,36 @@ function BooleanFilter({
   return (
     <div className="space-y-2">
       <Label className="text-sm font-medium">{config.label}</Label>
-      <ToggleGroup
-        type="single"
-        value={value || '__all__'}
-        onValueChange={handleValueChange}
-        className="justify-start"
-      >
-        <ToggleGroupItem 
-          value="__all__" 
-          variant="outline"
-          className="data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
-        >
-          Todos
-        </ToggleGroupItem>
-        <ToggleGroupItem 
-          value="true" 
-          variant="outline"
-          className="data-[state=on]:bg-green-500 data-[state=on]:text-white"
+      <ButtonGroup>
+        <Button
+          type="button"
+          variant={value === 'true' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleValueChange('true')}
+          className={cn(
+            'px-3 py-2 text-sm font-medium',
+            value === 'true'
+              ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-background text-foreground hover:bg-green-50 hover:text-green-700'
+          )}
         >
           Sí
-        </ToggleGroupItem>
-        <ToggleGroupItem 
-          value="false" 
-          variant="outline"
-          className="data-[state=on]:bg-red-500 data-[state=on]:text-white"
+        </Button>
+        <Button
+          type="button"
+          variant={value === 'false' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => handleValueChange('false')}
+          className={cn(
+            'px-3 py-2 text-sm font-medium',
+            value === 'false'
+              ? 'bg-red-500 text-white hover:bg-red-600'
+              : 'bg-background text-foreground hover:bg-red-50 hover:text-red-700'
+          )}
         >
           No
-        </ToggleGroupItem>
-      </ToggleGroup>
+        </Button>
+      </ButtonGroup>
     </div>
   )
 }
