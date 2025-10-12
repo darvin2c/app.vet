@@ -40,7 +40,9 @@ export default function useProductCreate() {
     },
     onSuccess: () => {
       // Invalidar las consultas relacionadas
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Producto creado exitosamente')
     },
     onError: (error) => {

@@ -59,6 +59,7 @@ type resource = Tables<'resources'>
 ```
 
 - hooks de mutaciones deben usar los tipos de datos de supabase `Tables<'resources'>`
+- query key debe de ser `[currentTenant?.id, 'resources', ...]`
 
 _correcto_
 

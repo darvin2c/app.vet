@@ -55,7 +55,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
+      <DrawerContent className="!w-full !max-w-3xl">
         <DrawerHeader>
           <DrawerTitle>Editar Producto</DrawerTitle>
           <DrawerDescription>

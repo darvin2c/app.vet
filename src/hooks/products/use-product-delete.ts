@@ -26,7 +26,9 @@ export default function useProductDelete() {
       return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Producto eliminado exitosamente')
     },
     onError: (error) => {

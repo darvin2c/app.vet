@@ -38,7 +38,9 @@ export default function useProductUpdate() {
       return product
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Producto actualizado exitosamente')
     },
     onError: (error) => {

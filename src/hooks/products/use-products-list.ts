@@ -25,7 +25,7 @@ export default function useProductsList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['products-list', currentTenant?.id, JSON.stringify(filters)],
+    queryKey: [currentTenant?.id, 'products', JSON.stringify(filters)],
     queryFn: async (): Promise<Product[]> => {
       if (!currentTenant?.id) {
         return []
