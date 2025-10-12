@@ -371,134 +371,141 @@ export function useFilters(config?: FilterConfig[]): UseFiltersResult {
     activeFiltersCount: appliedFilters.length,
   }), [appliedFilters, filterValues])
 
-  // Controles de los filtros
-  const filterControls = useMemo((): FilterControls => ({
-    setFilter: useCallback((key: string, value: any) => {
+  // Controles de los filtros - useCallback definidos en el nivel superior
+  const setFilter = useCallback((key: string, value: any) => {
+    const filterConfig = config.find(f => f.key === key)
+    if (!filterConfig) return
+
+    if (value === null || value === undefined || value === '') {
+      setFilterValues({ [key]: null })
+      return
+    }
+
+    // Crear el valor PostgREST según el tipo de filtro
+    let postgrestValue: any = null
+
+    switch (filterConfig.type) {
+      case 'search':
+        postgrestValue = { operator: filterConfig.operator, value: String(value) }
+        break
+      case 'select':
+      case 'boolean':
+      case 'number':
+      case 'date':
+      case 'custom':
+        postgrestValue = { operator: filterConfig.operator, value: String(value) }
+        break
+      case 'multiselect':
+        if (Array.isArray(value)) {
+          postgrestValue = { operator: filterConfig.operator, value }
+        }
+        break
+      case 'dateRange':
+        // Para dateRange, el value debe ser un objeto { from, to }
+        if (typeof value === 'object' && value.from !== undefined && value.to !== undefined) {
+          const updates: Record<string, any> = {}
+          if (value.from) {
+            updates[`${key}_from`] = { operator: 'gte', value: value.from }
+          }
+          if (value.to) {
+            updates[`${key}_to`] = { operator: 'lte', value: value.to }
+          }
+          setFilterValues(updates)
+          return
+        }
+        break
+    }
+
+    if (postgrestValue) {
+      setFilterValues({ [key]: postgrestValue })
+    }
+  }, [config, setFilterValues])
+
+  const clearFilter = useCallback((key: string) => {
+    const filterConfig = config.find(f => f.key === key)
+    if (!filterConfig) return
+
+    if (filterConfig.type === 'dateRange') {
+      setFilterValues({
+        [`${key}_from`]: null,
+        [`${key}_to`]: null,
+      })
+    } else {
+      setFilterValues({ [key]: null })
+    }
+  }, [config, setFilterValues])
+
+  const clearAllFilters = useCallback(() => {
+    const updates: Record<string, any> = {}
+    
+    config.forEach(filter => {
+      if (filter.type === 'dateRange') {
+        updates[`${filter.key}_from`] = null
+        updates[`${filter.key}_to`] = null
+      } else {
+        updates[filter.key] = null
+      }
+    })
+
+    setFilterValues(updates)
+  }, [config, setFilterValues])
+
+  const getFilterValue = useCallback((key: string) => {
+    const value = filterValues[key]
+    return value?.value || null
+  }, [filterValues])
+
+  const setMultipleFilters = useCallback((filters: Record<string, any>) => {
+    const updates: Record<string, any> = {}
+
+    Object.entries(filters).forEach(([key, value]) => {
       const filterConfig = config.find(f => f.key === key)
       if (!filterConfig) return
 
       if (value === null || value === undefined || value === '') {
-        setFilterValues({ [key]: null })
+        updates[key] = null
         return
       }
 
       // Crear el valor PostgREST según el tipo de filtro
-      let postgrestValue: any = null
-
       switch (filterConfig.type) {
         case 'search':
-          postgrestValue = { operator: filterConfig.operator, value: String(value) }
-          break
         case 'select':
         case 'boolean':
         case 'number':
         case 'date':
         case 'custom':
-          postgrestValue = { operator: filterConfig.operator, value: String(value) }
+          updates[key] = { operator: filterConfig.operator, value: String(value) }
           break
         case 'multiselect':
           if (Array.isArray(value)) {
-            postgrestValue = { operator: filterConfig.operator, value }
+            updates[key] = { operator: filterConfig.operator, value }
           }
           break
         case 'dateRange':
-          // Para dateRange, el value debe ser un objeto { from, to }
           if (typeof value === 'object' && value.from !== undefined && value.to !== undefined) {
-            const updates: Record<string, any> = {}
             if (value.from) {
               updates[`${key}_from`] = { operator: 'gte', value: value.from }
             }
             if (value.to) {
               updates[`${key}_to`] = { operator: 'lte', value: value.to }
             }
-            setFilterValues(updates)
-            return
           }
           break
       }
+    })
 
-      if (postgrestValue) {
-        setFilterValues({ [key]: postgrestValue })
-      }
-    }, [config, setFilterValues]),
+    setFilterValues(updates)
+  }, [config, setFilterValues])
 
-    clearFilter: useCallback((key: string) => {
-      const filterConfig = config.find(f => f.key === key)
-      if (!filterConfig) return
-
-      if (filterConfig.type === 'dateRange') {
-        setFilterValues({
-          [`${key}_from`]: null,
-          [`${key}_to`]: null,
-        })
-      } else {
-        setFilterValues({ [key]: null })
-      }
-    }, [config, setFilterValues]),
-
-    clearAllFilters: useCallback(() => {
-      const updates: Record<string, any> = {}
-      
-      config.forEach(filter => {
-        if (filter.type === 'dateRange') {
-          updates[`${filter.key}_from`] = null
-          updates[`${filter.key}_to`] = null
-        } else {
-          updates[filter.key] = null
-        }
-      })
-
-      setFilterValues(updates)
-    }, [config, setFilterValues]),
-
-    getFilterValue: useCallback((key: string) => {
-      const value = filterValues[key]
-      return value?.value || null
-    }, [filterValues]),
-
-    setMultipleFilters: useCallback((filters: Record<string, any>) => {
-      const updates: Record<string, any> = {}
-
-      Object.entries(filters).forEach(([key, value]) => {
-        const filterConfig = config.find(f => f.key === key)
-        if (!filterConfig) return
-
-        if (value === null || value === undefined || value === '') {
-          updates[key] = null
-          return
-        }
-
-        // Crear el valor PostgREST según el tipo de filtro
-        switch (filterConfig.type) {
-          case 'search':
-          case 'select':
-          case 'boolean':
-          case 'number':
-          case 'date':
-          case 'custom':
-            updates[key] = { operator: filterConfig.operator, value: String(value) }
-            break
-          case 'multiselect':
-            if (Array.isArray(value)) {
-              updates[key] = { operator: filterConfig.operator, value }
-            }
-            break
-          case 'dateRange':
-            if (typeof value === 'object' && value.from !== undefined && value.to !== undefined) {
-              if (value.from) {
-                updates[`${key}_from`] = { operator: 'gte', value: value.from }
-              }
-              if (value.to) {
-                updates[`${key}_to`] = { operator: 'lte', value: value.to }
-              }
-            }
-            break
-        }
-      })
-
-      setFilterValues(updates)
-    }, [config, setFilterValues]),
-  }), [config, filterValues, setFilterValues])
+  // Objeto de controles usando useMemo para referenciar las funciones
+  const filterControls = useMemo((): FilterControls => ({
+    setFilter,
+    clearFilter,
+    clearAllFilters,
+    getFilterValue,
+    setMultipleFilters,
+  }), [setFilter, clearFilter, clearAllFilters, getFilterValue, setMultipleFilters])
 
   return {
     filterState,
