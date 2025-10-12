@@ -24,17 +24,14 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
     resolver: zodResolver(createPetSchema),
     defaultValues: {
       name: '',
-      species: '',
+      species_id: '',
       client_id: clientId || '',
-      gender: undefined,
-      date_of_birth: '',
+      sex: 'M',
+      birth_date: '',
       weight: undefined,
       color: '',
-      microchip_number: '',
-      is_sterilized: false,
-      allergies: '',
-      medical_notes: '',
-      is_active: true,
+      microchip: '',
+      notes: '',
     },
   })
 

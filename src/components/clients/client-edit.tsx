@@ -138,7 +138,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
       open={open}
       onOpenChange={onOpenChange}
       title="Editar Cliente"
-      description={`Modificar información de ${client.first_name} ${client.last_name}`}
+      description={`Modificar información de ${client.full_name}`}
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

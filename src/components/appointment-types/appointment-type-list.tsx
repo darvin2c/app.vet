@@ -155,9 +155,9 @@ export function AppointmentTypeList({
                       {appointmentType.code}
                     </Badge>
                     <Badge
-                      variant={appointmentType.active ? 'default' : 'secondary'}
+                      variant={appointmentType.is_active ? 'default' : 'secondary'}
                     >
-                      {appointmentType.active ? 'Activo' : 'Inactivo'}
+                      {appointmentType.is_active ? 'Activo' : 'Inactivo'}
                     </Badge>
                   </div>
                 </div>

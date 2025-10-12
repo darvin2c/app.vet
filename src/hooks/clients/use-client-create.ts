@@ -33,7 +33,7 @@ export default function useClientCreate() {
       queryClient.invalidateQueries({ queryKey: ['clients'] })
       
       toast.success('Cliente creado exitosamente', {
-        description: `${data.first_name} ${data.last_name} ha sido registrado`,
+        description: `${data.full_name} ha sido registrado`,
       })
     },
     onError: (error) => {

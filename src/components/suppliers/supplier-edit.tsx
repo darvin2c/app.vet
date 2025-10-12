@@ -24,7 +24,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
     resolver: zodResolver(updateSupplierSchema),
     defaultValues: {
       name: '',
-      contact_name: '',
+      contact_person: '',
       email: '',
       phone: '',
       address: '',
@@ -47,11 +47,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
         email: supplier.email || '',
         phone: supplier.phone || '',
         address: supplier.address || '',
-        city: supplier.city || '',
-        state: supplier.state || '',
-        postal_code: supplier.postal_code || '',
-        country: supplier.country || '',
-        tax_id: supplier.tax_id || '',
+
         website: supplier.website || '',
         notes: supplier.notes || '',
         is_active: supplier.is_active,
@@ -84,8 +80,9 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
       <DrawerFooter>
         <ResponsiveButton
           type="submit"
-          loading={isPending}
+          isLoading={isPending}
           disabled={isPending}
+          icon={null}
         >
           Actualizar Proveedor
         </ResponsiveButton>
@@ -93,6 +90,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
           variant="outline"
           onClick={() => onOpenChange(false)}
           disabled={isPending}
+          icon={null}
         >
           Cancelar
         </ResponsiveButton>

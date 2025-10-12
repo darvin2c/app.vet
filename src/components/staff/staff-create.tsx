@@ -39,6 +39,7 @@ export function StaffCreate({ open, onOpenChange }: StaffCreateProps) {
     try {
       await createStaff.mutateAsync({
         full_name: data.full_name,
+        user_id: data.user_id,
         email: data.email,
         phone: data.phone,
         license_number: data.license_number,

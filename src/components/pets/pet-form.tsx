@@ -12,8 +12,7 @@ import { CreatePetSchema } from '@/schemas/pets.schema'
 export function PetForm() {
   const { register, formState: { errors }, setValue, watch } = useFormContext<CreatePetSchema>()
   
-  const isActive = watch('is_active')
-  const isSterilized = watch('is_sterilized')
+
 
   return (
     <div className="space-y-4">
@@ -42,61 +41,61 @@ export function PetForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="species">Especie *</FieldLabel>
+          <FieldLabel htmlFor="species_id">Especie *</FieldLabel>
           <FieldContent>
-            <Select
-              value={watch('species')}
-              onValueChange={(value) => setValue('species', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar especie" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="dog">Perro</SelectItem>
-                <SelectItem value="cat">Gato</SelectItem>
-                <SelectItem value="bird">Ave</SelectItem>
-                <SelectItem value="rabbit">Conejo</SelectItem>
-                <SelectItem value="hamster">Hámster</SelectItem>
-                <SelectItem value="fish">Pez</SelectItem>
-                <SelectItem value="reptile">Reptil</SelectItem>
-                <SelectItem value="other">Otro</SelectItem>
-              </SelectContent>
-            </Select>
-            <FieldError errors={[errors.species]} />
+            <Input
+              id="species_id"
+              placeholder="ID de la especie"
+              {...register('species_id')}
+            />
+            <FieldError errors={[errors.species_id]} />
           </FieldContent>
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="gender">Género</FieldLabel>
+          <FieldLabel htmlFor="breed_id">Raza</FieldLabel>
           <FieldContent>
-            <Select
-              value={watch('gender')}
-              onValueChange={(value) => setValue('gender', value as 'male' | 'female' | 'unknown')}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar género" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Macho</SelectItem>
-                <SelectItem value="female">Hembra</SelectItem>
-                <SelectItem value="unknown">Desconocido</SelectItem>
-              </SelectContent>
-            </Select>
-            <FieldError errors={[errors.gender]} />
+            <Input
+              id="breed_id"
+              placeholder="ID de la raza"
+              {...register('breed_id')}
+            />
+            <FieldError errors={[errors.breed_id]} />
           </FieldContent>
         </Field>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="date_of_birth">Fecha de Nacimiento</FieldLabel>
+          <FieldLabel htmlFor="sex">Género</FieldLabel>
+          <FieldContent>
+            <Select
+              value={watch('sex')}
+              onValueChange={(value) => setValue('sex', value as 'M' | 'F')}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar género" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="M">Macho</SelectItem>
+                <SelectItem value="F">Hembra</SelectItem>
+              </SelectContent>
+            </Select>
+            <FieldError errors={[errors.sex]} />
+          </FieldContent>
+        </Field>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Field>
+          <FieldLabel htmlFor="birth_date">Fecha de Nacimiento</FieldLabel>
           <FieldContent>
             <Input
-              id="date_of_birth"
+              id="birth_date"
               type="date"
-              {...register('date_of_birth')}
+              {...register('birth_date')}
             />
-            <FieldError errors={[errors.date_of_birth]} />
+            <FieldError errors={[errors.birth_date]} />
           </FieldContent>
         </Field>
 
@@ -129,73 +128,29 @@ export function PetForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="microchip_number">Número de Microchip</FieldLabel>
+          <FieldLabel htmlFor="microchip">Número de Microchip</FieldLabel>
           <FieldContent>
             <Input
-              id="microchip_number"
+              id="microchip"
               placeholder="Número de microchip"
-              {...register('microchip_number')}
+              {...register('microchip')}
             />
-            <FieldError errors={[errors.microchip_number]} />
+            <FieldError errors={[errors.microchip]} />
           </FieldContent>
         </Field>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Field>
-          <FieldLabel htmlFor="is_sterilized">Esterilizado</FieldLabel>
-          <FieldContent>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is_sterilized"
-                checked={isSterilized}
-                onCheckedChange={(checked) => setValue('is_sterilized', checked)}
-              />
-              <span className="text-sm text-muted-foreground">
-                {isSterilized ? 'Sí' : 'No'}
-              </span>
-            </div>
-          </FieldContent>
-        </Field>
 
-        <Field>
-          <FieldLabel htmlFor="is_active">Activo</FieldLabel>
-          <FieldContent>
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="is_active"
-                checked={isActive}
-                onCheckedChange={(checked) => setValue('is_active', checked)}
-              />
-              <span className="text-sm text-muted-foreground">
-                {isActive ? 'Activo' : 'Inactivo'}
-              </span>
-            </div>
-          </FieldContent>
-        </Field>
-      </div>
 
       <Field>
-        <FieldLabel htmlFor="allergies">Alergias</FieldLabel>
+        <FieldLabel htmlFor="notes">Notas</FieldLabel>
         <FieldContent>
           <Textarea
-            id="allergies"
-            placeholder="Alergias conocidas"
-            {...register('allergies')}
+            id="notes"
+            placeholder="Notas adicionales sobre la mascota"
+            {...register('notes')}
           />
-          <FieldError errors={[errors.allergies]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="medical_notes">Notas Médicas</FieldLabel>
-        <FieldContent>
-          <Textarea
-            id="medical_notes"
-            placeholder="Notas médicas adicionales"
-            {...register('medical_notes')}
-          />
-          <FieldError errors={[errors.medical_notes]} />
+          <FieldError errors={[errors.notes]} />
         </FieldContent>
       </Field>
     </div>

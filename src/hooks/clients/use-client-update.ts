@@ -38,7 +38,7 @@ export default function useClientUpdate() {
       queryClient.invalidateQueries({ queryKey: ['client', data.id] })
       
       toast.success('Cliente actualizado exitosamente', {
-        description: `${data.first_name} ${data.last_name} ha sido actualizado`,
+        description: `${data.full_name} ha sido actualizado`,
       })
     },
     onError: (error) => {

@@ -29,14 +29,13 @@ export function PetDelete({ pet, open, onOpenChange }: PetDeleteProps) {
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Eliminar Mascota"
       description={`¿Estás seguro de que deseas eliminar a ${pet.name}? Esta acción no se puede deshacer.`}
       confirmText={pet.name}
       onConfirm={handleDelete}
-      loading={isDeleting}
-      variant="destructive"
+      isLoading={isDeleting}
     />
   )
 }

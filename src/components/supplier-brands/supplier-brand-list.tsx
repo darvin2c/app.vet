@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import useSupplierBrands from '@/hooks/supplier-brands/use-supplier-brand-list'
 import { SupplierBrandFilters } from '@/schemas/supplier-brands.schema'
 import { SupplierBrandActions } from './supplier-brand-actions'
@@ -23,10 +23,12 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
 
   if (!supplierBrands || supplierBrands.length === 0) {
     return (
-      <Empty
-        title="No hay asignaciones de marcas"
-        description="No se encontraron asignaciones de marcas a proveedores con los filtros aplicados."
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No hay asignaciones de marcas</EmptyTitle>
+          <EmptyDescription>No se encontraron asignaciones de marcas a proveedores con los filtros aplicados.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

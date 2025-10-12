@@ -48,6 +48,7 @@ export function SupplierBrandCreate({
       onOpenChange={onOpenChange}
       title="Asignar Marca a Proveedor"
       description="Asigna una marca a un proveedor específico"
+      trigger={<></>}
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">

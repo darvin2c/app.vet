@@ -4,7 +4,7 @@ import useSuppliers from '@/hooks/suppliers/use-supplier-list'
 import { SupplierFilters } from '@/schemas/suppliers.schema'
 import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { SupplierActions } from './supplier-actions'
@@ -25,10 +25,12 @@ export function SupplierList({ filters }: SupplierListProps) {
 
   if (!suppliers || suppliers.length === 0) {
     return (
-      <Empty
-        title="No hay proveedores"
-        description="No se encontraron proveedores con los filtros aplicados."
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No hay proveedores</EmptyTitle>
+          <EmptyDescription>No se encontraron proveedores con los filtros aplicados.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 
@@ -93,16 +95,7 @@ export function SupplierList({ filters }: SupplierListProps) {
                     <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
                     <div>
                       <p>{supplier.address}</p>
-                      {(supplier.city || supplier.state || supplier.postal_code) && (
-                        <p className="text-muted-foreground">
-                          {[supplier.city, supplier.state, supplier.postal_code]
-                            .filter(Boolean)
-                            .join(', ')}
-                        </p>
-                      )}
-                      {supplier.country && (
-                        <p className="text-muted-foreground">{supplier.country}</p>
-                      )}
+
                     </div>
                   </div>
                 </div>

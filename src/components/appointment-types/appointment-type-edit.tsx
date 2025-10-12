@@ -53,7 +53,7 @@ export function AppointmentTypeEdit({
         name: appointmentType.name,
         code: appointmentType.code || '',
         color: appointmentType.color || '#3B82F6',
-        active: appointmentType.active,
+        active: appointmentType.is_active,
       })
     }
   }, [appointmentType, open, form])

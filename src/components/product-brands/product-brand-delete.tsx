@@ -29,14 +29,13 @@ export function ProductBrandDelete({ brand, open, onOpenChange }: ProductBrandDe
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Eliminar Marca de Producto"
       description={`¿Estás seguro de que deseas eliminar la marca ${brand.name}? Esta acción no se puede deshacer.`}
       confirmText={brand.name}
       onConfirm={handleDelete}
-      loading={isDeleting}
-      variant="destructive"
+      isLoading={isDeleting}
     />
   )
 }

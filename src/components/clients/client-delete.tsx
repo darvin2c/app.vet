@@ -29,26 +29,17 @@ export function ClientDelete({ client, open, onOpenChange }: ClientDeleteProps) 
     }
   }
 
-  const confirmationWord = `${client.first_name} ${client.last_name}`.toLowerCase()
+  const confirmationWord = client.full_name.toLowerCase()
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Eliminar Cliente"
-      description={
-        <>
-          Esta acción eliminará permanentemente al cliente{' '}
-          <strong>{client.first_name} {client.last_name}</strong> y todos sus datos asociados.
-          <br />
-          <br />
-          Para confirmar, escribe: <strong>{confirmationWord}</strong>
-        </>
-      }
-      confirmationWord={confirmationWord}
+      description={`Esta acción eliminará permanentemente al cliente ${client.full_name} y todos sus datos asociados.`}
+      confirmText={confirmationWord}
       onConfirm={handleDelete}
       isLoading={isDeleting}
-      variant="destructive"
     />
   )
 }

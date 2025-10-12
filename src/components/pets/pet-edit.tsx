@@ -26,16 +26,13 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     resolver: zodResolver(updatePetSchema),
     defaultValues: {
       name: pet.name,
-      species: pet.species,
-      gender: pet.gender || undefined,
-      date_of_birth: pet.date_of_birth || '',
+      species_id: pet.species_id,
+      sex: pet.sex,
+      birth_date: pet.birth_date || '',
       weight: pet.weight || undefined,
       color: pet.color || '',
-      microchip_number: pet.microchip_number || '',
-      is_sterilized: pet.is_sterilized || false,
-      allergies: pet.allergies || '',
-      medical_notes: pet.medical_notes || '',
-      is_active: pet.is_active,
+      microchip: pet.microchip || '',
+      notes: pet.notes || '',
     },
   })
 
@@ -44,16 +41,13 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     if (pet) {
       form.reset({
         name: pet.name,
-        species: pet.species,
-        gender: pet.gender || undefined,
-        date_of_birth: pet.date_of_birth || '',
+        species_id: pet.species_id,
+        sex: pet.sex,
+        birth_date: pet.birth_date || '',
         weight: pet.weight || undefined,
         color: pet.color || '',
-        microchip_number: pet.microchip_number || '',
-        is_sterilized: pet.is_sterilized || false,
-        allergies: pet.allergies || '',
-        medical_notes: pet.medical_notes || '',
-        is_active: pet.is_active,
+        microchip: pet.microchip || '',
+        notes: pet.notes || '',
       })
     }
   }, [pet, form])

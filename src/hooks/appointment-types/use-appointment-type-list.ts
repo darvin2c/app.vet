@@ -23,8 +23,8 @@ const useAppointmentTypeList = (filters?: AppointmentTypeFiltersSchema) => {
         .order('created_at', { ascending: false })
 
       // Aplicar filtros
-      if (filters?.active !== undefined) {
-        query = query.eq('active', filters.active)
+      if (filters?.is_active !== undefined) {
+        query = query.eq('is_active', filters.is_active)
       }
 
       if (filters?.search) {
@@ -45,5 +45,5 @@ const useAppointmentTypeList = (filters?: AppointmentTypeFiltersSchema) => {
   })
 }
 
-export { useAppointmentTypes }
-export default useAppointmentTypes
+export { useAppointmentTypeList }
+export default useAppointmentTypeList

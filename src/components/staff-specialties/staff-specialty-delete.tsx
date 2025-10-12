@@ -35,14 +35,13 @@ export function StaffSpecialtyDelete({ staffSpecialty, open, onOpenChange }: Sta
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Eliminar asignación de especialidad"
       description={`¿Estás seguro de que deseas eliminar la asignación de la especialidad "${specialtyName}" del staff "${staffName}"?`}
       confirmText={`eliminar ${specialtyName}`}
       onConfirm={handleDelete}
-      loading={isPending}
-      variant="destructive"
+      isLoading={isPending}
     />
   )
 }

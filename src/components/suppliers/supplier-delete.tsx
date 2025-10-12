@@ -23,14 +23,13 @@ export function SupplierDelete({ supplier, open, onOpenChange }: SupplierDeleteP
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Eliminar Proveedor"
       description={`¿Estás seguro de que deseas eliminar el proveedor "${supplier.name}"? Esta acción no se puede deshacer.`}
       confirmText={supplier.name}
       onConfirm={handleDelete}
-      loading={isPending}
-      variant="destructive"
+      isLoading={isPending}
     />
   )
 }

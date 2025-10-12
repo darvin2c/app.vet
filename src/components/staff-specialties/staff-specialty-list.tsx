@@ -3,7 +3,7 @@
 import useStaffSpecialties from '@/hooks/staff-specialties/use-staff-specialty-list'
 import { StaffSpecialtyFilters } from '@/schemas/staff-specialties.schema'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { StaffSpecialtyActions } from './staff-specialty-actions'
@@ -24,10 +24,12 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
 
   if (!staffSpecialties || staffSpecialties.length === 0) {
     return (
-      <Empty
-        title="No hay asignaciones"
-        description="No se encontraron asignaciones de especialidades con los filtros aplicados."
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No hay asignaciones</EmptyTitle>
+          <EmptyDescription>No se encontraron asignaciones de especialidades con los filtros aplicados.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

@@ -60,11 +60,11 @@ export function ClientSelect({
   }
 
   const getClientInitials = (client: Client) => {
-    return `${client.first_name?.[0] || ''}${client.last_name?.[0] || ''}`.toUpperCase()
+    return client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
   }
 
   const getClientDisplayName = (client: Client) => {
-    return `${client.first_name} ${client.last_name}`
+    return client.full_name
   }
 
   return (

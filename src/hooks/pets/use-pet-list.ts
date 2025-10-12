@@ -52,7 +52,7 @@ export function usePets(filters?: PetFilters) {
       }
 
       if (filters?.gender) {
-        query = query.eq('gender', filters.gender)
+        query = query.eq('sex', filters.gender)
       }
 
       if (filters?.is_active !== undefined) {

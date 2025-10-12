@@ -45,12 +45,7 @@ export function PetList({ filters }: PetListProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CardTitle className="text-lg">{pet.name}</CardTitle>
-                <Badge variant={pet.is_active ? 'default' : 'secondary'}>
-                  {pet.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
-                {pet.is_sterilized && (
-                  <Badge variant="outline">Esterilizado</Badge>
-                )}
+
               </div>
               <PetActions pet={pet} />
             </div>
@@ -67,21 +62,21 @@ export function PetList({ filters }: PetListProps) {
                 <p className="mt-1 capitalize">{pet.species}</p>
               </div>
               
-              {pet.gender && (
+              {pet.sex && (
                 <div>
                   <span className="font-medium text-muted-foreground">Género:</span>
                   <p className="mt-1 capitalize">
-                    {pet.gender === 'male' ? 'Macho' : 
-                     pet.gender === 'female' ? 'Hembra' : 'Desconocido'}
+                    {pet.sex === 'M' ? 'Macho' : 
+                     pet.sex === 'F' ? 'Hembra' : 'Desconocido'}
                   </p>
                 </div>
               )}
               
-              {pet.date_of_birth && (
+              {pet.birth_date && (
                 <div>
                   <span className="font-medium text-muted-foreground">Fecha de Nacimiento:</span>
                   <p className="mt-1">
-                    {format(new Date(pet.date_of_birth), 'dd/MM/yyyy', { locale: es })}
+                    {format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es })}
                   </p>
                 </div>
               )}
@@ -100,10 +95,10 @@ export function PetList({ filters }: PetListProps) {
                 </div>
               )}
               
-              {pet.microchip_number && (
+              {pet.microchip && (
                 <div>
                   <span className="font-medium text-muted-foreground">Microchip:</span>
-                  <p className="mt-1">{pet.microchip_number}</p>
+                  <p className="mt-1">{pet.microchip}</p>
                 </div>
               )}
               
@@ -122,20 +117,12 @@ export function PetList({ filters }: PetListProps) {
               </div>
             </div>
             
-            {(pet.allergies || pet.medical_notes) && (
+            {pet.notes && (
               <div className="mt-4 pt-4 border-t">
-                {pet.allergies && (
-                  <div className="mb-2">
-                    <span className="font-medium text-muted-foreground">Alergias:</span>
-                    <p className="mt-1 text-sm">{pet.allergies}</p>
-                  </div>
-                )}
-                {pet.medical_notes && (
-                  <div>
-                    <span className="font-medium text-muted-foreground">Notas Médicas:</span>
-                    <p className="mt-1 text-sm">{pet.medical_notes}</p>
-                  </div>
-                )}
+                <div>
+                  <span className="font-medium text-muted-foreground">Notas:</span>
+                  <p className="mt-1 text-sm">{pet.notes}</p>
+                </div>
               </div>
             )}
           </CardContent>

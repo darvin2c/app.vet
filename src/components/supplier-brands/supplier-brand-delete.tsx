@@ -35,13 +35,13 @@ export function SupplierBrandDelete({
 
   return (
     <AlertConfirmation
-      open={open}
-      onOpenChange={onOpenChange}
+      isOpen={open}
+      onClose={() => onOpenChange(false)}
       title="Desasignar marca del proveedor"
       description={`¿Estás seguro de que deseas desasignar la marca "${brandName}" del proveedor "${supplierName}"? Esta acción no se puede deshacer.`}
       confirmText="desasignar"
       onConfirm={handleDelete}
-      loading={isPending}
+      isLoading={isPending}
     />
   )
 }

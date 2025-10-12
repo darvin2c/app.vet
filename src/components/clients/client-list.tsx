@@ -58,7 +58,7 @@ export function ClientList({
         ),
         cell: ({ row }) => {
           const client = row.original
-          const initials = `${client.first_name?.[0] || ''}${client.last_name?.[0] || ''}`.toUpperCase()
+          const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
           
           return (
             <div className="flex items-center space-x-3">
@@ -69,7 +69,7 @@ export function ClientList({
               </Avatar>
               <div>
                 <div className="font-medium">
-                  {client.first_name} {client.last_name}
+                  {client.full_name}
                 </div>
                 {client.email && (
                   <div className="text-sm text-muted-foreground">
@@ -285,7 +285,7 @@ function ClientCardView({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {clients.map((client) => {
-        const initials = `${client.first_name?.[0] || ''}${client.last_name?.[0] || ''}`.toUpperCase()
+        const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
         
         return (
           <Card 
@@ -301,7 +301,7 @@ function ClientCardView({
                   </Avatar>
                   <div>
                     <h3 className="font-semibold">
-                      {client.first_name} {client.last_name}
+                      {client.full_name}
                     </h3>
                     <Badge variant={client.is_active ? 'default' : 'secondary'} className="mt-1">
                       {client.is_active ? 'Activo' : 'Inactivo'}
@@ -349,7 +349,7 @@ function ClientListView({
   return (
     <div className="space-y-2">
       {clients.map((client) => {
-        const initials = `${client.first_name?.[0] || ''}${client.last_name?.[0] || ''}`.toUpperCase()
+        const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
         
         return (
           <Card 
@@ -365,7 +365,7 @@ function ClientListView({
                   </Avatar>
                   <div>
                     <h3 className="font-medium">
-                      {client.first_name} {client.last_name}
+                      {client.full_name}
                     </h3>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       {client.email && (
