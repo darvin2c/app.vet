@@ -26,7 +26,7 @@ import { useOrderBy } from '@/hooks/use-order-by'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { TableHeaderSort } from '@/components/ui/table-header-sort'
+import { OrderByTableHeader } from '@/components/ui/order-by'
 
 // Datos de ejemplo
 interface Product {
@@ -276,17 +276,15 @@ export default function OrderByDemo() {
                     {headerGroup.headers.map((header) => (
                       <TableHead key={header.id}>
                         {header.isPlaceholder ? null : (
-                          <div className="flex items-center">
+                          <OrderByTableHeader
+                            field={header.id}
+                            orderByHook={simpleOrderBy}
+                          >
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                            <TableHeaderSort
-                              header={header}
-                              orderByHook={simpleOrderBy}
-                              field={header.id}
-                            />
-                          </div>
+                          </OrderByTableHeader>
                         )}
                       </TableHead>
                 ))}
@@ -346,17 +344,15 @@ export default function OrderByDemo() {
                     {headerGroup.headers.map((header) => (
                       <TableHead key={header.id}>
                         {header.isPlaceholder ? null : (
-                          <div className="flex items-center">
+                          <OrderByTableHeader
+                            field={header.id}
+                            orderByHook={multiOrderBy}
+                          >
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
                             )}
-                            <TableHeaderSort
-                              header={header}
-                              orderByHook={multiOrderBy}
-                              field={header.id}
-                            />
-                          </div>
+                          </OrderByTableHeader>
                         )}
                       </TableHead>
                     ))}

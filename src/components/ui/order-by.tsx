@@ -69,6 +69,50 @@ const OrderByTrigger = React.forwardRef<
 
 OrderByTrigger.displayName = 'OrderByTrigger'
 
+// Componente para headers de tabla con ordenamiento
+export interface OrderByTableHeaderProps {
+  field: string
+  label?: string
+  orderByHook: {
+    setSort: (field: string, direction?: SortDirection) => void
+    getSortDirection: (field: string) => SortDirection | null
+    isSorted: (field: string) => boolean
+  }
+  className?: string
+  children?: React.ReactNode
+}
+
+export function OrderByTableHeader({
+  field,
+  label,
+  orderByHook,
+  className,
+  children,
+}: OrderByTableHeaderProps) {
+  const { setSort, getSortDirection, isSorted } = orderByHook
+  const direction = getSortDirection(field)
+  const isActive = isSorted(field)
+
+  const handleSort = () => {
+    setSort(field)
+  }
+
+  return (
+    <div className={cn('flex items-center', className)}>
+      {children || <span>{label}</span>}
+      <Button
+        variant="ghost"
+        size="sm"
+        className="ml-1 h-4 w-4 p-0 hover:bg-transparent"
+        onClick={handleSort}
+      >
+        <SortDirectionIcon direction={direction} />
+        {!direction && <ArrowUpDown className="h-3 w-3 opacity-50" />}
+      </Button>
+    </div>
+  )
+}
+
 // Componente principal OrderBy
 export function OrderBy({ config, onSortChange, className }: OrderByProps) {
   const isMobile = useIsMobile()
