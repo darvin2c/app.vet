@@ -52,8 +52,7 @@ const OrderByTrigger = React.forwardRef<
     <Button
       ref={ref}
       variant="outline"
-      size="sm"
-      className={cn('h-8 border-dashed', className)}
+      className={cn('border-dashed', className)}
       {...props}
     >
       <ArrowUpDown className="mr-2 h-4 w-4" />
