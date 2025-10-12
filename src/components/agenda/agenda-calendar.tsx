@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
-import { useAppointments } from '@/hooks/appointments/use-appointments'
+import useAppointments from '@/hooks/appointments/use-appointments'
 import { Tables } from '@/types/supabase.types'
 import dayjs from 'dayjs'
 import { AppointmentCreate } from '../appointments/appointment-create'
@@ -209,8 +209,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       <AppointmentCreate
         open={createModalOpen}
         onSuccess={handleCreateSuccess}
-        defaultStartTime={selectedDateTime?.startTime}
-        defaultEndTime={selectedDateTime?.endTime}
+        defaultScheduledStart={selectedDateTime?.startTime}
+        defaultScheduledEnd={selectedDateTime?.endTime}
       />
     </div>
   )

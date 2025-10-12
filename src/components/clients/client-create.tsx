@@ -23,16 +23,12 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
   const form = useForm<CreateClientSchema>({
     resolver: zodResolver(createClientSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
+      full_name: '',
+      document_number: '',
       email: '',
       phone: '',
       address: '',
-      date_of_birth: '',
-      emergency_contact_name: '',
-      emergency_contact_phone: '',
       notes: '',
-      is_active: true,
     },
   })
 

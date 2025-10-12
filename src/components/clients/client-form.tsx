@@ -30,26 +30,14 @@ export function ClientForm() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
-            <FieldLabel htmlFor="first_name">Nombre *</FieldLabel>
+            <FieldLabel htmlFor="full_name">Nombre Completo *</FieldLabel>
             <FieldContent>
               <Input
-                id="first_name"
-                placeholder="Ingrese el nombre"
-                {...register('first_name')}
+                id="full_name"
+                type="text"
+                {...register('full_name')}
               />
-              <FieldError errors={[errors.first_name]} />
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="last_name">Apellido *</FieldLabel>
-            <FieldContent>
-              <Input
-                id="last_name"
-                placeholder="Ingrese el apellido"
-                {...register('last_name')}
-              />
-              <FieldError errors={[errors.last_name]} />
+              <FieldError errors={[errors.full_name]} />
             </FieldContent>
           </Field>
         </div>

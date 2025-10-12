@@ -68,10 +68,13 @@ export function useResourceCreate() {
     mutationFn: (data: Omit<TablesInsert<'resources'>, 'tenant_id'>)
   })
 }
+
 export function useResourceUpdate() {
   return useMutation({
-    mutationFn: (data: Omit<TablesUpdate<'resources'>, 'tenant_id'>)
-  })
+    mutationFn: ({id, data}: {
+      id: string
+      data: Omit<TablesUpdate<'resources'>, 'tenant_id'>
+    }) =>
 }
 export function useUpdateResource() {
   return useMutation({

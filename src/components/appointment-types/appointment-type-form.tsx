@@ -53,21 +53,14 @@ export function AppointmentTypeForm() {
 
       <FormField
         control={form.control}
-        name="code"
+        name="description"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Código *</FormLabel>
+            <FormLabel>Descripción</FormLabel>
             <FormControl>
-              <Input
-                placeholder="Ej: CONS_GEN"
+              <Textarea
+                placeholder="Descripción del tipo de cita"
                 {...field}
-                onChange={(e) => {
-                  // Convert to uppercase and replace spaces with underscores
-                  const value = e.target.value
-                    .toUpperCase()
-                    .replace(/\s+/g, '_')
-                  field.onChange(value)
-                }}
               />
             </FormControl>
             <FormMessage />

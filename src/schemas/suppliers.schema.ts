@@ -46,10 +46,6 @@ export const supplierBaseSchema = z.object({
 
 // Esquema para crear proveedor
 export const createSupplierSchema = supplierBaseSchema
-  .omit({ is_active: true })
-  .extend({
-    is_active: z.boolean().default(true),
-  })
 
 // Esquema para actualizar proveedor
 export const updateSupplierSchema = supplierBaseSchema.partial()

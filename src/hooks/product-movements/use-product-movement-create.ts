@@ -1,21 +1,20 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CreateProductMovementData } from '@/schemas/product-movements.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+import { TablesInsert } from '@/types/supabase.types'
 
 export default function useProductMovementCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: CreateProductMovementData) => {
+    mutationFn: async (data:  Omit<TablesInsert<'product_movements'>, 'tenant_id'>) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      // Convertir fecha a UTC para almacenamiento
-      const utcDate = data.movement_date.toISOString()
+
 
       // Validar stock disponible para salidas (cantidad negativa)
       if (data.quantity < 0) {
@@ -47,7 +46,7 @@ export default function useProductMovementCreate() {
         .insert({
           product_id: data.product_id,
           quantity: data.quantity,
-          movement_date: utcDate,
+          created_at: new Date().toISOString(),
           unit_cost: data.unit_cost || null,
           note: data.note || null,
           reference: data.reference || null,

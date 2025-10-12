@@ -45,7 +45,7 @@ export function AppointmentTypeSelect({
   const [editOpen, setEditOpen] = useState(false)
 
   const { data: appointmentTypes = [], isLoading } = useAppointmentTypes({
-    active: true,
+    is_active: true,
   })
 
   const selectedAppointmentType = appointmentTypes.find(

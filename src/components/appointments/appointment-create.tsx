@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentForm } from './appointment-form'
-import { useCreateAppointment } from '@/hooks/appointments/use-create-appointment'
+import { useAppointmentCreate } from '@/hooks/appointments/use-appointment-create'
 import {
   CreateAppointmentSchema,
   createAppointmentSchema,
@@ -84,7 +84,7 @@ export function AppointmentCreate({
     form.reset(newDefaults)
   }, [defaultScheduledStart, defaultScheduledEnd, defaultPetId, form])
 
-  const createAppointment = useCreateAppointment()
+  const createAppointment = useAppointmentCreate()
 
   const onSubmit: SubmitHandler<CreateAppointmentSchema> = async (data) => {
     console.log(data)

@@ -82,7 +82,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
           type="submit"
           isLoading={isPending}
           disabled={isPending}
-          icon={null}
+
         >
           Actualizar Proveedor
         </ResponsiveButton>
@@ -90,7 +90,6 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
           variant="outline"
           onClick={() => onOpenChange(false)}
           disabled={isPending}
-          icon={null}
         >
           Cancelar
         </ResponsiveButton>

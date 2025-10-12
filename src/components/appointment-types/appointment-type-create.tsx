@@ -50,10 +50,9 @@ export function AppointmentTypeCreate({
     try {
       const newAppointmentType = await createAppointmentType.mutateAsync({
         name: data.name,
-      description: data.description,
-      duration_minutes: data.duration_minutes,
-      color: data.color,
-      is_active: data.is_active,
+        description: data.description,
+        color: data.color,
+        is_active: data.is_active,
       })
       toast.success('Tipo de cita creado exitosamente')
       form.reset()

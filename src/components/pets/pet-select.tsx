@@ -24,13 +24,15 @@ interface PetSelectProps {
   onValueChange: (value: string) => void
   placeholder?: string
   clientId?: string
+  disabled?: boolean
 }
 
 export function PetSelect({ 
   value, 
   onValueChange, 
   placeholder = "Seleccionar mascota...",
-  clientId 
+  clientId,
+  disabled = false
 }: PetSelectProps) {
   const [open, setOpen] = useState(false)
   const { data: pets, isLoading } = usePets(clientId ? { client_id: clientId } : undefined)
@@ -45,6 +47,7 @@ export function PetSelect({
           role="combobox"
           aria-expanded={open}
           className="w-full justify-between"
+          disabled={disabled}
         >
           {selectedPet ? (
             <span className="flex items-center gap-2">

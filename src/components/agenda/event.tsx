@@ -46,7 +46,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
 
   const petName = pet?.name || 'Sin mascota'
   const clientName = client
-    ? `${client.first_name} ${client.last_name}`
+    ? client.full_name
     : 'Sin cliente'
   const staffName = staff ? staff.full_name : null
   const typeName = appointmentType?.name || 'Sin tipo'

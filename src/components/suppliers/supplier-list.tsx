@@ -118,10 +118,10 @@ export function SupplierList({ filters }: SupplierListProps) {
                 </div>
               )}
               
-              {supplier.tax_id && (
+              {supplier.document_number && (
                 <div>
-                  <span className="font-medium text-muted-foreground">ID Fiscal:</span>
-                  <p className="mt-1">{supplier.tax_id}</p>
+                  <span className="font-medium text-muted-foreground">Documento:</span>
+                  <p className="mt-1">{supplier.document_number}</p>
                 </div>
               )}
               

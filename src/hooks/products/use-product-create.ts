@@ -20,7 +20,7 @@ export default function useProductCreate() {
         sku: data.sku,
         category_id: data.category_id,
         unit_id: data.unit_id,
-        min_stock: data.min_stock,
+
         stock: data.stock,
         is_active: data.is_active ?? true,
         tenant_id: currentTenant.id,

@@ -102,7 +102,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <ProductStockInput />
+        <ProductStockInput mode={mode} />
         <IsActiveFormField />
       </div>
     </div>

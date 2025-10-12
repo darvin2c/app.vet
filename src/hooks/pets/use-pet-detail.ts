@@ -18,7 +18,7 @@ export function usePetDetail(id: string) {
           *,
           clients (
             id,
-            name,
+            full_name,
             email,
             phone,
             address
@@ -26,7 +26,7 @@ export function usePetDetail(id: string) {
           breeds (
             id,
             name,
-            species
+            species_id
           )
         `
         )

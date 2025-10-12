@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { useDeleteAppointment } from '@/hooks/appointments/use-delete-appointment'
+import { useAppointmentDelete } from '@/hooks/appointments/use-appointment-delete'
 import type { Tables } from '@/types/supabase.types'
 import { toast } from 'sonner'
 import { format } from 'date-fns'
@@ -24,7 +24,7 @@ export function AppointmentDelete({
   onOpenChange,
   onSuccess,
 }: AppointmentDeleteProps) {
-  const deleteAppointment = useDeleteAppointment()
+  const deleteAppointment = useAppointmentDelete()
 
   const handleDelete = async () => {
     try {
@@ -38,12 +38,12 @@ export function AppointmentDelete({
     }
   }
 
-  const patientName = appointment.patients
-    ? `${appointment.patients.first_name} ${appointment.patients.last_name}`
+  const patientName = appointment.pets
+    ? appointment.pets.name
     : 'Paciente no especificado'
 
   const appointmentDate = format(
-    new Date(appointment.start_time),
+    new Date(appointment.scheduled_start),
     'dd/MM/yyyy HH:mm',
     { locale: es }
   )

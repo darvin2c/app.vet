@@ -51,9 +51,9 @@ export function AppointmentTypeEdit({
     if (appointmentType && open) {
       form.reset({
         name: appointmentType.name,
-        code: appointmentType.code || '',
+        description: appointmentType.description || '',
         color: appointmentType.color || '#3B82F6',
-        active: appointmentType.is_active,
+        is_active: appointmentType.is_active,
       })
     }
   }, [appointmentType, open, form])

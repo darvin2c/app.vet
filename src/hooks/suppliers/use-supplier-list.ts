@@ -19,17 +19,7 @@ export default function useSuppliers(filters?: SupplierFilters) {
         )
       }
 
-      if (filters?.city) {
-        query = query.eq('city', filters.city)
-      }
 
-      if (filters?.state) {
-        query = query.eq('state', filters.state)
-      }
-
-      if (filters?.country) {
-        query = query.eq('country', filters.country)
-      }
 
       if (filters?.is_active !== undefined) {
         query = query.eq('is_active', filters.is_active)

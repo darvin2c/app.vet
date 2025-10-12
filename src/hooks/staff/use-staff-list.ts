@@ -46,10 +46,7 @@ export default function useStaffList(filters?: StaffFilters) {
         query = query.eq('is_active', filters.is_active)
       }
 
-      // Filtrar por especialidad específica usando la tabla de relación
-      if (filters?.specialty_id) {
-        query = query.eq('staff_specialties.specialty_id', filters.specialty_id)
-      }
+
 
       if (filters?.created_from) {
         query = query.gte('created_at', filters.created_from)

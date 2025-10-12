@@ -21,7 +21,7 @@ export interface ResponsiveButtonProps
    * El ícono a mostrar (componente de lucide-react)
    * Siempre se muestra
    */
-  icon: LucideIcon
+  icon?: LucideIcon
   /**
    * Contenido adicional del botón
    * Se muestra junto al ícono en desktop
@@ -81,7 +81,7 @@ export const ResponsiveButton = forwardRef<
 
       return (
         <>
-          <Icon className="h-4 w-4" />
+          {Icon && <Icon className="h-4 w-4" />}
           {!isMobile && hasChildren && children}
         </>
       )
@@ -116,7 +116,7 @@ export const ResponsiveButton = forwardRef<
               {isLoading ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
               ) : (
-                <Icon className="h-4 w-4" />
+                Icon && <Icon className="h-4 w-4" />
               )}
               <span className="sr-only">{tooltip || 'Botón'}</span>
             </Button>

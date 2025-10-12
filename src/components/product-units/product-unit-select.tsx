@@ -100,7 +100,7 @@ export function ProductUnitSelect({
                 {units.map((unit) => (
                   <CommandItem
                     key={unit.id}
-                    value={unit.name || unit.abbreviation}
+                    value={unit.name || unit.abbreviation || ''}
                     onSelect={() => handleSelect(unit.id)}
                   >
                     <div className="flex items-center gap-2">

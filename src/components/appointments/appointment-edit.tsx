@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentForm } from './appointment-form'
-import { useUpdateAppointment } from '@/hooks/appointments/use-update-appointment'
+import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 import {
   UpdateAppointmentSchema,
   updateAppointmentSchema,
@@ -42,7 +42,7 @@ export function AppointmentEdit({
     resolver: zodResolver(updateAppointmentSchema),
   })
 
-  const updateAppointment = useUpdateAppointment()
+  const updateAppointment = useAppointmentUpdate()
 
   // Set form values when appointment changes
   useEffect(() => {

@@ -152,7 +152,7 @@ export function AppointmentTypeList({
                 <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className="font-mono text-xs">
-                      {appointmentType.code}
+                      {appointmentType.name}
                     </Badge>
                     <Badge
                       variant={appointmentType.is_active ? 'default' : 'secondary'}

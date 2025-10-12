@@ -43,24 +43,16 @@ export function usePets(filters?: PetFilters) {
         query = query.eq('client_id', filters.client_id)
       }
 
-      if (filters?.species) {
-        query = query.eq('species', filters.species)
+      if (filters?.species_id) {
+        query = query.eq('species_id', filters.species_id)
       }
 
       if (filters?.breed_id) {
         query = query.eq('breed_id', filters.breed_id)
       }
 
-      if (filters?.gender) {
-        query = query.eq('sex', filters.gender)
-      }
-
-      if (filters?.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
-
-      if (filters?.is_sterilized !== undefined) {
-        query = query.eq('is_sterilized', filters.is_sterilized)
+      if (filters?.sex) {
+        query = query.eq('sex', filters.sex)
       }
 
       if (filters?.created_from) {
@@ -77,7 +69,7 @@ export function usePets(filters?: PetFilters) {
         throw new Error(`Error al obtener mascotas: ${error.message}`)
       }
 
-      return data as Pet[]
+      return data
     },
   })
 }

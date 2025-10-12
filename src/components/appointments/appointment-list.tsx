@@ -91,11 +91,11 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
       },
     },
     {
-      accessorKey: 'patients',
+      accessorKey: 'pets',
       header: 'Paciente',
       cell: ({ row }) => {
-        const patient = row.getValue('patients') as Appointment['patients']
-        return patient ? `${patient.first_name} ${patient.last_name}` : '-'
+        const patient = row.getValue('pets') as Appointment['pets']
+        return patient ? patient.name : '-'
       },
     },
     {
@@ -197,14 +197,14 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                   <div>
                     <div className="font-medium">
                       {format(
-                        new Date(appointment.start_time),
+                        new Date(appointment.scheduled_start),
                         'dd/MM/yyyy HH:mm',
                         { locale: es }
                       )}
                     </div>
                     <div className="text-sm text-muted-foreground">
                       Hasta:{' '}
-                      {format(new Date(appointment.end_time), 'HH:mm', {
+                      {format(new Date(appointment.scheduled_end), 'HH:mm', {
                         locale: es,
                       })}
                     </div>
@@ -228,8 +228,8 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                   <div>
                     <span className="text-sm font-medium">Paciente: </span>
                     <span className="text-sm">
-                      {appointment.patients
-                        ? `${appointment.patients.first_name} ${appointment.patients.last_name}`
+                      {appointment.pets
+          ? appointment.pets.name
                         : '-'}
                     </span>
                   </div>

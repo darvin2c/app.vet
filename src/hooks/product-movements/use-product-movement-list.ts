@@ -8,7 +8,7 @@ type ProductMovement = Database['public']['Tables']['product_movements']['Row']
 interface ProductMovementFilters {
   search?: string
   product_id?: string
-  reference_type?: string
+  source?: string
   date_from?: string
   date_to?: string
 }
@@ -42,7 +42,7 @@ export default function useProductMovementList(
         `
         )
         .eq('tenant_id', currentTenant.id)
-        .order('movement_date', { ascending: false })
+        .order('created_at', { ascending: false })
 
       // Aplicar filtros
       if (filters?.search) {
@@ -55,16 +55,16 @@ export default function useProductMovementList(
         query = query.eq('product_id', filters.product_id)
       }
 
-      if (filters?.reference_type) {
-        query = query.eq('reference_type', filters.reference_type)
+      if (filters?.source) {
+        query = query.eq('source', filters.source)
       }
 
       if (filters?.date_from) {
-        query = query.gte('movement_date', filters.date_from)
+        query = query.gte('created_at', filters.date_from)
       }
 
       if (filters?.date_to) {
-        query = query.lte('movement_date', filters.date_to)
+        query = query.lte('created_at', filters.date_to)
       }
 
       const { data, error } = await query
@@ -75,7 +75,7 @@ export default function useProductMovementList(
         )
       }
 
-      return data || []
+      return data
     },
     enabled: !!currentTenant?.id,
   })

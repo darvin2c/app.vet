@@ -58,13 +58,7 @@ export default function useProductsList(filters?: ProductFiltersSchema) {
         query = query.eq('unit_id', filters.unit_id)
       }
 
-      if (filters?.min_stock_from !== undefined) {
-        query = query.gte('min_stock', filters.min_stock_from)
-      }
 
-      if (filters?.min_stock_to !== undefined) {
-        query = query.lte('min_stock', filters.min_stock_to)
-      }
 
       if (filters?.created_from) {
         query = query.gte('created_at', filters.created_from)

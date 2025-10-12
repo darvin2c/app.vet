@@ -33,7 +33,7 @@ export function TenantSwitcher() {
   React.useEffect(() => {
     if (tenantSlug) {
       setCurrentTenant(
-        tenants?.find((tenant) => tenant.slug === tenantSlug) || null
+        tenants?.find((tenant) => tenant.subdomain === tenantSlug) || null
       )
     }
   }, [tenantSlug, setCurrentTenant, tenants])

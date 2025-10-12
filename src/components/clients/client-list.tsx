@@ -46,7 +46,7 @@ export function ClientList({
   const columns = useMemo<ColumnDef<Client>[]>(
     () => [
       {
-        accessorKey: 'first_name',
+        accessorKey: 'full_name',
         header: ({ column }) => (
           <Button
             variant="ghost"

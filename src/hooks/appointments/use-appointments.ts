@@ -1,0 +1,1 @@
+export { useAppointmentList as useAppointments, useAppointmentList as default } from './use-appointment-list'

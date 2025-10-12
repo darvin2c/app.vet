@@ -58,14 +58,13 @@ export function AppointmentItem({
   onView,
 }: AppointmentItemProps) {
   // Extraer datos del appointment
-  const patient = appointment?.patients
+  const patient = appointment?.pets
   const staff = appointment?.staff
-  const procedure = appointment?.procedures
   const appointmentType = appointment?.appointment_types
 
   // Formatear fechas
-  const startDate = new Date(appointment.start_time)
-  const endDate = new Date(appointment.end_time)
+  const startDate = new Date(appointment.scheduled_start)
+  const endDate = new Date(appointment.scheduled_end)
 
   const formattedDate = format(startDate, 'dd MMM yyyy', { locale: es })
   const formattedTime = `${format(startDate, 'HH:mm')} - ${format(endDate, 'HH:mm')}`
@@ -115,7 +114,7 @@ export function AppointmentItem({
           <div className="min-w-0">
             <p className="font-medium text-sm truncate">
               {patient
-                ? `${patient.first_name} ${patient.last_name}`
+                ? patient.name
                 : 'Paciente no asignado'}
             </p>
 
@@ -132,12 +131,12 @@ export function AppointmentItem({
           </div>
         )}
 
-        {/* Procedimiento */}
-        {procedure && (
+        {/* Tipo de cita */}
+        {appointmentType && (
           <div className="flex items-center gap-2">
             <Stethoscope className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <p className="text-sm text-muted-foreground truncate">
-              {procedure.name}
+              {appointmentType.name}
             </p>
           </div>
         )}

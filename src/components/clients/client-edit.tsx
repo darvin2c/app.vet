@@ -29,8 +29,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   const form = useForm<UpdateClientSchema>({
     resolver: zodResolver(updateClientSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
+      full_name: '',
       email: '',
       phone: '',
       address: '',
@@ -46,8 +45,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   useEffect(() => {
     if (client) {
       form.reset({
-        first_name: client.first_name || '',
-        last_name: client.last_name || '',
+        full_name: client.full_name || '',
         email: client.email || '',
         phone: client.phone || '',
         address: client.address || '',
@@ -78,8 +76,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   const handleCancel = () => {
     if (client) {
       form.reset({
-        first_name: client.first_name || '',
-        last_name: client.last_name || '',
+        full_name: client.full_name || '',
         email: client.email || '',
         phone: client.phone || '',
         address: client.address || '',
