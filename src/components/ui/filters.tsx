@@ -50,6 +50,7 @@ import type {
   DateRangeFilterConfig,
   BooleanFilterConfig,
   NumberFilterConfig,
+  CustomFilterConfig,
 } from '@/types/filters.types'
 
 // Parsers PostgREST integrados en el hook
@@ -280,6 +281,12 @@ export function useFilters(filters: FilterConfig[]) {
           parsers[`${filter.key}_to`] =
             parseAsPostgRESTDate('lte').withDefault(null)
           break
+        case 'custom':
+          // Para filtros custom, usar el operador especificado
+          parsers[filter.key] = parseAsPostgREST(filter.operator).withDefault(
+            null
+          )
+          break
       }
     })
 
@@ -310,6 +317,7 @@ export function useFilters(filters: FilterConfig[]) {
         case 'boolean':
         case 'number':
         case 'date':
+        case 'custom':
           if (value && value.value) {
             let processedValue: any = value.value
 
@@ -409,6 +417,7 @@ export function useFilters(filters: FilterConfig[]) {
         case 'date':
         case 'number':
         case 'boolean':
+        case 'custom':
           clearedValues[filter.key] = null
           break
         case 'multiselect':
@@ -579,6 +588,20 @@ export function Filters({
             <NumberFilter
               key={filter.key}
               config={filter as NumberFilterConfig}
+              value={extractPostgRESTValue(filterValues[filter.key]) || ''}
+              onChange={(value) =>
+                setFilterValues({
+                  [filter.key]: createPostgRESTValue(filter.operator, value),
+                })
+              }
+            />
+          )
+
+        case 'custom':
+          return (
+            <CustomFilter
+              key={filter.key}
+              config={filter as CustomFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
                 setFilterValues({
@@ -1086,3 +1109,25 @@ const NumberFilter = React.memo(function NumberFilter({
     </div>
   )
 })
+
+function CustomFilter({
+  config,
+  value,
+  onChange,
+}: {
+  config: CustomFilterConfig
+  value: string
+  onChange: (value: string) => void
+}) {
+  return (
+    <div className="space-y-2">
+      <Label className="text-sm font-medium">{config.label}</Label>
+      <div>
+        {React.cloneElement(config.component as React.ReactElement<any>, {
+          value,
+          onValueChange: onChange,
+        })}
+      </div>
+    </div>
+  )
+}

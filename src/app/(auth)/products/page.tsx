@@ -8,6 +8,7 @@ import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
 import { PRODUCTS_COLUMNS_CONFIG } from '@/components/products/products-columns'
+import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -31,11 +32,10 @@ export default function ProductsPage() {
     {
       key: 'category_id',
       field: 'category_id',
-      type: 'select',
+      type: 'custom',
       label: 'Categoría',
-      placeholder: 'Selecciona categoría',
       operator: 'eq',
-      options: [],
+      component: <ProductCategorySelect placeholder="Selecciona categoría" />,
     },
     {
       key: 'unit_id',

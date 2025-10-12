@@ -1,3 +1,5 @@
+import React from 'react'
+
 // Tipos para filtros basados en operadores de Supabase
 export type SupabaseOperator =
   | 'eq' // igual a
@@ -22,6 +24,7 @@ export type FilterType =
   | 'dateRange' // Rango de fechas (usa gte y lte)
   | 'boolean' // Checkbox (usa eq)
   | 'number' // Input numérico (usa eq/gt/gte/lt/lte)
+  | 'custom' // Componente personalizado
 
 export interface FilterOption {
   label: string
@@ -75,6 +78,11 @@ export interface NumberFilterConfig extends BaseFilterConfig {
   operator: 'eq' | 'gt' | 'gte' | 'lt' | 'lte'
 }
 
+export interface CustomFilterConfig extends BaseFilterConfig {
+  type: 'custom'
+  component: React.ReactNode
+}
+
 export type FilterConfig =
   | SearchFilterConfig
   | SelectFilterConfig
@@ -83,6 +91,7 @@ export type FilterConfig =
   | DateRangeFilterConfig
   | BooleanFilterConfig
   | NumberFilterConfig
+  | CustomFilterConfig
 
 // Tipo para los valores de filtros en la URL
 export interface FilterValues {

@@ -48,6 +48,12 @@ const demoComponents = [
       'Componente reutilizable de skeleton para tablas con soporte para múltiples variantes: table, cards y list',
     href: '/demo/table-skeleton',
   },
+  {
+    name: 'Custom Filters',
+    description:
+      'Demostración de filtros personalizados usando componentes custom en el sistema de filtros',
+    href: '/demo/custom-filters',
+  },
 ]
 
 export default function DemoPage() {
