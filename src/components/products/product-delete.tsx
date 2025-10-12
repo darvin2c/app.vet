@@ -30,7 +30,13 @@ export function ProductDelete({
       onClose={() => onOpenChange(false)}
       onConfirm={handleConfirm}
       title="Eliminar Producto"
-      description={`¿Estás seguro de que deseas eliminar el producto "${product.name}"? Esta acción no se puede deshacer y se perderán todos los datos asociados.`}
+      description={
+        <>
+          ¿Estás seguro de que deseas eliminar el producto{' '}
+          <strong>{product.name}</strong>? Esta acción no se puede deshacer y se
+          perderán todos los datos asociados.
+        </>
+      }
       confirmText="ELIMINAR"
       isLoading={deleteProduct.isPending}
     />

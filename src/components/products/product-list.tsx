@@ -38,20 +38,12 @@ import {
   EmptyDescription,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ChevronLeft,
-  ChevronRight,
-  Package,
-  Table2,
-  Grid3X3,
-  List,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
 import useProducts from '@/hooks/products/use-products-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
-
-type ViewMode = 'table' | 'cards' | 'list'
+import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -62,7 +54,7 @@ export function ProductList({
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
 }) {
-  // Estado para controlar la vista actual
+  // Estado para el modo de vista - ViewModeToggle maneja su propia persistencia
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useFilters para obtener los filtros aplicados
@@ -315,32 +307,10 @@ export function ProductList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <div className="flex border rounded-lg">
-          <Button
-            variant={viewMode === 'table' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('table')}
-            className="rounded-r-none"
-          >
-            <Table2 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'cards' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('cards')}
-            className="rounded-none border-x"
-          >
-            <Grid3X3 className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'default' : 'ghost'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-            className="rounded-l-none"
-          >
-            <List className="h-4 w-4" />
-          </Button>
-        </div>
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="products"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

@@ -19,7 +19,7 @@ interface AlertConfirmationProps {
   onClose: () => void
   onConfirm: () => void | Promise<void>
   title: string
-  description: string
+  description: string | React.ReactNode
   confirmText: string
   isLoading?: boolean
 }
