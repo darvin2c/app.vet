@@ -1,11 +1,12 @@
 import { cn } from '@/lib/utils'
 import { Skeleton } from './skeleton'
+import { ViewMode } from './view-mode-toggle'
 
 interface TableSkeletonProps {
   /**
    * Variante del skeleton - tabla, tarjetas o lista
    */
-  variant?: 'table' | 'cards' | 'list'
+  variant?: ViewMode
   /**
    * Número de filas para tabla o tarjetas para grid
    */

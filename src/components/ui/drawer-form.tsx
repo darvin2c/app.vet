@@ -5,6 +5,7 @@ import { Drawer as DrawerPrimitive } from 'vaul'
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { ScrollArea } from './scroll-area'
 
 function Drawer({
   ...props
@@ -76,7 +77,7 @@ function DrawerContent({
         {...props}
       >
         <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
-        <div className="overflow-auto">{children}</div>
+        <ScrollArea className="flex-1 overflow-auto">{children}</ScrollArea>
       </DrawerPrimitive.Content>
     </DrawerPortal>
   )
