@@ -18,12 +18,7 @@ export type AppointmentWithRelations = Tables<'appointments'> & {
     first_name: string
     last_name: string
   } | null
-  procedures: {
-    id: string
-    name: string
-    base_price: number | null
-    description: string | null
-  } | null
+
   appointment_types: {
     id: string
     name: string

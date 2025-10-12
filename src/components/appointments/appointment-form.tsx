@@ -19,7 +19,7 @@ import {
 import { ClientSelect } from '@/components/clients/client-select'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
-import { ProcedureSelect } from '@/components/procedures/procedure-select'
+
 import Calendar20 from '@/components/ui/calendar-20'
 import { useAvailableTimeSlots } from '@/hooks/appointments/use-available-time-slots'
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
@@ -108,19 +108,7 @@ export function AppointmentForm({
             </FieldContent>
           </Field>
 
-          <Field data-invalid={!!errors.procedure_id}>
-            <FieldLabel htmlFor="procedure_id">Procedimiento</FieldLabel>
-            <FieldContent>
-              <ProcedureSelect
-                value={watch('procedure_id') || ''}
-                onValueChange={(value) =>
-                  setValue('procedure_id', value || undefined)
-                }
-                placeholder="Seleccionar procedimiento"
-              />
-              <FieldError errors={[errors.procedure_id]} />
-            </FieldContent>
-          </Field>
+
         </div>
       </FieldGroup>
 

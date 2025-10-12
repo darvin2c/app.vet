@@ -4,10 +4,9 @@ import { Database } from '@/types/supabase.types'
 import { AppointmentFiltersSchema } from '@/schemas/appointments.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type Appointment = Database['public']['Tables']['appointments']['Row'] & {
-  patients: Database['public']['Tables']['patients']['Row'] | null
+type AppointmentWithRelations = Database['public']['Tables']['appointments']['Row'] & {
+  pets: Database['public']['Tables']['pets']['Row'] | null
   staff: Database['public']['Tables']['staff']['Row'] | null
-  procedures: Database['public']['Tables']['procedures']['Row'] | null
   appointment_types:
     | Database['public']['Tables']['appointment_types']['Row']
     | null
@@ -28,9 +27,8 @@ export function useAppointments(filters?: AppointmentFiltersSchema) {
         .select(
           `
           *,
-          patients(*),
+          pets(*),
           staff(*),
-          procedures(*),
           appointment_types(*)
         `
         )

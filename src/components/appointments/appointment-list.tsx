@@ -262,16 +262,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                     </div>
                   )}
 
-                  {appointment.procedures && (
-                    <div>
-                      <span className="text-sm font-medium">
-                        Procedimiento:{' '}
-                      </span>
-                      <span className="text-sm">
-                        {appointment.procedures.name}
-                      </span>
-                    </div>
-                  )}
+
                 </div>
 
                 <div className="flex justify-end pt-2">
