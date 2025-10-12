@@ -27,10 +27,10 @@ export default function ProductsPage() {
         newFilters.category_id = filter.value
       } else if (filter.field === 'unit_id') {
         newFilters.unit_id = filter.value
-      } else if (filter.field === 'min_stock' && filter.operator === 'gte') {
-        newFilters.min_stock_from = Number(filter.value)
-      } else if (filter.field === 'min_stock' && filter.operator === 'lte') {
-        newFilters.min_stock_to = Number(filter.value)
+      } else if (filter.field === 'stock' && filter.operator === 'gte') {
+        // Filtro de stock mínimo - no se incluye en ProductFiltersSchema
+      } else if (filter.field === 'stock' && filter.operator === 'lte') {
+        // Filtro de stock máximo - no se incluye en ProductFiltersSchema
       } else if (filter.field === 'created_at' && filter.operator === 'gte') {
         newFilters.created_from = filter.value
       } else if (filter.field === 'created_at' && filter.operator === 'lte') {

@@ -31,7 +31,6 @@ export function StaffCreate({ open, onOpenChange }: StaffCreateProps) {
       email: null,
       phone: null,
       license_number: null,
-      specialty_ids: [],
       is_active: true,
     },
   })
@@ -44,7 +43,6 @@ export function StaffCreate({ open, onOpenChange }: StaffCreateProps) {
         phone: data.phone,
         license_number: data.license_number,
         is_active: data.is_active,
-        specialty_ids: data.specialty_ids,
       })
       form.reset()
       onOpenChange(false)

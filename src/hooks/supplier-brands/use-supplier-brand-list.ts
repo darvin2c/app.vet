@@ -20,7 +20,7 @@ export default function useSupplierBrands(filters?: SupplierBrandFilters) {
           suppliers (
             id,
             name,
-            contact_name,
+            contact_person,
             email,
             is_active
           ),
@@ -28,7 +28,7 @@ export default function useSupplierBrands(filters?: SupplierBrandFilters) {
             id,
             name,
             description,
-            active
+            is_active
           )
         `)
 

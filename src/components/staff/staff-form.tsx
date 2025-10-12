@@ -99,24 +99,7 @@ export function StaffForm() {
           )}
         />
 
-        <FormField
-          control={control}
-          name="specialty_ids"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Especialidades</FormLabel>
-              <FormControl>
-                <SpecialtySelect
-                  value={field.value || []}
-                  onValueChange={field.onChange}
-                  placeholder="Selecciona especialidades"
-                  multiple={true}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
       </div>
 
       <IsActiveFormField />

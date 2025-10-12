@@ -42,7 +42,6 @@ export function ProductMovementEdit({
       quantity: movement.quantity,
       movement_date: new Date(movement.created_at),
       unit_cost: movement.unit_cost ?? undefined,
-      total_cost: movement.unit_cost && movement.quantity ? movement.unit_cost * movement.quantity : undefined,
       reference: movement.reference ?? undefined,
       note: movement.note ?? undefined,
     },

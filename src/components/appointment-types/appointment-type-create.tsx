@@ -37,9 +37,10 @@ export function AppointmentTypeCreate({
     resolver: zodResolver(createAppointmentTypeSchema) as any,
     defaultValues: {
       name: '',
-      code: '',
+      description: '',
+      duration_minutes: 30,
       color: '#3B82F6',
-      active: true,
+      is_active: true,
     },
   })
 
@@ -49,9 +50,10 @@ export function AppointmentTypeCreate({
     try {
       const newAppointmentType = await createAppointmentType.mutateAsync({
         name: data.name,
-        code: data.code,
-        color: data.color,
-        active: data.active,
+      description: data.description,
+      duration_minutes: data.duration_minutes,
+      color: data.color,
+      is_active: data.is_active,
       })
       toast.success('Tipo de cita creado exitosamente')
       form.reset()

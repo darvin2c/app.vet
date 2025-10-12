@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createProductBrandSchema, CreateProductBrand } from '@/schemas/product-brands.schema'
-import { useProductBrandCreate } from '@/hooks/product-brands/use-product-brand-create'
+import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
@@ -24,7 +24,7 @@ export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreatePro
     defaultValues: {
       name: '',
       description: '',
-      active: true,
+      is_active: true,
     },
   })
 

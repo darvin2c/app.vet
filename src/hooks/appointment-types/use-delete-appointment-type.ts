@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export function useAppointmentTypeDelete() {
+export function useDeleteAppointmentType() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

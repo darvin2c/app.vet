@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import { useProductBrands } from '@/hooks/product-brands/use-product-brand-list'
+import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -31,7 +31,7 @@ export function ProductBrandSelect({
   placeholder = "Seleccionar marca..." 
 }: ProductBrandSelectProps) {
   const [open, setOpen] = useState(false)
-  const { data: brands, isLoading } = useProductBrands({ active: true })
+  const { data: brands, isLoading } = useProductBrands({ is_active: true })
 
   const selectedBrand = brands?.find((brand) => brand.id === value)
 

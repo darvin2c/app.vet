@@ -29,7 +29,7 @@ export default function StaffPage() {
       } else if (filter.field === 'is_active') {
         newFilters.is_active = filter.value === 'true'
       } else if (filter.field === 'specialty_id') {
-        newFilters.specialty_id = filter.value
+        // Campo specialty_id no existe en StaffFilters - comentado
       } else if (filter.field === 'created_at' && filter.operator === 'gte') {
         newFilters.created_from = filter.value
       } else if (filter.field === 'created_at' && filter.operator === 'lte') {

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updateProductBrandSchema, UpdateProductBrand } from '@/schemas/product-brands.schema'
-import { useProductBrandUpdate } from '@/hooks/product-brands/use-product-brand-update'
+import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
@@ -26,7 +26,7 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
     defaultValues: {
       name: brand.name,
       description: brand.description || '',
-      active: brand.active,
+      is_active: brand.is_active,
     },
   })
 
@@ -36,7 +36,7 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
       form.reset({
         name: brand.name,
         description: brand.description || '',
-        active: brand.active,
+        is_active: brand.is_active,
       })
     }
   }, [brand, form])

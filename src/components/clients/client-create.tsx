@@ -9,7 +9,7 @@ import { ClientForm } from './client-form'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Loader2 } from 'lucide-react'
+import { Plus, X } from 'lucide-react'
 
 interface ClientCreateProps {
   open: boolean
@@ -69,9 +69,10 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
             <ResponsiveButton
               type="submit"
               disabled={isSubmitting}
+              isLoading={isSubmitting}
+              icon={Plus}
               className="w-full"
             >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Crear Cliente
             </ResponsiveButton>
             
@@ -80,6 +81,7 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
               variant="outline"
               onClick={handleCancel}
               disabled={isSubmitting}
+              icon={X}
               className="w-full"
             >
               Cancelar

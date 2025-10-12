@@ -9,7 +9,7 @@ import {
 } from '@/schemas/product-units.schema'
 import { Form } from '@/components/ui/form'
 import { ProductUnitForm } from './product-unit-form'
-import useCreateProductUnit from '@/hooks/product-units/use-create-product-unit'
+import useCreateProductUnit from '@/hooks/product-units/use-product-unit-create'
 import {
   Drawer,
   DrawerContent,

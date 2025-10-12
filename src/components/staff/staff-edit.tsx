@@ -27,7 +27,7 @@ interface StaffEditProps {
 
 export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const updateStaff = useUpdateStaff()
-  const { data: staffSpecialties } = useStaffSpecialties(staff.id)
+  const { data: staffSpecialties } = useStaffSpecialties({ staff_id: staff.id })
 
   const form = useForm({
     resolver: zodResolver(updateStaffSchema),
@@ -36,20 +36,11 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
       email: staff.email,
       phone: staff.phone,
       license_number: staff.license_number,
-      specialty_ids: [],
       is_active: staff.is_active,
     },
   })
 
-  // Actualizar specialty_ids cuando se cargan las especialidades
-  useEffect(() => {
-    if (staffSpecialties) {
-      form.setValue(
-        'specialty_ids',
-        staffSpecialties.map((s) => s.id)
-      )
-    }
-  }, [staffSpecialties, form])
+
 
   const onSubmit = async (data: UpdateStaffSchema) => {
     try {
@@ -60,7 +51,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
         phone: data.phone,
         license_number: data.license_number,
         is_active: data.is_active,
-        specialty_ids: data.specialty_ids,
+
       })
       onOpenChange(false)
     } catch (error) {

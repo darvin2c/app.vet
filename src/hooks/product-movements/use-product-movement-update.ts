@@ -46,12 +46,8 @@ export default function useProductMovementUpdate() {
         updateData.movement_date = data.movement_date.toISOString()
       }
       if (data.unit_cost !== undefined) updateData.unit_cost = data.unit_cost
-      if (data.total_cost !== undefined) updateData.total_cost = data.total_cost
       if (data.note !== undefined) updateData.note = data.note
-      if (data.reference_type !== undefined)
-        updateData.reference_type = data.reference_type
-      if (data.reference_id !== undefined)
-        updateData.reference_id = data.reference_id
+      if (data.reference !== undefined) updateData.reference = data.reference
 
       // Validar stock si se está cambiando la cantidad o el producto
       if (data.quantity !== undefined && data.quantity < 0) {

@@ -1,4 +1,4 @@
-import { PageBase } from '@/components/ui/page-base'
+import PageBase from '@/components/page-base'
 import { StaffSpecialtyList } from '@/components/staff-specialties/staff-specialty-list'
 import { StaffSpecialtyCreateButton } from '@/components/staff-specialties/staff-specialty-create-button'
 

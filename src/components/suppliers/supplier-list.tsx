@@ -49,10 +49,10 @@ export function SupplierList({ filters }: SupplierListProps) {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-              {supplier.contact_name && (
+              {supplier.contact_person && (
                 <div>
                   <span className="font-medium text-muted-foreground">Contacto:</span>
-                  <p className="mt-1">{supplier.contact_name}</p>
+                  <p className="mt-1">{supplier.contact_person}</p>
                 </div>
               )}
               

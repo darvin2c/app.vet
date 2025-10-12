@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import useDeleteProductUnit from '@/hooks/product-units/use-delete-product-unit'
+import useDeleteProductUnit from '@/hooks/product-units/use-product-unit-delete'
 import { Tables } from '@/types/supabase.types'
 
 interface ProductUnitDeleteProps {

@@ -49,10 +49,8 @@ export default function useProductMovementCreate() {
           quantity: data.quantity,
           movement_date: utcDate,
           unit_cost: data.unit_cost || null,
-          total_cost: data.total_cost || null,
           note: data.note || null,
-          reference_type: data.reference_type || null,
-          reference_id: data.reference_id || null,
+          reference: data.reference || null,
           tenant_id: currentTenant.id,
         })
         .select()

@@ -27,8 +27,8 @@ export default function useProductBrandList(filters?: ProductBrandFilters) {
         query = query.ilike('name', `%${filters.search}%`)
       }
 
-      if (filters?.active !== undefined) {
-        query = query.eq('active', filters.active)
+      if (filters?.is_active !== undefined) {
+        query = query.eq('is_active', filters.is_active)
       }
 
       const { data, error } = await query

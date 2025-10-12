@@ -48,11 +48,11 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Proveedor</p>
                 <p className="text-sm">{supplierBrand.suppliers?.name}</p>
-                {supplierBrand.suppliers?.contact_name && (
-                  <p className="text-xs text-muted-foreground">
-                    Contacto: {supplierBrand.suppliers.contact_name}
-                  </p>
-                )}
+                {supplierBrand.suppliers?.contact_person && (
+          <p className="text-xs text-muted-foreground">
+            Contacto: {supplierBrand.suppliers.contact_person}
+          </p>
+        )}
                 <Badge variant={supplierBrand.suppliers?.is_active ? 'default' : 'secondary'}>
                   {supplierBrand.suppliers?.is_active ? 'Activo' : 'Inactivo'}
                 </Badge>
@@ -66,8 +66,8 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
                     {supplierBrand.product_brands.description}
                   </p>
                 )}
-                <Badge variant={supplierBrand.product_brands?.active ? 'default' : 'secondary'}>
-                  {supplierBrand.product_brands?.active ? 'Activa' : 'Inactiva'}
+                <Badge variant={supplierBrand.product_brands?.is_active ? 'default' : 'secondary'}>
+                  {supplierBrand.product_brands?.is_active ? 'Activa' : 'Inactiva'}
                 </Badge>
               </div>
 

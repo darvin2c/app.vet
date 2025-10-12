@@ -85,9 +85,9 @@ export function SupplierSelect({
                   />
                   <div className="flex flex-col">
                     <span>{supplier.name}</span>
-                    {supplier.contact_name && (
+                    {supplier.contact_person && (
                       <span className="text-sm text-muted-foreground">
-                        {supplier.contact_name}
+                        {supplier.contact_person}
                       </span>
                     )}
                   </div>

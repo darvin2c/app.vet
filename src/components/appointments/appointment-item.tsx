@@ -127,7 +127,7 @@ export function AppointmentItem({
           <div className="flex items-center gap-2 mb-2">
             <UserCheck className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <p className="text-sm text-muted-foreground truncate">
-              Dr. {staff.first_name} {staff.last_name}
+              Dr. {staff.full_name}
             </p>
           </div>
         )}

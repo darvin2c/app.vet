@@ -15,7 +15,7 @@ import type { Tables } from '@/types/supabase.types'
 
 type Appointment = Tables<'appointments'> & {
   pets?: { name: string; client_id: string } | null
-  staff?: { first_name: string; last_name: string } | null
+  staff?: { full_name: string } | null
   appointment_types?: { name: string; color: string | null } | null
 }
 

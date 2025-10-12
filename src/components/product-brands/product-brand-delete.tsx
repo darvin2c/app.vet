@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useProductBrandDelete } from '@/hooks/product-brands/use-product-brand-delete'
+import useProductBrandDelete from '@/hooks/product-brands/use-product-brand-delete'
 import { Tables } from '@/types/supabase.types'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 

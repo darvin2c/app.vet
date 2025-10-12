@@ -40,7 +40,7 @@ import {
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Database } from '@/types/supabase.types'
-import useProductMovements from '@/hooks/product-movements/use-product-movements'
+import useProductMovements from '@/hooks/product-movements/use-product-movement-list'
 import { ProductMovementActions } from './product-movement-actions'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'

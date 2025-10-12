@@ -39,10 +39,8 @@ export function ProductMovementCreate({
       quantity: 0,
       movement_date: new Date(),
       unit_cost: 0,
-      total_cost: 0,
       note: '',
-      reference_type: '',
-      reference_id: '',
+      reference: '',
     },
   })
 

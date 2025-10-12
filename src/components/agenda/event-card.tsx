@@ -69,7 +69,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
     : 'Cliente no especificado'
 
   const staffName = appointment.staff
-    ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
+    ? appointment.staff.full_name
     : 'Personal no asignado'
 
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'

@@ -43,7 +43,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
     if (supplier) {
       form.reset({
         name: supplier.name || '',
-        contact_name: supplier.contact_name || '',
+        contact_person: supplier.contact_person || '',
         email: supplier.email || '',
         phone: supplier.phone || '',
         address: supplier.address || '',

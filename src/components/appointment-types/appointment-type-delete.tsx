@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { useDeleteAppointmentType } from '@/hooks/appointment-types/use-appointment-type-delete'
+import { useDeleteAppointmentType } from '@/hooks/appointment-types/use-delete-appointment-type'
 import { toast } from 'sonner'
 import type { Tables } from '@/types/supabase.types'
 
@@ -30,7 +30,7 @@ export function AppointmentTypeDelete({
         onSuccess?.()
         onOpenChange(false)
       },
-      onError: (error) => {
+      onError: (error: any) => {
         toast.error('Error al eliminar el tipo de cita')
         console.error('Error deleting appointment type:', error)
       },

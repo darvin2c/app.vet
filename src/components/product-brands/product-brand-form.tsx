@@ -45,7 +45,7 @@ export function ProductBrandForm() {
       </Field>
 
       <IsActiveFormField
-        name="active"
+        name="is_active"
         label="Estado de la Marca"
         description="Determina si la marca está activa en el sistema"
         activeText="Activo"

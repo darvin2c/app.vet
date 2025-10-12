@@ -6,7 +6,7 @@ import useClientList from '@/hooks/clients/use-client-list'
 import { ClientFilters } from '@/schemas/clients.schema'
 import { ClientList } from '@/components/clients/client-list'
 import { ClientCreateButton } from '@/components/clients/client-create-button'
-import { PageBase } from '@/components/ui/page-base'
+import PageBase from '@/components/page-base'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {
@@ -55,8 +55,9 @@ export default function ClientsPage() {
 
   const hasActiveFilters = Object.values(filters).some(value => value !== undefined)
 
-  const activeClientsCount = clients.filter(client => client.is_active).length
-  const inactiveClientsCount = clients.filter(client => !client.is_active).length
+  // La tabla clients no tiene campo is_active según supabase.types.ts
+  const activeClientsCount = clients.length
+  const inactiveClientsCount = 0
 
   return (
     <PageBase

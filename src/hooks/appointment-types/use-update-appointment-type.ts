@@ -5,7 +5,7 @@ import { removeUndefined } from '@/lib/utils'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export function useAppointmentTypeUpdate() {
+export function useUpdateAppointmentType() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

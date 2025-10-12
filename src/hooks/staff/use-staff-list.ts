@@ -38,7 +38,7 @@ export default function useStaffList(filters?: StaffFilters) {
       // Aplicar filtros
       if (filters?.search) {
         query = query.or(
-          `first_name.ilike.%${filters.search}%,last_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
+          `full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
         )
       }
 

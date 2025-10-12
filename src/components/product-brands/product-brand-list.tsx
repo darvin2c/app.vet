@@ -1,6 +1,6 @@
 'use client'
 
-import { useProductBrands } from '@/hooks/product-brands/use-product-brand-list'
+import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
 import { ProductBrandFilters } from '@/schemas/product-brands.schema'
 import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
@@ -39,8 +39,8 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CardTitle className="text-lg">{brand.name}</CardTitle>
-                <Badge variant={brand.active ? 'default' : 'secondary'}>
-                  {brand.active ? 'Activo' : 'Inactivo'}
+                <Badge variant={brand.is_active ? 'default' : 'secondary'}>
+                  {brand.is_active ? 'Activo' : 'Inactivo'}
                 </Badge>
               </div>
               <ProductBrandActions brand={brand} />

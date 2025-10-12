@@ -69,7 +69,7 @@ export function AppointmentCard({
   const clientName = client
     ? `${client.first_name} ${client.last_name}`
     : 'Sin cliente'
-  const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
+  const staffName = staff ? staff.full_name : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
 

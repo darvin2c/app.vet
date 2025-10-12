@@ -27,7 +27,7 @@ import { es } from 'date-fns/locale'
 
 type Appointment = Tables<'appointments'> & {
   pets?: { name: string; client_id: string } | null
-  staff?: { first_name: string; last_name: string } | null
+  staff?: { full_name: string } | null
   appointment_types?: { name: string; color: string | null } | null
 }
 
@@ -103,7 +103,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
       header: 'Personal',
       cell: ({ row }) => {
         const staff = row.getValue('staff') as Appointment['staff']
-        return staff ? `${staff.first_name} ${staff.last_name}` : '-'
+        return staff ? staff.full_name : '-'
       },
     },
     {
@@ -238,7 +238,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                     <span className="text-sm font-medium">Personal: </span>
                     <span className="text-sm">
                       {appointment.staff
-                        ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
+                        ? appointment.staff.full_name
                         : '-'}
                     </span>
                   </div>

@@ -15,7 +15,7 @@ export default function useSuppliers(filters?: SupplierFilters) {
       // Aplicar filtros
       if (filters?.search) {
         query = query.or(
-          `name.ilike.%${filters.search}%,contact_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
+          `name.ilike.%${filters.search}%,contact_person.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
         )
       }
 

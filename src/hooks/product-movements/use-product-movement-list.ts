@@ -47,7 +47,7 @@ export default function useProductMovementList(
       // Aplicar filtros
       if (filters?.search) {
         query = query.or(
-          `note.ilike.%${filters.search}%,reference_id.ilike.%${filters.search}%`
+          `note.ilike.%${filters.search}%,reference.ilike.%${filters.search}%`
         )
       }
 

@@ -17,7 +17,7 @@ import {
   UpdateProductUnitSchema,
   updateProductUnitSchema,
 } from '@/schemas/product-units.schema'
-import useUpdateProductUnit from '@/hooks/product-units/use-update-product-unit'
+import useUpdateProductUnit from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
 
 type ProductUnit = Tables<'product_units'>

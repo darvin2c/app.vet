@@ -10,6 +10,7 @@ import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { PetForm } from './pet-form'
+import { Save, X } from 'lucide-react'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -83,8 +84,9 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
-              loading={isSubmitting}
+              isLoading={isSubmitting}
               disabled={isSubmitting}
+              icon={Save}
             >
               Guardar Cambios
             </ResponsiveButton>
@@ -93,6 +95,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isSubmitting}
+              icon={X}
             >
               Cancelar
             </ResponsiveButton>
