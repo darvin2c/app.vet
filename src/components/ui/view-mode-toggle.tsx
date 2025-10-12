@@ -80,13 +80,19 @@ export function ViewModeToggle({
   const handleValueChange = (newValue: ViewMode) => {
     // Actualizar estado interno
     setCurrentValue(newValue)
-    
+
     // Guardar en localStorage
     setStoredViewMode(resource, newValue)
 
     // Llamar callback si existe
     onValueChange?.(newValue)
   }
+
+  // Efecto para notificar el valor inicial al componente padre
+  React.useEffect(() => {
+    // Llamar onValueChange con el valor inicial al montar
+    onValueChange?.(currentValue)
+  }, []) // Solo ejecutar al montar
 
   return (
     <TooltipProvider>

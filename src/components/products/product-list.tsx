@@ -45,6 +45,23 @@ import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 
+// Función para obtener el valor desde localStorage (duplicada de view-mode-toggle para consistencia)
+function getStoredViewMode(resource: string): ViewMode {
+  if (typeof window === 'undefined') return 'table'
+
+  try {
+    const storageKey = `${resource}-view-mode`
+    const stored = localStorage.getItem(storageKey)
+    if (stored && ['table', 'cards', 'list'].includes(stored)) {
+      return stored as ViewMode
+    }
+  } catch (error) {
+    console.warn('Error reading from localStorage:', error)
+  }
+
+  return 'table'
+}
+
 type Product = Database['public']['Tables']['products']['Row']
 
 export function ProductList({
@@ -54,8 +71,10 @@ export function ProductList({
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
 }) {
-  // Estado para el modo de vista - ViewModeToggle maneja su propia persistencia
-  const [viewMode, setViewMode] = useState<ViewMode>('table')
+  // Estado para el modo de vista - inicializado desde localStorage para sincronización
+  const [viewMode, setViewMode] = useState<ViewMode>(() =>
+    getStoredViewMode('products')
+  )
 
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
@@ -268,7 +287,7 @@ export function ProductList({
 
   // Estados de carga y error
   if (isPending) {
-    return <TableSkeleton />
+    return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
@@ -307,10 +326,7 @@ export function ProductList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle
-          onValueChange={setViewMode}
-          resource="products"
-        />
+        <ViewModeToggle onValueChange={setViewMode} resource="products" />
       </div>
 
       {/* Contenido según la vista seleccionada */}
