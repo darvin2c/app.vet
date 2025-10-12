@@ -54,18 +54,16 @@ export function ProductCategoryCreate({
       onOpenChange={onOpenChange}
       title="Crear Categoría de Producto"
       description="Completa la información para agregar una nueva categoría de producto."
-      trigger={<></>}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductCategoryForm />
-          
+
           <DrawerFooter>
-            <Button
-              type="submit"
-              disabled={createProductCategory.isPending}
-            >
-              {createProductCategory.isPending ? 'Creando...' : 'Crear Categoría'}
+            <Button type="submit" disabled={createProductCategory.isPending}>
+              {createProductCategory.isPending
+                ? 'Creando...'
+                : 'Crear Categoría'}
             </Button>
             <Button
               variant="outline"

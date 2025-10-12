@@ -23,7 +23,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Database } from '@/types/supabase.types'
 import { ProductActions } from './product-actions'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'

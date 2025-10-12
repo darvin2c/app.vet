@@ -27,7 +27,6 @@ import type {
   SortDirection,
   SortColumn,
 } from '@/types/order-by.types'
-import { is } from 'date-fns/locale'
 
 // Componente para mostrar el icono de dirección de ordenamiento
 function SortDirectionIcon({ direction }: { direction: SortDirection | null }) {

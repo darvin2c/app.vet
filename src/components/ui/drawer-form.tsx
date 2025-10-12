@@ -134,7 +134,7 @@ interface DrawerFormProps {
   title: string
   description?: string
   children: React.ReactNode
-  trigger: React.ReactNode
+  trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
   footer?: React.ReactNode

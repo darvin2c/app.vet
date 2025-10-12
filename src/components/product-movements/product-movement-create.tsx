@@ -56,12 +56,11 @@ export function ProductMovementCreate({
       onOpenChange={onOpenChange}
       title="Crear Movimiento de Producto"
       description="Registra un nuevo movimiento de inventario para el producto seleccionado."
-      trigger={<></>}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductMovementForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               icon={Save}
