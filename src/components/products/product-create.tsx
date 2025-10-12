@@ -47,7 +47,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
+      <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
           <DrawerTitle>Crear Producto</DrawerTitle>
           <DrawerDescription>
