@@ -143,6 +143,32 @@ interface DrawerFormProps {
   footer?: React.ReactNode
 }
 
+function DrawerForm({
+  title,
+  description,
+  children,
+  trigger,
+  open,
+  onOpenChange,
+  footer,
+}: DrawerFormProps) {
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{title}</DrawerTitle>
+          {description && <DrawerDescription>{description}</DrawerDescription>}
+        </DrawerHeader>
+        <div className="px-4 pb-4">
+          {children}
+        </div>
+        {footer}
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
 export {
   Drawer,
   DrawerPortal,
@@ -154,4 +180,5 @@ export {
   DrawerFooter,
   DrawerTitle,
   DrawerDescription,
+  DrawerForm,
 }

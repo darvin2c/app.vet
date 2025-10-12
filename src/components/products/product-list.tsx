@@ -39,7 +39,7 @@ import {
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
-import useProducts from '@/hooks/products/use-products-list'
+import useProductList from '@/hooks/products/use-products-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
@@ -52,23 +52,6 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-
-// Función para obtener el valor desde localStorage (duplicada de view-mode-toggle para consistencia)
-function getStoredViewMode(resource: string): ViewMode {
-  if (typeof window === 'undefined') return 'table'
-
-  try {
-    const storageKey = `${resource}-view-mode`
-    const stored = localStorage.getItem(storageKey)
-    if (stored && ['table', 'cards', 'list'].includes(stored)) {
-      return stored as ViewMode
-    }
-  } catch (error) {
-    console.warn('Error reading from localStorage:', error)
-  }
-
-  return 'table'
-}
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -92,7 +75,7 @@ export function ProductList({
     data: products = [],
     isPending,
     error,
-  } = useProducts({
+  } = useProductList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,

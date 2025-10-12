@@ -4,35 +4,63 @@ import { useFormContext } from 'react-hook-form'
 import { CreateProductCategorySchema } from '@/schemas/product-categories.schema'
 import { Input } from '@/components/ui/input'
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
+import { IsActiveFormField } from '@/components/ui/is-active-field'
+import { Tables } from '@/types/supabase.types'
 
-export function ProductCategoryForm() {
-  const { control } = useFormContext<CreateProductCategorySchema>()
+interface ProductCategoryFormProps {
+  mode?: 'create' | 'edit'
+  productCategory?: Tables<'product_categories'>
+}
+
+export function ProductCategoryForm({ mode = 'create', productCategory }: ProductCategoryFormProps) {
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext<CreateProductCategorySchema>()
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre *</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ingresa el nombre de la categoría"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div className="space-y-6">
+      {/* Información básica */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Información básica</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Field>
+            <FieldLabel htmlFor="name">Nombre *</FieldLabel>
+            <FieldContent>
+              <Input
+                id="name"
+                placeholder="Ingresa el nombre de la categoría"
+                {...register('name')}
+              />
+              <FieldError errors={[errors.name]} />
+            </FieldContent>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="description">Descripción</FieldLabel>
+            <FieldContent>
+              <Input
+                id="description"
+                placeholder="Descripción de la categoría"
+                {...register('description')}
+              />
+              <FieldError errors={[errors.description]} />
+            </FieldContent>
+          </Field>
+        </div>
+      </div>
+
+      {/* Configuración */}
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium">Configuración</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <IsActiveFormField />
+        </div>
       </div>
     </div>
   )

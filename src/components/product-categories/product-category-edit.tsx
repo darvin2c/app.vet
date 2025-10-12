@@ -2,8 +2,14 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Drawer } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer-form'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductCategoryForm } from './product-category-form'
@@ -33,6 +39,8 @@ export function ProductCategoryEdit({
     resolver: zodResolver(updateProductCategorySchema),
     defaultValues: {
       name: category.name,
+      description: category.description || undefined,
+      is_active: category.is_active,
     },
   })
 
@@ -40,7 +48,7 @@ export function ProductCategoryEdit({
     try {
       await updateProductCategory.mutateAsync({
         id: category.id,
-        name: data.name,
+        data,
       })
       onOpenChange(false)
     } catch (error) {
@@ -48,28 +56,63 @@ export function ProductCategoryEdit({
     }
   }
 
+  const footer = (
+    <DrawerFooter>
+      <Button type="submit" disabled={updateProductCategory.isPending}>
+        {updateProductCategory.isPending
+          ? 'Actualizando...'
+          : 'Actualizar Categoría'}
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => onOpenChange(false)}
+        disabled={updateProductCategory.isPending}
+      >
+        Cancelar
+      </Button>
+    </DrawerFooter>
+  )
+
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <ProductCategoryForm />
+      <DrawerContent className="!w-full !max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Editar Categoría</DrawerTitle>
+          <DrawerDescription>
+            Modifica la información de la categoría.
+          </DrawerDescription>
+        </DrawerHeader>
 
-          <DrawerFooter>
-            <Button type="submit" disabled={updateProductCategory.isPending}>
-              {updateProductCategory.isPending
-                ? 'Actualizando...'
-                : 'Actualizar Categoría'}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={updateProductCategory.isPending}
+        <div className="px-4 overflow-y-auto">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit as any)}
+              className="space-y-4"
             >
-              Cancelar
-            </Button>
-          </DrawerFooter>
-        </form>
-      </Form>
+              <ProductCategoryForm />
+            </form>
+          </Form>
+        </div>
+
+        <DrawerFooter>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit as any)}
+            disabled={updateProductCategory.isPending}
+          >
+            {updateProductCategory.isPending
+              ? 'Actualizando...'
+              : 'Actualizar Categoría'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={updateProductCategory.isPending}
+          >
+            Cancelar
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
     </Drawer>
   )
 }

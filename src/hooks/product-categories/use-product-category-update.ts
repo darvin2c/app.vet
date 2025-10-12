@@ -21,6 +21,14 @@ export default function useUpdateProductCategory() {
       const updateData: TablesUpdate<'product_categories'> =
         removeUndefined(updateFields)
 
+      // Convertir fechas a UTC si existen
+      if (updateData.created_at) {
+        updateData.created_at = new Date(updateData.created_at).toISOString()
+      }
+      if (updateData.updated_at) {
+        updateData.updated_at = new Date(updateData.updated_at).toISOString()
+      }
+
       const { error } = await supabase
         .from('product_categories')
         .update(updateData)

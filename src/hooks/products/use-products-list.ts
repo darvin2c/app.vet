@@ -7,7 +7,7 @@ import { AppliedSort } from '@/types/order-by.types'
 
 type Product = Database['public']['Tables']['products']['Row']
 
-export default function useProductsList({
+export default function useProductList({
   filters = [],
   search,
   orders = [

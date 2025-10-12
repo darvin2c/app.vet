@@ -77,11 +77,34 @@ export function useResourceUpdate() {
       data: Omit<TablesUpdate<'resources'>, 'tenant_id'>
     }) =>
 }
-export function useUpdateResource() {
+
+export function useResourceDelete() {
   return useMutation({
     mutationFn: (id: string)
   })
 }
+
+export function useResourceList(({
+  filters = [],
+  search,
+  orders = [
+    {
+      field: 'created_at',
+      ascending: false,
+      direction: 'desc',
+    },
+  ],
+}: {
+  filters?: AppliedFilter[]
+  search?: string
+  orders?: AppliedSort[]
+})) {
+  return useQuery({
+    queryKey: [currentTenant?.id, 'resources'],
+    queryFn: () => ...
+  })
+}
+
 ```
 
 ## fetch
@@ -207,7 +230,45 @@ export function FeatureForm() {
 ## Páginas
 
 - Las páginas deben de tener un `PageBase` para el encabezado y el contenido
-- El encabezado debe de tener el título, subtítulo, acciones, búsqueda y filtros
+- El encabezado debe de tener el título, subtítulo, búsqueda y filtros
+
+```typescript
+export default function ResourcePage() {
+  // Configuración de filtros
+  const filters: FilterConfig[] = [
+    ...
+  ]
+
+  const orderByConfig: OrderByConfig = {
+    columns: [
+     ...
+    ],
+  }
+
+  return (
+    <PageBase
+      title="..."
+      subtitle="..."
+      search={
+        <SearchInput
+          hasSidebarTrigger
+          placeholder="..."
+          size="lg"
+          suffix={
+            <ButtonGroup>
+              <Filters filters={filters} />
+              <OrderBy config={orderByConfig} />
+              <ProductCreateButton />
+            </ButtonGroup>
+          }
+        />
+      }
+    >
+      <ResourceList filterConfig={filters} orderByConfig={orderByConfig} />
+    </PageBase>
+  )
+}
+```
 
 ## Listas
 

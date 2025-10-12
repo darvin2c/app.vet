@@ -51,13 +51,7 @@ export function ProductCategorySelect({
     (category: ProductCategory) => category.id === value
   )
 
-  // Función para manejar la creación de una nueva categoría
-  const handleCategoryCreated = (newCategory: ProductCategory) => {
-    if (onValueChange) {
-      // Seleccionar automáticamente la nueva categoría
-      onValueChange(newCategory.id)
-    }
-  }
+
 
   const handleSelect = (categoryId: string) => {
     if (!onValueChange) return
@@ -160,7 +154,6 @@ export function ProductCategorySelect({
       <ProductCategoryCreate
         open={createOpen}
         onOpenChange={setCreateOpen}
-        onCategoryCreated={handleCategoryCreated}
       />
 
       {selectedCategory && (
