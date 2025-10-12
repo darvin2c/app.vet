@@ -17,7 +17,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import useStaff from '@/hooks/staff/use-staff'
+import useStaff from '@/hooks/staff/use-staff-list'
 import { cn } from '@/lib/utils'
 
 interface StaffSelectProps {

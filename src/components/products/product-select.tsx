@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import useProducts from '@/hooks/products/use-products'
+import useProducts from '@/hooks/products/use-products-list'
 import { Database } from '@/types/supabase.types'
 
 type Product = Database['public']['Tables']['products']['Row']

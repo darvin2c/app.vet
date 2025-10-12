@@ -2,7 +2,7 @@
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { Database } from '@/types/supabase.types'
-import useDeleteStaff from '@/hooks/staff/use-delete-staff'
+import useDeleteStaff from '@/hooks/staff/use-staff-delete'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 

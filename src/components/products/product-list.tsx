@@ -43,7 +43,7 @@ import {
   Grid3X3,
   List,
 } from 'lucide-react'
-import useProducts from '@/hooks/products/use-products'
+import useProducts from '@/hooks/products/use-products-list'
 
 type ViewMode = 'table' | 'cards' | 'list'
 

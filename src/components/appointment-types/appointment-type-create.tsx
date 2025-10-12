@@ -14,13 +14,13 @@ import {
 } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentTypeForm } from './appointment-type-form'
-import { useCreateAppointmentType } from '@/hooks/appointment-types/use-create-appointment-type'
 import {
   CreateAppointmentTypeSchema,
   createAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
 import { toast } from 'sonner'
 import { X, Check } from 'lucide-react'
+import { useAppointmentTypeCreate } from '@/hooks/appointment-types/use-appointment-type-create'
 
 interface AppointmentTypeCreateProps {
   open: boolean
@@ -43,7 +43,7 @@ export function AppointmentTypeCreate({
     },
   })
 
-  const createAppointmentType = useCreateAppointmentType()
+  const createAppointmentType = useAppointmentTypeCreate()
 
   const onSubmit: SubmitHandler<CreateAppointmentTypeSchema> = async (data) => {
     try {

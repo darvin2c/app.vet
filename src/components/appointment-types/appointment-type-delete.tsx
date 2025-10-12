@@ -1,7 +1,7 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { useDeleteAppointmentType } from '@/hooks/appointment-types/use-delete-appointment-type'
+import { useDeleteAppointmentType } from '@/hooks/appointment-types/use-appointment-type-delete'
 import { toast } from 'sonner'
 import type { Tables } from '@/types/supabase.types'
 

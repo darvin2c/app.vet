@@ -60,7 +60,7 @@ import {
   Grid3X3,
   List,
 } from 'lucide-react'
-import useStaff from '@/hooks/staff/use-staff'
+import useStaff from '@/hooks/staff/use-staff-list'
 
 type ViewMode = 'table' | 'cards' | 'list'
 

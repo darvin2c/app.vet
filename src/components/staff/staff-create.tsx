@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { StaffForm } from './staff-form'
 import { CreateStaffSchema, createStaffSchema } from '@/schemas/staff.schema'
-import useCreateStaff from '@/hooks/staff/use-create-staff'
+import useCreateStaff from '@/hooks/staff/use-staff-create'
 
 interface StaffCreateProps {
   open: boolean
