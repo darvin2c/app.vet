@@ -15,26 +15,26 @@ export type AppointmentStatus = z.infer<typeof appointmentStatusEnum>
 // Schema para crear una cita
 export const createAppointmentSchema = z
   .object({
-    client_id: z.string().uuid('ID de cliente inválido'),
-    staff_id: z.string().uuid('ID de staff inválido').optional(),
-    procedure_id: z.string().uuid('ID de procedimiento inválido').optional(),
+    pet_id: z.string().uuid('ID de mascota inválido'),
+    veterinarian_id: z.string().uuid('ID de veterinario inválido').optional(),
     appointment_type_id: z.string().uuid('ID de tipo de cita inválido'),
-    start_time: z.string().refine((val) => {
+    scheduled_start: z.string().refine((val) => {
       if (!val) return false
       const date = new Date(val)
       return !isNaN(date.getTime())
     }, 'Fecha y hora de inicio inválida'),
-    end_time: z.string().refine((val) => {
+    scheduled_end: z.string().refine((val) => {
       if (!val) return false
       const date = new Date(val)
       return !isNaN(date.getTime())
     }, 'Fecha y hora de fin inválida'),
     status: appointmentStatusEnum.optional().default('scheduled'),
+    reason: z.string().optional(),
     notes: z.string().optional(),
   })
-  .refine((data) => new Date(data.end_time) > new Date(data.start_time), {
+  .refine((data) => new Date(data.scheduled_end) > new Date(data.scheduled_start), {
     message: 'La hora de fin debe ser posterior a la hora de inicio',
-    path: ['end_time'],
+    path: ['scheduled_end'],
   })
 
 // Schema para actualizar una cita
@@ -46,8 +46,8 @@ export const updateAppointmentSchema = createAppointmentSchema
 
 // Schema para filtros de citas
 export const appointmentFiltersSchema = z.object({
-  client_id: z.string().uuid().optional(),
-  staff_id: z.string().uuid().optional(),
+  pet_id: z.string().uuid().optional(),
+  veterinarian_id: z.string().uuid().optional(),
   appointment_type_id: z.string().uuid().optional(),
   status: appointmentStatusEnum.optional(),
   start_date: z.string().datetime().optional(),
@@ -57,9 +57,9 @@ export const appointmentFiltersSchema = z.object({
 
 // Schema para validar conflictos de horarios
 export const appointmentConflictSchema = z.object({
-  staff_id: z.string().uuid().optional(),
-  start_time: z.string().datetime(),
-  end_time: z.string().datetime(),
+  veterinarian_id: z.string().uuid().optional(),
+  scheduled_start: z.string().datetime(),
+  scheduled_end: z.string().datetime(),
   exclude_appointment_id: z.string().uuid().optional(),
 })
 

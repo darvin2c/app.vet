@@ -10,9 +10,10 @@ import Event from './event'
 import AgendaHeader from './agenda-header'
 
 type Appointment = Tables<'appointments'> & {
-  patients: Tables<'patients'> | null
+  pets: (Tables<'pets'> & {
+    clients: Tables<'clients'> | null
+  }) | null
   staff: Tables<'staff'> | null
-  procedures: Tables<'procedures'> | null
   appointment_types: Tables<'appointment_types'> | null
 }
 
@@ -46,8 +47,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       (appointment: Appointment): CalendarEvent => ({
         id: appointment.id,
         title: `${appointment.pets?.name || 'Sin mascota'}`,
-        start: dayjs(appointment.start_time),
-        end: dayjs(appointment.end_time),
+        start: dayjs(appointment.scheduled_start),
+        end: dayjs(appointment.scheduled_end),
         color: appointment.appointment_types?.color || '#3b82f6',
         data: appointment, // Datos completos para usar en eventos
       })

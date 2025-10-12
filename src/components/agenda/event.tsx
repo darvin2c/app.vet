@@ -8,14 +8,10 @@ import { es } from 'date-fns/locale'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import { EventCard } from './event-card'
+import { AppointmentWithRelations } from '@/types/appointment.types'
 
 // Tipo para el appointment con relaciones
-type Appointment = Tables<'appointments'> & {
-  patients: Tables<'patients'> | null
-  staff: Tables<'staff'> | null
-  procedures: Tables<'procedures'> | null
-  appointment_types: Tables<'appointment_types'> | null
-}
+type Appointment = AppointmentWithRelations
 
 // Mapeo de estados a variantes de Badge
 const STATUS_VARIANTS = {
@@ -42,15 +38,16 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const appointment = event.data as Appointment
 
   // Extraer datos del appointment
-  const patient = appointment?.patients
+  const pet = appointment?.pets
+  const client = pet?.clients
   const staff = appointment?.staff
   const appointmentType = appointment?.appointment_types
-  const procedure = appointment?.procedures
   const status = appointment?.status as keyof typeof STATUS_LABELS
 
-  const patientName = patient
-    ? `${patient.first_name} ${patient.last_name}`
-    : 'Sin paciente'
+  const petName = pet?.name || 'Sin mascota'
+  const clientName = client
+    ? `${client.first_name} ${client.last_name}`
+    : 'Sin cliente'
   const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
@@ -68,7 +65,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
         <div
           className="w-2 h-2 rounded-full"
           style={{ backgroundColor: typeColor }}
-          title={`${patientName} - ${typeName}`}
+          title={`${petName} (${clientName}) - ${typeName}`}
         />
       )
     }
@@ -83,10 +80,10 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'min-h-[20px] flex flex-col justify-center'
           )}
           style={{ borderLeftColor: typeColor }}
-          title={`${patientName} - ${typeName} (${timeRange})`}
+          title={`${petName} (${clientName}) - ${typeName} (${timeRange})`}
         >
           <div className="font-medium text-gray-900 truncate">
-            {patientName}
+            {petName}
           </div>
           <div className="text-gray-600 truncate">{startTime}</div>
         </div>
@@ -108,7 +105,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
           {/* Contenido principal - siempre visible */}
           <div className="flex items-start justify-between gap-1 min-h-0">
             <div className="font-medium text-xs text-gray-900 truncate leading-tight">
-              {patientName}
+              {petName}
             </div>
             <Badge
               variant={STATUS_VARIANTS[status] as any}
@@ -164,12 +161,13 @@ export default function Event({ event }: { event: CalendarEvent }) {
             </Badge>
           </div>
 
-          {/* Información del paciente */}
+          {/* Información de la mascota y cliente */}
           <div className="flex items-center gap-2">
             <User className="w-3 h-3 text-gray-600" />
             <span className="font-medium text-sm text-gray-800">
-              {patientName}
+              {petName}
             </span>
+            <span className="text-xs text-gray-500">({clientName})</span>
           </div>
 
           {/* Horario */}
@@ -188,7 +186,14 @@ export default function Event({ event }: { event: CalendarEvent }) {
             </div>
           )}
 
-
+          {/* Motivo de la cita si existe */}
+          {appointment?.reason && (
+            <div className="pt-2 border-t border-gray-200">
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">
+                Motivo: {appointment.reason}
+              </p>
+            </div>
+          )}
 
           {/* Notas/descripción si existen */}
           {appointment?.notes && (
@@ -213,7 +218,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
         style={{ borderLeftColor: typeColor }}
       >
         <div className="font-medium text-sm text-gray-900 truncate">
-          {patientName}
+          {petName}
         </div>
         <div className="text-xs text-gray-600 truncate">{typeName}</div>
         <div className="flex items-center gap-1 text-xs text-gray-500">

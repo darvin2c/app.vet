@@ -5,7 +5,9 @@ import { AppointmentFiltersSchema } from '@/schemas/appointments.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type AppointmentWithRelations = Database['public']['Tables']['appointments']['Row'] & {
-  pets: Database['public']['Tables']['pets']['Row'] | null
+  pets: (Database['public']['Tables']['pets']['Row'] & {
+    clients: Database['public']['Tables']['clients']['Row'] | null
+  }) | null
   staff: Database['public']['Tables']['staff']['Row'] | null
   appointment_types:
     | Database['public']['Tables']['appointment_types']['Row']
@@ -27,21 +29,24 @@ export function useAppointments(filters?: AppointmentFiltersSchema) {
         .select(
           `
           *,
-          pets(*),
+          pets(
+            *,
+            clients(*)
+          ),
           staff(*),
           appointment_types(*)
         `
         )
         .eq('tenant_id', currentTenant.id)
-        .order('start_time', { ascending: true })
+        .order('scheduled_start', { ascending: true })
 
       // Aplicar filtros
-      if (filters?.client_id) {
-      query = query.eq('client_id', filters.client_id)
+      if (filters?.pet_id) {
+        query = query.eq('pet_id', filters.pet_id)
       }
 
-      if (filters?.staff_id) {
-        query = query.eq('staff_id', filters.staff_id)
+      if (filters?.veterinarian_id) {
+        query = query.eq('veterinarian_id', filters.veterinarian_id)
       }
 
       if (filters?.appointment_type_id) {
@@ -53,17 +58,17 @@ export function useAppointments(filters?: AppointmentFiltersSchema) {
       }
 
       if (filters?.start_date) {
-        query = query.gte('start_time', filters.start_date)
+        query = query.gte('scheduled_start', filters.start_date)
       }
 
       if (filters?.end_date) {
-        query = query.lte('start_time', filters.end_date)
+        query = query.lte('scheduled_start', filters.end_date)
       }
 
       if (filters?.search) {
-        // Buscar en notas de la cita o nombre del paciente
+        // Buscar en notas de la cita o nombre de la mascota
         query = query.or(
-          `notes.ilike.%${filters.search}%,patients.first_name.ilike.%${filters.search}%,patients.last_name.ilike.%${filters.search}%`
+          `notes.ilike.%${filters.search}%,pets.name.ilike.%${filters.search}%`
         )
       }
 
@@ -73,7 +78,7 @@ export function useAppointments(filters?: AppointmentFiltersSchema) {
         throw new Error(`Error al obtener citas: ${error.message}`)
       }
 
-      return data as Appointment[]
+      return data as AppointmentWithRelations[]
     },
     enabled: !!currentTenant?.id,
   })

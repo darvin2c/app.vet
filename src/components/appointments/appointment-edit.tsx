@@ -49,13 +49,13 @@ export function AppointmentEdit({
     if (appointment && open) {
       form.reset({
         id: appointment.id,
-        patient_id: appointment.patient_id,
-        staff_id: appointment.staff_id || undefined,
+        pet_id: appointment.pet_id,
+        veterinarian_id: appointment.veterinarian_id || undefined,
         appointment_type_id: appointment.appointment_type_id || undefined,
-        procedure_id: appointment.procedure_id || undefined,
-        start_time: appointment.start_time,
-        end_time: appointment.end_time,
+        scheduled_start: appointment.scheduled_start,
+        scheduled_end: appointment.scheduled_end,
         status: appointment.status as UpdateAppointmentSchema['status'],
+        reason: appointment.reason || '',
         notes: appointment.notes || '',
       })
     }
@@ -64,13 +64,13 @@ export function AppointmentEdit({
   const onSubmit: SubmitHandler<UpdateAppointmentSchema> = async (data) => {
     await updateAppointment.mutateAsync({
       id: data.id,
-      patient_id: data.patient_id,
-      staff_id: data.staff_id,
-      procedure_id: data.procedure_id,
+      pet_id: data.pet_id,
+      veterinarian_id: data.veterinarian_id,
       appointment_type_id: data.appointment_type_id,
-      start_time: data.start_time,
-      end_time: data.end_time,
+      scheduled_start: data.scheduled_start,
+      scheduled_end: data.scheduled_end,
       status: data.status,
+      reason: data.reason,
       notes: data.notes,
     })
     onOpenChange(false)

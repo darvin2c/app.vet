@@ -27,7 +27,7 @@ export function useGoTenant() {
   }
 
   const urlTenant = (tenant: Tenant) => {
-    return `${protocol}//${tenant.slug}.${DOMAIN}${port}`
+    return `${protocol}//${tenant.subdomain}.${DOMAIN}${port}`
   }
 
   return {

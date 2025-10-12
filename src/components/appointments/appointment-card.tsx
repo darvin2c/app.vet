@@ -59,31 +59,32 @@ export function AppointmentCard({
   onView,
 }: AppointmentCardProps) {
   // Extraer datos del appointment
-  const patient = appointment?.patients
+  const pet = appointment?.pets
+  const client = pet?.clients
   const staff = appointment?.staff
   const appointmentType = appointment?.appointment_types
-  const procedure = appointment?.procedures
   const status = appointment?.status as keyof typeof STATUS_LABELS
 
-  const patientName = patient
-    ? `${patient.first_name} ${patient.last_name}`
-    : 'Sin paciente'
+  const petName = pet?.name || 'Sin mascota'
+  const clientName = client
+    ? `${client.first_name} ${client.last_name}`
+    : 'Sin cliente'
   const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
 
   // Formatear horas
-  const startTime = format(new Date(appointment.start_time), 'HH:mm', {
+  const startTime = format(new Date(appointment.scheduled_start), 'HH:mm', {
     locale: es,
   })
-  const endTime = format(new Date(appointment.end_time), 'HH:mm', {
+  const endTime = format(new Date(appointment.scheduled_end), 'HH:mm', {
     locale: es,
   })
   const timeRange = `${startTime} - ${endTime}`
 
   // Formatear fecha
   const appointmentDate = format(
-    new Date(appointment.start_time),
+    new Date(appointment.scheduled_start),
     'dd/MM/yyyy',
     { locale: es }
   )
@@ -143,10 +144,11 @@ export function AppointmentCard({
         </DropdownMenu>
       </div>
 
-      {/* Información del paciente */}
+      {/* Información de la mascota y cliente */}
       <div className="flex items-center gap-2 mb-2">
         <User className="w-4 h-4 text-gray-600" />
-        <span className="font-medium text-sm text-gray-800">{patientName}</span>
+        <span className="font-medium text-sm text-gray-800">{petName}</span>
+        <span className="text-xs text-gray-500">({clientName})</span>
       </div>
 
       {/* Fecha y horario */}
@@ -167,7 +169,14 @@ export function AppointmentCard({
         </div>
       )}
 
-
+      {/* Motivo de la cita si existe */}
+      {appointment?.reason && (
+        <div className="pt-2 mt-2 border-t border-gray-200">
+          <p className="text-xs text-gray-600 leading-relaxed font-medium">
+            Motivo: {appointment.reason}
+          </p>
+        </div>
+      )}
 
       {/* Notas/descripción si existen */}
       {appointment?.notes && (

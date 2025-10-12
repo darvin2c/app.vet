@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { ClientSelect } from '@/components/clients/client-select'
+import { PetSelect } from '@/components/pets/pet-select'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
 
@@ -34,11 +34,11 @@ const APPOINTMENT_STATUSES = [
 ] as const
 
 interface AppointmentFormProps {
-  disableClientSelection?: boolean
+  disablePetSelection?: boolean
 }
 
 export function AppointmentForm({
-  disableClientSelection = false,
+  disablePetSelection = false,
 }: AppointmentFormProps) {
   // context
   const {
@@ -48,43 +48,43 @@ export function AppointmentForm({
     setValue,
   } = useFormContext<CreateAppointmentSchema>()
 
-  // Watch staff and date changes to get available time slots
-  const staffId = watch('staff_id')
-  const startTime = watch('start_time')
+  // Watch veterinarian and date changes to get available time slots
+  const veterinarianId = watch('veterinarian_id')
+  const scheduledStart = watch('scheduled_start')
 
-  // Get available time slots for the selected date and staff
-  const selectedDate = startTime ? new Date(startTime) : undefined
+  // Get available time slots for the selected date and veterinarian
+  const selectedDate = scheduledStart ? new Date(scheduledStart) : undefined
   const { data: availableTimeSlots = [] } = useAvailableTimeSlots({
     date: selectedDate,
-    staffId,
+    staffId: veterinarianId,
   })
 
   return (
     <div className="space-y-6">
       <FieldGroup>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.client_id}>
-            <FieldLabel htmlFor="client_id">Cliente *</FieldLabel>
+          <Field data-invalid={!!errors.pet_id}>
+            <FieldLabel htmlFor="pet_id">Mascota *</FieldLabel>
             <FieldContent>
-              <ClientSelect
-                value={watch('client_id') || ''}
-                onValueChange={(value) => setValue('client_id', value)}
-                placeholder="Seleccionar cliente"
-                disabled={disableClientSelection}
+              <PetSelect
+                value={watch('pet_id') || ''}
+                onValueChange={(value) => setValue('pet_id', value)}
+                placeholder="Seleccionar mascota"
+                disabled={disablePetSelection}
               />
-              <FieldError errors={[errors.client_id]} />
+              <FieldError errors={[errors.pet_id]} />
             </FieldContent>
           </Field>
 
-          <Field data-invalid={!!errors.staff_id}>
-            <FieldLabel htmlFor="staff_id">Personal Médico *</FieldLabel>
+          <Field data-invalid={!!errors.veterinarian_id}>
+            <FieldLabel htmlFor="veterinarian_id">Veterinario</FieldLabel>
             <FieldContent>
               <StaffSelect
-                value={watch('staff_id') || ''}
-                onValueChange={(value) => setValue('staff_id', value)}
-                placeholder="Seleccionar personal"
+                value={watch('veterinarian_id') || ''}
+                onValueChange={(value) => setValue('veterinarian_id', value)}
+                placeholder="Seleccionar veterinario"
               />
-              <FieldError errors={[errors.staff_id]} />
+              <FieldError errors={[errors.veterinarian_id]} />
             </FieldContent>
           </Field>
         </div>
@@ -107,33 +107,31 @@ export function AppointmentForm({
               <FieldError errors={[errors.appointment_type_id]} />
             </FieldContent>
           </Field>
-
-
         </div>
       </FieldGroup>
 
       <FieldGroup>
-        <Field data-invalid={!!errors.start_time}>
-          <FieldLabel htmlFor="start_time">Fecha y Horario *</FieldLabel>
+        <Field data-invalid={!!errors.scheduled_start}>
+          <FieldLabel htmlFor="scheduled_start">Fecha y Horario *</FieldLabel>
           <FieldContent>
             <Calendar20
               startValue={
-                watch('start_time') ? new Date(watch('start_time')) : undefined
+                watch('scheduled_start') ? new Date(watch('scheduled_start')) : undefined
               }
               endValue={
-                watch('end_time') ? new Date(watch('end_time')) : undefined
+                watch('scheduled_end') ? new Date(watch('scheduled_end')) : undefined
               }
               onStartChange={(date) =>
-                setValue('start_time', date?.toISOString() || '')
+                setValue('scheduled_start', date?.toISOString() || '')
               }
               onEndChange={(date) =>
-                setValue('end_time', date?.toISOString() || '')
+                setValue('scheduled_end', date?.toISOString() || '')
               }
               placeholder="Seleccionar fecha y horario"
               minDate={new Date()}
               availableTimeSlots={availableTimeSlots}
             />
-            <FieldError errors={[errors.start_time]} />
+            <FieldError errors={[errors.scheduled_start]} />
           </FieldContent>
         </Field>
       </FieldGroup>
@@ -155,6 +153,21 @@ export function AppointmentForm({
               </SelectContent>
             </Select>
             <FieldError errors={[errors.status]} />
+          </FieldContent>
+        </Field>
+      </FieldGroup>
+
+      <FieldGroup>
+        <Field data-invalid={!!errors.reason}>
+          <FieldLabel htmlFor="reason">Motivo de la Cita</FieldLabel>
+          <FieldContent>
+            <Textarea
+              id="reason"
+              placeholder="Motivo de la consulta..."
+              className="resize-none"
+              {...control.register('reason')}
+            />
+            <FieldError errors={[errors.reason]} />
           </FieldContent>
         </Field>
       </FieldGroup>

@@ -29,14 +29,9 @@ import {
 import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import { toast } from 'sonner'
-import type { Tables } from '@/types/supabase.types'
+import { AppointmentWithRelations } from '@/types/appointment.types'
 
-type Appointment = Tables<'appointments'> & {
-  patients: Tables<'patients'> | null
-  staff: Tables<'staff'> | null
-  procedures: Tables<'procedures'> | null
-  appointment_types: Tables<'appointment_types'> | null
-}
+type Appointment = AppointmentWithRelations
 
 interface EventCardProps {
   appointment: Appointment
@@ -65,9 +60,13 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
-  const patientName = appointment.patients
-    ? `${appointment.patients.first_name} ${appointment.patients.last_name}`
-    : 'Paciente no especificado'
+  const pet = appointment.pets
+  const client = pet?.clients
+  
+  const petName = pet?.name || 'Mascota no especificada'
+  const clientName = client
+    ? `${client.first_name} ${client.last_name}`
+    : 'Cliente no especificado'
 
   const staffName = appointment.staff
     ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
@@ -76,13 +75,14 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'
   const appointmentTypeColor = appointment.appointment_types?.color || '#3B82F6'
 
-  const startDate = new Date(appointment.start_time)
-  const endDate = new Date(appointment.end_time)
+  const startDate = new Date(appointment.scheduled_start)
+  const endDate = new Date(appointment.scheduled_end)
 
   const handleShare = async () => {
     try {
       const shareText = `Cita médica:
-Paciente: ${patientName}
+Mascota: ${petName}
+Cliente: ${clientName}
 Fecha: ${format(startDate, 'dd/MM/yyyy', { locale: es })}
 Hora: ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}
 Tipo: ${appointmentTypeName}
@@ -147,15 +147,17 @@ Personal: ${staffName}`
             </CardHeader>
 
             <CardContent className="space-y-6">
-              {/* Información del Paciente */}
+              {/* Información de la Mascota y Cliente */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                   <User className="h-4 w-4" />
-                  Información del Paciente
+                  Información de la Mascota
                 </div>
                 <div className="pl-6 space-y-2">
-                  <div className="font-medium text-base">{patientName}</div>
-
+                  <div className="font-medium text-base">{petName}</div>
+                  <div className="text-sm text-muted-foreground">
+                    Cliente: {clientName}
+                  </div>
                 </div>
               </div>
 
@@ -211,9 +213,26 @@ Personal: ${staffName}`
                       </div>
                     </div>
                   </div>
-
                 </div>
               </div>
+
+              {/* Motivo de la cita */}
+              {appointment.reason && (
+                <>
+                  <Separator />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+                      <FileText className="h-4 w-4" />
+                      Motivo de la Cita
+                    </div>
+                    <div className="pl-6">
+                      <div className="text-sm bg-muted/50 rounded-lg p-3">
+                        {appointment.reason}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
 
               {/* Notas */}
               {appointment.notes && (

@@ -26,9 +26,9 @@ import { X, Check } from 'lucide-react'
 interface AppointmentCreateProps {
   trigger?: React.ReactNode
   onSuccess?: () => void
-  defaultStartTime?: string
-  defaultEndTime?: string
-  defaultPatientId?: string
+  defaultScheduledStart?: string
+  defaultScheduledEnd?: string
+  defaultPetId?: string
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }
@@ -36,9 +36,9 @@ interface AppointmentCreateProps {
 export function AppointmentCreate({
   trigger,
   onSuccess,
-  defaultStartTime,
-  defaultEndTime,
-  defaultPatientId,
+  defaultScheduledStart,
+  defaultScheduledEnd,
+  defaultPetId,
   open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
 }: AppointmentCreateProps) {
@@ -58,12 +58,12 @@ export function AppointmentCreate({
   const form = useForm<CreateAppointmentSchema>({
     resolver: zodResolver(createAppointmentSchema) as any,
     defaultValues: {
-      patient_id: defaultPatientId || '',
+      pet_id: defaultPetId || '',
       appointment_type_id: '',
-      start_time: defaultStartTime || '',
-      end_time: defaultEndTime || '',
-      staff_id: undefined,
-      procedure_id: undefined,
+      scheduled_start: defaultScheduledStart || '',
+      scheduled_end: defaultScheduledEnd || '',
+      veterinarian_id: undefined,
+      reason: '',
       notes: '',
     },
   })
@@ -72,30 +72,30 @@ export function AppointmentCreate({
   React.useEffect(() => {
     // Reset the entire form with new default values
     const newDefaults = {
-      patient_id: defaultPatientId || '',
+      pet_id: defaultPetId || '',
       appointment_type_id: '',
-      start_time: defaultStartTime || '',
-      end_time: defaultEndTime || '',
-      staff_id: undefined,
-      procedure_id: undefined,
+      scheduled_start: defaultScheduledStart || '',
+      scheduled_end: defaultScheduledEnd || '',
+      veterinarian_id: undefined,
+      reason: '',
       notes: '',
     }
 
     form.reset(newDefaults)
-  }, [defaultStartTime, defaultEndTime, defaultPatientId, form])
+  }, [defaultScheduledStart, defaultScheduledEnd, defaultPetId, form])
 
   const createAppointment = useCreateAppointment()
 
   const onSubmit: SubmitHandler<CreateAppointmentSchema> = async (data) => {
     console.log(data)
     await createAppointment.mutateAsync({
-      patient_id: data.patient_id,
-      staff_id: data.staff_id,
-      procedure_id: data.procedure_id,
+      pet_id: data.pet_id,
+      veterinarian_id: data.veterinarian_id,
       appointment_type_id: data.appointment_type_id,
-      start_time: data.start_time,
-      end_time: data.end_time,
+      scheduled_start: data.scheduled_start,
+      scheduled_end: data.scheduled_end,
       status: data.status,
+      reason: data.reason,
       notes: data.notes,
     })
     form.reset()
@@ -120,7 +120,7 @@ export function AppointmentCreate({
               onSubmit={form.handleSubmit(onSubmit as any)}
               className="space-y-6"
             >
-              <AppointmentForm disablePatientSelection={!!defaultPatientId} />
+              <AppointmentForm disablePetSelection={!!defaultPetId} />
             </form>
           </Form>
         </div>

@@ -17,7 +17,7 @@ export const petBaseSchema = z.object({
   client_id: z.string().uuid('ID de cliente inválido'),
 
   gender: z.enum(['male', 'female', 'unknown'], {
-    errorMap: () => ({ message: 'Género debe ser masculino, femenino o desconocido' }),
+    message: 'Género debe ser masculino, femenino o desconocido',
   }).optional(),
 
   date_of_birth: z.string().optional(),
