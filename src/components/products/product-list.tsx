@@ -25,6 +25,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Database } from '@/types/supabase.types'
 import { ProductActions } from './product-actions'
+import { ProductCreateButton } from './product-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/hooks/use-order-by'
@@ -275,17 +276,23 @@ export function ProductList({ filters }: ProductListProps) {
 
   if (products.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Package className="h-8 w-8" />
-          </EmptyMedia>
-          <EmptyTitle>No hay productos</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron productos que coincidan con los filtros aplicados.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia>
+              <Package className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay productos</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron productos que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+            <div className="mt-4">
+              <ProductCreateButton />
+            </div>
+          </EmptyHeader>
+        </Empty>
+      </div>
     )
   }
 
