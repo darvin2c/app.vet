@@ -87,7 +87,7 @@ export function ProductUnitCreate({
         />
       )}
 
-      <DrawerContent className="!w-full !max-w-[600px]">
+      <DrawerContent className="!w-full !max-w-md">
         <DrawerHeader>
           <DrawerTitle>Crear Unidad de Producto</DrawerTitle>
           <DrawerDescription>

@@ -60,7 +60,7 @@ export function ProductUnitEdit({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
+      <DrawerContent className="!w-full !max-w-md">
         <DrawerHeader>
           <DrawerTitle>Editar Unidad</DrawerTitle>
           <DrawerDescription>
