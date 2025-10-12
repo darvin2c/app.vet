@@ -9,7 +9,7 @@
     "lint": "eslint --ext .ts,.tsx",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write --list-different .",
-    "supabase:gen": "npx supabase gen types typescript --project-id mwnbvrgjwstqvfufgtnf --schema public > src/types/supabase.types.ts"
+    "supabase:gen": "npx supabase gen types typescript --project-id ottoprqholddzeykpdro --schema public > src/types/supabase.types.ts"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.0.1",
