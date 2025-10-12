@@ -96,13 +96,6 @@ export function ProductList({ filters }: ProductListProps) {
       ),
     },
     {
-      accessorKey: 'min_stock',
-      header: 'Stock Mínimo',
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm">{row.getValue('min_stock') || 0}</div>
-      ),
-    },
-    {
       accessorKey: 'is_active',
       header: 'Estado',
       cell: ({ row }: { row: Row<Product> }) => (
@@ -196,10 +189,6 @@ export function ProductList({ filters }: ProductListProps) {
                 {product.unit_id}
               </div>
             )}
-            <div className="text-sm">
-              <span className="text-muted-foreground">Stock Mínimo:</span>{' '}
-              {product.min_stock || 0}
-            </div>
           </div>
 
           <div className="flex justify-between items-center">
@@ -232,7 +221,6 @@ export function ProductList({ filters }: ProductListProps) {
                     <span>Categoría: {product.category_id}</span>
                   )}
                   {product.unit_id && <span>Unidad: {product.unit_id}</span>}
-                  <span>Stock Mín: {product.min_stock || 0}</span>
                 </div>
 
                 <IsActiveDisplay value={product.is_active} />

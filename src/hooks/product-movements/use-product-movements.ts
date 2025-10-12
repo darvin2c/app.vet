@@ -29,20 +29,12 @@ export default function useProductMovements(filters?: ProductMovementFilters) {
           `
           *,
           products (
-            id,
-            name,
-            sku,
-            stock,
+            *
             product_categories (
-              id,
-              name,
-              code
+             *
             ),
             product_units (
-              id,
-              name,
-              code,
-              decimals
+              *
             )
           )
         `

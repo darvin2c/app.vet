@@ -102,61 +102,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="min_stock"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Stock Mínimo</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  placeholder="0"
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    field.onChange(value === '' ? null : Number(value))
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Campo de stock usando componente especializado */}
-        {mode === 'create' ? (
-          <FormField
-            control={control}
-            name="stock"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Stock Inicial</FormLabel>
-                <FormControl>
-                  <ProductStockInput
-                    mode="create"
-                    value={field.value}
-                    onChange={field.onChange}
-                    placeholder="0"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ) : (
-          <FormItem>
-            <FormLabel>Stock Actual</FormLabel>
-            <FormControl>
-              <ProductStockInput mode="edit" product={product} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        <ProductStockInput />
+        <IsActiveFormField />
       </div>
-
-      <IsActiveFormField />
     </div>
   )
 }

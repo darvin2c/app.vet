@@ -75,7 +75,7 @@ export function ProductUnitSelect({
               {selectedUnit ? (
                 <div className="flex items-center gap-2">
                   <Package className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedUnit.name || selectedUnit.code}</span>
+                  <span>{selectedUnit.name || selectedUnit.abbreviation}</span>
                 </div>
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
@@ -100,16 +100,16 @@ export function ProductUnitSelect({
                 {units.map((unit) => (
                   <CommandItem
                     key={unit.id}
-                    value={unit.name || unit.code}
+                    value={unit.name || unit.abbreviation}
                     onSelect={() => handleSelect(unit.id)}
                   >
                     <div className="flex items-center gap-2">
                       <Package className="w-4 h-4 text-muted-foreground" />
                       <div>
-                        <span>{unit.name || unit.code}</span>
-                        {unit.name && unit.code && (
+                        <span>{unit.name || unit.abbreviation}</span>
+                        {unit.name && unit.abbreviation && (
                           <span className="ml-2 text-xs text-muted-foreground">
-                            ({unit.code})
+                            ({unit.abbreviation})
                           </span>
                         )}
                       </div>

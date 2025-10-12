@@ -6,11 +6,11 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 
-export default function useStaff(filters?: StaffFilters) {
+export default function useStaffList(filters?: StaffFilters) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['staff', currentTenant?.id, filters],
+    queryKey: ['staff-list', currentTenant?.id, filters],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')

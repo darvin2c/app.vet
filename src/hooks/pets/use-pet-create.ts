@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { CreatePetSchema } from '@/schemas/pets.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import { toast } from 'sonner'

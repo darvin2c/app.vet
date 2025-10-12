@@ -37,7 +37,6 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
       sku: product.sku ?? undefined,
       category_id: product.category_id ?? undefined,
       unit_id: product.unit_id ?? undefined,
-      min_stock: product.min_stock ?? undefined,
       is_active: product.is_active,
     },
   })

@@ -1,13 +1,13 @@
 'use client'
 
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { StaffSpecialtyForm } from './staff-specialty-form'
 import { CreateStaffSpecialtySchema, createStaffSpecialtySchema } from '@/schemas/staff-specialties.schema'
 import useStaffSpecialtyCreate from '@/hooks/staff-specialties/use-staff-specialty-create'
+import { Plus } from 'lucide-react'
 
 interface StaffSpecialtyCreateProps {
   open: boolean
@@ -42,32 +42,39 @@ export function StaffSpecialtyCreate({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Asignar Especialidad"
-      description="Asigna una especialidad a un miembro del staff"
-      form={form}
-      onSubmit={onSubmit}
-    >
-      <StaffSpecialtyForm />
-      
-      <DrawerFooter>
-        <ResponsiveButton
-          type="submit"
-          loading={isPending}
-          disabled={isPending}
-        >
-          Asignar Especialidad
-        </ResponsiveButton>
-        <ResponsiveButton
-          variant="outline"
-          onClick={() => onOpenChange(false)}
-          disabled={isPending}
-        >
-          Cancelar
-        </ResponsiveButton>
-      </DrawerFooter>
-    </DrawerForm>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>Asignar Especialidad</DrawerTitle>
+          <DrawerDescription>
+            Asigna una especialidad a un miembro del staff
+          </DrawerDescription>
+        </DrawerHeader>
+        
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
+            <StaffSpecialtyForm />
+            
+            <DrawerFooter>
+              <ResponsiveButton
+                type="submit"
+                loading={isPending}
+                disabled={isPending}
+                icon={Plus}
+              >
+                Asignar Especialidad
+              </ResponsiveButton>
+              <ResponsiveButton
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isPending}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </DrawerFooter>
+          </form>
+        </FormProvider>
+      </DrawerContent>
+    </Drawer>
   )
 }

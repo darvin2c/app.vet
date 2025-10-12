@@ -44,8 +44,7 @@ export function ProductUnitCreate({
     resolver: zodResolver(createProductUnitSchema),
     defaultValues: {
       name: '',
-      code: '',
-      decimals: 0,
+      abbreviation: '',
       is_active: true,
     },
   })
@@ -61,8 +60,7 @@ export function ProductUnitCreate({
     try {
       const result = await createProductUnit.mutateAsync({
         name: data.name,
-        code: data.code,
-        decimals: data.decimals,
+        abbreviation: data.abbreviation,
         is_active: data.is_active,
       })
       form.reset()

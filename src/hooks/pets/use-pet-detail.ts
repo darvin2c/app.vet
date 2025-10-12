@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 
 type PetDetail = Tables<'pets'> & {
@@ -13,7 +13,8 @@ export function usePetDetail(id: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('pets')
-        .select(`
+        .select(
+          `
           *,
           clients (
             id,
@@ -27,7 +28,8 @@ export function usePetDetail(id: string) {
             name,
             species
           )
-        `)
+        `
+        )
         .eq('id', id)
         .single()
 

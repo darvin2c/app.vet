@@ -35,19 +35,6 @@ export default function useDeleteProductMovement() {
         throw new Error(`Error al eliminar movimiento: ${error.message}`)
       }
 
-      // Recalcular stock del producto después de eliminar el movimiento
-      const { error: recalcError } = await supabase.rpc(
-        'recalc_product_stock',
-        {
-          p_product_id: movement.product_id,
-        }
-      )
-
-      if (recalcError) {
-        console.error('Error al recalcular stock:', recalcError)
-        toast.error('Movimiento eliminado pero error al recalcular stock')
-      }
-
       return { id }
     },
     onSuccess: () => {

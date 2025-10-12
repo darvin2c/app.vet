@@ -34,7 +34,6 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
       sku: undefined,
       category_id: undefined,
       unit_id: undefined,
-      min_stock: undefined,
       stock: undefined,
       is_active: true,
     },

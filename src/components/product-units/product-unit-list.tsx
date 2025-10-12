@@ -68,19 +68,12 @@ export function ProductUnitList({ filters }: ProductUnitListProps) {
       ),
     },
     {
-      accessorKey: 'code',
-      header: 'Código',
+      accessorKey: 'abbreviation',
+      header: 'Abreviación',
       cell: ({ row }: { row: Row<ProductUnit> }) => (
         <div className="text-sm text-muted-foreground">
-          {row.getValue('code')}
+          {row.getValue('abbreviation')}
         </div>
-      ),
-    },
-    {
-      accessorKey: 'decimals',
-      header: 'Decimales',
-      cell: ({ row }: { row: Row<ProductUnit> }) => (
-        <div className="text-sm">{row.getValue('decimals')}</div>
       ),
     },
     {
@@ -156,17 +149,10 @@ export function ProductUnitList({ filters }: ProductUnitListProps) {
             <div>
               <h3 className="font-medium">{unit.name}</h3>
               <p className="text-sm text-muted-foreground">
-                Código: {unit.code}
+                Abreviación: {unit.abbreviation}
               </p>
             </div>
             <ProductUnitActions unit={unit} />
-          </div>
-
-          <div className="space-y-2">
-            <div className="text-sm">
-              <span className="text-muted-foreground">Decimales:</span>{' '}
-              {unit.decimals}
-            </div>
           </div>
 
           <div className="flex justify-between items-center">
@@ -188,12 +174,8 @@ export function ProductUnitList({ filters }: ProductUnitListProps) {
                 <div>
                   <h3 className="font-medium">{unit.name}</h3>
                   <p className="text-sm text-muted-foreground">
-                    Código: {unit.code}
+                    Abreviación: {unit.abbreviation}
                   </p>
-                </div>
-
-                <div className="text-sm text-muted-foreground">
-                  <span>Decimales: {unit.decimals}</span>
                 </div>
               </div>
             </div>

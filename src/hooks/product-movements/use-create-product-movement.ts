@@ -1,9 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  CreateProductMovementSchema,
-  CreateProductMovementData,
-} from '@/schemas/product-movements.schema'
+import { CreateProductMovementData } from '@/schemas/product-movements.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
@@ -63,20 +60,6 @@ export default function useCreateProductMovement() {
 
       if (error) {
         throw new Error(`Error al crear movimiento: ${error.message}`)
-      }
-
-      // Recalcular stock del producto usando la función de Supabase
-      const { error: recalcError } = await supabase.rpc(
-        'recalc_product_stock',
-        {
-          p_product_id: data.product_id,
-        }
-      )
-
-      if (recalcError) {
-        console.error('Error al recalcular stock:', recalcError)
-        // No lanzamos error aquí para no bloquear la creación del movimiento
-        toast.error('Movimiento creado pero error al recalcular stock')
       }
 
       return movement

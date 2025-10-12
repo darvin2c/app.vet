@@ -37,13 +37,13 @@ export function ProductUnitForm() {
 
         <FormField
           control={control}
-          name="code"
+          name="abbreviation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Código *</FormLabel>
+              <FormLabel>Abreviación *</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Ingresa el código de la unidad"
+                  placeholder="Ingresa la abreviación de la unidad"
                   {...field}
                 />
               </FormControl>
@@ -52,27 +52,6 @@ export function ProductUnitForm() {
           )}
         />
       </div>
-
-      <FormField
-        control={control}
-        name="decimals"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Decimales *</FormLabel>
-            <FormControl>
-              <Input
-                type="number"
-                placeholder="Número de decimales (0-4)"
-                {...field}
-                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                min={0}
-                max={4}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
 
       <IsActiveFormField />
     </div>

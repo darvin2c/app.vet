@@ -60,8 +60,7 @@ type ProductMovementWithProduct =
       product_units?: {
         id: string
         name: string | null
-        code: string
-        decimals: number | null
+        abbreviation: string | null
       } | null
     } | null
   }
@@ -85,10 +84,10 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
 
   const columns: ColumnDef<ProductMovementWithProduct>[] = [
     {
-      accessorKey: 'movement_date',
+      accessorKey: 'created_at',
       header: 'Fecha',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const date = new Date(row.getValue('movement_date'))
+        const date = new Date(row.getValue('created_at'))
         return format(date, 'dd/MM/yyyy HH:mm', { locale: es })
       },
     },
@@ -110,10 +109,10 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
       },
     },
     {
-      accessorKey: 'reference_type',
+      accessorKey: 'source',
       header: 'Tipo',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const type = row.getValue('reference_type') as string
+        const type = row.getValue('source') as string
         const quantity = row.original.quantity
 
         let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
@@ -146,7 +145,7 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
             className={`font-medium ${quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
           >
             {quantity >= 0 ? '+' : ''}
-            {quantity.toFixed(unit?.decimals || 0)} {unit?.code || ''}
+            {quantity.toFixed(0)} {unit?.abbreviation || ''}
           </div>
         )
       },
@@ -160,19 +159,20 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
       },
     },
     {
-      accessorKey: 'total_cost',
+      id: 'total_cost',
       header: 'Costo Total',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const cost = row.getValue('total_cost') as number | null
-        return cost ? `$${cost.toFixed(2)}` : '-'
+        const movement = row.original
+        const totalCost = movement.unit_cost && movement.quantity ? movement.unit_cost * movement.quantity : null
+        return totalCost ? `$${totalCost.toFixed(2)}` : '-'
       },
     },
     {
-      accessorKey: 'reference_id',
+      accessorKey: 'reference',
       header: 'Referencia',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const refId = row.getValue('reference_id') as string | null
-        return refId || '-'
+        const ref = row.getValue('reference') as string | null
+        return ref || '-'
       },
     },
     {
@@ -229,7 +229,7 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                 <span className="text-sm text-muted-foreground">Fecha:</span>
                 <span className="text-sm">
                   {format(
-                    new Date(movement.movement_date),
+                    new Date(movement.created_at),
                     'dd/MM/yyyy HH:mm',
                     { locale: es }
                   )}
@@ -240,7 +240,7 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                 <Badge
                   variant={movement.quantity >= 0 ? 'default' : 'destructive'}
                 >
-                  {movement.reference_type ||
+                  {movement.source ||
                     (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}
                 </Badge>
               </div>
@@ -251,27 +251,27 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                 >
                   {movement.quantity >= 0 ? '+' : ''}
                   {movement.quantity.toFixed(
-                    movement.products?.product_units?.decimals || 0
+                    0
                   )}{' '}
-                  {movement.products?.product_units?.code || ''}
+                  {movement.products?.product_units?.abbreviation || ''}
                 </span>
               </div>
-              {movement.total_cost && (
+              {movement.unit_cost && movement.quantity && (
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
                     Costo Total:
                   </span>
                   <span className="text-sm font-medium">
-                    ${movement.total_cost.toFixed(2)}
+                    ${(movement.unit_cost * movement.quantity).toFixed(2)}
                   </span>
                 </div>
               )}
-              {movement.reference_id && (
+              {movement.reference && (
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">
                     Referencia:
                   </span>
-                  <span className="text-sm">{movement.reference_id}</span>
+                  <span className="text-sm">{movement.reference}</span>
                 </div>
               )}
               {movement.note && (
@@ -302,7 +302,7 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                     </span>
                     <span className="text-sm text-muted-foreground">
                       {format(
-                        new Date(movement.movement_date),
+                        new Date(movement.created_at),
                         'dd/MM/yyyy HH:mm',
                         { locale: es }
                       )}
@@ -311,21 +311,19 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                   <Badge
                     variant={movement.quantity >= 0 ? 'default' : 'destructive'}
                   >
-                    {movement.reference_type ||
+                    {movement.source ||
                       (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}
                   </Badge>
                   <span
                     className={`font-medium ${movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
                   >
                     {movement.quantity >= 0 ? '+' : ''}
-                    {movement.quantity.toFixed(
-                      movement.products?.product_units?.decimals || 0
-                    )}{' '}
-                    {movement.products?.product_units?.code || ''}
+                    {movement.quantity.toFixed(0)}{' '}
+                    {movement.products?.product_units?.abbreviation || ''}
                   </span>
-                  {movement.total_cost && (
+                  {movement.unit_cost && movement.quantity && (
                     <span className="text-sm font-medium">
-                      ${movement.total_cost.toFixed(2)}
+                      ${(movement.unit_cost * movement.quantity).toFixed(2)}
                     </span>
                   )}
                 </div>

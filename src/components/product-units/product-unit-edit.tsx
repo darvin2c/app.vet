@@ -39,8 +39,7 @@ export function ProductUnitEdit({
     resolver: zodResolver(updateProductUnitSchema),
     defaultValues: {
       name: unit.name || '',
-      code: unit.code,
-      decimals: unit.decimals || 0,
+      abbreviation: unit.abbreviation,
       is_active: unit.is_active,
     },
   })
@@ -50,8 +49,7 @@ export function ProductUnitEdit({
       await updateProductUnit.mutateAsync({
         id: unit.id,
         name: data.name,
-        code: data.code,
-        decimals: data.decimals,
+        abbreviation: data.abbreviation,
         is_active: data.is_active,
       })
       onOpenChange(false)

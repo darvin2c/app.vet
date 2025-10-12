@@ -6,11 +6,11 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Product = Database['public']['Tables']['products']['Row']
 
-export default function useProducts(filters?: ProductFiltersSchema) {
+export default function useProductsList(filters?: ProductFiltersSchema) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['products', currentTenant?.id, filters],
+    queryKey: ['products-list', currentTenant?.id, filters],
     queryFn: async (): Promise<Product[]> => {
       if (!currentTenant?.id) {
         return []

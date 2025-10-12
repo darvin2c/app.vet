@@ -1,9 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase'
-import { CreateSupplierSchema } from '@/schemas/suppliers.schema'
+import { supabase } from '@/lib/supabase/client'
 import { TablesInsert } from '@/types/supabase.types'
-import { useCurrentTenantStore } from '@/stores/current-tenant-store'
 import { toast } from 'sonner'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 export default function useSupplierCreate() {
   const queryClient = useQueryClient()

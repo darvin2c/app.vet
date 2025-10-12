@@ -28,8 +28,8 @@ export function ProductUnitDelete({
       isOpen={open}
       onClose={() => onOpenChange(false)}
       title="¿Estás seguro de eliminar esta unidad?"
-      description={`Esta acción eliminará permanentemente la unidad "${unit.name || unit.code}" y no se puede deshacer.`}
-      confirmText={unit.name || unit.code}
+      description={`Esta acción eliminará permanentemente la unidad "${unit.name || unit.abbreviation}" y no se puede deshacer.`}
+      confirmText={unit.name || unit.abbreviation}
       onConfirm={handleDelete}
       isLoading={deleteProductUnit.isPending}
     />
