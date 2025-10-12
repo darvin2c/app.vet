@@ -37,11 +37,11 @@ interface ClientListProps {
   view?: 'table' | 'card' | 'list'
 }
 
-export function ClientList({ 
-  clients, 
-  isLoading = false, 
+export function ClientList({
+  clients,
+  isLoading = false,
   onClientSelect,
-  view = 'table' 
+  view = 'table',
 }: ClientListProps) {
   const columns = useMemo<ColumnDef<Client>[]>(
     () => [
@@ -58,19 +58,20 @@ export function ClientList({
         ),
         cell: ({ row }) => {
           const client = row.original
-          const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
-          
+          const initials = client.full_name
+            .split(' ')
+            .map((name) => name[0])
+            .join('')
+            .toUpperCase()
+            .slice(0, 2)
+
           return (
             <div className="flex items-center space-x-3">
               <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-xs">
-                  {initials}
-                </AvatarFallback>
+                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium">
-                  {client.full_name}
-                </div>
+                <div className="font-medium">{client.full_name}</div>
                 {client.email && (
                   <div className="text-sm text-muted-foreground">
                     {client.email}
@@ -143,10 +144,7 @@ export function ClientList({
         id: 'actions',
         header: 'Acciones',
         cell: ({ row }) => (
-          <ClientActions 
-            client={row.original} 
-            onView={onClientSelect}
-          />
+          <ClientActions client={row.original} onView={onClientSelect} />
         ),
       },
     ],
@@ -174,9 +172,7 @@ export function ClientList({
   if (clients.length === 0) {
     return (
       <div className="text-center py-12">
-        <div className="text-muted-foreground">
-          No se encontraron clientes
-        </div>
+        <div className="text-muted-foreground">No se encontraron clientes</div>
       </div>
     )
   }
@@ -245,9 +241,14 @@ export function ClientList({
       {/* Paginación */}
       <div className="flex items-center justify-between space-x-2 py-4">
         <div className="text-sm text-muted-foreground">
-          Mostrando {table.getState().pagination.pageIndex * table.getState().pagination.pageSize + 1} a{' '}
+          Mostrando{' '}
+          {table.getState().pagination.pageIndex *
+            table.getState().pagination.pageSize +
+            1}{' '}
+          a{' '}
           {Math.min(
-            (table.getState().pagination.pageIndex + 1) * table.getState().pagination.pageSize,
+            (table.getState().pagination.pageIndex + 1) *
+              table.getState().pagination.pageSize,
             clients.length
           )}{' '}
           de {clients.length} clientes
@@ -275,21 +276,26 @@ export function ClientList({
   )
 }
 
-function ClientCardView({ 
-  clients, 
-  onClientSelect 
-}: { 
+function ClientCardView({
+  clients,
+  onClientSelect,
+}: {
   clients: Client[]
-  onClientSelect?: (client: Client) => void 
+  onClientSelect?: (client: Client) => void
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {clients.map((client) => {
-        const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
-        
+        const initials = client.full_name
+          .split(' ')
+          .map((name) => name[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+
         return (
-          <Card 
-            key={client.id} 
+          <Card
+            key={client.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => onClientSelect?.(client)}
           >
@@ -300,15 +306,12 @@ function ClientCardView({
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold">
-                      {client.full_name}
-                    </h3>
-  
+                    <h3 className="font-semibold">{client.full_name}</h3>
                   </div>
                 </div>
                 <ClientActions client={client} onView={onClientSelect} />
               </div>
-              
+
               <div className="mt-4 space-y-2">
                 {client.email && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
@@ -337,20 +340,25 @@ function ClientCardView({
   )
 }
 
-function ClientListView({ 
-  clients, 
-  onClientSelect 
-}: { 
+function ClientListView({
+  clients,
+  onClientSelect,
+}: {
   clients: Client[]
-  onClientSelect?: (client: Client) => void 
+  onClientSelect?: (client: Client) => void
 }) {
   return (
     <div className="space-y-2">
       {clients.map((client) => {
-        const initials = client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
-        
+        const initials = client.full_name
+          .split(' ')
+          .map((name) => name[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+
         return (
-          <Card 
+          <Card
             key={client.id}
             className="cursor-pointer hover:shadow-sm transition-shadow"
             onClick={() => onClientSelect?.(client)}
@@ -362,9 +370,7 @@ function ClientListView({
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">
-                      {client.full_name}
-                    </h3>
+                    <h3 className="font-medium">{client.full_name}</h3>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                       {client.email && (
                         <span className="flex items-center space-x-1">
@@ -382,7 +388,6 @@ function ClientListView({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-
                   <ClientActions client={client} onView={onClientSelect} />
                 </div>
               </div>

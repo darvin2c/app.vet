@@ -39,9 +39,7 @@ export const staffBaseSchema = z.object({
       }
     ),
 
-  user_id: z
-    .string()
-    .nonempty('El ID de usuario es requerido'),
+  user_id: z.string().nonempty('El ID de usuario es requerido'),
 
   is_active: z.boolean().default(true),
 })

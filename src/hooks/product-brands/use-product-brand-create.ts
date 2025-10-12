@@ -31,7 +31,7 @@ export default function useProductBrandCreate() {
     onSuccess: (data) => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({ queryKey: ['product-brands'] })
-      
+
       toast.success('Marca creada exitosamente', {
         description: `${data.name} ha sido registrada`,
       })

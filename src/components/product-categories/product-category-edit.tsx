@@ -59,12 +59,9 @@ export function ProductCategoryEdit({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductCategoryForm />
-          
+
           <DrawerFooter>
-            <Button
-              type="submit"
-              disabled={updateProductCategory.isPending}
-            >
+            <Button type="submit" disabled={updateProductCategory.isPending}>
               {updateProductCategory.isPending
                 ? 'Actualizando...'
                 : 'Actualizar Categoría'}

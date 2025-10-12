@@ -62,11 +62,9 @@ export function EventCard({ appointment, children }: EventCardProps) {
 
   const pet = appointment.pets
   const client = pet?.clients
-  
+
   const petName = pet?.name || 'Mascota no especificada'
-  const clientName = client
-    ? client.full_name
-    : 'Cliente no especificado'
+  const clientName = client ? client.full_name : 'Cliente no especificado'
 
   const staffName = appointment.staff
     ? appointment.staff.full_name

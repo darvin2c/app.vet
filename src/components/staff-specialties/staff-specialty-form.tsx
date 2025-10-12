@@ -1,14 +1,23 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { SpecialtySelect } from '@/components/specialties/specialty-select'
 import { CreateStaffSpecialtySchema } from '@/schemas/staff-specialties.schema'
 
 export function StaffSpecialtyForm() {
-  const { setValue, watch, formState: { errors } } = useFormContext<CreateStaffSpecialtySchema>()
-  
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<CreateStaffSpecialtySchema>()
+
   const staffId = watch('staff_id')
   const specialtyId = watch('specialty_id')
 

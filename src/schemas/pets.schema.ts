@@ -25,7 +25,10 @@ export const petBaseSchema = z.object({
     .max(1000, 'El peso no puede exceder 1000 kg')
     .optional(),
 
-  color: z.string().max(50, 'El color no puede exceder 50 caracteres').optional(),
+  color: z
+    .string()
+    .max(50, 'El color no puede exceder 50 caracteres')
+    .optional(),
 
   microchip: z
     .string()

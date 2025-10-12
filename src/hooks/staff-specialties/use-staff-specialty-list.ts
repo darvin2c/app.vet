@@ -13,9 +13,7 @@ export default function useStaffSpecialties(filters?: StaffSpecialtyFilters) {
         return []
       }
 
-      let query = supabase
-        .from('staff_specialties')
-        .select(`
+      let query = supabase.from('staff_specialties').select(`
           *,
           staff (
             id,
@@ -46,10 +44,14 @@ export default function useStaffSpecialties(filters?: StaffSpecialtyFilters) {
         )
       }
 
-      const { data, error } = await query.order('created_at', { ascending: false })
+      const { data, error } = await query.order('created_at', {
+        ascending: false,
+      })
 
       if (error) {
-        throw new Error(`Error al obtener relaciones staff-especialidades: ${error.message}`)
+        throw new Error(
+          `Error al obtener relaciones staff-especialidades: ${error.message}`
+        )
       }
 
       return data || []

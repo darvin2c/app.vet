@@ -13,14 +13,18 @@ interface StaffSpecialtyDeleteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function StaffSpecialtyDelete({ staffSpecialty, open, onOpenChange }: StaffSpecialtyDeleteProps) {
+export function StaffSpecialtyDelete({
+  staffSpecialty,
+  open,
+  onOpenChange,
+}: StaffSpecialtyDeleteProps) {
   const { mutate: deleteStaffSpecialty, isPending } = useStaffSpecialtyDelete()
 
   const handleDelete = () => {
     deleteStaffSpecialty(
-      { 
-        staffId: staffSpecialty.staff_id, 
-        specialtyId: staffSpecialty.specialty_id 
+      {
+        staffId: staffSpecialty.staff_id,
+        specialtyId: staffSpecialty.specialty_id,
       },
       {
         onSuccess: () => {

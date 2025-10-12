@@ -9,12 +9,12 @@ export default function useProductMovementCreate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data:  Omit<TablesInsert<'product_movements'>, 'tenant_id'>) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'product_movements'>, 'tenant_id'>
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
-
-
 
       // Validar stock disponible para salidas (cantidad negativa)
       if (data.quantity < 0) {

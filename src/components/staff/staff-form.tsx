@@ -98,8 +98,6 @@ export function StaffForm() {
             </FormItem>
           )}
         />
-
-
       </div>
 
       <IsActiveFormField />

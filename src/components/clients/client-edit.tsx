@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { updateClientSchema, UpdateClientSchema } from '@/schemas/clients.schema'
+import {
+  updateClientSchema,
+  UpdateClientSchema,
+} from '@/schemas/clients.schema'
 import useClientUpdate from '@/hooks/clients/use-client-update'
 import useClientDetail from '@/hooks/clients/use-client-detail'
 import { ClientForm } from './client-form'
@@ -133,17 +136,19 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ClientForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
               disabled={isSubmitting}
               className="w-full"
             >
-              {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {isSubmitting && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Actualizar Cliente
             </ResponsiveButton>
-            
+
             <ResponsiveButton
               type="button"
               variant="outline"

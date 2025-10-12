@@ -33,15 +33,19 @@ interface PetSelectProps {
   disabled?: boolean
 }
 
-export function PetSelect({ 
-  value, 
-  onValueChange, 
-  placeholder = "Seleccionar mascota...",
+export function PetSelect({
+  value,
+  onValueChange,
+  placeholder = 'Seleccionar mascota...',
   clientId,
-  disabled = false
+  disabled = false,
 }: PetSelectProps) {
   const [open, setOpen] = useState(false)
-  const { data: pets, isLoading } = usePets(clientId ? { client_id: clientId } : undefined)
+  const { data: pets, isLoading } = usePets(
+    clientId
+      ? { filters: [{ field: 'client_id', value: clientId, operator: 'eq' }] }
+      : {}
+  )
 
   const selectedPet = pets?.find((pet) => pet.id === value)
 
@@ -73,7 +77,7 @@ export function PetSelect({
           <CommandInput placeholder="Buscar mascota..." />
           <CommandList>
             <CommandEmpty>
-              {isLoading ? "Cargando..." : "No se encontraron mascotas."}
+              {isLoading ? 'Cargando...' : 'No se encontraron mascotas.'}
             </CommandEmpty>
             <CommandGroup>
               {pets?.map((pet) => (
@@ -81,14 +85,14 @@ export function PetSelect({
                   key={pet.id}
                   value={pet.id}
                   onSelect={(currentValue) => {
-                    onValueChange(currentValue === value ? "" : currentValue)
+                    onValueChange(currentValue === value ? '' : currentValue)
                     setOpen(false)
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === pet.id ? "opacity-100" : "opacity-0"
+                      'mr-2 h-4 w-4',
+                      value === pet.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   <div className="flex flex-col">

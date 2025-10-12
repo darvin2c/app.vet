@@ -37,7 +37,7 @@ export function ProductBrandActions({ brand }: ProductBrandActionsProps) {
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => setShowDelete(true)}
             className="text-destructive"
           >

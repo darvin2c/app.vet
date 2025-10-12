@@ -69,7 +69,7 @@ export default function CustomFiltersDemo() {
                 Este ejemplo muestra cómo usar el tipo de filtro 'custom' para
                 integrar componentes personalizados en el sistema de filtros.
               </p>
-              
+
               <div className="border rounded-lg p-4">
                 <Filters filters={customFilters} />
               </div>
@@ -83,7 +83,7 @@ export default function CustomFiltersDemo() {
             </CardHeader>
             <CardContent>
               <pre className="bg-muted p-4 rounded-lg text-sm overflow-x-auto">
-{`const customFilters: FilterConfig[] = [
+                {`const customFilters: FilterConfig[] = [
   {
     key: 'category_id',
     field: 'category_id',
@@ -137,20 +137,31 @@ export default function CustomFiltersDemo() {
                   TypeScript
                 </Badge>
                 <p className="text-sm text-muted-foreground">
-                  El tipo <code className="bg-muted px-1 rounded">CustomFilterConfig</code> 
-                  extiende la configuración base con una propiedad <code className="bg-muted px-1 rounded">component</code> 
-                  de tipo <code className="bg-muted px-1 rounded">React.ReactNode</code>.
+                  El tipo{' '}
+                  <code className="bg-muted px-1 rounded">
+                    CustomFilterConfig
+                  </code>
+                  extiende la configuración base con una propiedad{' '}
+                  <code className="bg-muted px-1 rounded">component</code>
+                  de tipo{' '}
+                  <code className="bg-muted px-1 rounded">React.ReactNode</code>
+                  .
                 </p>
               </div>
-              
+
               <div>
                 <Badge variant="outline" className="mb-2">
                   Props Injection
                 </Badge>
                 <p className="text-sm text-muted-foreground">
-                  El sistema automáticamente inyecta las props <code className="bg-muted px-1 rounded">value</code> 
-                  y <code className="bg-muted px-1 rounded">onChange</code> al componente personalizado 
-                  usando <code className="bg-muted px-1 rounded">React.cloneElement</code>.
+                  El sistema automáticamente inyecta las props{' '}
+                  <code className="bg-muted px-1 rounded">value</code>y{' '}
+                  <code className="bg-muted px-1 rounded">onChange</code> al
+                  componente personalizado usando{' '}
+                  <code className="bg-muted px-1 rounded">
+                    React.cloneElement
+                  </code>
+                  .
                 </p>
               </div>
             </CardContent>

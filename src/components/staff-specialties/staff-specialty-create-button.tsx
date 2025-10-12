@@ -6,17 +6,23 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { StaffSpecialtyCreate } from './staff-specialty-create'
 
 interface StaffSpecialtyCreateButtonProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link'
   size?: 'default' | 'sm' | 'lg' | 'icon'
   staffId?: string
   specialtyId?: string
 }
 
-export function StaffSpecialtyCreateButton({ 
-  variant = 'default', 
+export function StaffSpecialtyCreateButton({
+  variant = 'default',
   size = 'default',
   staffId,
-  specialtyId
+  specialtyId,
 }: StaffSpecialtyCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
@@ -30,7 +36,7 @@ export function StaffSpecialtyCreateButton({
       >
         Asignar Especialidad
       </ResponsiveButton>
-      
+
       <StaffSpecialtyCreate
         open={open}
         onOpenChange={setOpen}

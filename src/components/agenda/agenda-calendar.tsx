@@ -10,9 +10,11 @@ import Event from './event'
 import AgendaHeader from './agenda-header'
 
 type Appointment = Tables<'appointments'> & {
-  pets: (Tables<'pets'> & {
-    clients: Tables<'clients'> | null
-  }) | null
+  pets:
+    | (Tables<'pets'> & {
+        clients: Tables<'clients'> | null
+      })
+    | null
   staff: Tables<'staff'> | null
   appointment_types: Tables<'appointment_types'> | null
 }

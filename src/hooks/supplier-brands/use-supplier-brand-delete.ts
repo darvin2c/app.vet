@@ -19,7 +19,9 @@ export default function useSupplierBrandDelete() {
         .eq('brand_id', brandId)
 
       if (error) {
-        throw new Error(`Error al desasignar marca del proveedor: ${error.message}`)
+        throw new Error(
+          `Error al desasignar marca del proveedor: ${error.message}`
+        )
       }
     },
     onSuccess: () => {

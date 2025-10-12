@@ -7,7 +7,7 @@ import type { OrderByConfig } from '@/types/order-by.types'
 
 /**
  * Ejemplo de uso del componente OrderBy con soporte para tablas foráneas
- * 
+ *
  * Este ejemplo demuestra cómo usar el componente OrderBy para ordenar
  * tanto campos regulares como campos de tablas embebidas/foráneas.
  */
@@ -19,11 +19,19 @@ export function OrderByExample() {
       { field: 'name', label: 'Nombre del País' },
       { field: 'population', label: 'Población' },
       { field: 'created_at', label: 'Fecha de Creación' },
-      
+
       // Campos de tablas foráneas (embebidas)
       { field: 'name', label: 'Nombre de Ciudad', foreignTable: 'cities' },
-      { field: 'population', label: 'Población de Ciudad', foreignTable: 'cities' },
-      { field: 'founded_at', label: 'Fecha de Fundación', foreignTable: 'cities' },
+      {
+        field: 'population',
+        label: 'Población de Ciudad',
+        foreignTable: 'cities',
+      },
+      {
+        field: 'founded_at',
+        label: 'Fecha de Fundación',
+        foreignTable: 'cities',
+      },
     ],
     multiSort: true, // Permitir ordenamiento múltiple
   }
@@ -33,16 +41,16 @@ export function OrderByExample() {
   // Manejar cambios en el ordenamiento
   const handleSortChange = (appliedSorts: any[]) => {
     console.log('Ordenamientos aplicados:', appliedSorts)
-    
+
     // Ejemplo de cómo construir una consulta Supabase
-    const supabaseOrders = appliedSorts.map(sort => ({
+    const supabaseOrders = appliedSorts.map((sort) => ({
       column: sort.field,
       ascending: sort.ascending,
-      ...(sort.foreignTable && { foreignTable: sort.foreignTable })
+      ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
     }))
-    
+
     console.log('Para Supabase:', supabaseOrders)
-    
+
     // Ejemplo de uso en Supabase:
     // const { data } = await supabase
     //   .from('countries')
@@ -64,15 +72,14 @@ export function OrderByExample() {
       {/* Componente OrderBy */}
       <div className="border rounded-lg p-4">
         <h3 className="font-semibold mb-2">Selector de Ordenamiento</h3>
-        <OrderBy 
-          config={orderByConfig} 
-          onSortChange={handleSortChange}
-        />
+        <OrderBy config={orderByConfig} onSortChange={handleSortChange} />
       </div>
 
       {/* Ejemplo de headers de tabla */}
       <div className="border rounded-lg p-4">
-        <h3 className="font-semibold mb-4">Headers de Tabla con Ordenamiento</h3>
+        <h3 className="font-semibold mb-4">
+          Headers de Tabla con Ordenamiento
+        </h3>
         <div className="grid grid-cols-3 gap-4 p-2 border-b font-medium">
           <OrderByTableHeader
             field="name"
@@ -126,7 +133,7 @@ export function OrderByExample() {
       <div className="border rounded-lg p-4">
         <h3 className="font-semibold mb-2">Ejemplo de Consulta Supabase</h3>
         <pre className="text-xs bg-muted p-3 rounded overflow-auto">
-{`const { data, error } = await supabase
+          {`const { data, error } = await supabase
   .from('countries')
   .select('name, population, cities(name, population, founded_at)')
   .order('name', { ascending: true })

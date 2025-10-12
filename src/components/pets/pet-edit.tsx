@@ -53,14 +53,17 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
 
   const onSubmit = async (data: UpdatePetSchema) => {
     try {
-      updatePet({ id: pet.id, data }, {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-        onError: (error) => {
-          console.error('Error al actualizar mascota:', error)
+      updatePet(
+        { id: pet.id, data },
+        {
+          onSuccess: () => {
+            onOpenChange(false)
+          },
+          onError: (error) => {
+            console.error('Error al actualizar mascota:', error)
+          },
         }
-      })
+      )
     } catch (error) {
       console.error('Error al actualizar mascota:', error)
     }
@@ -68,16 +71,16 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
 
   return (
     <DrawerForm
-        trigger={<></>}
-        open={open}
-        onOpenChange={onOpenChange}
-        title="Editar Mascota"
-        description={`Editar información de ${pet.name}`}
-      >
+      trigger={<></>}
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Mascota"
+      description={`Editar información de ${pet.name}`}
+    >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <PetForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

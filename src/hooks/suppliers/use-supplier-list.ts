@@ -19,10 +19,6 @@ export default function useSuppliers(filters?: SupplierFilters) {
         )
       }
 
-
-
-
-
       if (filters?.created_from) {
         query = query.gte('created_at', filters.created_from)
       }

@@ -47,7 +47,9 @@ export function ProductCategorySelect({
     search: searchTerm,
   })
 
-  const selectedCategory = categories.find((category: ProductCategory) => category.id === value)
+  const selectedCategory = categories.find(
+    (category: ProductCategory) => category.id === value
+  )
 
   // Función para manejar la creación de una nueva categoría
   const handleCategoryCreated = (newCategory: ProductCategory) => {

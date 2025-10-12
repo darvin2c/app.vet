@@ -163,7 +163,10 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
       header: 'Costo Total',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const movement = row.original
-        const totalCost = movement.unit_cost && movement.quantity ? movement.unit_cost * movement.quantity : null
+        const totalCost =
+          movement.unit_cost && movement.quantity
+            ? movement.unit_cost * movement.quantity
+            : null
         return totalCost ? `$${totalCost.toFixed(2)}` : '-'
       },
     },
@@ -228,11 +231,9 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Fecha:</span>
                 <span className="text-sm">
-                  {format(
-                    new Date(movement.created_at),
-                    'dd/MM/yyyy HH:mm',
-                    { locale: es }
-                  )}
+                  {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', {
+                    locale: es,
+                  })}
                 </span>
               </div>
               <div className="flex items-center justify-between">
@@ -250,9 +251,7 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                   className={`text-sm font-medium ${movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
                 >
                   {movement.quantity >= 0 ? '+' : ''}
-                  {movement.quantity.toFixed(
-                    0
-                  )}{' '}
+                  {movement.quantity.toFixed(0)}{' '}
                   {movement.products?.product_units?.abbreviation || ''}
                 </span>
               </div>

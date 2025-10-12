@@ -19,7 +19,9 @@ interface StaffSpecialtyActionsProps {
   }
 }
 
-export function StaffSpecialtyActions({ staffSpecialty }: StaffSpecialtyActionsProps) {
+export function StaffSpecialtyActions({
+  staffSpecialty,
+}: StaffSpecialtyActionsProps) {
   const [deleteOpen, setDeleteOpen] = useState(false)
 
   return (
@@ -32,7 +34,7 @@ export function StaffSpecialtyActions({ staffSpecialty }: StaffSpecialtyActionsP
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => setDeleteOpen(true)}
             className="text-destructive"
           >

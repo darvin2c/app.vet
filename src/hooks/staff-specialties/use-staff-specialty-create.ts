@@ -23,7 +23,8 @@ export default function useStaffSpecialtyCreate() {
       const { data: result, error } = await supabase
         .from('staff_specialties')
         .insert(staffSpecialtyData)
-        .select(`
+        .select(
+          `
           *,
           staff (
             id,
@@ -37,11 +38,14 @@ export default function useStaffSpecialtyCreate() {
             name,
             is_active
           )
-        `)
+        `
+        )
         .single()
 
       if (error) {
-        throw new Error(`Error al crear relación staff-especialidad: ${error.message}`)
+        throw new Error(
+          `Error al crear relación staff-especialidad: ${error.message}`
+        )
       }
 
       return result

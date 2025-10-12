@@ -11,7 +11,13 @@ export default function useProductBrandUpdate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async ({ id, data }: { id: string; data: UpdateProductBrandData }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: UpdateProductBrandData
+    }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
@@ -34,7 +40,7 @@ export default function useProductBrandUpdate() {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({ queryKey: ['product-brands'] })
       queryClient.invalidateQueries({ queryKey: ['product-brand', data.id] })
-      
+
       toast.success('Marca actualizada exitosamente', {
         description: `${data.name} ha sido actualizada`,
       })

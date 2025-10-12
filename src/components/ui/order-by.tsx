@@ -75,8 +75,15 @@ export interface OrderByTableHeaderProps {
   /** Tabla foránea para ordenamiento de recursos embebidos */
   foreignTable?: string
   orderByHook: {
-    setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
-    getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+    setSort: (
+      field: string,
+      foreignTable?: string,
+      direction?: SortDirection
+    ) => void
+    getSortDirection: (
+      field: string,
+      foreignTable?: string
+    ) => SortDirection | null
     isSorted: (field: string, foreignTable?: string) => boolean
   }
   className?: string
@@ -177,9 +184,16 @@ function OrderByPopover({
 }: {
   sortableColumns: SortColumn[]
   activeSortsCount: number
-  setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
+  setSort: (
+    field: string,
+    foreignTable?: string,
+    direction?: SortDirection
+  ) => void
   clearSort: () => void
-  getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+  getSortDirection: (
+    field: string,
+    foreignTable?: string
+  ) => SortDirection | null
   isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
 }) {
@@ -208,11 +222,14 @@ function OrderByPopover({
 
           <div className="space-y-1">
             {sortableColumns.map((column) => {
-              const direction = getSortDirection(column.field, column.foreignTable)
+              const direction = getSortDirection(
+                column.field,
+                column.foreignTable
+              )
               const isActive = isSorted(column.field, column.foreignTable)
-              
+
               // Mostrar etiqueta con tabla foránea si existe
-              const displayLabel = column.foreignTable 
+              const displayLabel = column.foreignTable
                 ? `${column.foreignTable}.${column.label || column.field}`
                 : column.label
 
@@ -248,9 +265,16 @@ function OrderByDrawer({
 }: {
   sortableColumns: SortColumn[]
   activeSortsCount: number
-  setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
+  setSort: (
+    field: string,
+    foreignTable?: string,
+    direction?: SortDirection
+  ) => void
   clearSort: () => void
-  getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+  getSortDirection: (
+    field: string,
+    foreignTable?: string
+  ) => SortDirection | null
   isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
 }) {
@@ -281,11 +305,14 @@ function OrderByDrawer({
 
           <div className="space-y-2">
             {sortableColumns.map((column) => {
-              const direction = getSortDirection(column.field, column.foreignTable)
+              const direction = getSortDirection(
+                column.field,
+                column.foreignTable
+              )
               const isActive = isSorted(column.field, column.foreignTable)
-              
+
               // Mostrar etiqueta con tabla foránea si existe
-              const displayLabel = column.foreignTable 
+              const displayLabel = column.foreignTable
                 ? `${column.foreignTable}.${column.label || column.field}`
                 : column.label
 

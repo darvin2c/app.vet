@@ -32,10 +32,13 @@ export const createAppointmentSchema = z
     reason: z.string().optional(),
     notes: z.string().optional(),
   })
-  .refine((data) => new Date(data.scheduled_end) > new Date(data.scheduled_start), {
-    message: 'La hora de fin debe ser posterior a la hora de inicio',
-    path: ['scheduled_end'],
-  })
+  .refine(
+    (data) => new Date(data.scheduled_end) > new Date(data.scheduled_start),
+    {
+      message: 'La hora de fin debe ser posterior a la hora de inicio',
+      path: ['scheduled_end'],
+    }
+  )
 
 // Schema para actualizar una cita
 export const updateAppointmentSchema = createAppointmentSchema

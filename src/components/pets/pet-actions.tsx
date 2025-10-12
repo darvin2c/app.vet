@@ -37,7 +37,7 @@ export function PetActions({ pet }: PetActionsProps) {
             Editar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => setShowDelete(true)}
             className="text-destructive"
           >
@@ -47,17 +47,9 @@ export function PetActions({ pet }: PetActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <PetEdit
-        pet={pet}
-        open={showEdit}
-        onOpenChange={setShowEdit}
-      />
+      <PetEdit pet={pet} open={showEdit} onOpenChange={setShowEdit} />
 
-      <PetDelete
-        pet={pet}
-        open={showDelete}
-        onOpenChange={setShowDelete}
-      />
+      <PetDelete pet={pet} open={showDelete} onOpenChange={setShowDelete} />
     </>
   )
 }

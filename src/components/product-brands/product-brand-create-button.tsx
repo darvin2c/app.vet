@@ -10,27 +10,20 @@ interface ProductBrandCreateButtonProps {
   size?: 'default' | 'sm' | 'lg'
 }
 
-export function ProductBrandCreateButton({ 
-  variant = 'default', 
-  size = 'default' 
+export function ProductBrandCreateButton({
+  variant = 'default',
+  size = 'default',
 }: ProductBrandCreateButtonProps) {
   const [showCreate, setShowCreate] = useState(false)
 
   return (
     <>
-      <Button
-        variant={variant}
-        size={size}
-        onClick={() => setShowCreate(true)}
-      >
+      <Button variant={variant} size={size} onClick={() => setShowCreate(true)}>
         <Plus className="mr-2 h-4 w-4" />
         Nueva Marca
       </Button>
 
-      <ProductBrandCreate
-        open={showCreate}
-        onOpenChange={setShowCreate}
-      />
+      <ProductBrandCreate open={showCreate} onOpenChange={setShowCreate} />
     </>
   )
 }

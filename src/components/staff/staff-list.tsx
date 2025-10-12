@@ -80,9 +80,7 @@ export function StaffList({ filters }: StaffListProps) {
       accessorKey: 'full_name',
       header: 'Nombre',
       cell: ({ row }: { row: Row<StaffWithSpecialties> }) => (
-        <div className="font-medium">
-          {row.getValue('full_name')}
-        </div>
+        <div className="font-medium">{row.getValue('full_name')}</div>
       ),
     },
     {

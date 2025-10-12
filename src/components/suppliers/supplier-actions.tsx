@@ -35,7 +35,7 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem 
+          <DropdownMenuItem
             onClick={() => setDeleteOpen(true)}
             className="text-destructive"
           >
@@ -50,7 +50,7 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
         open={editOpen}
         onOpenChange={setEditOpen}
       />
-      
+
       <SupplierDelete
         supplier={supplier}
         open={deleteOpen}

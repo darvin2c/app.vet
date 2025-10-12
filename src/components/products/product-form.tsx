@@ -219,7 +219,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
       {/* Configuración y notas */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Configuración</h3>
-        
+
         {/* Fila horizontal para checkbox y estado activo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>

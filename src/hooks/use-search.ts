@@ -31,10 +31,13 @@ function parseAsSearch() {
 
 export function useSearch(config?: SearchConfig): UseSearchResult {
   // Combinar configuración con valores por defecto
-  const finalConfig = useMemo((): Required<SearchConfig> => ({
-    ...DEFAULT_SEARCH_CONFIG,
-    ...config,
-  }), [config])
+  const finalConfig = useMemo(
+    (): Required<SearchConfig> => ({
+      ...DEFAULT_SEARCH_CONFIG,
+      ...config,
+    }),
+    [config]
+  )
 
   // Si no hay configuración, retornar valores por defecto
   if (!config) {
@@ -83,36 +86,48 @@ export function useSearch(config?: SearchConfig): UseSearchResult {
   }, [urlValue])
 
   // Estado de la búsqueda
-  const searchState = useMemo((): SearchState => ({
-    value: localValue,
-    debouncedValue,
-    isSearching: localValue !== debouncedValue,
-    isEmpty: !debouncedValue || debouncedValue.trim().length === 0,
-  }), [localValue, debouncedValue])
+  const searchState = useMemo(
+    (): SearchState => ({
+      value: localValue,
+      debouncedValue,
+      isSearching: localValue !== debouncedValue,
+      isEmpty: !debouncedValue || debouncedValue.trim().length === 0,
+    }),
+    [localValue, debouncedValue]
+  )
 
   // Controles de la búsqueda
-  const searchControls = useMemo((): SearchControls => ({
-    setValue: useCallback((value: string) => {
-      // Validar longitud máxima
-      if (finalConfig.maxLength && value.length > finalConfig.maxLength) {
-        return
-      }
-      setLocalValue(value)
-    }, [finalConfig.maxLength]),
+  const searchControls = useMemo(
+    (): SearchControls => ({
+      setValue: useCallback(
+        (value: string) => {
+          // Validar longitud máxima
+          if (finalConfig.maxLength && value.length > finalConfig.maxLength) {
+            return
+          }
+          setLocalValue(value)
+        },
+        [finalConfig.maxLength]
+      ),
 
-    clear: useCallback(() => {
-      setLocalValue('')
-      inputRef.current?.focus()
-    }, []),
+      clear: useCallback(() => {
+        setLocalValue('')
+        inputRef.current?.focus()
+      }, []),
 
-    focus: useCallback(() => {
-      inputRef.current?.focus()
-    }, []),
-  }), [finalConfig.maxLength])
+      focus: useCallback(() => {
+        inputRef.current?.focus()
+      }, []),
+    }),
+    [finalConfig.maxLength]
+  )
 
   // Valor aplicado (con debounce y validación de longitud mínima)
   const appliedSearch = useMemo(() => {
-    if (finalConfig.minLength && debouncedValue.length < finalConfig.minLength) {
+    if (
+      finalConfig.minLength &&
+      debouncedValue.length < finalConfig.minLength
+    ) {
       return ''
     }
     return debouncedValue
@@ -127,19 +142,22 @@ export function useSearch(config?: SearchConfig): UseSearchResult {
 }
 
 // Hook simplificado que solo retorna el valor aplicado (para casos simples)
-export function useSimpleSearch(urlParamName = 'search', debounceMs = 300): string {
+export function useSimpleSearch(
+  urlParamName = 'search',
+  debounceMs = 300
+): string {
   const { appliedSearch } = useSearch({
     urlParamName,
     debounceMs,
   })
-  
+
   return appliedSearch
 }
 
 // Hook que retorna tanto el valor como las funciones de control
 export function useSearchWithControls(config?: SearchConfig) {
   const result = useSearch(config)
-  
+
   return {
     search: result.appliedSearch,
     searchValue: result.searchState.value,

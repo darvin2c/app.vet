@@ -2,10 +2,20 @@
 
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from '@/components/ui/drawer'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { StaffSpecialtyForm } from './staff-specialty-form'
-import { CreateStaffSpecialtySchema, createStaffSpecialtySchema } from '@/schemas/staff-specialties.schema'
+import {
+  CreateStaffSpecialtySchema,
+  createStaffSpecialtySchema,
+} from '@/schemas/staff-specialties.schema'
 import useStaffSpecialtyCreate from '@/hooks/staff-specialties/use-staff-specialty-create'
 import { Plus } from 'lucide-react'
 
@@ -16,14 +26,14 @@ interface StaffSpecialtyCreateProps {
   specialtyId?: string
 }
 
-export function StaffSpecialtyCreate({ 
-  open, 
-  onOpenChange, 
-  staffId, 
-  specialtyId 
+export function StaffSpecialtyCreate({
+  open,
+  onOpenChange,
+  staffId,
+  specialtyId,
 }: StaffSpecialtyCreateProps) {
   const { mutate: createStaffSpecialty, isPending } = useStaffSpecialtyCreate()
-  
+
   const form = useForm<CreateStaffSpecialtySchema>({
     resolver: zodResolver(createStaffSpecialtySchema),
     defaultValues: {
@@ -50,11 +60,11 @@ export function StaffSpecialtyCreate({
             Asigna una especialidad a un miembro del staff
           </DrawerDescription>
         </DrawerHeader>
-        
+
         <FormProvider {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
             <StaffSpecialtyForm />
-            
+
             <DrawerFooter>
               <ResponsiveButton
                 type="submit"

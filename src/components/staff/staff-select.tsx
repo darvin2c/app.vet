@@ -60,9 +60,7 @@ export function StaffSelect({
               {selectedStaff ? (
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-muted-foreground" />
-                  <span>
-                    {selectedStaff.full_name}
-                  </span>
+                  <span>{selectedStaff.full_name}</span>
                 </div>
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
@@ -96,9 +94,7 @@ export function StaffSelect({
                       <div className="flex items-center gap-2">
                         <UserCheck className="w-4 h-4 text-muted-foreground" />
                         <div>
-                          <div className="font-medium">
-                            {member.full_name}
-                          </div>
+                          <div className="font-medium">{member.full_name}</div>
                           {member.email && (
                             <div className="text-sm text-muted-foreground">
                               {member.email}

@@ -7,7 +7,10 @@ export const createAppointmentTypeSchema = z.object({
     .min(1, 'El nombre es requerido')
     .max(255, 'El nombre es muy largo'),
   description: z.string().optional(),
-  duration_minutes: z.number().min(1, 'La duración debe ser mayor a 0').default(30),
+  duration_minutes: z
+    .number()
+    .min(1, 'La duración debe ser mayor a 0')
+    .default(30),
   color: z
     .string()
     .regex(

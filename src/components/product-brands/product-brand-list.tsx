@@ -4,7 +4,12 @@ import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
 import { ProductBrandFilters } from '@/schemas/product-brands.schema'
 import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+} from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProductBrandActions } from './product-brand-actions'
@@ -27,7 +32,9 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
       <Empty>
         <EmptyHeader>
           <EmptyTitle>No hay marcas de productos</EmptyTitle>
-          <EmptyDescription>No se encontraron marcas de productos con los filtros aplicados.</EmptyDescription>
+          <EmptyDescription>
+            No se encontraron marcas de productos con los filtros aplicados.
+          </EmptyDescription>
         </EmptyHeader>
       </Empty>
     )
@@ -52,15 +59,21 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               {brand.description && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Descripción:</span>
+                  <span className="font-medium text-muted-foreground">
+                    Descripción:
+                  </span>
                   <p className="mt-1">{brand.description}</p>
                 </div>
               )}
-              
+
               <div>
-                <span className="font-medium text-muted-foreground">Registrado:</span>
+                <span className="font-medium text-muted-foreground">
+                  Registrado:
+                </span>
                 <p className="mt-1">
-                  {format(new Date(brand.created_at), 'dd/MM/yyyy', { locale: es })}
+                  {format(new Date(brand.created_at), 'dd/MM/yyyy', {
+                    locale: es,
+                  })}
                 </p>
               </div>
             </div>

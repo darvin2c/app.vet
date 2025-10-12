@@ -21,8 +21,12 @@ export const supplierBrandFiltersSchema = z.object({
 
 // Tipos TypeScript derivados
 export type SupplierBrandBase = z.infer<typeof supplierBrandBaseSchema>
-export type CreateSupplierBrandSchema = z.infer<typeof createSupplierBrandSchema>
-export type UpdateSupplierBrandSchema = z.infer<typeof updateSupplierBrandSchema>
+export type CreateSupplierBrandSchema = z.infer<
+  typeof createSupplierBrandSchema
+>
+export type UpdateSupplierBrandSchema = z.infer<
+  typeof updateSupplierBrandSchema
+>
 export type SupplierBrandFilters = z.infer<typeof supplierBrandFiltersSchema>
 
 // Esquema para asignar múltiples marcas a un proveedor
@@ -34,7 +38,9 @@ export const assignBrandsToSupplierSchema = z.object({
     .max(50, 'No se pueden asignar más de 50 marcas'),
 })
 
-export type AssignBrandsToSupplierSchema = z.infer<typeof assignBrandsToSupplierSchema>
+export type AssignBrandsToSupplierSchema = z.infer<
+  typeof assignBrandsToSupplierSchema
+>
 
 // Esquema para asignar múltiples proveedores a una marca
 export const assignSuppliersToBrandSchema = z.object({
@@ -45,4 +51,6 @@ export const assignSuppliersToBrandSchema = z.object({
     .max(50, 'No se pueden asignar más de 50 proveedores'),
 })
 
-export type AssignSuppliersToBrandSchema = z.infer<typeof assignSuppliersToBrandSchema>
+export type AssignSuppliersToBrandSchema = z.infer<
+  typeof assignSuppliersToBrandSchema
+>

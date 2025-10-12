@@ -43,7 +43,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
         },
         onError: (error) => {
           console.error('Error al crear mascota:', error)
-        }
+        },
       })
     } catch (error) {
       console.error('Error al crear mascota:', error)
@@ -61,7 +61,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <PetForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

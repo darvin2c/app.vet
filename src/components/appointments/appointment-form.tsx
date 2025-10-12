@@ -116,10 +116,14 @@ export function AppointmentForm({
           <FieldContent>
             <Calendar20
               startValue={
-                watch('scheduled_start') ? new Date(watch('scheduled_start')) : undefined
+                watch('scheduled_start')
+                  ? new Date(watch('scheduled_start'))
+                  : undefined
               }
               endValue={
-                watch('scheduled_end') ? new Date(watch('scheduled_end')) : undefined
+                watch('scheduled_end')
+                  ? new Date(watch('scheduled_end'))
+                  : undefined
               }
               onStartChange={(date) =>
                 setValue('scheduled_start', date?.toISOString() || '')

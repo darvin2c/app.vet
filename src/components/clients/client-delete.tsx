@@ -13,7 +13,11 @@ interface ClientDeleteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ClientDelete({ client, open, onOpenChange }: ClientDeleteProps) {
+export function ClientDelete({
+  client,
+  open,
+  onOpenChange,
+}: ClientDeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const deleteClient = useClientDelete()
 

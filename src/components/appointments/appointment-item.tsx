@@ -113,11 +113,8 @@ export function AppointmentItem({
           <User className="h-4 w-4 text-muted-foreground flex-shrink-0" />
           <div className="min-w-0">
             <p className="font-medium text-sm truncate">
-              {patient
-                ? patient.name
-                : 'Paciente no asignado'}
+              {patient ? patient.name : 'Paciente no asignado'}
             </p>
-
           </div>
         </div>
 

@@ -10,7 +10,11 @@ export const productBaseSchema = z.object({
   barcode: z.string().optional(),
   sku: z.string().optional(),
   notes: z.string().optional(),
-  tax_rate: z.number().min(0).max(1, 'La tasa de impuesto debe estar entre 0 y 1').optional(),
+  tax_rate: z
+    .number()
+    .min(0)
+    .max(1, 'La tasa de impuesto debe estar entre 0 y 1')
+    .optional(),
   expiry_date: z.string().optional(),
   batch_number: z.string().optional(),
   brand_id: z.string().uuid('ID de marca inválido').optional(),

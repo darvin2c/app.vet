@@ -3,7 +3,12 @@
 import useStaffSpecialties from '@/hooks/staff-specialties/use-staff-specialty-list'
 import { StaffSpecialtyFilters } from '@/schemas/staff-specialties.schema'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+} from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { StaffSpecialtyActions } from './staff-specialty-actions'
@@ -27,7 +32,10 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
       <Empty>
         <EmptyHeader>
           <EmptyTitle>No hay asignaciones</EmptyTitle>
-          <EmptyDescription>No se encontraron asignaciones de especialidades con los filtros aplicados.</EmptyDescription>
+          <EmptyDescription>
+            No se encontraron asignaciones de especialidades con los filtros
+            aplicados.
+          </EmptyDescription>
         </EmptyHeader>
       </Empty>
     )
@@ -36,7 +44,10 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
   return (
     <div className="grid gap-4">
       {staffSpecialties.map((staffSpecialty) => (
-        <Card key={`${staffSpecialty.staff_id}-${staffSpecialty.specialty_id}`} className="hover:shadow-md transition-shadow">
+        <Card
+          key={`${staffSpecialty.staff_id}-${staffSpecialty.specialty_id}`}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
@@ -49,36 +60,60 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium text-muted-foreground">Especialidad:</span>
+                <span className="font-medium text-muted-foreground">
+                  Especialidad:
+                </span>
                 <div className="mt-1 flex items-center gap-2">
                   <GraduationCap className="h-4 w-4 text-green-600" />
-                  <span className="font-medium">{staffSpecialty.specialties?.name}</span>
-                  <Badge variant={staffSpecialty.specialties?.is_active ? 'default' : 'secondary'}>
-                    {staffSpecialty.specialties?.is_active ? 'Activa' : 'Inactiva'}
+                  <span className="font-medium">
+                    {staffSpecialty.specialties?.name}
+                  </span>
+                  <Badge
+                    variant={
+                      staffSpecialty.specialties?.is_active
+                        ? 'default'
+                        : 'secondary'
+                    }
+                  >
+                    {staffSpecialty.specialties?.is_active
+                      ? 'Activa'
+                      : 'Inactiva'}
                   </Badge>
                 </div>
               </div>
-              
+
               <div>
-                <span className="font-medium text-muted-foreground">Estado del Staff:</span>
+                <span className="font-medium text-muted-foreground">
+                  Estado del Staff:
+                </span>
                 <div className="mt-1">
-                  <Badge variant={staffSpecialty.staff?.is_active ? 'default' : 'secondary'}>
+                  <Badge
+                    variant={
+                      staffSpecialty.staff?.is_active ? 'default' : 'secondary'
+                    }
+                  >
                     {staffSpecialty.staff?.is_active ? 'Activo' : 'Inactivo'}
                   </Badge>
                 </div>
               </div>
-              
+
               {staffSpecialty.staff?.email && (
                 <div>
-                  <span className="font-medium text-muted-foreground">Email:</span>
+                  <span className="font-medium text-muted-foreground">
+                    Email:
+                  </span>
                   <p className="mt-1">{staffSpecialty.staff.email}</p>
                 </div>
               )}
-              
+
               <div>
-                <span className="font-medium text-muted-foreground">Asignado:</span>
+                <span className="font-medium text-muted-foreground">
+                  Asignado:
+                </span>
                 <p className="mt-1">
-                  {format(new Date(staffSpecialty.created_at), 'dd/MM/yyyy', { locale: es })}
+                  {format(new Date(staffSpecialty.created_at), 'dd/MM/yyyy', {
+                    locale: es,
+                  })}
                 </p>
               </div>
             </div>

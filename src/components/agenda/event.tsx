@@ -45,9 +45,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const status = appointment?.status as keyof typeof STATUS_LABELS
 
   const petName = pet?.name || 'Sin mascota'
-  const clientName = client
-    ? client.full_name
-    : 'Sin cliente'
+  const clientName = client ? client.full_name : 'Sin cliente'
   const staffName = staff ? staff.full_name : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
@@ -82,9 +80,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
           style={{ borderLeftColor: typeColor }}
           title={`${petName} (${clientName}) - ${typeName} (${timeRange})`}
         >
-          <div className="font-medium text-gray-900 truncate">
-            {petName}
-          </div>
+          <div className="font-medium text-gray-900 truncate">{petName}</div>
           <div className="text-gray-600 truncate">{startTime}</div>
         </div>
       )
@@ -164,9 +160,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
           {/* Información de la mascota y cliente */}
           <div className="flex items-center gap-2">
             <User className="w-3 h-3 text-gray-600" />
-            <span className="font-medium text-sm text-gray-800">
-              {petName}
-            </span>
+            <span className="font-medium text-sm text-gray-800">{petName}</span>
             <span className="text-xs text-gray-500">({clientName})</span>
           </div>
 

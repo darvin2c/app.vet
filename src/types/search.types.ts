@@ -27,13 +27,13 @@ export interface SearchControls {
 export interface UseSearchResult {
   // Estado de la búsqueda
   searchState: SearchState
-  
+
   // Controles de la búsqueda
   searchControls: SearchControls
-  
+
   // Valor aplicado (con debounce) - para usar en queries
   appliedSearch: string
-  
+
   // Configuración actual
   config: Required<SearchConfig>
 }

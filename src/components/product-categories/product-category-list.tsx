@@ -154,8 +154,6 @@ export function ProductCategoryList({ filters }: ProductCategoryListProps) {
             </div>
             <ProductCategoryActions category={category} />
           </div>
-
-
         </div>
       ))}
     </div>

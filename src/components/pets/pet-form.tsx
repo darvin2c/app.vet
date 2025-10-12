@@ -1,16 +1,32 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { ClientSelect } from '@/components/clients/client-select'
 import { CreatePetSchema } from '@/schemas/pets.schema'
 
 export function PetForm() {
-  const { register, watch, setValue, formState: { errors } } = useFormContext<CreatePetSchema>()
+  const {
+    register,
+    watch,
+    setValue,
+    formState: { errors },
+  } = useFormContext<CreatePetSchema>()
 
   return (
     <div className="space-y-4">
@@ -88,11 +104,7 @@ export function PetForm() {
         <Field>
           <FieldLabel htmlFor="birth_date">Fecha de Nacimiento</FieldLabel>
           <FieldContent>
-            <Input
-              id="birth_date"
-              type="date"
-              {...register('birth_date')}
-            />
+            <Input id="birth_date" type="date" {...register('birth_date')} />
             <FieldError errors={[errors.birth_date]} />
           </FieldContent>
         </Field>
@@ -137,8 +149,6 @@ export function PetForm() {
           </FieldContent>
         </Field>
       </div>
-
-
 
       <Field>
         <FieldLabel htmlFor="notes">Notas</FieldLabel>

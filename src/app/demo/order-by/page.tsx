@@ -24,7 +24,13 @@ import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
 import { useOrderBy } from '@/hooks/use-order-by'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 
@@ -50,7 +56,7 @@ const products: Product[] = [
   {
     id: '2',
     name: 'Shampoo Antipulgas',
-    price: 18.50,
+    price: 18.5,
     category: 'Higiene',
     stock: 85,
     status: 'active',
@@ -74,7 +80,7 @@ const products: Product[] = [
   {
     id: '5',
     name: 'Vitaminas Caninas',
-    price: 32.50,
+    price: 32.5,
     category: 'Suplementos',
     stock: 65,
     status: 'active',
@@ -90,7 +96,7 @@ const products: Product[] = [
   {
     id: '7',
     name: 'Medicamento Antiparasitario',
-    price: 55.00,
+    price: 55.0,
     category: 'Medicamentos',
     stock: 30,
     status: 'active',
@@ -138,7 +144,7 @@ const multiOrderByConfig: OrderByConfig = {
 export default function OrderByDemo() {
   // Hook para ordenamiento simple
   const simpleOrderBy = useOrderBy(simpleOrderByConfig)
-  
+
   // Hook para ordenamiento múltiple
   const multiOrderBy = useOrderBy(multiOrderByConfig)
 
@@ -198,7 +204,11 @@ export default function OrderByDemo() {
       accessorKey: 'status',
       header: 'Estado',
       cell: ({ row }) => (
-        <Badge variant={row.getValue('status') === 'active' ? 'default' : 'secondary'}>
+        <Badge
+          variant={
+            row.getValue('status') === 'active' ? 'default' : 'secondary'
+          }
+        >
           {row.getValue('status') === 'active' ? 'Activo' : 'Inactivo'}
         </Badge>
       ),
@@ -234,8 +244,9 @@ export default function OrderByDemo() {
       <div>
         <h1 className="text-3xl font-bold mb-2">Demo: Componente OrderBy</h1>
         <p className="text-muted-foreground text-lg">
-          Este componente permite ordenar datos por diferentes campos y direcciones.
-          Se integra con react-table y persiste el ordenamiento en la URL usando nuqs.
+          Este componente permite ordenar datos por diferentes campos y
+          direcciones. Se integra con react-table y persiste el ordenamiento en
+          la URL usando nuqs.
         </p>
       </div>
 
@@ -246,7 +257,8 @@ export default function OrderByDemo() {
             <div>
               <CardTitle>Ordenamiento Simple</CardTitle>
               <CardDescription>
-                Lista simple de columnas. Haz clic para ordenar: Sin ordenar → ASC → DESC → Sin ordenar.
+                Lista simple de columnas. Haz clic para ordenar: Sin ordenar →
+                ASC → DESC → Sin ordenar.
               </CardDescription>
             </div>
             <OrderBy config={simpleOrderByConfig} />
@@ -257,10 +269,16 @@ export default function OrderByDemo() {
           <div className="mb-4">
             {simpleOrderBy.currentSort.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Ordenado por:</span>
+                <span className="text-sm text-muted-foreground">
+                  Ordenado por:
+                </span>
                 {simpleOrderBy.currentSort.map((sort) => (
                   <Badge key={sort.field} variant="secondary">
-                    {simpleOrderByConfig.columns.find(col => col.field === sort.field)?.label} 
+                    {
+                      simpleOrderByConfig.columns.find(
+                        (col) => col.field === sort.field
+                      )?.label
+                    }
                     {sort.direction === 'asc' ? ' ↑' : ' ↓'}
                   </Badge>
                 ))}
@@ -287,16 +305,19 @@ export default function OrderByDemo() {
                           </OrderByTableHeader>
                         )}
                       </TableHead>
+                    ))}
+                  </TableRow>
                 ))}
-              </TableRow>
-            ))}
-          </TableHeader>
+              </TableHeader>
               <TableBody>
                 {simpleTable.getRowModel().rows.map((row) => (
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -314,7 +335,8 @@ export default function OrderByDemo() {
             <div>
               <CardTitle>Ordenamiento Múltiple</CardTitle>
               <CardDescription>
-                Permite ordenar por múltiples campos simultáneamente. Útil para ordenamientos complejos.
+                Permite ordenar por múltiples campos simultáneamente. Útil para
+                ordenamientos complejos.
               </CardDescription>
             </div>
             <OrderBy config={multiOrderByConfig} />
@@ -325,10 +347,17 @@ export default function OrderByDemo() {
           <div className="mb-4">
             {multiOrderBy.currentSort.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Ordenado por:</span>
+                <span className="text-sm text-muted-foreground">
+                  Ordenado por:
+                </span>
                 {multiOrderBy.currentSort.map((sort, index) => (
                   <Badge key={sort.field} variant="secondary">
-                    {index + 1}. {multiOrderByConfig.columns.find(col => col.field === sort.field)?.label} 
+                    {index + 1}.{' '}
+                    {
+                      multiOrderByConfig.columns.find(
+                        (col) => col.field === sort.field
+                      )?.label
+                    }
                     {sort.direction === 'asc' ? ' ↑' : ' ↓'}
                   </Badge>
                 ))}
@@ -364,7 +393,10 @@ export default function OrderByDemo() {
                   <TableRow key={row.id}>
                     {row.getVisibleCells().map((cell) => (
                       <TableCell key={cell.id}>
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </TableCell>
                     ))}
                   </TableRow>
@@ -382,14 +414,17 @@ export default function OrderByDemo() {
         <CardHeader>
           <CardTitle>Código de ejemplo</CardTitle>
           <CardDescription>
-            Implementación básica del componente OrderBy con integración a react-table y Supabase
+            Implementación básica del componente OrderBy con integración a
+            react-table y Supabase
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-6">
             {/* Configuración */}
             <div>
-              <h4 className="font-medium mb-2">1. Configuración del componente</h4>
+              <h4 className="font-medium mb-2">
+                1. Configuración del componente
+              </h4>
               <pre className="p-4 bg-muted rounded-md overflow-auto text-sm">
                 {`const orderByConfig: OrderByConfig = {
   columns: [
@@ -424,7 +459,9 @@ export default function OrderByDemo() {
 
             {/* React Table */}
             <div>
-              <h4 className="font-medium mb-2">3. Integración con react-table</h4>
+              <h4 className="font-medium mb-2">
+                3. Integración con react-table
+              </h4>
               <pre className="p-4 bg-muted rounded-md overflow-auto text-sm">
                 {`// Sincronizar con react-table
 useEffect(() => {

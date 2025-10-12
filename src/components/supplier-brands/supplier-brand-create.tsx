@@ -7,7 +7,10 @@ import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierBrandForm } from './supplier-brand-form'
 import useSupplierBrandCreate from '@/hooks/supplier-brands/use-supplier-brand-create'
-import { createSupplierBrandSchema, CreateSupplierBrandSchema } from '@/schemas/supplier-brands.schema'
+import {
+  createSupplierBrandSchema,
+  CreateSupplierBrandSchema,
+} from '@/schemas/supplier-brands.schema'
 import { Plus } from 'lucide-react'
 
 interface SupplierBrandCreateProps {
@@ -17,11 +20,11 @@ interface SupplierBrandCreateProps {
   brandId?: string
 }
 
-export function SupplierBrandCreate({ 
-  open, 
-  onOpenChange, 
-  supplierId, 
-  brandId 
+export function SupplierBrandCreate({
+  open,
+  onOpenChange,
+  supplierId,
+  brandId,
 }: SupplierBrandCreateProps) {
   const { mutate: createSupplierBrand, isPending } = useSupplierBrandCreate()
 
@@ -53,7 +56,7 @@ export function SupplierBrandCreate({
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <SupplierBrandForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

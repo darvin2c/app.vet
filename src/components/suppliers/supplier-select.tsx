@@ -34,7 +34,7 @@ export function SupplierSelect({
 }: SupplierSelectProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
-  
+
   const { data: suppliers, isLoading } = useSuppliers({
     search,
   })

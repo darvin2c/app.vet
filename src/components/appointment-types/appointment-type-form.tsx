@@ -58,10 +58,7 @@ export function AppointmentTypeForm() {
           <FormItem>
             <FormLabel>Descripción</FormLabel>
             <FormControl>
-              <Textarea
-                placeholder="Descripción del tipo de cita"
-                {...field}
-              />
+              <Textarea placeholder="Descripción del tipo de cita" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

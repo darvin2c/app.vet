@@ -10,7 +10,11 @@ interface SupplierDeleteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function SupplierDelete({ supplier, open, onOpenChange }: SupplierDeleteProps) {
+export function SupplierDelete({
+  supplier,
+  open,
+  onOpenChange,
+}: SupplierDeleteProps) {
   const { mutate: deleteSupplier, isPending } = useSupplierDelete()
 
   const handleDelete = () => {

@@ -3,7 +3,10 @@
 import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { createProductBrandSchema, CreateProductBrand } from '@/schemas/product-brands.schema'
+import {
+  createProductBrandSchema,
+  CreateProductBrand,
+} from '@/schemas/product-brands.schema'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
@@ -15,7 +18,10 @@ interface ProductBrandCreateProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreateProps) {
+export function ProductBrandCreate({
+  open,
+  onOpenChange,
+}: ProductBrandCreateProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { mutateAsync: createProductBrand } = useProductBrandCreate()
 
@@ -50,7 +56,7 @@ export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreatePro
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ProductBrandForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

@@ -21,7 +21,7 @@ export function PetDelete({ pet, open, onOpenChange }: PetDeleteProps) {
       },
       onError: (error) => {
         console.error('Error al eliminar mascota:', error)
-      }
+      },
     })
   }
 

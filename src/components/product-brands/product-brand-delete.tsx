@@ -11,7 +11,11 @@ interface ProductBrandDeleteProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ProductBrandDelete({ brand, open, onOpenChange }: ProductBrandDeleteProps) {
+export function ProductBrandDelete({
+  brand,
+  open,
+  onOpenChange,
+}: ProductBrandDeleteProps) {
   const [isDeleting, setIsDeleting] = useState(false)
   const { mutateAsync: deleteProductBrand } = useProductBrandDelete()
 

@@ -18,7 +18,12 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyDescription,
+} from '@/components/ui/empty'
 import { AppointmentActions } from './appointment-actions'
 import { useAppointments } from '@/hooks/appointments/use-appointments'
 import type { Tables } from '@/types/supabase.types'
@@ -228,18 +233,14 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                   <div>
                     <span className="text-sm font-medium">Paciente: </span>
                     <span className="text-sm">
-                      {appointment.pets
-          ? appointment.pets.name
-                        : '-'}
+                      {appointment.pets ? appointment.pets.name : '-'}
                     </span>
                   </div>
 
                   <div>
                     <span className="text-sm font-medium">Personal: </span>
                     <span className="text-sm">
-                      {appointment.staff
-                        ? appointment.staff.full_name
-                        : '-'}
+                      {appointment.staff ? appointment.staff.full_name : '-'}
                     </span>
                   </div>
 
@@ -260,8 +261,6 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                       </Badge>
                     </div>
                   )}
-
-
                 </div>
 
                 <div className="flex justify-end pt-2">

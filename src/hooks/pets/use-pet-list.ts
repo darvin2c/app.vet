@@ -1,21 +1,29 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
-import { PetFilters } from '@/schemas/pets.schema'
 import { Tables } from '@/types/supabase.types'
+import { AppliedFilter } from '@/types/filters.types'
+import { AppliedSort } from '@/types/order-by.types'
 
 type Pet = Tables<'pets'> & {
   clients: Tables<'clients'> | null
   breeds: Tables<'breeds'> | null
+  species: Tables<'species'> | null
 }
 
-export function usePets(filters?: PetFilters) {
+interface UsePetsParams {
+  filters?: AppliedFilter[]
+  search?: string
+  orders?: AppliedSort[]
+}
+
+export function usePets(params?: UsePetsParams) {
+  const { filters = [], search, orders = [] } = params || {}
+
   return useQuery({
-    queryKey: ['pets', filters],
+    queryKey: ['pets', filters, search, orders],
     queryFn: async () => {
-      let query = supabase
-        .from('pets')
-        .select(
-          `
+      let query = supabase.from('pets').select(
+        `
           *,
           clients (
             id,
@@ -26,40 +34,56 @@ export function usePets(filters?: PetFilters) {
           breeds (
             id,
             name
+          ),
+          species (
+            id,
+            name
           )
         `
-        )
-        .order('created_at', { ascending: false })
+      )
+
+      // Aplicar búsqueda
+      if (search) {
+        query = query.or(`name.ilike.%${search}%,microchip.ilike.%${search}%`)
+      }
 
       // Aplicar filtros
-      if (filters?.search) {
-        query = query.or(
-          `name.ilike.%${filters.search}%,species.ilike.%${filters.search}%`
-        )
-      }
+      filters.forEach((filter) => {
+        switch (filter.field) {
+          case 'client_id':
+            query = query.eq('client_id', filter.value)
+            break
+          case 'species_id':
+            query = query.eq('species_id', filter.value)
+            break
+          case 'breed_id':
+            query = query.eq('breed_id', filter.value)
+            break
+          case 'sex':
+            query = query.eq('sex', filter.value)
+            break
+          case 'is_active':
+            query = query.eq('is_active', filter.value)
+            break
+          case 'created_from':
+            query = query.gte('created_at', filter.value)
+            break
+          case 'created_to':
+            query = query.lte('created_at', filter.value)
+            break
+        }
+      })
 
-      if (filters?.client_id) {
-        query = query.eq('client_id', filters.client_id)
-      }
-
-      if (filters?.species_id) {
-        query = query.eq('species_id', filters.species_id)
-      }
-
-      if (filters?.breed_id) {
-        query = query.eq('breed_id', filters.breed_id)
-      }
-
-      if (filters?.sex) {
-        query = query.eq('sex', filters.sex)
-      }
-
-      if (filters?.created_from) {
-        query = query.gte('created_at', filters.created_from)
-      }
-
-      if (filters?.created_to) {
-        query = query.lte('created_at', filters.created_to)
+      // Aplicar ordenamiento
+      if (orders.length > 0) {
+        orders.forEach((order) => {
+          query = query.order(order.field, {
+            ascending: order.direction === 'asc',
+          })
+        })
+      } else {
+        // Orden por defecto
+        query = query.order('created_at', { ascending: false })
       }
 
       const { data, error } = await query
@@ -68,7 +92,7 @@ export function usePets(filters?: PetFilters) {
         throw new Error(`Error al obtener mascotas: ${error.message}`)
       }
 
-      return data
+      return data as Pet[]
     },
   })
 }

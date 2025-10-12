@@ -1,16 +1,24 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
 import { CreateSupplierSchema } from '@/schemas/suppliers.schema'
 
 export function SupplierForm() {
-  const { register, formState: { errors }, setValue, watch } = useFormContext<CreateSupplierSchema>()
-  
-
+  const {
+    register,
+    formState: { errors },
+    setValue,
+    watch,
+  } = useFormContext<CreateSupplierSchema>()
 
   return (
     <div className="space-y-4">
@@ -101,8 +109,6 @@ export function SupplierForm() {
           <FieldError errors={[errors.website]} />
         </FieldContent>
       </Field>
-
-
 
       <Field>
         <FieldLabel htmlFor="notes">Notas</FieldLabel>

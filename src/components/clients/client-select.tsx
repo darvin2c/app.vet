@@ -40,7 +40,7 @@ export function ClientSelect({
 }: ClientSelectProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
-  
+
   const { data: clients = [], isLoading } = useClientList({
     filters: {
       search: search || undefined,
@@ -60,7 +60,12 @@ export function ClientSelect({
   }
 
   const getClientInitials = (client: Client) => {
-    return client.full_name.split(' ').map(name => name[0]).join('').toUpperCase().slice(0, 2)
+    return client.full_name
+      .split(' ')
+      .map((name) => name[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2)
   }
 
   const getClientDisplayName = (client: Client) => {
@@ -110,7 +115,9 @@ export function ClientSelect({
           </div>
           <CommandList>
             <CommandEmpty>
-              {isLoading ? 'Cargando clientes...' : 'No se encontraron clientes.'}
+              {isLoading
+                ? 'Cargando clientes...'
+                : 'No se encontraron clientes.'}
             </CommandEmpty>
             <CommandGroup>
               {clients.map((client) => (

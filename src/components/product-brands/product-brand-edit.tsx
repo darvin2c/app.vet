@@ -3,7 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { updateProductBrandSchema, UpdateProductBrand } from '@/schemas/product-brands.schema'
+import {
+  updateProductBrandSchema,
+  UpdateProductBrand,
+} from '@/schemas/product-brands.schema'
 import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
 import { DrawerForm } from '@/components/ui/drawer-form'
@@ -17,7 +20,11 @@ interface ProductBrandEditProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEditProps) {
+export function ProductBrandEdit({
+  brand,
+  open,
+  onOpenChange,
+}: ProductBrandEditProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { mutateAsync: updateProductBrand } = useProductBrandUpdate()
 
@@ -62,7 +69,7 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ProductBrandForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

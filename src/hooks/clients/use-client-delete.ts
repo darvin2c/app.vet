@@ -28,7 +28,7 @@ export default function useClientDelete() {
     onSuccess: () => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({ queryKey: ['clients'] })
-      
+
       toast.success('Cliente eliminado exitosamente')
     },
     onError: (error) => {

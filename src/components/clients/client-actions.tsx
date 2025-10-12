@@ -56,28 +56,28 @@ export function ClientActions({ client, onView }: ClientActionsProps) {
               <DropdownMenuSeparator />
             </>
           )}
-          
+
           <DropdownMenuItem onClick={() => setShowEdit(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          
+
           {client.phone && (
             <DropdownMenuItem onClick={handleCall}>
               <Phone className="mr-2 h-4 w-4" />
               Llamar
             </DropdownMenuItem>
           )}
-          
+
           {client.email && (
             <DropdownMenuItem onClick={handleEmail}>
               <Mail className="mr-2 h-4 w-4" />
               Enviar email
             </DropdownMenuItem>
           )}
-          
+
           <DropdownMenuSeparator />
-          
+
           <DropdownMenuItem
             onClick={() => setShowDelete(true)}
             className="text-destructive focus:text-destructive"

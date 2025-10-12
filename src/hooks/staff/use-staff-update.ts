@@ -10,9 +10,7 @@ export default function useStaffUpdate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: TablesUpdate<'staff'> & { id: string }
-    ) => {
+    mutationFn: async (data: TablesUpdate<'staff'> & { id: string }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }

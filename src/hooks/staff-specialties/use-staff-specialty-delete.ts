@@ -6,7 +6,13 @@ export default function useStaffSpecialtyDelete() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ staffId, specialtyId }: { staffId: string; specialtyId: string }) => {
+    mutationFn: async ({
+      staffId,
+      specialtyId,
+    }: {
+      staffId: string
+      specialtyId: string
+    }) => {
       const { error } = await supabase
         .from('staff_specialties')
         .delete()
@@ -14,7 +20,9 @@ export default function useStaffSpecialtyDelete() {
         .eq('specialty_id', specialtyId)
 
       if (error) {
-        throw new Error(`Error al eliminar relación staff-especialidad: ${error.message}`)
+        throw new Error(
+          `Error al eliminar relación staff-especialidad: ${error.message}`
+        )
       }
     },
     onSuccess: () => {

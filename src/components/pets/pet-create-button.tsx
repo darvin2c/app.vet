@@ -2,38 +2,27 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { PetCreate } from './pet-create'
 
-interface PetCreateButtonProps {
-  clientId?: string
-  variant?: 'default' | 'outline' | 'ghost'
-  size?: 'default' | 'sm' | 'lg'
-}
-
-export function PetCreateButton({ 
-  clientId, 
-  variant = 'default', 
-  size = 'default' 
-}: PetCreateButtonProps) {
-  const [showCreate, setShowCreate] = useState(false)
+export function PetCreateButton({ children, ...props }: ResponsiveButtonProps) {
+  const [open, setOpen] = useState(false)
 
   return (
     <>
-      <Button
-        variant={variant}
-        size={size}
-        onClick={() => setShowCreate(true)}
+      <ResponsiveButton
+        icon={Plus}
+        tooltip="Nueva Mascota"
+        onClick={() => setOpen(true)}
+        {...props}
       >
-        <Plus className="mr-2 h-4 w-4" />
-        Nueva Mascota
-      </Button>
+        {children || 'Nuevo'}
+      </ResponsiveButton>
 
-      <PetCreate
-        open={showCreate}
-        onOpenChange={setShowCreate}
-        clientId={clientId}
-      />
+      <PetCreate open={open} onOpenChange={setOpen} />
     </>
   )
 }

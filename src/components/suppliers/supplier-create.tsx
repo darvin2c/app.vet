@@ -7,7 +7,10 @@ import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierForm } from './supplier-form'
-import { CreateSupplierSchema, createSupplierSchema } from '@/schemas/suppliers.schema'
+import {
+  CreateSupplierSchema,
+  createSupplierSchema,
+} from '@/schemas/suppliers.schema'
 import useSupplierCreate from '@/hooks/suppliers/use-supplier-create'
 import { Plus } from 'lucide-react'
 
@@ -18,7 +21,7 @@ interface SupplierCreateProps {
 
 export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
   const { mutate: createSupplier, isPending } = useSupplierCreate()
-  
+
   const form = useForm<CreateSupplierSchema>({
     resolver: zodResolver(createSupplierSchema),
     defaultValues: {
@@ -53,7 +56,7 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <SupplierForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

@@ -15,10 +15,7 @@ export function ClientCreateButton() {
         Nuevo Cliente
       </ResponsiveButton>
 
-      <ClientCreate
-        open={showCreate}
-        onOpenChange={setShowCreate}
-      />
+      <ClientCreate open={showCreate} onOpenChange={setShowCreate} />
     </>
   )
 }

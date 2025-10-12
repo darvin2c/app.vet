@@ -67,12 +67,9 @@ export function ProductMovementEdit({
           className="space-y-4"
         >
           <ProductMovementForm />
-          
+
           <DrawerFooter>
-            <Button
-              type="submit"
-              disabled={updateProductMovement.isPending}
-            >
+            <Button type="submit" disabled={updateProductMovement.isPending}>
               {updateProductMovement.isPending
                 ? 'Actualizando...'
                 : 'Actualizar Movimiento'}

@@ -40,8 +40,6 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     },
   })
 
-
-
   const onSubmit = async (data: UpdateStaffSchema) => {
     try {
       await updateStaff.mutateAsync({
@@ -51,7 +49,6 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
         phone: data.phone,
         license_number: data.license_number,
         is_active: data.is_active,
-
       })
       onOpenChange(false)
     } catch (error) {

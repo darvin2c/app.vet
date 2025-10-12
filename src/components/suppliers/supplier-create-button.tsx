@@ -6,13 +6,19 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierCreate } from './supplier-create'
 
 interface SupplierCreateButtonProps {
-  variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
+  variant?:
+    | 'default'
+    | 'destructive'
+    | 'outline'
+    | 'secondary'
+    | 'ghost'
+    | 'link'
   size?: 'default' | 'sm' | 'lg' | 'icon'
 }
 
-export function SupplierCreateButton({ 
-  variant = 'default', 
-  size = 'default' 
+export function SupplierCreateButton({
+  variant = 'default',
+  size = 'default',
 }: SupplierCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
@@ -26,11 +32,8 @@ export function SupplierCreateButton({
       >
         Nuevo Proveedor
       </ResponsiveButton>
-      
-      <SupplierCreate
-        open={open}
-        onOpenChange={setOpen}
-      />
+
+      <SupplierCreate open={open} onOpenChange={setOpen} />
     </>
   )
 }

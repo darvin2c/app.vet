@@ -7,7 +7,10 @@ import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierForm } from './supplier-form'
-import { UpdateSupplierSchema, updateSupplierSchema } from '@/schemas/suppliers.schema'
+import {
+  UpdateSupplierSchema,
+  updateSupplierSchema,
+} from '@/schemas/suppliers.schema'
 import useSupplierUpdate from '@/hooks/suppliers/use-supplier-update'
 import { Tables } from '@/types/supabase.types'
 
@@ -17,9 +20,13 @@ interface SupplierEditProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps) {
+export function SupplierEdit({
+  supplier,
+  open,
+  onOpenChange,
+}: SupplierEditProps) {
   const { mutate: updateSupplier, isPending } = useSupplierUpdate()
-  
+
   const form = useForm<UpdateSupplierSchema>({
     resolver: zodResolver(updateSupplierSchema),
     defaultValues: {
@@ -71,7 +78,7 @@ export function SupplierEdit({ supplier, open, onOpenChange }: SupplierEditProps
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <SupplierForm />
-          
+
           <DrawerFooter>
             <ResponsiveButton
               type="submit"

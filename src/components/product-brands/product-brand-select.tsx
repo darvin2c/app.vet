@@ -28,15 +28,17 @@ interface ProductBrandSelectProps {
   placeholder?: string
 }
 
-export function ProductBrandSelect({ 
-  value, 
-  onValueChange, 
-  placeholder = "Seleccionar marca..." 
+export function ProductBrandSelect({
+  value,
+  onValueChange,
+  placeholder = 'Seleccionar marca...',
 }: ProductBrandSelectProps) {
   const [open, setOpen] = useState(false)
   const { data: brands, isLoading } = useProductBrandList({})
 
-  const selectedBrand = brands?.find((brand: ProductBrand) => brand.id === value)
+  const selectedBrand = brands?.find(
+    (brand: ProductBrand) => brand.id === value
+  )
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,7 +58,7 @@ export function ProductBrandSelect({
           <CommandInput placeholder="Buscar marca..." />
           <CommandList>
             <CommandEmpty>
-              {isLoading ? "Cargando..." : "No se encontraron marcas."}
+              {isLoading ? 'Cargando...' : 'No se encontraron marcas.'}
             </CommandEmpty>
             <CommandGroup>
               {brands?.map((brand: ProductBrand) => (
@@ -64,14 +66,14 @@ export function ProductBrandSelect({
                   key={brand.id}
                   value={brand.id}
                   onSelect={(currentValue) => {
-                    onValueChange(currentValue === value ? "" : currentValue)
+                    onValueChange(currentValue === value ? '' : currentValue)
                     setOpen(false)
                   }}
                 >
                   <Check
                     className={cn(
-                      "mr-2 h-4 w-4",
-                      value === brand.id ? "opacity-100" : "opacity-0"
+                      'mr-2 h-4 w-4',
+                      value === brand.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   {brand.name}

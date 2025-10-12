@@ -3,18 +3,26 @@
 import { useFormContext } from 'react-hook-form'
 import { useEffect } from 'react'
 import { CreateClientSchema } from '@/schemas/clients.schema'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-
 export function ClientForm() {
-  const { register, formState: { errors }, watch } = useFormContext<CreateClientSchema>()
-  
+  const {
+    register,
+    formState: { errors },
+    watch,
+  } = useFormContext<CreateClientSchema>()
+
   // Watcher para validar campos relacionados
   const email = watch('email')
   const phone = watch('phone')
-  
+
   useEffect(() => {
     // Validación adicional si es necesaria
     if (email && phone) {
@@ -27,16 +35,12 @@ export function ClientForm() {
       {/* Información Personal */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Información Personal</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel htmlFor="full_name">Nombre Completo *</FieldLabel>
             <FieldContent>
-              <Input
-                id="full_name"
-                type="text"
-                {...register('full_name')}
-              />
+              <Input id="full_name" type="text" {...register('full_name')} />
               <FieldError errors={[errors.full_name]} />
             </FieldContent>
           </Field>
@@ -59,7 +63,7 @@ export function ClientForm() {
       {/* Información de Contacto */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Información de Contacto</h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -101,12 +105,10 @@ export function ClientForm() {
         </Field>
       </div>
 
-
-
       {/* Notas Adicionales */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Información Adicional</h3>
-        
+
         <Field>
           <FieldLabel htmlFor="notes">Notas</FieldLabel>
           <FieldContent>
@@ -119,8 +121,6 @@ export function ClientForm() {
             <FieldError errors={[errors.notes]} />
           </FieldContent>
         </Field>
-
-
       </div>
     </div>
   )

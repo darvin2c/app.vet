@@ -30,7 +30,9 @@ export default function useProductBrandList(filters?: ProductBrandFilters) {
       const { data, error } = await query
 
       if (error) {
-        throw new Error(`Error al obtener marcas de productos: ${error.message}`)
+        throw new Error(
+          `Error al obtener marcas de productos: ${error.message}`
+        )
       }
 
       return data as ProductBrand[]

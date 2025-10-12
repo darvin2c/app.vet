@@ -21,8 +21,12 @@ export const staffSpecialtyFiltersSchema = z.object({
 
 // Tipos TypeScript derivados
 export type StaffSpecialtyBase = z.infer<typeof staffSpecialtyBaseSchema>
-export type CreateStaffSpecialtySchema = z.infer<typeof createStaffSpecialtySchema>
-export type UpdateStaffSpecialtySchema = z.infer<typeof updateStaffSpecialtySchema>
+export type CreateStaffSpecialtySchema = z.infer<
+  typeof createStaffSpecialtySchema
+>
+export type UpdateStaffSpecialtySchema = z.infer<
+  typeof updateStaffSpecialtySchema
+>
 export type StaffSpecialtyFilters = z.infer<typeof staffSpecialtyFiltersSchema>
 
 // Esquema para asignar múltiples especialidades a un staff
@@ -34,7 +38,9 @@ export const assignSpecialtiesToStaffSchema = z.object({
     .max(10, 'No se pueden asignar más de 10 especialidades'),
 })
 
-export type AssignSpecialtiesToStaffSchema = z.infer<typeof assignSpecialtiesToStaffSchema>
+export type AssignSpecialtiesToStaffSchema = z.infer<
+  typeof assignSpecialtiesToStaffSchema
+>
 
 // Esquema para asignar múltiples staff a una especialidad
 export const assignStaffToSpecialtySchema = z.object({
@@ -45,4 +51,6 @@ export const assignStaffToSpecialtySchema = z.object({
     .max(50, 'No se pueden asignar más de 50 miembros del staff'),
 })
 
-export type AssignStaffToSpecialtySchema = z.infer<typeof assignStaffToSpecialtySchema>
+export type AssignStaffToSpecialtySchema = z.infer<
+  typeof assignStaffToSpecialtySchema
+>
