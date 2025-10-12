@@ -32,8 +32,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const form = useForm({
     resolver: zodResolver(updateStaffSchema),
     defaultValues: {
-      first_name: staff.first_name,
-      last_name: staff.last_name,
+      full_name: staff.full_name,
       email: staff.email,
       phone: staff.phone,
       license_number: staff.license_number,
@@ -56,8 +55,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     try {
       await updateStaff.mutateAsync({
         id: staff.id,
-        first_name: data.first_name,
-        last_name: data.last_name,
+        full_name: data.full_name,
         email: data.email,
         phone: data.phone,
         license_number: data.license_number,

@@ -1,48 +1,36 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TablesUpdate } from '@/types/supabase.types'
-import { removeUndefined } from '@/lib/utils'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useUpdateProduct() {
+export default function useProductDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: TablesUpdate<'products'>
-    }) => {
+    mutationFn: async (id: string) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const updateData: TablesUpdate<'products'> = removeUndefined(data)
-
-      const { data: product, error } = await supabase
+      const { error } = await supabase
         .from('products')
-        .update(updateData)
+        .delete()
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
-        .select()
-        .single()
 
       if (error) {
-        throw new Error(`Error al actualizar producto: ${error.message}`)
+        throw new Error(`Error al eliminar producto: ${error.message}`)
       }
 
-      return product
+      return id
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      toast.success('Producto actualizado exitosamente')
+      toast.success('Producto eliminado exitosamente')
     },
     onError: (error) => {
-      toast.error(error.message || 'Error al actualizar producto')
+      toast.error(error.message || 'Error al eliminar producto')
     },
   })
 }

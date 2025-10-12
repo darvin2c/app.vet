@@ -28,34 +28,18 @@ export function StaffForm() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={control}
-          name="first_name"
+          name="full_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nombre *</FormLabel>
+              <FormLabel>Nombre Completo *</FormLabel>
               <FormControl>
-                <Input placeholder="Ingresa el nombre" {...field} />
+                <Input placeholder="Ingresa el nombre completo" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
 
-        <FormField
-          control={control}
-          name="last_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Apellido *</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingresa el apellido" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={control}
           name="email"
@@ -74,7 +58,9 @@ export function StaffForm() {
             </FormItem>
           )}
         />
+      </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <FormField
           control={control}
           name="phone"

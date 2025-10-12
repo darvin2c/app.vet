@@ -27,8 +27,7 @@ export function StaffCreate({ open, onOpenChange }: StaffCreateProps) {
   const form = useForm({
     resolver: zodResolver(createStaffSchema),
     defaultValues: {
-      first_name: '',
-      last_name: '',
+      full_name: '',
       email: null,
       phone: null,
       license_number: null,
@@ -40,8 +39,7 @@ export function StaffCreate({ open, onOpenChange }: StaffCreateProps) {
   const onSubmit = async (data: CreateStaffSchema) => {
     try {
       await createStaff.mutateAsync({
-        first_name: data.first_name,
-        last_name: data.last_name,
+        full_name: data.full_name,
         email: data.email,
         phone: data.phone,
         license_number: data.license_number,

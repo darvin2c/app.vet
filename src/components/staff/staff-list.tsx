@@ -77,11 +77,11 @@ export function StaffList({ filters }: StaffListProps) {
 
   const columns: ColumnDef<StaffWithSpecialties>[] = [
     {
-      accessorKey: 'first_name',
+      accessorKey: 'full_name',
       header: 'Nombre',
       cell: ({ row }: { row: Row<StaffWithSpecialties> }) => (
         <div className="font-medium">
-          {row.getValue('first_name')} {row.original.last_name}
+          {row.getValue('full_name')}
         </div>
       ),
     },
@@ -255,7 +255,7 @@ export function StaffList({ filters }: StaffListProps) {
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <h3 className="font-medium text-sm">
-                    {staffMember.first_name} {staffMember.last_name}
+                    {staffMember.full_name}
                   </h3>
                   {staffMember.specialties &&
                     staffMember.specialties.length > 0 && (
@@ -321,8 +321,8 @@ export function StaffList({ filters }: StaffListProps) {
               {/* Avatar */}
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <span className="text-sm font-medium text-primary">
-                  {staffMember.first_name?.charAt(0)}
-                  {staffMember.last_name?.charAt(0)}
+                  {staffMember.full_name?.charAt(0)}
+                  {staffMember.full_name?.charAt(1) || ''}
                 </span>
               </div>
 
@@ -330,7 +330,7 @@ export function StaffList({ filters }: StaffListProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium text-foreground truncate">
-                    {staffMember.first_name} {staffMember.last_name}
+                    {staffMember.full_name}
                   </p>
                   {staffMember.specialties &&
                     staffMember.specialties.length > 0 && (

@@ -20,7 +20,7 @@ export function StaffDelete({ staff, open, onOpenChange }: StaffDeleteProps) {
     onOpenChange(false)
   }
 
-  const staffName = `${staff.first_name} ${staff.last_name}`
+  const staffName = staff.full_name
 
   return (
     <AlertConfirmation
