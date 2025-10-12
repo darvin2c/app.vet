@@ -48,7 +48,7 @@ import {
   List,
 } from 'lucide-react'
 import useProducts from '@/hooks/products/use-products-list'
-import { useFilters } from '../ui/filters'
+import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 
 type ViewMode = 'table' | 'cards' | 'list'

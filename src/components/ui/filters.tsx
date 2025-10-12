@@ -36,6 +36,7 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useDebounce } from '@/hooks/use-debounce'
+import { useFilters } from '@/hooks/use-filters'
 
 import type {
   FiltersConfig,
@@ -244,212 +245,7 @@ function createPostgRESTValue(
   return { operator, value }
 }
 
-// Hook personalizado para manejar filtros
-export function useFilters(filters: FilterConfig[]) {
-  // Crear parsers dinámicos para nuqs basados en la configuración usando formato PostgREST
-  const queryParsers = useMemo(() => {
-    const parsers: Record<string, any> = {}
 
-    filters.forEach((filter) => {
-      switch (filter.type) {
-        case 'search':
-          parsers[filter.key] = parseAsPostgRESTSearch(
-            filter.operator
-          ).withDefault(null)
-          break
-        case 'select':
-        case 'boolean':
-        case 'number':
-          parsers[filter.key] = parseAsPostgREST(filter.operator).withDefault(
-            null
-          )
-          break
-        case 'multiselect':
-          parsers[filter.key] = parseAsPostgRESTArray(
-            filter.operator
-          ).withDefault(null)
-          break
-        case 'date':
-          parsers[filter.key] = parseAsPostgRESTDate(
-            filter.operator
-          ).withDefault(null)
-          break
-        case 'dateRange':
-          // Para dateRange, usamos dos campos separados con operadores específicos
-          parsers[`${filter.key}_from`] =
-            parseAsPostgRESTDate('gte').withDefault(null)
-          parsers[`${filter.key}_to`] =
-            parseAsPostgRESTDate('lte').withDefault(null)
-          break
-        case 'custom':
-          // Para filtros custom, usar el operador especificado
-          parsers[filter.key] = parseAsPostgREST(filter.operator).withDefault(
-            null
-          )
-          break
-      }
-    })
-
-    return parsers
-  }, [filters])
-
-  const [filterValues, setFilterValues] = useQueryStates(queryParsers)
-
-  // Convertir valores de filtros PostgREST a filtros aplicados
-  const appliedFilters = useMemo((): AppliedFilter[] => {
-    const applied: AppliedFilter[] = []
-
-    filters.forEach((filter) => {
-      const value = filterValues[filter.key]
-
-      switch (filter.type) {
-        case 'search':
-          if (value && value.value) {
-            applied.push({
-              field: filter.field,
-              operator: value.operator,
-              value: value.value,
-            })
-          }
-          break
-
-        case 'select':
-        case 'boolean':
-        case 'number':
-        case 'date':
-        case 'custom':
-          if (value && value.value) {
-            let processedValue: any = value.value
-
-            // Convertir tipos según sea necesario
-            if (filter.type === 'boolean') {
-              processedValue = value.value === 'true'
-            } else if (filter.type === 'number') {
-              processedValue = parseFloat(value.value)
-            }
-
-            applied.push({
-              field: filter.field,
-              operator: value.operator,
-              value: processedValue,
-            })
-          }
-          break
-
-        case 'multiselect':
-          if (
-            value &&
-            value.value &&
-            Array.isArray(value.value) &&
-            value.value.length > 0
-          ) {
-            applied.push({
-              field: filter.field,
-              operator: value.operator,
-              value: value.value,
-            })
-          }
-          break
-
-        case 'dateRange':
-          const fromValue = filterValues[`${filter.key}_from`]
-          const toValue = filterValues[`${filter.key}_to`]
-
-          if (fromValue && fromValue.value) {
-            applied.push({
-              field: filter.field,
-              operator: fromValue.operator,
-              value: fromValue.value,
-            })
-          }
-
-          if (toValue && toValue.value) {
-            applied.push({
-              field: filter.field,
-              operator: toValue.operator,
-              value: toValue.value,
-            })
-          }
-          break
-      }
-    })
-
-    return applied
-  }, [filters, filterValues])
-
-  // Función para obtener filtros listos para Supabase
-  const getSupabaseFilters = useCallback(() => {
-    return appliedFilters.map((filter) => {
-      let supabaseValue = filter.value
-
-      // Formatear valores según el operador para Supabase
-      switch (filter.operator) {
-        case 'in':
-        case 'contains':
-          if (Array.isArray(filter.value)) {
-            supabaseValue = `(${filter.value.map((v) => `"${v}"`).join(',')})`
-          }
-          break
-        case 'like':
-        case 'ilike':
-          supabaseValue = `*${filter.value}*`
-          break
-        default:
-          supabaseValue = filter.value
-      }
-
-      return {
-        field: filter.field,
-        operator: filter.operator,
-        value: supabaseValue,
-      }
-    })
-  }, [appliedFilters])
-
-  // Limpiar todos los filtros
-  const clearAllFilters = useCallback(async () => {
-    const clearedValues: Record<string, any> = {}
-
-    filters.forEach((filter) => {
-      switch (filter.type) {
-        case 'search':
-        case 'select':
-        case 'date':
-        case 'number':
-        case 'boolean':
-        case 'custom':
-          clearedValues[filter.key] = null
-          break
-        case 'multiselect':
-          clearedValues[filter.key] = null
-          break
-        case 'dateRange':
-          clearedValues[`${filter.key}_from`] = null
-          clearedValues[`${filter.key}_to`] = null
-          break
-      }
-    })
-
-    // Usar await para asegurar que la actualización se complete
-    await setFilterValues(clearedValues)
-
-    // Forzar una actualización adicional después de un pequeño delay
-    setTimeout(() => {
-      setFilterValues(clearedValues)
-    }, 10)
-  }, [filters, setFilterValues])
-
-  return {
-    filterValues,
-    setFilterValues,
-    appliedFilters,
-    getSupabaseFilters,
-    clearAllFilters,
-    // Funciones auxiliares para los componentes
-    extractPostgRESTValue,
-    createPostgRESTValue,
-  }
-}
 
 interface FiltersProps extends FiltersConfig {
   className?: string
@@ -465,14 +261,9 @@ export function Filters({
   const isMobile = useIsMobile()
 
   // Usar el hook personalizado
-  const {
-    filterValues,
-    setFilterValues,
-    appliedFilters,
-    clearAllFilters,
-    extractPostgRESTValue,
-    createPostgRESTValue,
-  } = useFilters(filters)
+  const { filterState, filterControls, appliedFilters } = useFilters(filters)
+  const { filterValues } = filterState
+  const { setMultipleFilters, clearAllFilters } = filterControls
 
   // Notificar cambios de filtros
   const prevAppliedFiltersRef = useRef<AppliedFilter[]>([])
@@ -500,7 +291,7 @@ export function Filters({
               config={filter as SearchFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -514,7 +305,7 @@ export function Filters({
               config={filter as SelectFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -528,7 +319,7 @@ export function Filters({
               config={filter as MultiSelectFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || []}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -542,7 +333,7 @@ export function Filters({
               config={filter as DateFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -561,7 +352,7 @@ export function Filters({
                 extractPostgRESTValue(filterValues[`${filter.key}_to`]) || ''
               }
               onChange={(from, to) =>
-                setFilterValues({
+                setMultipleFilters({
                   [`${filter.key}_from`]: createPostgRESTValue('gte', from),
                   [`${filter.key}_to`]: createPostgRESTValue('lte', to),
                 })
@@ -576,7 +367,7 @@ export function Filters({
               config={filter as BooleanFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -590,7 +381,7 @@ export function Filters({
               config={filter as NumberFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -604,7 +395,7 @@ export function Filters({
               config={filter as CustomFilterConfig}
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
-                setFilterValues({
+                setMultipleFilters({
                   [filter.key]: createPostgRESTValue(filter.operator, value),
                 })
               }
@@ -615,7 +406,7 @@ export function Filters({
           return null
       }
     },
-    [filterValues, setFilterValues]
+    [filterValues, setMultipleFilters]
   )
 
   // Contar filtros activos
