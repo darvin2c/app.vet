@@ -24,7 +24,9 @@ export default function useDeleteProductCategory() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-categories'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-categories'],
+      })
       toast.success('Categoría eliminada exitosamente')
     },
     onError: (error) => {

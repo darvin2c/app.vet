@@ -52,43 +52,16 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { getProductCategoryColumns } from './product-category-table-columns'
-
-// Función para obtener el valor desde localStorage (duplicada de view-mode-toggle para consistencia)
-function getStoredViewMode(resource: string): ViewMode {
-  if (typeof window === 'undefined') return 'table'
-
-  try {
-    const storageKey = `${resource}-view-mode`
-    const stored = localStorage.getItem(storageKey)
-    if (stored && ['table', 'cards', 'list'].includes(stored)) {
-      return stored as ViewMode
-    }
-  } catch (error) {
-    console.warn('Error reading from localStorage:', error)
-  }
-
-  return 'table'
-}
 
 type ProductCategory = Database['public']['Tables']['product_categories']['Row']
 
 export function ProductCategoryList({
-  filterConfig = [],
-  orderByConfig = {
-    columns: [
-      { field: 'name', label: 'Nombre' },
-      { field: 'description', label: 'Descripción' },
-      { field: 'is_active', label: 'Estado' },
-      { field: 'created_at', label: 'Fecha de creación' },
-    ],
-    defaultSort: { field: 'created_at', direction: 'desc' },
-    multiSort: false,
-  },
+  filterConfig,
+  orderByConfig,
 }: {
-  filterConfig?: FilterConfig[]
-  orderByConfig?: OrderByConfig
-} = {}) {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
   // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
@@ -108,7 +81,49 @@ export function ProductCategoryList({
     orders: orderByHook.appliedSorts,
   })
 
-  const columns = getProductCategoryColumns(orderByHook)
+  const columns: ColumnDef<ProductCategory>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductCategory> }) => (
+        <div className="font-medium">{row.getValue('name')}</div>
+      ),
+    },
+    {
+      accessorKey: 'description',
+      header: ({ header }) => (
+        <OrderByTableHeader field="description" orderByHook={orderByHook}>
+          Descripción
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductCategory> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('description') || '-'}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'is_active',
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductCategory> }) => (
+        <IsActiveDisplay value={row.getValue('is_active')} />
+      ),
+    },
+    {
+      id: 'actions',
+      cell: ({ row }: { row: Row<ProductCategory> }) => (
+        <ProductCategoryActions category={row.original} />
+      ),
+    },
+  ]
 
   const [sorting, setSorting] = useState<SortingState>([])
 
@@ -129,12 +144,37 @@ export function ProductCategoryList({
     },
   })
 
-  // Efecto para sincronizar con localStorage después de la hidratación
-  useEffect(() => {
-    const storedViewMode = getStoredViewMode('product-categories')
-    setViewMode(storedViewMode)
-  }, [])
+  // Función para renderizar el encabezado de la tabla
+  const renderTableHeader = useCallback(
+    (headerGroup: HeaderGroup<ProductCategory>) => (
+      <TableRow key={headerGroup.id}>
+        {headerGroup.headers.map((header: Header<ProductCategory, unknown>) => (
+          <TableHead key={header.id}>
+            {header.isPlaceholder
+              ? null
+              : flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
 
+  // Función para renderizar las filas de la tabla
+  const renderTableRow = useCallback(
+    (row: Row<ProductCategory>) => (
+      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+        {row.getVisibleCells().map((cell: Cell<ProductCategory, unknown>) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
+
+  // Función para renderizar la vista de tarjetas
   const renderCardsView = useCallback(
     () => (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -165,6 +205,7 @@ export function ProductCategoryList({
     [productCategories]
   )
 
+  // Función para renderizar la vista de lista
   const renderListView = useCallback(
     () => (
       <ItemGroup>
@@ -187,6 +228,21 @@ export function ProductCategoryList({
     [productCategories]
   )
 
+  // Efecto para sincronizar con localStorage después de la hidratación
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const storageKey = 'product-categories-view-mode'
+        const stored = localStorage.getItem(storageKey)
+        if (stored && ['table', 'cards', 'list'].includes(stored)) {
+          setViewMode(stored as ViewMode)
+        }
+      } catch (error) {
+        console.warn('Error reading from localStorage:', error)
+      }
+    }
+  }, [])
+
   if (isPending) {
     return (
       <div className="space-y-4">
@@ -194,7 +250,7 @@ export function ProductCategoryList({
           <div className="h-8 w-32 bg-muted animate-pulse rounded" />
           <div className="h-10 w-24 bg-muted animate-pulse rounded" />
         </div>
-        <TableSkeleton />
+        <TableSkeleton variant={viewMode} />
       </div>
     )
   }
@@ -249,40 +305,11 @@ export function ProductCategoryList({
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                {table.getHeaderGroups().map((headerGroup: HeaderGroup<ProductCategory>) => (
-                  <TableRow key={headerGroup.id}>
-                    {headerGroup.headers.map((header: Header<ProductCategory, unknown>) => {
-                      return (
-                        <TableHead key={header.id}>
-                          {header.isPlaceholder
-                            ? null
-                            : flexRender(
-                                header.column.columnDef.header,
-                                header.getContext()
-                              )}
-                        </TableHead>
-                      )
-                    })}
-                  </TableRow>
-                ))}
+                {table.getHeaderGroups().map(renderTableHeader)}
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map((row: Row<ProductCategory>) => (
-                    <TableRow
-                      key={row.id}
-                      data-state={row.getIsSelected() && 'selected'}
-                    >
-                      {row.getVisibleCells().map((cell: Cell<ProductCategory, unknown>) => (
-                        <TableCell key={cell.id}>
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))
+                  table.getRowModel().rows.map(renderTableRow)
                 ) : (
                   <TableRow>
                     <TableCell

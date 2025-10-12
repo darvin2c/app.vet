@@ -3,6 +3,7 @@
 import { useFormContext } from 'react-hook-form'
 import { CreateProductCategorySchema } from '@/schemas/product-categories.schema'
 import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
 import {
   Field,
   FieldContent,
@@ -17,7 +18,10 @@ interface ProductCategoryFormProps {
   productCategory?: Tables<'product_categories'>
 }
 
-export function ProductCategoryForm({ mode = 'create', productCategory }: ProductCategoryFormProps) {
+export function ProductCategoryForm({
+  mode = 'create',
+  productCategory,
+}: ProductCategoryFormProps) {
   const {
     register,
     formState: { errors },
@@ -28,7 +32,7 @@ export function ProductCategoryForm({ mode = 'create', productCategory }: Produc
       {/* Información básica */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Información básica</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <Field>
             <FieldLabel htmlFor="name">Nombre *</FieldLabel>
             <FieldContent>
@@ -44,9 +48,10 @@ export function ProductCategoryForm({ mode = 'create', productCategory }: Produc
           <Field>
             <FieldLabel htmlFor="description">Descripción</FieldLabel>
             <FieldContent>
-              <Input
+              <Textarea
                 id="description"
-                placeholder="Descripción de la categoría"
+                placeholder="Descripción de la categoría..."
+                className="min-h-[100px]"
                 {...register('description')}
               />
               <FieldError errors={[errors.description]} />

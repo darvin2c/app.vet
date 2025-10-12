@@ -160,9 +160,7 @@ function DrawerForm({
           <DrawerTitle>{title}</DrawerTitle>
           {description && <DrawerDescription>{description}</DrawerDescription>}
         </DrawerHeader>
-        <div className="px-4 pb-4">
-          {children}
-        </div>
+        <div className="px-4 pb-4">{children}</div>
         {footer}
       </DrawerContent>
     </Drawer>

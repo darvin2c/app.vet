@@ -12,7 +12,6 @@ import {
 } from '@/schemas/product-categories.schema'
 import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
 
-
 interface ProductCategoryCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void

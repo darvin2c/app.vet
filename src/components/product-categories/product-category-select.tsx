@@ -51,8 +51,6 @@ export function ProductCategorySelect({
     (category: ProductCategory) => category.id === value
   )
 
-
-
   const handleSelect = (categoryId: string) => {
     if (!onValueChange) return
     onValueChange(value === categoryId ? '' : categoryId)
@@ -151,10 +149,7 @@ export function ProductCategorySelect({
         )}
       </InputGroup>
 
-      <ProductCategoryCreate
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
+      <ProductCategoryCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedCategory && (
         <ProductCategoryEdit

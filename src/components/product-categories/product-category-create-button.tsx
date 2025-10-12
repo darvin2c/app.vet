@@ -2,21 +2,29 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { ProductCategoryCreate } from './product-category-create'
 
-export function ProductCategoryCreateButton() {
+export function ProductCategoryCreateButton({
+  children,
+  ...props
+}: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
       <ResponsiveButton
-        onClick={() => setOpen(true)}
         icon={Plus}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
+        tooltip="Nueva Categoría"
+        onClick={() => setOpen(true)}
+        {...props}
       >
-        Crear Categoría
+        {children || 'Nuevo'}
       </ResponsiveButton>
+
       <ProductCategoryCreate open={open} onOpenChange={setOpen} />
     </>
   )

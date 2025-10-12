@@ -122,11 +122,7 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
           <Field>
             <FieldLabel htmlFor="birth_date">Fecha de nacimiento</FieldLabel>
             <FieldContent>
-              <Input
-                id="birth_date"
-                type="date"
-                {...register('birth_date')}
-              />
+              <Input id="birth_date" type="date" {...register('birth_date')} />
               <FieldError errors={[errors.birth_date]} />
             </FieldContent>
           </Field>

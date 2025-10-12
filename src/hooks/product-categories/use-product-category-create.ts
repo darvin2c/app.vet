@@ -32,7 +32,9 @@ export default function useProductCategoryCreate() {
       return result
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-categories'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-categories'],
+      })
       toast.success('Categoría creada exitosamente')
     },
     onError: (error) => {

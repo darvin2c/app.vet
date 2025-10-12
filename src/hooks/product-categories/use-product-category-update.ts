@@ -10,28 +10,20 @@ export default function useUpdateProductCategory() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: TablesUpdate<'product_categories'> & { id: string }
-    ) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: TablesUpdate<'product_categories'>
+    }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const { id, ...updateFields } = data
-      const updateData: TablesUpdate<'product_categories'> =
-        removeUndefined(updateFields)
-
-      // Convertir fechas a UTC si existen
-      if (updateData.created_at) {
-        updateData.created_at = new Date(updateData.created_at).toISOString()
-      }
-      if (updateData.updated_at) {
-        updateData.updated_at = new Date(updateData.updated_at).toISOString()
-      }
-
       const { error } = await supabase
         .from('product_categories')
-        .update(updateData)
+        .update(data)
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
 
@@ -40,7 +32,9 @@ export default function useUpdateProductCategory() {
       }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-categories'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-categories'],
+      })
       toast.success('Categoría actualizada exitosamente')
     },
     onError: (error) => {
