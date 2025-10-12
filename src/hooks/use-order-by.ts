@@ -12,18 +12,25 @@ import type {
 } from '@/types/order-by.types'
 
 // Parser para ordenamiento simple (un solo campo)
+/**
+ * Parser para valores de ordenamiento simples con soporte para tablas foráneas
+ * Formato: "field.direction" o "field.direction.foreignTable"
+ * @example "name.asc" o "name.desc.cities"
+ */
 function parseAsOrderBy() {
   return {
     parse: (value: string): OrderByValue | null => {
       if (!value) return null
 
-      // Formato esperado: "field.direction" (ej: "name.asc", "price.desc")
-      const match = value.match(/^([^.]+)\.(asc|desc)$/)
+      // Formato esperado: "field.direction" o "field.direction.foreignTable"
+      // Ejemplos: "name.asc", "price.desc", "name.asc.cities"
+      const match = value.match(/^([^.]+)\.(asc|desc)(?:\.([^.]+))?$/)
       if (match) {
-        const [, field, direction] = match
+        const [, field, direction, foreignTable] = match
         return {
           field,
           direction: direction as SortDirection,
+          ...(foreignTable && { foreignTable }),
         }
       }
 
@@ -33,7 +40,8 @@ function parseAsOrderBy() {
 
     serialize: (parsed: OrderByValue | null): string => {
       if (!parsed) return ''
-      return `${parsed.field}.${parsed.direction}`
+      const base = `${parsed.field}.${parsed.direction}`
+      return parsed.foreignTable ? `${base}.${parsed.foreignTable}` : base
     },
 
     withDefault: (defaultValue: OrderByValue | null) => ({
@@ -44,19 +52,25 @@ function parseAsOrderBy() {
 }
 
 // Parser para ordenamiento múltiple (múltiples campos)
+/**
+ * Parser para valores de ordenamiento múltiples con soporte para tablas foráneas
+ * Formato: "field1.direction1,field2.direction2" o "field1.direction1.foreignTable1,field2.direction2"
+ * @example "name.asc,created_at.desc" o "name.asc.cities,population.desc"
+ */
 function parseAsOrderByMultiple() {
   return {
     parse: (value: string): OrderByValues | null => {
       if (!value) return null
 
-      // Formato esperado: "field1.asc,field2.desc" 
+      // Formato esperado: "field1.asc,field2.desc" o "field1.asc.cities,field2.desc"
       const sorts = value.split(',').map((sort) => {
-        const match = sort.trim().match(/^([^.]+)\.(asc|desc)$/)
+        const match = sort.trim().match(/^([^.]+)\.(asc|desc)(?:\.([^.]+))?$/)
         if (match) {
-          const [, field, direction] = match
+          const [, field, direction, foreignTable] = match
           return {
             field,
             direction: direction as SortDirection,
+            ...(foreignTable && { foreignTable }),
           }
         }
         return null
@@ -67,7 +81,10 @@ function parseAsOrderByMultiple() {
 
     serialize: (parsed: OrderByValues | null): string => {
       if (!parsed || parsed.length === 0) return ''
-      return parsed.map((sort) => `${sort.field}.${sort.direction}`).join(',')
+      return parsed.map((sort) => {
+        const base = `${sort.field}.${sort.direction}`
+        return sort.foreignTable ? `${base}.${sort.foreignTable}` : base
+      }).join(',')
     },
 
     withDefault: (defaultValue: OrderByValues | null) => ({
@@ -77,6 +94,34 @@ function parseAsOrderByMultiple() {
   }
 }
 
+/**
+ * Hook para manejar el ordenamiento de datos con soporte para tablas foráneas
+ * 
+ * @param config - Configuración opcional del ordenamiento
+ * @returns Objeto con estado y funciones para manejar el ordenamiento
+ * 
+ * @example
+ * ```tsx
+ * // Uso básico
+ * const orderBy = useOrderBy({
+ *   columns: [
+ *     { field: 'name', label: 'Nombre' },
+ *     { field: 'created_at', label: 'Fecha' }
+ *   ]
+ * })
+ * 
+ * // Con tablas foráneas
+ * const orderBy = useOrderBy({
+ *   columns: [
+ *     { field: 'name', label: 'País', foreignTable: 'countries' },
+ *     { field: 'name', label: 'Ciudad', foreignTable: 'cities' }
+ *   ]
+ * })
+ * 
+ * // Usar en componente
+ * orderBy.setSort('name', 'cities') // Ordenar por cities.name
+ * ```
+ */
 export function useOrderBy(config?: OrderByConfig) {
   // Si no hay configuración, retornar valores por defecto
   if (!config) {
@@ -137,11 +182,13 @@ export function useOrderBy(config?: OrderByConfig) {
       return orderByValue.map((sort) => ({
         field: sort.field,
         direction: sort.direction,
+        ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
       }))
     } else if (!isMultiSort && !Array.isArray(orderByValue)) {
       return [{
         field: orderByValue.field,
         direction: orderByValue.direction,
+        ...(orderByValue.foreignTable && { foreignTable: orderByValue.foreignTable }),
       }]
     }
 
@@ -154,25 +201,30 @@ export function useOrderBy(config?: OrderByConfig) {
       field: sort.field,
       direction: sort.direction,
       ascending: sort.direction === 'asc',
+      ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
     }))
   }, [currentSort])
 
   // Función para cambiar el ordenamiento con ciclo: sin ordenar → asc → desc → sin ordenar
   const setSort = useCallback(
-    (field: string, direction?: SortDirection) => {
-      const currentFieldSort = currentSort.find((s) => s.field === field)
+    (field: string, foreignTable?: string, direction?: SortDirection) => {
+      const currentFieldSort = currentSort.find((s) => s.field === field && s.foreignTable === foreignTable)
       
       // Si se especifica dirección, usarla directamente
       if (direction) {
-        const newSort: OrderByValue = { field, direction }
+        const newSort: OrderByValue = { 
+          field, 
+          direction,
+          ...(foreignTable && { foreignTable }),
+        }
         
         if (isMultiSort) {
-          const existingIndex = currentSort.findIndex((s) => s.field === field)
+          const existingIndex = currentSort.findIndex((s) => s.field === field && s.foreignTable === foreignTable)
           let newSorts: OrderByValues
 
           if (existingIndex >= 0) {
             newSorts = [...currentSort]
-            newSorts[existingIndex] = { field, direction }
+            newSorts[existingIndex] = { field, direction, ...(foreignTable && { foreignTable }) }
           } else {
             newSorts = [...currentSort, newSort]
           }
@@ -186,7 +238,11 @@ export function useOrderBy(config?: OrderByConfig) {
       // Ciclo automático: sin ordenar → asc → desc → sin ordenar
       if (!currentFieldSort) {
         // No hay ordenamiento actual, empezar con 'asc'
-        const newSort: OrderByValue = { field, direction: 'asc' }
+        const newSort: OrderByValue = { 
+          field, 
+          direction: 'asc',
+          ...(foreignTable && { foreignTable }),
+        }
         
         if (isMultiSort) {
           const newSorts = [...currentSort, newSort]
@@ -196,10 +252,14 @@ export function useOrderBy(config?: OrderByConfig) {
         }
       } else if (currentFieldSort.direction === 'asc') {
         // Cambiar de 'asc' a 'desc'
-        const newSort: OrderByValue = { field, direction: 'desc' }
+        const newSort: OrderByValue = { 
+          field, 
+          direction: 'desc',
+          ...(foreignTable && { foreignTable }),
+        }
         
         if (isMultiSort) {
-          const existingIndex = currentSort.findIndex((s) => s.field === field)
+          const existingIndex = currentSort.findIndex((s) => s.field === field && s.foreignTable === foreignTable)
           const newSorts = [...currentSort]
           newSorts[existingIndex] = newSort
           setOrderByValues({ order_by: newSorts })
@@ -209,7 +269,7 @@ export function useOrderBy(config?: OrderByConfig) {
       } else {
         // Cambiar de 'desc' a sin ordenar (remover)
         if (isMultiSort) {
-          const newSorts = currentSort.filter((s) => s.field !== field)
+          const newSorts = currentSort.filter((s) => !(s.field === field && s.foreignTable === foreignTable))
           setOrderByValues({ order_by: newSorts.length > 0 ? newSorts : null })
         } else {
           setOrderByValues({ order_by: null })
@@ -221,10 +281,10 @@ export function useOrderBy(config?: OrderByConfig) {
 
   // Función para remover un ordenamiento (solo en modo múltiple)
   const removeSort = useCallback(
-    (field: string) => {
+    (field: string, foreignTable?: string) => {
       if (!isMultiSort) return
 
-      const newSorts = currentSort.filter((s) => s.field !== field)
+      const newSorts = currentSort.filter((s) => !(s.field === field && s.foreignTable === foreignTable))
       setOrderByValues({ 
         order_by: newSorts.length > 0 ? newSorts : null 
       })
@@ -239,8 +299,8 @@ export function useOrderBy(config?: OrderByConfig) {
 
   // Función para obtener la dirección de ordenamiento de un campo
   const getSortDirection = useCallback(
-    (field: string): SortDirection | null => {
-      const sort = currentSort.find((s) => s.field === field)
+    (field: string, foreignTable?: string): SortDirection | null => {
+      const sort = currentSort.find((s) => s.field === field && s.foreignTable === foreignTable)
       return sort?.direction || null
     },
     [currentSort]
@@ -248,8 +308,8 @@ export function useOrderBy(config?: OrderByConfig) {
 
   // Función para verificar si un campo está siendo ordenado
   const isSorted = useCallback(
-    (field: string): boolean => {
-      return currentSort.some((s) => s.field === field)
+    (field: string, foreignTable?: string): boolean => {
+      return currentSort.some((s) => s.field === field && s.foreignTable === foreignTable)
     },
     [currentSort]
   )
@@ -259,6 +319,7 @@ export function useOrderBy(config?: OrderByConfig) {
     return appliedSorts.map((sort) => ({
       column: sort.field,
       ascending: sort.ascending,
+      ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
     }))
   }, [appliedSorts])
 

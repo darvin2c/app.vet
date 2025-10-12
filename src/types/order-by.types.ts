@@ -1,15 +1,27 @@
 // Tipos para ordenamiento basados en operadores de Supabase
 export type SortDirection = 'asc' | 'desc'
 
+/**
+ * Configuración de una columna ordenable
+ */
 export interface SortColumn {
   field: string // Campo de la base de datos
   label: string // Etiqueta mostrada al usuario
   sortable?: boolean // Si la columna es ordenable (por defecto true)
+  /**
+   * Tabla foránea para ordenamiento en recursos embedidos
+   * @example 'cities' para ordenar por cities.name en una query con .select('name, cities(name)')
+   */
+  foreignTable?: string
 }
 
+/**
+ * Estado de ordenamiento para una columna
+ */
 export interface SortState {
   field: string
   direction: SortDirection
+  foreignTable?: string // Tabla foránea si aplica
 }
 
 export interface OrderByConfig {
@@ -19,20 +31,30 @@ export interface OrderByConfig {
   className?: string // Clases CSS adicionales
 }
 
-// Tipo para el valor de ordenamiento en la URL
+/**
+ * Valor de ordenamiento en la URL
+ */
 export interface OrderByValue {
   field: string
   direction: SortDirection
+  foreignTable?: string // Tabla foránea si aplica
 }
 
 // Tipo para múltiples ordenamientos
 export type OrderByValues = OrderByValue[]
 
-// Tipo para el resultado de ordenamiento aplicado (compatible con Supabase)
+/**
+ * Resultado de ordenamiento aplicado (compatible con Supabase)
+ */
 export interface AppliedSort {
   field: string
   direction: SortDirection
   ascending: boolean // Para compatibilidad con Supabase
+  /**
+   * Tabla foránea para ordenamiento en recursos embedidos
+   * Se usa con la sintaxis: .order(field, {foreignTable: foreignTable})
+   */
+  foreignTable?: string
 }
 
 // Configuración completa de ordenamiento para un componente

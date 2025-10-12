@@ -72,10 +72,12 @@ OrderByTrigger.displayName = 'OrderByTrigger'
 export interface OrderByTableHeaderProps {
   field: string
   label?: string
+  /** Tabla foránea para ordenamiento de recursos embebidos */
+  foreignTable?: string
   orderByHook: {
-    setSort: (field: string, direction?: SortDirection) => void
-    getSortDirection: (field: string) => SortDirection | null
-    isSorted: (field: string) => boolean
+    setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
+    getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+    isSorted: (field: string, foreignTable?: string) => boolean
   }
   className?: string
   children?: React.ReactNode
@@ -84,16 +86,17 @@ export interface OrderByTableHeaderProps {
 export function OrderByTableHeader({
   field,
   label,
+  foreignTable,
   orderByHook,
   className,
   children,
 }: OrderByTableHeaderProps) {
   const { setSort, getSortDirection, isSorted } = orderByHook
-  const direction = getSortDirection(field)
-  const isActive = isSorted(field)
+  const direction = getSortDirection(field, foreignTable)
+  const isActive = isSorted(field, foreignTable)
 
   const handleSort = () => {
-    setSort(field)
+    setSort(field, foreignTable)
   }
 
   return (
@@ -174,10 +177,10 @@ function OrderByPopover({
 }: {
   sortableColumns: SortColumn[]
   activeSortsCount: number
-  setSort: (field: string, direction?: SortDirection) => void
+  setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
   clearSort: () => void
-  getSortDirection: (field: string) => SortDirection | null
-  isSorted: (field: string) => boolean
+  getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+  isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
 }) {
   const [open, setOpen] = useState(false)
@@ -205,18 +208,23 @@ function OrderByPopover({
 
           <div className="space-y-1">
             {sortableColumns.map((column) => {
-              const direction = getSortDirection(column.field)
-              const isActive = isSorted(column.field)
+              const direction = getSortDirection(column.field, column.foreignTable)
+              const isActive = isSorted(column.field, column.foreignTable)
+              
+              // Mostrar etiqueta con tabla foránea si existe
+              const displayLabel = column.foreignTable 
+                ? `${column.foreignTable}.${column.label || column.field}`
+                : column.label
 
               return (
                 <Button
-                  key={column.field}
+                  key={`${column.field}-${column.foreignTable || 'main'}`}
                   variant={isActive ? 'secondary' : 'ghost'}
                   size="sm"
-                  onClick={() => setSort(column.field)}
+                  onClick={() => setSort(column.field, column.foreignTable)}
                   className="w-full justify-between h-8"
                 >
-                  <span className="text-sm">{column.label}</span>
+                  <span className="text-sm">{displayLabel}</span>
                   <SortDirectionIcon direction={direction} />
                 </Button>
               )
@@ -240,10 +248,10 @@ function OrderByDrawer({
 }: {
   sortableColumns: SortColumn[]
   activeSortsCount: number
-  setSort: (field: string, direction?: SortDirection) => void
+  setSort: (field: string, foreignTable?: string, direction?: SortDirection) => void
   clearSort: () => void
-  getSortDirection: (field: string) => SortDirection | null
-  isSorted: (field: string) => boolean
+  getSortDirection: (field: string, foreignTable?: string) => SortDirection | null
+  isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
 }) {
   const [open, setOpen] = useState(false)
@@ -273,18 +281,23 @@ function OrderByDrawer({
 
           <div className="space-y-2">
             {sortableColumns.map((column) => {
-              const direction = getSortDirection(column.field)
-              const isActive = isSorted(column.field)
+              const direction = getSortDirection(column.field, column.foreignTable)
+              const isActive = isSorted(column.field, column.foreignTable)
+              
+              // Mostrar etiqueta con tabla foránea si existe
+              const displayLabel = column.foreignTable 
+                ? `${column.foreignTable}.${column.label || column.field}`
+                : column.label
 
               return (
                 <Button
-                  key={column.field}
+                  key={`${column.field}-${column.foreignTable || 'main'}`}
                   variant={isActive ? 'secondary' : 'ghost'}
                   size="sm"
-                  onClick={() => setSort(column.field)}
+                  onClick={() => setSort(column.field, column.foreignTable)}
                   className="w-full justify-between h-10"
                 >
-                  <span>{column.label}</span>
+                  <span>{displayLabel}</span>
                   <SortDirectionIcon direction={direction} />
                 </Button>
               )
