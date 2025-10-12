@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useDeleteProductMovement() {
+export default function useProductMovementDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

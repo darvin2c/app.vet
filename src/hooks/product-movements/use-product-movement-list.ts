@@ -13,7 +13,9 @@ interface ProductMovementFilters {
   date_to?: string
 }
 
-export default function useProductMovements(filters?: ProductMovementFilters) {
+export default function useProductMovementList(
+  filters?: ProductMovementFilters
+) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({

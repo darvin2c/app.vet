@@ -6,7 +6,7 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
 
-export default function useProductUnits(options?: {
+export default function useProductUnitList(options?: {
   filters?: ProductUnitFiltersSchema
 }) {
   const filters = options?.filters

@@ -4,17 +4,20 @@ import { Database } from '@/types/supabase.types'
 import { AppointmentFiltersSchema } from '@/schemas/appointments.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type AppointmentWithRelations = Database['public']['Tables']['appointments']['Row'] & {
-  pets: (Database['public']['Tables']['pets']['Row'] & {
-    clients: Database['public']['Tables']['clients']['Row'] | null
-  }) | null
-  staff: Database['public']['Tables']['staff']['Row'] | null
-  appointment_types:
-    | Database['public']['Tables']['appointment_types']['Row']
-    | null
-}
+type AppointmentWithRelations =
+  Database['public']['Tables']['appointments']['Row'] & {
+    pets:
+      | (Database['public']['Tables']['pets']['Row'] & {
+          clients: Database['public']['Tables']['clients']['Row'] | null
+        })
+      | null
+    staff: Database['public']['Tables']['staff']['Row'] | null
+    appointment_types:
+      | Database['public']['Tables']['appointment_types']['Row']
+      | null
+  }
 
-export function useAppointments(filters?: AppointmentFiltersSchema) {
+export function useAppointmentList(filters?: AppointmentFiltersSchema) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({

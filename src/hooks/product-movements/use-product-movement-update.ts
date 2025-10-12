@@ -7,7 +7,7 @@ import {
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useUpdateProductMovement() {
+export default function useProductMovementUpdate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

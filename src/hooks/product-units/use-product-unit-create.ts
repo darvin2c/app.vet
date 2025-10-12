@@ -4,7 +4,7 @@ import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useCreateProductUnit() {
+export default function useProductUnitCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

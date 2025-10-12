@@ -4,7 +4,7 @@ import { CreateProductMovementData } from '@/schemas/product-movements.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useCreateProductMovement() {
+export default function useProductMovementCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 

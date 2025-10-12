@@ -6,7 +6,7 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type AppointmentType = Database['public']['Tables']['appointment_types']['Row']
 
-const useAppointmentTypes = (filters?: AppointmentTypeFiltersSchema) => {
+const useAppointmentTypeList = (filters?: AppointmentTypeFiltersSchema) => {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
