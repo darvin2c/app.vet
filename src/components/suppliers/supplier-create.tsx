@@ -22,15 +22,11 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
     resolver: zodResolver(createSupplierSchema),
     defaultValues: {
       name: '',
-      contact_name: '',
+      contact_person: '',
       email: '',
       phone: '',
       address: '',
-      city: '',
-      state: '',
-      postal_code: '',
-      country: '',
-      tax_id: '',
+      document_number: '',
       website: '',
       notes: '',
       is_active: true,
@@ -60,7 +56,7 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
       <DrawerFooter>
         <ResponsiveButton
           type="submit"
-          loading={isPending}
+          isLoading={isPending}
           disabled={isPending}
         >
           Crear Proveedor

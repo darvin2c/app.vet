@@ -16,7 +16,7 @@ import { StaffForm } from './staff-form'
 import { UpdateStaffSchema, updateStaffSchema } from '@/schemas/staff.schema'
 import useUpdateStaff from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
-import { useStaffSpecialties } from '@/hooks/staff-specialties/use-staff-specialty-list'
+import useStaffSpecialties from '@/hooks/staff-specialties/use-staff-specialty-list'
 import { useEffect } from 'react'
 
 interface StaffEditProps {

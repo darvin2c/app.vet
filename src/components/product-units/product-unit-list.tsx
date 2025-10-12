@@ -42,7 +42,7 @@ import {
   Grid3X3,
   List,
 } from 'lucide-react'
-import useProductUnits from '@/hooks/product-units/use-product-units'
+import useProductUnits from '@/hooks/product-units/use-product-unit-list'
 
 type ViewMode = 'table' | 'cards' | 'list'
 

@@ -58,7 +58,7 @@ export function StaffSpecialtyCreate({
             <DrawerFooter>
               <ResponsiveButton
                 type="submit"
-                loading={isPending}
+                isLoading={isPending}
                 disabled={isPending}
                 icon={Plus}
               >
@@ -68,6 +68,7 @@ export function StaffSpecialtyCreate({
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isPending}
+                icon={Plus}
               >
                 Cancelar
               </ResponsiveButton>

@@ -18,7 +18,7 @@ import {
   UpdateProductSchema,
   updateProductSchema,
 } from '@/schemas/products.schema'
-import useUpdateProduct from '@/hooks/products/use-update-product'
+import useUpdateProduct from '@/hooks/products/use-product-update'
 import { Tables } from '@/types/supabase.types'
 
 interface ProductEditProps {

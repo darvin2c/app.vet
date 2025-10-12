@@ -55,7 +55,7 @@ export function SupplierBrandCreate({
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
-              loading={isPending}
+              isLoading={isPending}
               disabled={isPending}
             >
               Asignar Marca
@@ -65,6 +65,7 @@ export function SupplierBrandCreate({
               variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={isPending}
+              icon={Plus}
             >
               Cancelar
             </ResponsiveButton>

@@ -27,14 +27,14 @@ export function SupplierForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="contact_name">Nombre de Contacto</FieldLabel>
+        <FieldLabel htmlFor="contact_person">Nombre de Contacto</FieldLabel>
         <FieldContent>
           <Input
-            id="contact_name"
+            id="contact_person"
             placeholder="Nombre de la persona de contacto"
-            {...register('contact_name')}
+            {...register('contact_person')}
           />
-          <FieldError errors={[errors.contact_name]} />
+          <FieldError errors={[errors.contact_person]} />
         </FieldContent>
       </Field>
 
@@ -77,69 +77,17 @@ export function SupplierForm() {
         </FieldContent>
       </Field>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Field>
-          <FieldLabel htmlFor="city">Ciudad</FieldLabel>
-          <FieldContent>
-            <Input
-              id="city"
-              placeholder="Ciudad"
-              {...register('city')}
-            />
-            <FieldError errors={[errors.city]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="state">Estado/Provincia</FieldLabel>
-          <FieldContent>
-            <Input
-              id="state"
-              placeholder="Estado o provincia"
-              {...register('state')}
-            />
-            <FieldError errors={[errors.state]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="postal_code">Código Postal</FieldLabel>
-          <FieldContent>
-            <Input
-              id="postal_code"
-              placeholder="Código postal"
-              {...register('postal_code')}
-            />
-            <FieldError errors={[errors.postal_code]} />
-          </FieldContent>
-        </Field>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Field>
-          <FieldLabel htmlFor="country">País</FieldLabel>
-          <FieldContent>
-            <Input
-              id="country"
-              placeholder="País"
-              {...register('country')}
-            />
-            <FieldError errors={[errors.country]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="tax_id">ID Fiscal</FieldLabel>
-          <FieldContent>
-            <Input
-              id="tax_id"
-              placeholder="Número de identificación fiscal"
-              {...register('tax_id')}
-            />
-            <FieldError errors={[errors.tax_id]} />
-          </FieldContent>
-        </Field>
-      </div>
+      <Field>
+        <FieldLabel htmlFor="document_number">Número de Documento</FieldLabel>
+        <FieldContent>
+          <Input
+            id="document_number"
+            placeholder="Número de identificación fiscal"
+            {...register('document_number')}
+          />
+          <FieldError errors={[errors.document_number]} />
+        </FieldContent>
+      </Field>
 
       <Field>
         <FieldLabel htmlFor="website">Sitio Web</FieldLabel>

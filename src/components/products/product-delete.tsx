@@ -2,7 +2,7 @@
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { Database } from '@/types/supabase.types'
-import useDeleteProduct from '@/hooks/products/use-delete-product'
+import useDeleteProduct from '@/hooks/products/use-product-delete'
 
 type Product = Database['public']['Tables']['products']['Row']
 

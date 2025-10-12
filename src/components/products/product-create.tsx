@@ -17,7 +17,7 @@ import {
   CreateProductSchema,
   createProductSchema,
 } from '@/schemas/products.schema'
-import useCreateProduct from '@/hooks/products/use-create-product'
+import useCreateProduct from '@/hooks/products/use-product-create'
 
 interface ProductCreateProps {
   open: boolean

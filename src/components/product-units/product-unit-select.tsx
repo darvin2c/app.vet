@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { FormControl } from '@/components/ui/form'
-import useProductUnits from '@/hooks/product-units/use-product-units'
+import useProductUnits from '@/hooks/product-units/use-product-unit-list'
 import { ProductUnitCreate } from './product-unit-create'
 import { ProductUnitEdit } from './product-unit-edit'
 import { Tables } from '@/types/supabase.types'
