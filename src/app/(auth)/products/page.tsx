@@ -7,6 +7,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
+import { PRODUCTS_COLUMNS_CONFIG } from '@/components/products/products-columns'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -85,7 +86,7 @@ export default function ProductsPage() {
           suffix={
             <ButtonGroup>
               <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
+              <OrderBy config={PRODUCTS_COLUMNS_CONFIG} />
               <ProductCreateButton />
             </ButtonGroup>
           }

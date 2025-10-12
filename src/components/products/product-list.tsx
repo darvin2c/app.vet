@@ -26,6 +26,9 @@ import { Button } from '@/components/ui/button'
 import { Database } from '@/types/supabase.types'
 import { ProductActions } from './product-actions'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/hooks/use-order-by'
+import { PRODUCTS_COLUMNS_CONFIG } from './products-columns'
 import {
   Empty,
   EmptyHeader,
@@ -59,17 +62,28 @@ export function ProductList({ filters }: ProductListProps) {
   // Usar el hook useProducts con los filtros aplicados
   const { data: products = [], isLoading, error } = useProducts(filters)
 
+  // Configurar el hook useOrderBy
+  const orderByHook = useOrderBy(PRODUCTS_COLUMNS_CONFIG)
+
   const columns: ColumnDef<Product>[] = [
     {
       accessorKey: 'name',
-      header: 'Nombre',
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="font-medium">{row.getValue('name')}</div>
       ),
     },
     {
       accessorKey: 'sku',
-      header: 'SKU',
+      header: ({ header }) => (
+        <OrderByTableHeader field="sku" orderByHook={orderByHook}>
+          SKU
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="text-sm text-muted-foreground">
           {row.getValue('sku') || '-'}
@@ -78,7 +92,11 @@ export function ProductList({ filters }: ProductListProps) {
     },
     {
       accessorKey: 'category_id',
-      header: 'Categoría',
+      header: ({ header }) => (
+        <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
+          Categoría
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="text-sm text-muted-foreground">
           {row.getValue('category_id') || '-'}
@@ -87,7 +105,11 @@ export function ProductList({ filters }: ProductListProps) {
     },
     {
       accessorKey: 'unit_id',
-      header: 'Unidad',
+      header: ({ header }) => (
+        <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
+          Unidad
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="text-sm text-muted-foreground">
           {row.getValue('unit_id') || '-'}
@@ -96,7 +118,11 @@ export function ProductList({ filters }: ProductListProps) {
     },
     {
       accessorKey: 'is_active',
-      header: 'Estado',
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Product> }) => (
         <IsActiveDisplay value={row.getValue('is_active')} />
       ),
