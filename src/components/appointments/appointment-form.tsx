@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { PatientSelect } from '@/components/patients/patient-select'
+import { ClientSelect } from '@/components/clients/client-select'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
 import { ProcedureSelect } from '@/components/procedures/procedure-select'
@@ -34,11 +34,11 @@ const APPOINTMENT_STATUSES = [
 ] as const
 
 interface AppointmentFormProps {
-  disablePatientSelection?: boolean
+  disableClientSelection?: boolean
 }
 
 export function AppointmentForm({
-  disablePatientSelection = false,
+  disableClientSelection = false,
 }: AppointmentFormProps) {
   // context
   const {
@@ -63,16 +63,16 @@ export function AppointmentForm({
     <div className="space-y-6">
       <FieldGroup>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.patient_id}>
-            <FieldLabel htmlFor="patient_id">Paciente *</FieldLabel>
+          <Field data-invalid={!!errors.client_id}>
+            <FieldLabel htmlFor="client_id">Cliente *</FieldLabel>
             <FieldContent>
-              <PatientSelect
-                value={watch('patient_id') || ''}
-                onValueChange={(value) => setValue('patient_id', value)}
-                placeholder="Seleccionar paciente"
-                disabled={disablePatientSelection}
+              <ClientSelect
+                value={watch('client_id') || ''}
+                onValueChange={(value) => setValue('client_id', value)}
+                placeholder="Seleccionar cliente"
+                disabled={disableClientSelection}
               />
-              <FieldError errors={[errors.patient_id]} />
+              <FieldError errors={[errors.client_id]} />
             </FieldContent>
           </Field>
 

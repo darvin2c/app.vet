@@ -18,14 +18,14 @@ import {
   FieldError,
 } from '@/components/ui/field'
 import useStaff from '@/hooks/staff/use-staff'
-import { PatientSelect } from '@/components/patients/patient-select'
+import { ClientSelect } from '@/components/clients/client-select'
 
 interface TreatmentPlanFormProps {
-  disablePatientSelection?: boolean
+  disableClientSelection?: boolean
 }
 
 export function TreatmentPlanForm({
-  disablePatientSelection = false,
+  disableClientSelection = false,
 }: TreatmentPlanFormProps) {
   const {
     control,
@@ -36,7 +36,7 @@ export function TreatmentPlanForm({
 
   const { data: staff = [] } = useStaff()
   const selectedStaffId = watch('staff_id')
-  const selectedPatientId = watch('patient_id')
+  const selectedClientId = watch('client_id')
 
   return (
     <div className="space-y-4">
@@ -52,16 +52,16 @@ export function TreatmentPlanForm({
         </FieldContent>
       </Field>
 
-      {!disablePatientSelection && (
+      {!disableClientSelection && (
         <Field>
-          <FieldLabel htmlFor="patient_id">Paciente *</FieldLabel>
+          <FieldLabel htmlFor="client_id">Cliente *</FieldLabel>
           <FieldContent>
-            <PatientSelect
-              value={selectedPatientId}
-              onValueChange={(value) => setValue('patient_id', value)}
-              placeholder="Seleccione el paciente"
+            <ClientSelect
+              value={selectedClientId}
+              onValueChange={(value) => setValue('client_id', value)}
+              placeholder="Seleccione el cliente"
             />
-            <FieldError errors={[errors.patient_id]} />
+            <FieldError errors={[errors.client_id]} />
           </FieldContent>
         </Field>
       )}
