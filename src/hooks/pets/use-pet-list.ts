@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Pet = Tables<'pets'> & {
   clients: Tables<'clients'> | null
@@ -18,10 +19,15 @@ interface UsePetsParams {
 
 export function usePets(params?: UsePetsParams) {
   const { filters = [], search, orders = [] } = params || {}
+  const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['pets', filters, search, orders],
+    queryKey: [currentTenant?.id, 'pets', filters, search, orders],
     queryFn: async () => {
+      if (!currentTenant?.id) {
+        return []
+      }
+
       let query = supabase.from('pets').select(
         `
           *,
@@ -40,7 +46,7 @@ export function usePets(params?: UsePetsParams) {
             name
           )
         `
-      )
+      ).eq('tenant_id', currentTenant.id)
 
       // Aplicar búsqueda
       if (search) {
@@ -94,5 +100,6 @@ export function usePets(params?: UsePetsParams) {
 
       return data as Pet[]
     },
+    enabled: !!currentTenant?.id,
   })
 }

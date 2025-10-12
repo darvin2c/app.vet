@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/field'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { ClientSelect } from '@/components/clients/client-select'
+import { SpeciesSelect } from '@/components/species/species-select'
+import { BreedSelect } from '@/components/breeds/breed-select'
 import { Tables } from '@/types/supabase.types'
 
 interface PetFormProps {
@@ -73,10 +75,14 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
           <Field>
             <FieldLabel htmlFor="species_id">Especie *</FieldLabel>
             <FieldContent>
-              <Input
-                id="species_id"
-                placeholder="ID de la especie"
-                {...register('species_id')}
+              <SpeciesSelect
+                value={watch('species_id') || ''}
+                onValueChange={(value) => {
+                  setValue('species_id', value || '')
+                  // Limpiar la raza cuando cambia la especie
+                  setValue('breed_id', '')
+                }}
+                placeholder="Seleccionar especie..."
               />
               <FieldError errors={[errors.species_id]} />
             </FieldContent>
@@ -85,10 +91,12 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
           <Field>
             <FieldLabel htmlFor="breed_id">Raza</FieldLabel>
             <FieldContent>
-              <Input
-                id="breed_id"
-                placeholder="ID de la raza"
-                {...register('breed_id')}
+              <BreedSelect
+                value={watch('breed_id') || ''}
+                onValueChange={(value) => setValue('breed_id', value || '')}
+                speciesId={watch('species_id')}
+                placeholder="Seleccionar raza..."
+                disabled={!watch('species_id')}
               />
               <FieldError errors={[errors.breed_id]} />
             </FieldContent>

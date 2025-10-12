@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
 import { toast } from 'sonner'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 export function useUpdatePet() {
   const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async ({
@@ -28,7 +30,7 @@ export function useUpdatePet() {
       return pet
     },
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({ queryKey: ['pets'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'pets'] })
       queryClient.invalidateQueries({ queryKey: ['pet', id] })
       toast.success('Mascota actualizada exitosamente')
     },

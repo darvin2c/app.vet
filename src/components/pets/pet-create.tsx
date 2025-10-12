@@ -5,7 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createPetSchema, CreatePetSchema } from '@/schemas/pets.schema'
 import { useCreatePet } from '@/hooks/pets/use-pet-create'
-import { Drawer, DrawerFooter } from '@/components/ui/drawer-form'
+import { DrawerForm } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { PetForm } from './pet-form'
 
@@ -49,31 +49,39 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
     }
   }
 
+  const footer = (
+    <>
+      <ResponsiveButton
+        type="submit"
+        isLoading={isSubmitting}
+        disabled={isSubmitting}
+      >
+        Crear Mascota
+      </ResponsiveButton>
+      <ResponsiveButton
+        type="button"
+        variant="outline"
+        onClick={() => onOpenChange(false)}
+        disabled={isSubmitting}
+      >
+        Cancelar
+      </ResponsiveButton>
+    </>
+  )
+
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <DrawerForm
+      title="Crear Mascota"
+      description="Completa la información para registrar una nueva mascota."
+      open={open}
+      onOpenChange={onOpenChange}
+      footer={footer}
+    >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <PetForm mode="create" />
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              Crear Mascota
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
         </form>
       </FormProvider>
-    </Drawer>
+    </DrawerForm>
   )
 }

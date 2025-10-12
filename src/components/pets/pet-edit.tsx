@@ -6,11 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { updatePetSchema, UpdatePetSchema } from '@/schemas/pets.schema'
 import { useUpdatePet } from '@/hooks/pets/use-pet-update'
 import { Tables } from '@/types/supabase.types'
-import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { PetForm } from './pet-form'
 import { Save, X } from 'lucide-react'
-import { Drawer } from '../ui/drawer-form'
+import { DrawerForm } from '@/components/ui/drawer-form'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -71,33 +70,41 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     }
   }
 
+  const footer = (
+    <>
+      <ResponsiveButton
+        type="submit"
+        isLoading={isSubmitting}
+        disabled={isSubmitting}
+        icon={Save}
+      >
+        Guardar Cambios
+      </ResponsiveButton>
+      <ResponsiveButton
+        type="button"
+        variant="outline"
+        onClick={() => onOpenChange(false)}
+        disabled={isSubmitting}
+        icon={X}
+      >
+        Cancelar
+      </ResponsiveButton>
+    </>
+  )
+
   return (
-    <Drawer>
+    <DrawerForm
+      title="Editar Mascota"
+      description="Modifica la información de la mascota."
+      open={open}
+      onOpenChange={onOpenChange}
+      footer={footer}
+    >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <PetForm mode="edit" pet={pet} />
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-              icon={Save}
-            >
-              Guardar Cambios
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-              icon={X}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
         </form>
       </FormProvider>
-    </Drawer>
+    </DrawerForm>
   )
 }

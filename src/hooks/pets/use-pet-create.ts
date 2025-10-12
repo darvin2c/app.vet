@@ -6,10 +6,10 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 export function useCreatePet() {
   const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (data: Omit<TablesInsert<'pets'>, 'tenant_id'>) => {
-      const { currentTenant } = useCurrentTenantStore()
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
@@ -26,7 +26,7 @@ export function useCreatePet() {
       return pet
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pets'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'pets'] })
       toast.success('Mascota creada exitosamente')
     },
     onError: (error) => {
