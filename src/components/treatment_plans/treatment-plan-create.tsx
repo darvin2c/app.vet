@@ -49,7 +49,7 @@ export function TreatmentPlanCreate({
   const form = useForm<any>({
     resolver: zodResolver(createTreatmentPlanSchema),
     defaultValues: {
-      patient_id: defaultPatientId || '',
+      client_id: defaultClientId || '',
       staff_id: '',
       title: '',
       notes: '',

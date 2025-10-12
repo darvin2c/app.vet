@@ -55,7 +55,7 @@ export const treatmentPlanBaseSchema = z.object({
 })
 
 export const createTreatmentPlanSchema = treatmentPlanBaseSchema.extend({
-  patient_id: z.string().nonempty('El paciente es requerido'),
+  client_id: z.string().nonempty('El cliente es requerido'),
   staff_id: z.string().optional(),
   items: z.array(treatmentPlanItemBaseSchema).optional().default([]),
 })
@@ -101,7 +101,7 @@ export const treatmentPlanItemsBulkAcceptSchema = z.object({
 
 // Schema para filtros de búsqueda
 export const treatmentPlanFiltersSchema = z.object({
-  patient_id: z.string().optional(),
+  client_id: z.string().optional(),
   staff_id: z.string().optional(),
   status: treatmentPlanStatusEnum.optional(),
   date_from: z.string().optional(),

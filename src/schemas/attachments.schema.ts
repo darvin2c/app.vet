@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const AttachmentSchema = z.object({
   id: z.string().uuid().optional(),
-  patient_id: z.string().uuid(),
+  client_id: z.string().uuid(),
   staff_id: z.string().uuid(),
   filename: z.string().min(1, 'El nombre del archivo es requerido'),
   original_filename: z.string().min(1, 'El nombre original es requerido'),

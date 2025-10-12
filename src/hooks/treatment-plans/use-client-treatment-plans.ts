@@ -3,14 +3,14 @@ import { useQuery } from '@tanstack/react-query'
 import { TreatmentPlanWithRelations } from './use-treatment-plans'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-export default function usePatientTreatmentPlans(patientId: string) {
+export default function useClientTreatmentPlans(clientId: string) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['patient-treatment-plans', patientId, currentTenant?.id],
+    queryKey: ['client-treatment-plans', clientId, currentTenant?.id],
     queryFn: async () => {
-      if (!patientId || !currentTenant?.id) {
-        throw new Error('ID de paciente y tenant requeridos')
+      if (!clientId || !currentTenant?.id) {
+        throw new Error('ID de cliente y tenant requeridos')
       }
 
       const { data: treatmentPlans, error } = await supabase
@@ -18,7 +18,7 @@ export default function usePatientTreatmentPlans(patientId: string) {
         .select(
           `
           *,
-          patients(id, first_name, last_name, email, phone),
+          clients(id, first_name, last_name, email, phone),
           staff(id, first_name, last_name),
           treatment_plan_items(
             id,
@@ -32,18 +32,18 @@ export default function usePatientTreatmentPlans(patientId: string) {
           )
         `
         )
-        .eq('patient_id', patientId)
+        .eq('client_id', clientId)
         .eq('tenant_id', currentTenant.id)
         .order('created_at', { ascending: false })
 
       if (error) {
         throw new Error(
-          `Error al obtener planes del paciente: ${error.message}`
+          `Error al obtener planes del cliente: ${error.message}`
         )
       }
 
       return treatmentPlans as TreatmentPlanWithRelations[]
     },
-    enabled: !!patientId && !!currentTenant?.id,
+    enabled: !!clientId && !!currentTenant?.id,
   })
 }

@@ -66,8 +66,8 @@ export default function useTreatmentPlans(filters?: TreatmentPlanFilters) {
         .order('created_at', { ascending: false })
 
       // Aplicar filtros
-      if (filters?.patient_id) {
-        query = query.eq('patient_id', filters.patient_id)
+      if (filters?.client_id) {
+      query = query.eq('client_id', filters.client_id)
       }
 
       if (filters?.staff_id) {

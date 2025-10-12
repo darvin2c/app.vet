@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const ClinicalNoteSchema = z.object({
   id: z.string().uuid().optional(),
-  patient_id: z.string().uuid(),
+  client_id: z.string().uuid(),
   staff_id: z.string().uuid(),
   title: z.string().min(1, 'El título es requerido').max(200),
   content: z.string().min(1, 'El contenido es requerido'),

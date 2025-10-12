@@ -15,7 +15,7 @@ export type AppointmentStatus = z.infer<typeof appointmentStatusEnum>
 // Schema para crear una cita
 export const createAppointmentSchema = z
   .object({
-    patient_id: z.string().uuid('ID de paciente inválido'),
+    client_id: z.string().uuid('ID de cliente inválido'),
     staff_id: z.string().uuid('ID de staff inválido').optional(),
     procedure_id: z.string().uuid('ID de procedimiento inválido').optional(),
     appointment_type_id: z.string().uuid('ID de tipo de cita inválido'),
@@ -46,7 +46,7 @@ export const updateAppointmentSchema = createAppointmentSchema
 
 // Schema para filtros de citas
 export const appointmentFiltersSchema = z.object({
-  patient_id: z.string().uuid().optional(),
+  client_id: z.string().uuid().optional(),
   staff_id: z.string().uuid().optional(),
   appointment_type_id: z.string().uuid().optional(),
   status: appointmentStatusEnum.optional(),
