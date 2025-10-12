@@ -1,7 +1,6 @@
 'use client'
 
-import React, { useCallback, useMemo, useState, useRef } from 'react'
-import { useQueryStates } from 'nuqs'
+import React, { useCallback, useState, useRef } from 'react'
 import { Search, X, Calendar, Filter } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -374,7 +373,7 @@ export function Filters({
               value={extractPostgRESTValue(filterValues[filter.key]) || ''}
               onChange={(value) =>
                 setMultipleFilters({
-                  [filter.key]: createPostgRESTValue(filter.operator, value),
+                  [filter.key]: value,
                 })
               }
             />
@@ -561,11 +560,28 @@ const SearchFilter = React.memo(function SearchFilter({
     []
   )
 
+  const handleClear = React.useCallback(() => {
+    setLocalValue('')
+    onChange('')
+  }, [onChange])
+
   return (
     <div className="space-y-2">
-      <Label htmlFor={config.key} className="text-sm font-medium">
-        {config.label}
-      </Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor={config.key} className="text-sm font-medium">
+          {config.label}
+        </Label>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
@@ -597,9 +613,25 @@ function SelectFilter({
     }
   }
 
+  const handleClear = () => {
+    onChange('')
+  }
+
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{config.label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{config.label}</Label>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <Select value={value || '__all__'} onValueChange={handleValueChange}>
         <SelectTrigger>
           <SelectValue placeholder={config.placeholder} />
@@ -636,9 +668,25 @@ function MultiSelectFilter({
     onChange(newValue)
   }
 
+  const handleClear = () => {
+    onChange([])
+  }
+
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{config.label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{config.label}</Label>
+        {value.length > 0 && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <Popover>
         <PopoverTrigger asChild>
           <Button variant="outline" className="w-full justify-start">
@@ -710,9 +758,25 @@ function DateFilter({
   const [open, setOpen] = React.useState(false)
   const selectedDate = value ? new Date(value) : undefined
 
+  const handleClear = () => {
+    onChange('')
+  }
+
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{config.label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{config.label}</Label>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -761,9 +825,25 @@ function DateRangeFilter({
   const fromDate = fromValue ? new Date(fromValue) : undefined
   const toDate = toValue ? new Date(toValue) : undefined
 
+  const handleClear = () => {
+    onChange('', '')
+  }
+
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{config.label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{config.label}</Label>
+        {(fromValue || toValue) && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <div className="grid grid-cols-2 gap-2">
         {/* Fecha desde */}
         <Popover open={fromOpen} onOpenChange={setFromOpen}>
@@ -841,9 +921,25 @@ function BooleanFilter({
     }
   }
 
+  const handleClear = () => {
+    onChange('')
+  }
+
   return (
     <div className="space-y-2">
-      <Label className="text-sm font-medium">{config.label}</Label>
+      <div className="flex items-center justify-between">
+        <Label className="text-sm font-medium">{config.label}</Label>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <ButtonGroup>
         <Button
           type="button"
@@ -912,11 +1008,28 @@ const NumberFilter = React.memo(function NumberFilter({
     []
   )
 
+  const handleClear = () => {
+    setLocalValue('')
+    onChange('')
+  }
+
   return (
     <div className="space-y-2">
-      <Label htmlFor={config.key} className="text-sm font-medium">
-        {config.label}
-      </Label>
+      <div className="flex items-center justify-between">
+        <Label htmlFor={config.key} className="text-sm font-medium">
+          {config.label}
+        </Label>
+        {value && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleClear}
+            className="h-6 w-6 p-0 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
+      </div>
       <Input
         id={config.key}
         type="number"
