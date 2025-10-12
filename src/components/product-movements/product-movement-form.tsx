@@ -167,10 +167,10 @@ export function ProductMovementForm() {
 
         <FormField
           control={control}
-          name="total_cost"
+          name="unit_cost"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Costo Total</FormLabel>
+              <FormLabel>Costo Unitario</FormLabel>
               <FormControl>
                 <Input
                   type="number"
@@ -192,10 +192,10 @@ export function ProductMovementForm() {
 
       <FormField
         control={control}
-        name="reference_id"
+        name="reference"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>ID de Referencia</FormLabel>
+            <FormLabel>Referencia</FormLabel>
             <FormControl>
               <Input
                 placeholder="Número de factura, orden, etc."

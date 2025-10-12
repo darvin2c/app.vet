@@ -22,8 +22,8 @@ export function SupplierCreateButton({
         variant={variant}
         size={size}
         onClick={() => setOpen(true)}
+        icon={Plus}
       >
-        <Plus className="h-4 w-4 mr-2" />
         Nuevo Proveedor
       </ResponsiveButton>
       

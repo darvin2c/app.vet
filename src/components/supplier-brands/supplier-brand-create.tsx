@@ -8,6 +8,7 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierBrandForm } from './supplier-brand-form'
 import useSupplierBrandCreate from '@/hooks/supplier-brands/use-supplier-brand-create'
 import { createSupplierBrandSchema, CreateSupplierBrandSchema } from '@/schemas/supplier-brands.schema'
+import { Plus } from 'lucide-react'
 
 interface SupplierBrandCreateProps {
   open: boolean
@@ -57,6 +58,7 @@ export function SupplierBrandCreate({
               type="submit"
               isLoading={isPending}
               disabled={isPending}
+              icon={Plus}
             >
               Asignar Marca
             </ResponsiveButton>

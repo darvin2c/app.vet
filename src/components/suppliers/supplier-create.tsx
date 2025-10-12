@@ -9,6 +9,7 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierForm } from './supplier-form'
 import { CreateSupplierSchema, createSupplierSchema } from '@/schemas/suppliers.schema'
 import useSupplierCreate from '@/hooks/suppliers/use-supplier-create'
+import { Plus } from 'lucide-react'
 
 interface SupplierCreateProps {
   open: boolean
@@ -58,6 +59,7 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
           type="submit"
           isLoading={isPending}
           disabled={isPending}
+          icon={Plus}
         >
           Crear Proveedor
         </ResponsiveButton>
@@ -65,6 +67,7 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
           variant="outline"
           onClick={() => onOpenChange(false)}
           disabled={isPending}
+          icon={Plus}
         >
           Cancelar
         </ResponsiveButton>
