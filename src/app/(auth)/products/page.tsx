@@ -7,20 +7,11 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
-import { PRODUCTS_COLUMNS_CONFIG } from '@/components/products/products-columns'
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 
 export default function ProductsPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
-    {
-      key: 'search',
-      field: 'search',
-      type: 'search',
-      label: 'Buscar productos',
-      placeholder: 'Buscar por nombre, SKU...',
-      operator: 'ilike',
-    },
     {
       key: 'is_active',
       field: 'is_active',
@@ -66,18 +57,18 @@ export default function ProductsPage() {
 
   const orderByConfig: OrderByConfig = {
     columns: [
-      {
-        field: 'created_at',
-        label: 'Fecha de creación',
-      },
+      { field: 'name', label: 'Nombre', sortable: true },
+      { field: 'sku', label: 'SKU', sortable: true },
+      { field: 'category_id', label: 'Categoría', sortable: true },
+      { field: 'unit_id', label: 'Unidad', sortable: true },
+      { field: 'is_active', label: 'Estado', sortable: true },
     ],
   }
 
   return (
     <PageBase
       title="Productos"
-      subtitle="Gestiona el catálogo de productos de tu negocio"
-      actions={<div className="flex items-center gap-2"></div>}
+      subtitle="Gestiona el catálogo de productos"
       search={
         <SearchInput
           hasSidebarTrigger
@@ -86,7 +77,7 @@ export default function ProductsPage() {
           suffix={
             <ButtonGroup>
               <Filters filters={filters} />
-              <OrderBy config={PRODUCTS_COLUMNS_CONFIG} />
+              <OrderBy config={orderByConfig} />
               <ProductCreateButton />
             </ButtonGroup>
           }

@@ -1,17 +1,14 @@
 'use client'
 
 import { useIsMobile } from '@/hooks/use-mobile'
-import { SidebarTrigger } from './ui/sidebar'
 
 export default function Header({
   title,
   subtitle,
-  actions,
   search,
 }: {
   title?: React.ReactNode
   subtitle?: React.ReactNode
-  actions?: React.ReactNode
   search?: React.ReactNode
 }) {
   const isMobile = useIsMobile()
@@ -28,10 +25,7 @@ export default function Header({
           )}
         </div>
       )}
-      <div className="flex items-center gap-4 grow">
-        <div className="grow">{search}</div>
-        {actions && <div className="flex-shrink-0">{actions}</div>}
-      </div>
+      <div className="grow">{search}</div>
     </header>
   )
 }

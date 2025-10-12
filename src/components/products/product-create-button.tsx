@@ -2,10 +2,16 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { ProductCreate } from './product-create'
 
-export function ProductCreateButton() {
+export function ProductCreateButton({
+  children,
+  ...props
+}: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -14,8 +20,9 @@ export function ProductCreateButton() {
         icon={Plus}
         tooltip="Nuevo Producto"
         onClick={() => setOpen(true)}
+        {...props}
       >
-        Nuevo Producto
+        {children || 'Nuevo'}
       </ResponsiveButton>
 
       <ProductCreate open={open} onOpenChange={setOpen} />

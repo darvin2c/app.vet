@@ -29,7 +29,6 @@ import { ProductCreateButton } from './product-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/hooks/use-order-by'
-import { PRODUCTS_COLUMNS_CONFIG } from './products-columns'
 import { OrderByConfig } from '@/types/order-by.types'
 import {
   Empty,
@@ -68,9 +67,10 @@ export function ProductList({
 
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
-  const { appliedSorts } = useOrderBy(orderByConfig)
+  const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   // Usar el hook useProducts con los filtros aplicados (sin componentes React)
+  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
   const {
     data: products = [],
     isPending,
@@ -78,11 +78,8 @@ export function ProductList({
   } = useProducts({
     filters: appliedFilters,
     search: appliedSearch,
-    orders: appliedSorts,
+    orders: orderByHook.appliedSorts,
   })
-
-  // Configurar el hook useOrderBy
-  const orderByHook = useOrderBy(PRODUCTS_COLUMNS_CONFIG)
 
   const columns: ColumnDef<Product>[] = [
     {
@@ -306,7 +303,7 @@ export function ProductList({
               aplicados.
             </EmptyDescription>
             <div className="mt-4">
-              <ProductCreateButton />
+              <ProductCreateButton children="Nuevo Producto" />
             </div>
           </EmptyHeader>
         </Empty>
