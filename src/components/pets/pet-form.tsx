@@ -16,7 +16,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
 import { ClientSelect } from '@/components/clients/client-select'
 import { CreatePetSchema } from '@/schemas/pets.schema'
 

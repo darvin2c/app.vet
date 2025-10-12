@@ -55,7 +55,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="px-4 overflow-y-auto">
+        <div className="px-4">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit as any)}
