@@ -14,6 +14,8 @@ import {
 } from '@/components/ui/input-group'
 import { Kbd } from './kbd'
 import { SidebarTrigger } from './sidebar'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { useIsFetching } from '@tanstack/react-query'
 
 export interface SearchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -81,12 +83,16 @@ const InternalSearchInput = React.forwardRef<
     const showClearButton = showClear && currentValue.length > 0 && !isLoading
     const showSuffix = suffix && !isLoading
     const showShortcut = enableShortcut && !currentValue && !isLoading
+    const isMobile = useIsMobile()
+    const isFetching = useIsFetching()
 
     return (
       <InputGroup className={cn(sizeClasses[size], containerClassName)}>
         {/* Search icon - left side */}
         <InputGroupAddon align="inline-start">
-          {hasSidebarTrigger && <SidebarTrigger />}
+          {hasSidebarTrigger && isMobile && (
+            <SidebarTrigger className="cursor-ew-resize" />
+          )}
           <SearchIcon className={iconSizeClasses[size]} />
         </InputGroupAddon>
 
@@ -108,17 +114,17 @@ const InternalSearchInput = React.forwardRef<
         {/* Right side elements */}
         <InputGroupAddon align="inline-end">
           {/* Loading spinner - highest priority */}
-          {isLoading && (
+          {isLoading || isFetching ? (
             <Loader2
               className={cn(
                 'animate-spin text-muted-foreground',
                 iconSizeClasses[size]
               )}
             />
-          )}
+          ) : null}
 
           {/* Clear button */}
-          {showClearButton && (
+          {showClearButton ? (
             <InputGroupButton
               type="button"
               onClick={onClear}
@@ -127,17 +133,17 @@ const InternalSearchInput = React.forwardRef<
             >
               <X className={iconSizeClasses[size]} />
             </InputGroupButton>
-          )}
+          ) : null}
 
           {/* Keyboard shortcut hint */}
-          {showShortcut && (
+          {showShortcut ? (
             <InputGroupText className="text-xs pointer-events-none">
               <Kbd>Ctrl+K</Kbd>
             </InputGroupText>
-          )}
+          ) : null}
 
           {/* Suffix */}
-          {showSuffix && <InputGroupText>{suffix}</InputGroupText>}
+          {showSuffix ? <InputGroupText>{suffix}</InputGroupText> : null}
         </InputGroupAddon>
       </InputGroup>
     )

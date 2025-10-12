@@ -20,7 +20,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex flex-row items-center justify-between">
           <TenantSwitcher />
-          <SidebarTrigger className="-ml-1" />
+          <SidebarTrigger className="-ml-1 cursor-ew-resize" />
         </SidebarHeader>
         <SidebarContent>
           <MainNav />

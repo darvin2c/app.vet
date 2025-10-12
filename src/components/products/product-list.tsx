@@ -60,7 +60,7 @@ export function ProductList({ filters }: ProductListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useProducts con los filtros aplicados
-  const { data: products = [], isLoading, error } = useProducts(filters)
+  const { data: products = [], isPending, error } = useProducts(filters)
 
   // Configurar el hook useOrderBy
   const orderByHook = useOrderBy(PRODUCTS_COLUMNS_CONFIG)
@@ -259,7 +259,7 @@ export function ProductList({ filters }: ProductListProps) {
   )
 
   // Estados de carga y error
-  if (isLoading) {
+  if (isPending) {
     return <TableSkeleton />
   }
 
