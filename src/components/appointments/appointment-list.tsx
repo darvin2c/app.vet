@@ -26,7 +26,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 type Appointment = Tables<'appointments'> & {
-  patients?: { first_name: string; last_name: string } | null
+  pets?: { name: string; client_id: string } | null
   staff?: { first_name: string; last_name: string } | null
   appointment_types?: { name: string; color: string | null } | null
 }

@@ -14,10 +14,9 @@ import { AppointmentDelete } from './appointment-delete'
 import type { Tables } from '@/types/supabase.types'
 
 type Appointment = Tables<'appointments'> & {
-  patients?: { first_name: string; last_name: string } | null
+  pets?: { name: string; client_id: string } | null
   staff?: { first_name: string; last_name: string } | null
   appointment_types?: { name: string; color: string | null } | null
-  procedures?: { name: string } | null
 }
 
 interface AppointmentActionsProps {

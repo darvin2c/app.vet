@@ -118,11 +118,7 @@ export function AppointmentItem({
                 ? `${patient.first_name} ${patient.last_name}`
                 : 'Paciente no asignado'}
             </p>
-            {patient?.email && (
-              <p className="text-xs text-muted-foreground truncate">
-                {patient.email}
-              </p>
-            )}
+
           </div>
         </div>
 

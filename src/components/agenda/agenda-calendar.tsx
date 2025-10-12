@@ -45,7 +45,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     return appointments.map(
       (appointment: Appointment): CalendarEvent => ({
         id: appointment.id,
-        title: `${appointment.patients?.first_name} ${appointment.patients?.last_name}`,
+        title: `${appointment.pets?.name || 'Sin mascota'}`,
         start: dayjs(appointment.start_time),
         end: dayjs(appointment.end_time),
         color: appointment.appointment_types?.color || '#3b82f6',

@@ -71,7 +71,6 @@ export function AppointmentCard({
   const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
-  const procedureName = procedure?.name
 
   // Formatear horas
   const startTime = format(new Date(appointment.start_time), 'HH:mm', {
@@ -168,13 +167,7 @@ export function AppointmentCard({
         </div>
       )}
 
-      {/* Procedimiento si existe */}
-      {procedureName && (
-        <div className="flex items-center gap-2 mb-2">
-          <Stethoscope className="w-4 h-4 text-gray-600" />
-          <span className="text-sm text-gray-700">{procedureName}</span>
-        </div>
-      )}
+
 
       {/* Notas/descripción si existen */}
       {appointment?.notes && (

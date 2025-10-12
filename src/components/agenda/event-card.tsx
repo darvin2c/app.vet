@@ -75,7 +75,6 @@ export function EventCard({ appointment, children }: EventCardProps) {
 
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'
   const appointmentTypeColor = appointment.appointment_types?.color || '#3B82F6'
-  const procedureName = appointment.procedures?.name || 'Sin procedimiento'
 
   const startDate = new Date(appointment.start_time)
   const endDate = new Date(appointment.end_time)
@@ -156,18 +155,7 @@ Personal: ${staffName}`
                 </div>
                 <div className="pl-6 space-y-2">
                   <div className="font-medium text-base">{patientName}</div>
-                  {appointment.patients?.phone && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Phone className="h-3 w-3" />
-                      {appointment.patients.phone}
-                    </div>
-                  )}
-                  {appointment.patients?.email && (
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Mail className="h-3 w-3" />
-                      {appointment.patients.email}
-                    </div>
-                  )}
+
                 </div>
               </div>
 
@@ -223,14 +211,7 @@ Personal: ${staffName}`
                       </div>
                     </div>
                   </div>
-                  {procedureName !== 'Sin procedimiento' && (
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Procedimiento
-                      </div>
-                      <div className="font-medium">{procedureName}</div>
-                    </div>
-                  )}
+
                 </div>
               </div>
 
