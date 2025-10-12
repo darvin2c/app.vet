@@ -39,7 +39,7 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <User className="h-5 w-5 text-blue-600" />
-                {staffSpecialty.staff?.first_name} {staffSpecialty.staff?.last_name}
+                {staffSpecialty.staff?.full_name}
               </CardTitle>
               <StaffSpecialtyActions staffSpecialty={staffSpecialty} />
             </div>

@@ -6,7 +6,7 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type ProductCategory = Database['public']['Tables']['product_categories']['Row']
 
-export default function useProductCategories(
+export default function useProductCategoryList(
   filters?: ProductCategoryFiltersSchema
 ) {
   const { currentTenant } = useCurrentTenantStore()

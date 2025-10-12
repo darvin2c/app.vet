@@ -6,7 +6,7 @@ import { Tables } from '@/types/supabase.types'
 
 interface StaffSpecialtyDeleteProps {
   staffSpecialty: Tables<'staff_specialties'> & {
-    staff?: { first_name: string; last_name: string } | null
+    staff?: { full_name: string } | null
     specialties?: { name: string } | null
   }
   open: boolean
@@ -30,19 +30,16 @@ export function StaffSpecialtyDelete({ staffSpecialty, open, onOpenChange }: Sta
     )
   }
 
-  const staffName = staffSpecialty.staff 
-    ? `${staffSpecialty.staff.first_name} ${staffSpecialty.staff.last_name}`
-    : 'Staff'
-  
+  const staffName = staffSpecialty.staff?.full_name || 'Staff'
   const specialtyName = staffSpecialty.specialties?.name || 'Especialidad'
 
   return (
     <AlertConfirmation
       open={open}
       onOpenChange={onOpenChange}
-      title="Desasignar Especialidad"
-      description={`¿Estás seguro de que deseas desasignar la especialidad "${specialtyName}" de "${staffName}"? Esta acción no se puede deshacer.`}
-      confirmText={specialtyName}
+      title="Eliminar asignación de especialidad"
+      description={`¿Estás seguro de que deseas eliminar la asignación de la especialidad "${specialtyName}" del staff "${staffName}"?`}
+      confirmText={`eliminar ${specialtyName}`}
       onConfirm={handleDelete}
       loading={isPending}
       variant="destructive"
