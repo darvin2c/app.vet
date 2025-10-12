@@ -7,7 +7,6 @@ export default function ProductBrandsPage() {
     <PageBase
       title="Marcas de Productos"
       subtitle="Gestiona las marcas de productos registradas en el sistema"
-      actions={<ProductBrandCreateButton />}
     >
       <ProductBrandList />
     </PageBase>

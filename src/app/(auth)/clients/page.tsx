@@ -36,14 +36,14 @@ export default function ClientsPage() {
   const { data: clients = [], isLoading } = useClientList({ filters })
 
   const handleSearchChange = (search: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       search: search || undefined,
     }))
   }
 
   const handleStatusChange = (status: string) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
       is_active: status === 'all' ? undefined : status === 'active',
     }))
@@ -53,7 +53,9 @@ export default function ClientsPage() {
     setFilters({})
   }
 
-  const hasActiveFilters = Object.values(filters).some(value => value !== undefined)
+  const hasActiveFilters = Object.values(filters).some(
+    (value) => value !== undefined
+  )
 
   // La tabla clients no tiene campo is_active según supabase.types.ts
   const activeClientsCount = clients.length
@@ -63,7 +65,6 @@ export default function ClientsPage() {
     <PageBase
       title="Clientes"
       subtitle={`Gestiona la información de tus clientes (${clients.length} registrados)`}
-      actions={<ClientCreateButton />}
     >
       {/* Filtros y Búsqueda */}
       <div className="flex flex-col sm:flex-row gap-4 mb-6">
@@ -78,14 +79,14 @@ export default function ClientsPage() {
             />
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Select
             value={
-              filters.is_active === undefined 
-                ? 'all' 
-                : filters.is_active 
-                  ? 'active' 
+              filters.is_active === undefined
+                ? 'all'
+                : filters.is_active
+                  ? 'active'
                   : 'inactive'
             }
             onValueChange={handleStatusChange}
@@ -146,7 +147,7 @@ export default function ClientsPage() {
             <Badge variant="outline">{clients.length}</Badge>
           </div>
         </div>
-        
+
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center justify-between">
             <div>
@@ -160,7 +161,7 @@ export default function ClientsPage() {
             <Badge variant="default">{activeClientsCount}</Badge>
           </div>
         </div>
-        
+
         <div className="bg-card rounded-lg border p-4">
           <div className="flex items-center justify-between">
             <div>

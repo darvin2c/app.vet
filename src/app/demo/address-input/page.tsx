@@ -62,8 +62,6 @@ export default function AddressInputDemoPage() {
     <PageBase
       title="AddressInput Component"
       subtitle="Componente de entrada de direcciones con autocompletado de Google Maps"
-      actions={<></>}
-      search={<></>}
     >
       <div className="space-y-8">
         {/* Configuración de API */}

@@ -36,7 +36,6 @@ export default function ProductUnitsPage() {
         </div>
       }
       subtitle="Definir unidades de medida para productos del inventario"
-      actions={<ProductUnitCreateButton />}
       search={<SearchInput placeholder="Buscar unidades..." />}
     >
       <ProductUnitList />

@@ -7,7 +7,6 @@ export default function SuppliersPage() {
     <PageBase
       title="Proveedores"
       subtitle="Gestiona los proveedores de tu clínica veterinaria"
-      actions={<SupplierCreateButton />}
     >
       <SupplierList />
     </PageBase>

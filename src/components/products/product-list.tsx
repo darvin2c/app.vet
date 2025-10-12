@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -44,6 +44,14 @@ import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+  ItemGroup,
+} from '@/components/ui/item'
 
 // Función para obtener el valor desde localStorage (duplicada de view-mode-toggle para consistencia)
 function getStoredViewMode(resource: string): ViewMode {
@@ -71,10 +79,8 @@ export function ProductList({
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
 }) {
-  // Estado para el modo de vista - inicializado desde localStorage para sincronización
-  const [viewMode, setViewMode] = useState<ViewMode>(() =>
-    getStoredViewMode('products')
-  )
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
@@ -253,40 +259,34 @@ export function ProductList({
 
   // Función para renderizar vista de lista
   const renderListView = () => (
-    <div className="space-y-2">
+    <ItemGroup className="space-y-2">
       {products.map((product) => (
-        <div key={product.id} className="border rounded-lg p-4">
-          <div className="flex justify-between items-center">
-            <div className="flex-1">
-              <div className="flex items-center gap-4">
-                <div>
-                  <h3 className="font-medium">{product.name}</h3>
-                  {product.sku && (
-                    <p className="text-sm text-muted-foreground">
-                      SKU: {product.sku}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex gap-4 text-sm text-muted-foreground">
-                  {product.category_id && (
-                    <span>Categoría: {product.category_id}</span>
-                  )}
-                  {product.unit_id && <span>Unidad: {product.unit_id}</span>}
-                </div>
-
-                <IsActiveDisplay value={product.is_active} />
-              </div>
+        <Item key={product.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{product.name}</ItemTitle>
+            {product.sku && (
+              <ItemDescription>SKU: {product.sku}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              {product.category_id && (
+                <span>Categoría: {product.category_id}</span>
+              )}
+              {product.unit_id && <span>Unidad: {product.unit_id}</span>}
+              <IsActiveDisplay value={product.is_active} />
             </div>
+          </ItemContent>
+          <ItemActions>
             <ProductActions product={product} />
-          </div>
-        </div>
+          </ItemActions>
+        </Item>
       ))}
-    </div>
+    </ItemGroup>
   )
 
   // Estados de carga y error
   if (isPending) {
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
     return <TableSkeleton variant={viewMode} />
   }
 

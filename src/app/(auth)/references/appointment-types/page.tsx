@@ -14,7 +14,6 @@ export default function AppointmentTypesPage() {
         </div>
       }
       subtitle="Configurar tipos de citas disponibles en el sistema"
-      actions={<AppointmentTypeCreateButton />}
       search={<SearchInput placeholder="Buscar tipos de cita..." />}
     >
       <AppointmentTypeList />

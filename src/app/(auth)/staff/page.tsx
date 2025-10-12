@@ -91,7 +91,6 @@ export default function StaffPage() {
     <PageBase
       title="Staff"
       subtitle="Gestiona la información de tu equipo de trabajo"
-      actions={<div className="flex items-center gap-2"></div>}
       search={
         <SearchInput
           hasSidebarTrigger

@@ -7,7 +7,6 @@ export default function SupplierBrandsPage() {
     <PageBase
       title="Marcas de Proveedores"
       subtitle="Gestiona las asignaciones de marcas a proveedores"
-      actions={<SupplierBrandCreateButton />}
     >
       <SupplierBrandList />
     </PageBase>

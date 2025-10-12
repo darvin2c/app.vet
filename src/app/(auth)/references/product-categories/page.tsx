@@ -36,7 +36,6 @@ export default function ProductCategoriesPage() {
         </div>
       }
       subtitle="Organizar productos en categorías para mejor gestión"
-      actions={<ProductCategoryCreateButton />}
       search={<SearchInput placeholder="Buscar categorías..." />}
     >
       <ProductCategoryList />

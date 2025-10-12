@@ -7,7 +7,6 @@ export default function StaffSpecialtiesPage() {
     <PageBase
       title="Especialidades del Staff"
       subtitle="Gestiona las asignaciones de especialidades del personal"
-      actions={<StaffSpecialtyCreateButton />}
     >
       <StaffSpecialtyList />
     </PageBase>
