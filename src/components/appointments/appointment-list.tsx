@@ -29,7 +29,6 @@ type Appointment = Tables<'appointments'> & {
   patients?: { first_name: string; last_name: string } | null
   staff?: { first_name: string; last_name: string } | null
   appointment_types?: { name: string; color: string | null } | null
-  procedures?: { name: string } | null
 }
 
 interface AppointmentListProps {
