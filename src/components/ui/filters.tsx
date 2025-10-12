@@ -666,7 +666,12 @@ export function Filters({
 
   // Componente de trigger por defecto
   const defaultTrigger = (
-    <ResponsiveButton icon={Filter} tooltip="Filtros" variant="outline">
+    <ResponsiveButton
+      className="relative"
+      icon={Filter}
+      tooltip="Filtros"
+      variant="outline"
+    >
       Filtros
       {activeFiltersCount > 0 && (
         <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">

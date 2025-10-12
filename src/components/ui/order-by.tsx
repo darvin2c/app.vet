@@ -27,6 +27,7 @@ import type {
   SortDirection,
   SortColumn,
 } from '@/types/order-by.types'
+import { ResponsiveButton } from './responsive-button'
 
 // Componente para mostrar el icono de dirección de ordenamiento
 function SortDirectionIcon({ direction }: { direction: SortDirection | null }) {
@@ -48,20 +49,20 @@ const OrderByTrigger = React.forwardRef<
 >(({ activeSortsCount, className, ...props }, ref) => {
   const isMobile = useIsMobile()
   return (
-    <Button
+    <ResponsiveButton
       ref={ref}
       variant="outline"
-      className={cn('border-dashed', className)}
+      className={cn('border-dashed relative', className)}
+      icon={ArrowUpDown}
       {...props}
     >
-      <ArrowUpDown className="mr-2 h-4 w-4" />
       {isMobile ? '' : 'Ordenar'}
       {activeSortsCount > 0 && (
-        <Badge variant="secondary" className="ml-2 h-5 px-1 text-xs">
+        <Badge variant="secondary" className="absolute -top-2 -right-2 text-xs">
           {activeSortsCount}
         </Badge>
       )}
-    </Button>
+    </ResponsiveButton>
   )
 })
 
