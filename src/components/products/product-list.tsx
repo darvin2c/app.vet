@@ -50,75 +50,36 @@ import {
 import useProducts from '@/hooks/products/use-products-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
+import { useSearch } from '@/hooks/use-search'
 
 type ViewMode = 'table' | 'cards' | 'list'
 
 type Product = Database['public']['Tables']['products']['Row']
 
-export function ProductList() {
+export function ProductList({
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
   // Estado para controlar la vista actual
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  // Configuración de filtros (movida desde page.tsx)
-  const filtersConfig: FilterConfig[] = [
-    {
-      key: 'search',
-      field: 'search',
-      type: 'search',
-      label: 'Buscar productos',
-      placeholder: 'Buscar por nombre, SKU...',
-      operator: 'ilike',
-    },
-    {
-      key: 'is_active',
-      field: 'is_active',
-      type: 'boolean',
-      label: 'Estado',
-      placeholder: 'Selecciona estado',
-      operator: 'eq',
-    },
-    {
-      key: 'category_id',
-      field: 'category_id',
-      type: 'select',
-      label: 'Categoría',
-      placeholder: 'Selecciona categoría',
-      operator: 'eq',
-      options: [],
-    },
-    {
-      key: 'unit_id',
-      field: 'unit_id',
-      type: 'select',
-      label: 'Unidad',
-      placeholder: 'Selecciona unidad',
-      operator: 'eq',
-      options: [],
-    },
-    {
-      key: 'min_stock_range',
-      field: 'min_stock',
-      type: 'number',
-      label: 'Stock mínimo',
-      placeholder: 'Stock mínimo',
-      operator: 'gte',
-    },
-    {
-      key: 'created_range',
-      field: 'created_at',
-      type: 'dateRange',
-      label: 'Fecha de creación',
-      placeholder: 'Selecciona rango de fechas',
-      operator: 'gte',
-    },
-  ]
-
   // Usar el hook useFilters para obtener los filtros aplicados
-  const { appliedFilters } = useFilters(filtersConfig)
-  const { appliedSorts } = useOrderBy(PRODUCTS_COLUMNS_CONFIG)
-  
+  const { appliedFilters } = useFilters(filterConfig)
+  const { appliedSorts } = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
   // Usar el hook useProducts con los filtros aplicados (sin componentes React)
-  const { data: products = [], isPending, error } = useProducts(appliedFilters)
+  const {
+    data: products = [],
+    isPending,
+    error,
+  } = useProducts({
+    filters: appliedFilters,
+    search: appliedSearch,
+    orders: appliedSorts,
+  })
 
   // Configurar el hook useOrderBy
   const orderByHook = useOrderBy(PRODUCTS_COLUMNS_CONFIG)

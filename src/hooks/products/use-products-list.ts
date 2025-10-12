@@ -7,9 +7,21 @@ import { AppliedSort } from '@/types/order-by.types'
 
 type Product = Database['public']['Tables']['products']['Row']
 
-export default function useProductsList(
-  filters: AppliedFilter[] = []
-) {
+export default function useProductsList({
+  filters = [],
+  search,
+  orders = [
+    {
+      field: 'created_at',
+      ascending: false,
+      direction: 'desc',
+    },
+  ],
+}: {
+  filters?: AppliedFilter[]
+  search?: string
+  orders?: AppliedSort[]
+}) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
@@ -49,6 +61,20 @@ export default function useProductsList(
           query = query.eq(filter.field, filter.value)
         }
       })
+
+      // Aplicar ordenamiento
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.ascending,
+        })
+      })
+
+      // Aplicar búsqueda global
+      if (search) {
+        query = query.or(
+          `name.ilike.%${search}%,sku.ilike.%${search}%,barcode.ilike.%${search}%`
+        )
+      }
 
       const { data, error } = await query
 
