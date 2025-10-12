@@ -1,0 +1,38 @@
+'use client'
+
+import * as React from 'react'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarInset,
+  SidebarProvider,
+  SidebarRail,
+  SidebarTrigger,
+} from '@/components/ui/sidebar'
+import { TenantSwitcher } from '../tenants/tenant-switcher'
+import { UserNav } from '../auth/user-nav'
+import { MainNav } from './main-nav'
+export function AppSidebar({ children }: { children: React.ReactNode }) {
+  return (
+    <SidebarProvider>
+      <Sidebar collapsible="icon">
+        <SidebarHeader className="flex flex-row items-center justify-between">
+          <TenantSwitcher />
+          <SidebarTrigger className="-ml-1" />
+        </SidebarHeader>
+        <SidebarContent>
+          <MainNav />
+        </SidebarContent>
+        <SidebarFooter>
+          <UserNav />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+      <SidebarInset>
+        <div>{children}</div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
+}
