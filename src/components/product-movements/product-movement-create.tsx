@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
@@ -51,12 +51,7 @@ export function ProductMovementCreate({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Movimiento de Producto"
-      description="Registra un nuevo movimiento de inventario para el producto seleccionado."
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductMovementForm />
@@ -80,6 +75,6 @@ export function ProductMovementCreate({
           </DrawerFooter>
         </form>
       </Form>
-    </DrawerForm>
+    </Drawer>
   )
 }

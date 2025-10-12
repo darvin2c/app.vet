@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
@@ -49,12 +49,7 @@ export function ProductCategoryCreate({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Categoría de Producto"
-      description="Completa la información para agregar una nueva categoría de producto."
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductCategoryForm />
@@ -75,6 +70,6 @@ export function ProductCategoryCreate({
           </DrawerFooter>
         </form>
       </Form>
-    </DrawerForm>
+    </Drawer>
   )
 }

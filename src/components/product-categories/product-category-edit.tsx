@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
@@ -49,13 +49,7 @@ export function ProductCategoryEdit({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Categoría"
-      description="Modifica la información de la categoría de producto."
-      trigger={<></>}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <ProductCategoryForm />
@@ -76,6 +70,6 @@ export function ProductCategoryEdit({
           </DrawerFooter>
         </form>
       </Form>
-    </DrawerForm>
+    </Drawer>
   )
 }

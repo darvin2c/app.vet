@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
@@ -13,7 +13,6 @@ import {
 } from '@/schemas/product-movements.schema'
 import useProductMovementUpdate from '@/hooks/product-movements/use-product-movement-update'
 import { Tables } from '@/types/supabase.types'
-import { format } from 'date-fns'
 
 interface ProductMovementEditProps {
   movement: Tables<'product_movements'>
@@ -54,13 +53,7 @@ export function ProductMovementEdit({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Movimiento"
-      description="Modifica la información del movimiento de producto."
-      trigger={<></>}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit as any)}
@@ -84,6 +77,6 @@ export function ProductMovementEdit({
           </DrawerFooter>
         </form>
       </Form>
-    </DrawerForm>
+    </Drawer>
   )
 }

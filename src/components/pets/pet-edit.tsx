@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { updatePetSchema, UpdatePetSchema } from '@/schemas/pets.schema'
 import { useUpdatePet } from '@/hooks/pets/use-pet-update'
 import { Tables } from '@/types/supabase.types'
-import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { PetForm } from './pet-form'
 import { Save, X } from 'lucide-react'
+import { Drawer } from '../ui/drawer-form'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -26,6 +26,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     defaultValues: {
       name: pet.name,
       species_id: pet.species_id,
+      breed_id: pet.breed_id || '',
       sex: pet.sex,
       birth_date: pet.birth_date || '',
       weight: pet.weight || undefined,
@@ -41,6 +42,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
       form.reset({
         name: pet.name,
         species_id: pet.species_id,
+        breed_id: pet.breed_id || '',
         sex: pet.sex,
         birth_date: pet.birth_date || '',
         weight: pet.weight || undefined,
@@ -70,16 +72,10 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
   }
 
   return (
-    <DrawerForm
-      trigger={<></>}
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Mascota"
-      description={`Editar información de ${pet.name}`}
-    >
+    <Drawer>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <PetForm />
+          <PetForm mode="edit" pet={pet} />
 
           <DrawerFooter>
             <ResponsiveButton
@@ -102,6 +98,6 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

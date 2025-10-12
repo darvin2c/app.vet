@@ -10,7 +10,7 @@ import {
 import useClientUpdate from '@/hooks/clients/use-client-update'
 import useClientDetail from '@/hooks/clients/use-client-detail'
 import { ClientForm } from './client-form'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Loader2 } from 'lucide-react'
@@ -83,84 +83,5 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
     onOpenChange(false)
   }
 
-  if (isLoading) {
-    return (
-      <DrawerForm
-        trigger={<></>}
-        open={open}
-        onOpenChange={onOpenChange}
-        title="Editar Cliente"
-        description="Cargando información del cliente..."
-      >
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="h-8 w-8 animate-spin" />
-        </div>
-      </DrawerForm>
-    )
-  }
-
-  if (!client) {
-    return (
-      <DrawerForm
-        trigger={<></>}
-        open={open}
-        onOpenChange={onOpenChange}
-        title="Cliente no encontrado"
-        description="No se pudo cargar la información del cliente"
-      >
-        <div className="py-8 text-center text-muted-foreground">
-          Cliente no encontrado
-        </div>
-        <DrawerFooter>
-          <ResponsiveButton
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            className="w-full"
-          >
-            Cerrar
-          </ResponsiveButton>
-        </DrawerFooter>
-      </DrawerForm>
-    )
-  }
-
-  return (
-    <DrawerForm
-      trigger={<></>}
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Cliente"
-      description={`Modificar información de ${client.full_name}`}
-    >
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ClientForm />
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full"
-            >
-              {isSubmitting && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Actualizar Cliente
-            </ResponsiveButton>
-
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isSubmitting}
-              className="w-full"
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </form>
-      </FormProvider>
-    </DrawerForm>
-  )
+  return <Drawer open={open} onOpenChange={onOpenChange}></Drawer>
 }

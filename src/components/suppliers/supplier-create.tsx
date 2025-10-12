@@ -1,9 +1,8 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierForm } from './supplier-form'
@@ -46,13 +45,7 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Proveedor"
-      description="Registra un nuevo proveedor en el sistema"
-      trigger={<></>}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <SupplierForm />
@@ -76,6 +69,6 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

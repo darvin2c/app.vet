@@ -2,7 +2,7 @@
 
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierBrandForm } from './supplier-brand-form'
@@ -46,13 +46,7 @@ export function SupplierBrandCreate({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Asignar Marca a Proveedor"
-      description="Asigna una marca a un proveedor específico"
-      trigger={<></>}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <SupplierBrandForm />
@@ -78,6 +72,6 @@ export function SupplierBrandCreate({
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

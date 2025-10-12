@@ -3,7 +3,7 @@
 import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierForm } from './supplier-form'
@@ -68,13 +68,7 @@ export function SupplierEdit({
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Proveedor"
-      description="Actualiza la información del proveedor"
-      trigger={<></>}
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <SupplierForm />
@@ -97,6 +91,6 @@ export function SupplierEdit({
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

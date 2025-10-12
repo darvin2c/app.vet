@@ -9,7 +9,7 @@ import {
 } from '@/schemas/clients.schema'
 import useClientCreate from '@/hooks/clients/use-client-create'
 import { ClientForm } from './client-form'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Plus, X } from 'lucide-react'
@@ -54,13 +54,7 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
   }
 
   return (
-    <DrawerForm
-      trigger={<></>}
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Cliente"
-      description="Completa la información para registrar un nuevo cliente."
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ClientForm />
@@ -89,6 +83,6 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

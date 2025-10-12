@@ -8,7 +8,7 @@ import {
   CreateProductBrand,
 } from '@/schemas/product-brands.schema'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ProductBrandForm } from './product-brand-form'
@@ -46,13 +46,7 @@ export function ProductBrandCreate({
   }
 
   return (
-    <DrawerForm
-      trigger={<></>}
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Marca de Producto"
-      description="Registra una nueva marca de producto en el sistema"
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <ProductBrandForm />
@@ -76,6 +70,6 @@ export function ProductBrandCreate({
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }

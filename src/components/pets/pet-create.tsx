@@ -5,8 +5,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createPetSchema, CreatePetSchema } from '@/schemas/pets.schema'
 import { useCreatePet } from '@/hooks/pets/use-pet-create'
-import { DrawerForm } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
+import { Drawer, DrawerFooter } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { PetForm } from './pet-form'
 
@@ -51,16 +50,10 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
   }
 
   return (
-    <DrawerForm
-      trigger={<></>}
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Mascota"
-      description="Completa la información para registrar una nueva mascota."
-    >
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <PetForm />
+          <PetForm mode="create" />
 
           <DrawerFooter>
             <ResponsiveButton
@@ -81,6 +74,6 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
           </DrawerFooter>
         </form>
       </FormProvider>
-    </DrawerForm>
+    </Drawer>
   )
 }
