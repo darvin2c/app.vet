@@ -2,26 +2,33 @@ import { z } from 'zod'
 
 export const productBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
-  sku: z.string().nonempty('El SKU es requerido'),
-  min_stock: z.number().min(0, 'El stock mínimo debe ser mayor o igual a 0'),
-  category_id: z.string().nonempty('La categoría es requerida'),
-  unit_id: z.string().nonempty('La unidad es requerida'),
+  price: z.number().min(0, 'El precio debe ser mayor o igual a 0').default(0),
+  stock: z.number().min(0, 'El stock debe ser mayor o igual a 0').default(0),
+  cost: z.number().min(0, 'El costo debe ser mayor o igual a 0').optional(),
+  is_service: z.boolean().default(false),
   is_active: z.boolean().default(true),
+  barcode: z.string().optional(),
+  sku: z.string().optional(),
+  notes: z.string().optional(),
+  tax_rate: z.number().min(0).max(1, 'La tasa de impuesto debe estar entre 0 y 1').optional(),
+  expiry_date: z.string().optional(),
+  batch_number: z.string().optional(),
+  brand_id: z.string().uuid('ID de marca inválido').optional(),
+  category_id: z.string().uuid('ID de categoría inválido').optional(),
+  unit_id: z.string().uuid('ID de unidad inválido').optional(),
 })
 
-export const createProductSchema = productBaseSchema.extend({
-  stock: z.number().min(0, 'El stock debe ser mayor o igual a 0').optional(),
-})
+export const createProductSchema = productBaseSchema
 
 export const updateProductSchema = productBaseSchema.partial()
 
 export const productFiltersSchema = z.object({
   search: z.string().optional(),
   is_active: z.boolean().optional(),
-  category_id: z.string().optional(),
-  unit_id: z.string().optional(),
-  min_stock_from: z.number().optional(),
-  min_stock_to: z.number().optional(),
+  is_service: z.boolean().optional(),
+  category_id: z.string().uuid().optional(),
+  brand_id: z.string().uuid().optional(),
+  unit_id: z.string().uuid().optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
 })

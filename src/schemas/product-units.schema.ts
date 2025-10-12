@@ -2,11 +2,7 @@ import { z } from 'zod'
 
 export const productUnitBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
-  code: z.string().nonempty('El código es requerido'),
-  decimals: z
-    .number()
-    .min(0, 'Los decimales deben ser mayor o igual a 0')
-    .max(4, 'Los decimales no pueden ser mayor a 4'),
+  abbreviation: z.string().nonempty('La abreviación es requerida'),
   is_active: z.boolean().default(true),
 })
 

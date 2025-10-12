@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const productCategoryBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
-  code: z.string().nonempty('El código es requerido'),
+  description: z.string().optional(),
   is_active: z.boolean().default(true),
 })
 

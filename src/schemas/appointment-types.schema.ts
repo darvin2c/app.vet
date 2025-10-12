@@ -6,11 +6,8 @@ export const createAppointmentTypeSchema = z.object({
     .string()
     .min(1, 'El nombre es requerido')
     .max(255, 'El nombre es muy largo'),
-  code: z
-    .string()
-    .max(50, 'El código es muy largo')
-    .optional()
-    .or(z.literal('')),
+  description: z.string().optional(),
+  duration_minutes: z.number().min(1, 'La duración debe ser mayor a 0').default(30),
   color: z
     .string()
     .regex(
@@ -19,35 +16,15 @@ export const createAppointmentTypeSchema = z.object({
     )
     .optional()
     .default('#3b82f6'),
-  active: z.boolean().optional().default(true),
+  is_active: z.boolean().optional().default(true),
 })
 
 // Schema para actualizar un tipo de cita
-export const updateAppointmentTypeSchema = z.object({
-  id: z.string().uuid('ID de tipo de cita inválido'),
-  name: z
-    .string()
-    .min(1, 'El nombre es requerido')
-    .max(255, 'El nombre es muy largo')
-    .optional(),
-  code: z
-    .string()
-    .max(50, 'El código es muy largo')
-    .optional()
-    .or(z.literal('')),
-  color: z
-    .string()
-    .regex(
-      /^#[0-9A-Fa-f]{6}$/,
-      'El color debe ser un código hexadecimal válido (#ffffff)'
-    )
-    .optional(),
-  active: z.boolean().optional(),
-})
+export const updateAppointmentTypeSchema = createAppointmentTypeSchema.partial()
 
 // Schema para filtros de tipos de citas
 export const appointmentTypeFiltersSchema = z.object({
-  active: z.boolean().optional(),
+  is_active: z.boolean().optional(),
   search: z.string().optional(),
 })
 

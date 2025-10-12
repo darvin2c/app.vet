@@ -7,20 +7,17 @@ export const petBaseSchema = z.object({
     .nonempty('El nombre es requerido')
     .max(100, 'El nombre no puede exceder 100 caracteres'),
 
-  species: z
-    .string()
-    .nonempty('La especie es requerida')
-    .max(50, 'La especie no puede exceder 50 caracteres'),
+  species_id: z.string().uuid('ID de especie inválido'),
 
   breed_id: z.string().uuid('ID de raza inválido').optional(),
 
   client_id: z.string().uuid('ID de cliente inválido'),
 
-  gender: z.enum(['male', 'female', 'unknown'], {
-    message: 'Género debe ser masculino, femenino o desconocido',
-  }).optional(),
+  sex: z.enum(['M', 'F'], {
+    message: 'Sexo debe ser M (Macho) o F (Hembra)',
+  }),
 
-  date_of_birth: z.string().optional(),
+  birth_date: z.string().optional(),
 
   weight: z
     .number()
@@ -30,39 +27,27 @@ export const petBaseSchema = z.object({
 
   color: z.string().max(50, 'El color no puede exceder 50 caracteres').optional(),
 
-  microchip_number: z
+  microchip: z
     .string()
     .max(50, 'El número de microchip no puede exceder 50 caracteres')
     .optional(),
 
-  is_sterilized: z.boolean().optional(),
-
-  allergies: z.string().optional(),
-
-  medical_notes: z.string().optional(),
-
-  is_active: z.boolean().default(true),
+  notes: z.string().optional(),
 })
 
 // Esquema para crear mascota
 export const createPetSchema = petBaseSchema
-  .omit({ is_active: true })
-  .extend({
-    is_active: z.boolean().default(true),
-  })
 
 // Esquema para actualizar mascota
 export const updatePetSchema = petBaseSchema.partial().omit({ client_id: true })
 
-// Esquema para filtros de búsqueda
+// Esquema para filtros de mascota
 export const petFiltersSchema = z.object({
   search: z.string().optional(),
   client_id: z.string().uuid().optional(),
-  species: z.string().optional(),
+  species_id: z.string().uuid().optional(),
   breed_id: z.string().uuid().optional(),
-  gender: z.enum(['male', 'female', 'unknown']).optional(),
-  is_active: z.boolean().optional(),
-  is_sterilized: z.boolean().optional(),
+  sex: z.enum(['M', 'F']).optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
 })

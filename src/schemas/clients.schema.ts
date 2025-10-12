@@ -2,15 +2,15 @@ import { z } from 'zod'
 
 // Esquema base para cliente - basado en la tabla clients de Supabase
 export const clientBaseSchema = z.object({
-  first_name: z
+  full_name: z
     .string()
-    .nonempty('El nombre es requerido')
-    .max(100, 'El nombre no puede exceder 100 caracteres'),
+    .nonempty('El nombre completo es requerido')
+    .max(200, 'El nombre completo no puede exceder 200 caracteres'),
 
-  last_name: z
+  document_number: z
     .string()
-    .nonempty('El apellido es requerido')
-    .max(100, 'El apellido no puede exceder 100 caracteres'),
+    .nonempty('El número de documento es requerido')
+    .max(50, 'El número de documento no puede exceder 50 caracteres'),
 
   email: z
     .string()
@@ -34,34 +34,11 @@ export const clientBaseSchema = z.object({
 
   address: z.string().optional(),
 
-  date_of_birth: z.string().optional(),
-
-  emergency_contact_name: z.string().optional(),
-
-  emergency_contact_phone: z
-    .string()
-    .optional()
-    .refine(
-      (value) => {
-        if (!value || value === '') return true
-        return /^[\d\s\-\(\)\+]+$/.test(value)
-      },
-      {
-        message: 'Formato de teléfono de emergencia inválido',
-      }
-    ),
-
   notes: z.string().optional(),
-
-  is_active: z.boolean().default(true),
 })
 
 // Esquema para crear cliente
 export const createClientSchema = clientBaseSchema
-  .omit({ is_active: true })
-  .extend({
-    is_active: z.boolean().default(true),
-  })
 
 // Esquema para actualizar cliente
 export const updateClientSchema = clientBaseSchema.partial()

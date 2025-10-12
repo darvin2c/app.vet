@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentTypeForm } from './appointment-type-form'
-import { useUpdateAppointmentType } from '@/hooks/appointment-types/use-update-appointment-type'
+import { useUpdateAppointmentType } from '@/hooks/appointment-types/use-appointment-type-update'
 import {
   UpdateAppointmentTypeSchema,
   updateAppointmentTypeSchema,

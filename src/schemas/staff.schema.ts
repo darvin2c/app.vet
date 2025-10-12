@@ -2,15 +2,10 @@ import { z } from 'zod'
 
 // Esquema base para staff - basado en la tabla staff de Supabase
 export const staffBaseSchema = z.object({
-  first_name: z
+  full_name: z
     .string()
-    .nonempty('El nombre es requerido')
-    .max(100, 'El nombre no puede exceder 100 caracteres'),
-
-  last_name: z
-    .string()
-    .nonempty('El apellido es requerido')
-    .max(100, 'El apellido no puede exceder 100 caracteres'),
+    .nonempty('El nombre completo es requerido')
+    .max(200, 'El nombre completo no puede exceder 200 caracteres'),
 
   email: z.string().email('Formato de email inválido').nullable().optional(),
 
@@ -21,13 +16,8 @@ export const staffBaseSchema = z.object({
     .refine(
       (value) => {
         if (!value) return true // Permitir valores vacíos
-        try {
-          const { parsePhoneNumber } = require('libphonenumber-js')
-          const phoneNumber = parsePhoneNumber(value, 'PE')
-          return phoneNumber?.isValid() || false
-        } catch {
-          return false
-        }
+        // Validar formato de teléfono básico (números, espacios, guiones, paréntesis)
+        return /^[\d\s\-\(\)\+]+$/.test(value)
       },
       {
         message: 'Formato de teléfono inválido',
@@ -49,20 +39,9 @@ export const staffBaseSchema = z.object({
       }
     ),
 
-  // Especialidades se manejan por separado a través de la tabla staff_specialties
-  specialty_ids: z
-    .array(z.string())
-    .optional()
-    .default([])
-    .refine(
-      (value) => {
-        if (!value) return true
-        return value.length <= 10 // Máximo 10 especialidades por staff
-      },
-      {
-        message: 'No se pueden asignar más de 10 especialidades',
-      }
-    ),
+  user_id: z
+    .string()
+    .nonempty('El ID de usuario es requerido'),
 
   is_active: z.boolean().default(true),
 })
@@ -77,11 +56,10 @@ export const createStaffSchema = staffBaseSchema
 // Esquema para actualizar staff
 export const updateStaffSchema = staffBaseSchema.partial()
 
-// Esquema para filtros de búsqueda
+// Esquema para filtros de staff
 export const staffFiltersSchema = z.object({
   search: z.string().optional(),
   is_active: z.boolean().optional(),
-  specialty_id: z.string().optional(), // Filtrar por una especialidad específica
   created_from: z.string().optional(),
   created_to: z.string().optional(),
 })
