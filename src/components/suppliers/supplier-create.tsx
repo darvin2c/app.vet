@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
@@ -30,7 +30,6 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
       document_number: '',
       website: '',
       notes: '',
-      is_active: true,
     },
   })
 
@@ -49,29 +48,31 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
       onOpenChange={onOpenChange}
       title="Crear Proveedor"
       description="Registra un nuevo proveedor en el sistema"
-      form={form}
-      onSubmit={onSubmit}
+      trigger={<></>}
     >
-      <SupplierForm />
-      
-      <DrawerFooter>
-        <ResponsiveButton
-          type="submit"
-          isLoading={isPending}
-          disabled={isPending}
-          icon={Plus}
-        >
-          Crear Proveedor
-        </ResponsiveButton>
-        <ResponsiveButton
-          variant="outline"
-          onClick={() => onOpenChange(false)}
-          disabled={isPending}
-          icon={Plus}
-        >
-          Cancelar
-        </ResponsiveButton>
-      </DrawerFooter>
+      <FormProvider {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <SupplierForm />
+          
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              isLoading={isPending}
+              disabled={isPending}
+              icon={Plus}
+            >
+              Crear Proveedor
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isPending}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </form>
+      </FormProvider>
     </DrawerForm>
   )
 }

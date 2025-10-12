@@ -19,14 +19,13 @@ export function usePets(filters?: PetFilters) {
           *,
           clients (
             id,
-            name,
+            full_name,
             email,
             phone
           ),
           breeds (
             id,
-            name,
-            species
+            name
           )
         `
         )

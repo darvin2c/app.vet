@@ -31,10 +31,6 @@ export default function useProductCategoryList(
         )
       }
 
-      if (filters?.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
-
       if (filters?.created_from) {
         query = query.gte('created_at', filters.created_from)
       }

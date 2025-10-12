@@ -10,9 +10,7 @@ import { ClientSelect } from '@/components/clients/client-select'
 import { CreatePetSchema } from '@/schemas/pets.schema'
 
 export function PetForm() {
-  const { register, formState: { errors }, setValue, watch } = useFormContext<CreatePetSchema>()
-  
-
+  const { register, watch, setValue, formState: { errors } } = useFormContext<CreatePetSchema>()
 
   return (
     <div className="space-y-4">
@@ -32,8 +30,8 @@ export function PetForm() {
         <FieldLabel htmlFor="client_id">Cliente *</FieldLabel>
         <FieldContent>
           <ClientSelect
-            value={watch('client_id')}
-            onValueChange={(value) => setValue('client_id', value)}
+            value={watch('client_id') || ''}
+            onValueChange={(value) => setValue('client_id', value || '')}
           />
           <FieldError errors={[errors.client_id]} />
         </FieldContent>

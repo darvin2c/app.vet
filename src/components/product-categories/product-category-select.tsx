@@ -17,12 +17,12 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import useProductCategories from '@/hooks/product-categories/use-product-categories'
+import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { ProductCategoryCreate } from './product-category-create'
 import { ProductCategoryEdit } from './product-category-edit'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+type ProductCategory = Tables<'product_categories'>
 
 interface ProductCategorySelectProps {
   value?: string
@@ -43,12 +43,11 @@ export function ProductCategorySelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-  const { data: categories = [], isLoading } = useProductCategories({
+  const { data: categories = [], isLoading } = useProductCategoryList({
     search: searchTerm,
-    is_active: true, // Solo mostrar categorías activas
   })
 
-  const selectedCategory = categories.find((category) => category.id === value)
+  const selectedCategory = categories.find((category: ProductCategory) => category.id === value)
 
   // Función para manejar la creación de una nueva categoría
   const handleCategoryCreated = (newCategory: ProductCategory) => {
@@ -101,7 +100,7 @@ export function ProductCategorySelect({
                 {isLoading ? 'Cargando...' : 'No se encontraron categorías.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {categories.map((category) => (
+                {categories.map((category: ProductCategory) => (
                   <CommandItem
                     key={category.id}
                     value={category.name}

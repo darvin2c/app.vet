@@ -2,14 +2,8 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+import { DrawerForm } from '@/components/ui/drawer-form'
+import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
@@ -19,7 +13,7 @@ import {
   CreateProductMovementSchema,
   CreateProductMovementData,
 } from '@/schemas/product-movements.schema'
-import useCreateProductMovement from '@/hooks/product-movements/use-create-product-movement'
+import useProductMovementCreate from '@/hooks/product-movements/use-product-movement-create'
 
 interface ProductMovementCreateProps {
   open: boolean
@@ -30,17 +24,18 @@ export function ProductMovementCreate({
   open,
   onOpenChange,
 }: ProductMovementCreateProps) {
-  const createProductMovement = useCreateProductMovement()
+  const createProductMovement = useProductMovementCreate()
 
   const form = useForm({
     resolver: zodResolver(CreateProductMovementSchema),
     defaultValues: {
       product_id: '',
       quantity: 0,
-      movement_date: new Date(),
       unit_cost: 0,
       note: '',
       reference: '',
+      source: '',
+      related_id: '',
     },
   })
 
@@ -56,41 +51,36 @@ export function ProductMovementCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!right-0 !left-auto max-w-3xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Movimiento de Producto</DrawerTitle>
-          <DrawerDescription>
-            Registra un nuevo movimiento de inventario para el producto
-            seleccionado.
-          </DrawerDescription>
-        </DrawerHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-            <ProductMovementForm />
-          </form>
-        </Form>
-
-        <DrawerFooter>
-          <ResponsiveButton
-            icon={Save}
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={createProductMovement.isPending}
-            disabled={createProductMovement.isPending}
-          >
-            Crear Movimiento
-          </ResponsiveButton>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createProductMovement.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+    <DrawerForm
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Crear Movimiento de Producto"
+      description="Registra un nuevo movimiento de inventario para el producto seleccionado."
+      trigger={<></>}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <ProductMovementForm />
+          
+          <DrawerFooter>
+            <ResponsiveButton
+              icon={Save}
+              type="submit"
+              isLoading={createProductMovement.isPending}
+              disabled={createProductMovement.isPending}
+            >
+              Crear Movimiento
+            </ResponsiveButton>
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createProductMovement.isPending}
+            >
+              Cancelar
+            </Button>
+          </DrawerFooter>
+        </form>
+      </Form>
+    </DrawerForm>
   )
 }

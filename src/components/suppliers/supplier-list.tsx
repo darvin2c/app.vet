@@ -6,7 +6,7 @@ import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
+
 import { SupplierActions } from './supplier-actions'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -42,9 +42,7 @@ export function SupplierList({ filters }: SupplierListProps) {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CardTitle className="text-lg">{supplier.name}</CardTitle>
-                <Badge variant={supplier.is_active ? 'default' : 'secondary'}>
-                  {supplier.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
+
               </div>
               <SupplierActions supplier={supplier} />
             </div>

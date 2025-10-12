@@ -2,14 +2,8 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+import { DrawerForm } from '@/components/ui/drawer-form'
+import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductMovementForm } from './product-movement-form'
@@ -17,7 +11,7 @@ import {
   UpdateProductMovementSchema,
   UpdateProductMovementData,
 } from '@/schemas/product-movements.schema'
-import useUpdateProductMovement from '@/hooks/product-movements/use-update-product-movement'
+import useProductMovementUpdate from '@/hooks/product-movements/use-product-movement-update'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 
@@ -32,7 +26,7 @@ export function ProductMovementEdit({
   open,
   onOpenChange,
 }: ProductMovementEditProps) {
-  const updateProductMovement = useUpdateProductMovement()
+  const updateProductMovement = useProductMovementUpdate()
 
   const form = useForm({
     resolver: zodResolver(UpdateProductMovementSchema),
@@ -40,10 +34,10 @@ export function ProductMovementEdit({
       product_id: movement.product_id,
       source: movement.source ?? undefined,
       quantity: movement.quantity,
-      movement_date: new Date(movement.created_at),
       unit_cost: movement.unit_cost ?? undefined,
       reference: movement.reference ?? undefined,
       note: movement.note ?? undefined,
+      related_id: movement.related_id ?? undefined,
     },
   })
 
@@ -60,45 +54,39 @@ export function ProductMovementEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
-        <DrawerHeader>
-          <DrawerTitle>Editar Movimiento</DrawerTitle>
-          <DrawerDescription>
-            Modifica la información del movimiento de producto.
-          </DrawerDescription>
-        </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
+    <DrawerForm
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Movimiento"
+      description="Modifica la información del movimiento de producto."
+      trigger={<></>}
+    >
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit as any)}
+          className="space-y-4"
+        >
+          <ProductMovementForm />
+          
+          <DrawerFooter>
+            <Button
+              type="submit"
+              disabled={updateProductMovement.isPending}
             >
-              <ProductMovementForm />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateProductMovement.isPending}
-          >
-            {updateProductMovement.isPending
-              ? 'Actualizando...'
-              : 'Actualizar Movimiento'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateProductMovement.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+              {updateProductMovement.isPending
+                ? 'Actualizando...'
+                : 'Actualizar Movimiento'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updateProductMovement.isPending}
+            >
+              Cancelar
+            </Button>
+          </DrawerFooter>
+        </form>
+      </Form>
+    </DrawerForm>
   )
 }

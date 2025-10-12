@@ -5,7 +5,7 @@ import { usePets } from '@/hooks/pets/use-pet-list'
 import { PetFilters } from '@/schemas/pets.schema'
 import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { PetActions } from './pet-actions'
@@ -30,10 +30,12 @@ export function PetList({ filters }: PetListProps) {
 
   if (!pets || pets.length === 0) {
     return (
-      <Empty
-        title="No hay mascotas"
-        description="No se encontraron mascotas con los filtros aplicados."
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No hay mascotas</EmptyTitle>
+          <EmptyDescription>No se encontraron mascotas con los filtros aplicados.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 
@@ -54,12 +56,12 @@ export function PetList({ filters }: PetListProps) {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
               <div>
                 <span className="font-medium text-muted-foreground">Cliente:</span>
-                <p className="mt-1">{pet.clients?.name || 'Sin cliente'}</p>
+                <p className="mt-1">{pet.clients?.full_name || 'Sin cliente'}</p>
               </div>
               
               <div>
                 <span className="font-medium text-muted-foreground">Especie:</span>
-                <p className="mt-1 capitalize">{pet.species}</p>
+                <p className="mt-1 capitalize">{pet.species_id}</p>
               </div>
               
               {pet.sex && (
@@ -105,7 +107,7 @@ export function PetList({ filters }: PetListProps) {
               {pet.breeds && (
                 <div>
                   <span className="font-medium text-muted-foreground">Raza:</span>
-                  <p className="mt-1">{pet.breeds.name}</p>
+                  <p className="mt-1">{pet.breeds?.name}</p>
                 </div>
               )}
               

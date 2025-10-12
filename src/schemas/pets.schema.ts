@@ -7,11 +7,11 @@ export const petBaseSchema = z.object({
     .nonempty('El nombre es requerido')
     .max(100, 'El nombre no puede exceder 100 caracteres'),
 
-  species_id: z.string().uuid('ID de especie inválido'),
+  species_id: z.string().nonempty('La especie es requerida'),
 
   breed_id: z.string().uuid('ID de raza inválido').optional(),
 
-  client_id: z.string().uuid('ID de cliente inválido'),
+  client_id: z.string().nonempty('El cliente es requerido'),
 
   sex: z.enum(['M', 'F'], {
     message: 'Sexo debe ser M (Macho) o F (Hembra)',

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { usePetDelete } from '@/hooks/pets/use-pet-delete'
+import { useDeletePet } from '@/hooks/pets/use-pet-delete'
 import { Tables } from '@/types/supabase.types'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 
@@ -12,19 +12,17 @@ interface PetDeleteProps {
 }
 
 export function PetDelete({ pet, open, onOpenChange }: PetDeleteProps) {
-  const [isDeleting, setIsDeleting] = useState(false)
-  const { mutateAsync: deletePet } = usePetDelete()
+  const { mutate: deletePet, isPending: isDeleting } = useDeletePet()
 
-  const handleDelete = async () => {
-    try {
-      setIsDeleting(true)
-      await deletePet(pet.id)
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Error al eliminar mascota:', error)
-    } finally {
-      setIsDeleting(false)
-    }
+  const handleDelete = () => {
+    deletePet(pet.id, {
+      onSuccess: () => {
+        onOpenChange(false)
+      },
+      onError: (error) => {
+        console.error('Error al eliminar mascota:', error)
+      }
+    })
   }
 
   return (

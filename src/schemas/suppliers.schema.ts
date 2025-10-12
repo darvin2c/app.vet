@@ -40,8 +40,6 @@ export const supplierBaseSchema = z.object({
     .or(z.literal('')),
 
   notes: z.string().optional(),
-
-  is_active: z.boolean().default(true),
 })
 
 // Esquema para crear proveedor
@@ -53,7 +51,6 @@ export const updateSupplierSchema = supplierBaseSchema.partial()
 // Esquema para filtros de búsqueda
 export const supplierFiltersSchema = z.object({
   search: z.string().optional(),
-  is_active: z.boolean().optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
 })

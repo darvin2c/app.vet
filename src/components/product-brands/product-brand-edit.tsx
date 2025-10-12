@@ -26,7 +26,6 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
     defaultValues: {
       name: brand.name,
       description: brand.description || '',
-      is_active: brand.is_active,
     },
   })
 
@@ -36,7 +35,6 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
       form.reset({
         name: brand.name,
         description: brand.description || '',
-        is_active: brand.is_active,
       })
     }
   }, [brand, form])
@@ -59,6 +57,7 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
       onOpenChange={onOpenChange}
       title="Editar Marca de Producto"
       description={`Editar información de ${brand.name}`}
+      trigger={<></>}
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -67,7 +66,7 @@ export function ProductBrandEdit({ brand, open, onOpenChange }: ProductBrandEdit
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
-              loading={isSubmitting}
+              isLoading={isSubmitting}
               disabled={isSubmitting}
             >
               Guardar Cambios

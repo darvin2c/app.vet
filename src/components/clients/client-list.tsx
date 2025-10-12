@@ -303,9 +303,7 @@ function ClientCardView({
                     <h3 className="font-semibold">
                       {client.full_name}
                     </h3>
-                    <Badge variant={client.is_active ? 'default' : 'secondary'} className="mt-1">
-                      {client.is_active ? 'Activo' : 'Inactivo'}
-                    </Badge>
+  
                   </div>
                 </div>
                 <ClientActions client={client} onView={onClientSelect} />
@@ -384,9 +382,7 @@ function ClientListView({
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Badge variant={client.is_active ? 'default' : 'secondary'}>
-                    {client.is_active ? 'Activo' : 'Inactivo'}
-                  </Badge>
+
                   <ClientActions client={client} onView={onClientSelect} />
                 </div>
               </div>

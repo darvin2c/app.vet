@@ -1,10 +1,10 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { Database } from '@/types/supabase.types'
-import useDeleteProductMovement from '@/hooks/product-movements/use-delete-product-movement'
+import { Tables } from '@/types/supabase.types'
+import useProductMovementDelete from '@/hooks/product-movements/use-product-movement-delete'
 
-type ProductMovement = Database['public']['Tables']['product_movements']['Row']
+type ProductMovement = Tables<'product_movements'>
 
 interface ProductMovementDeleteProps {
   movement: ProductMovement
@@ -17,7 +17,7 @@ export function ProductMovementDelete({
   open,
   onOpenChange,
 }: ProductMovementDeleteProps) {
-  const deleteProductMovement = useDeleteProductMovement()
+  const deleteProductMovement = useProductMovementDelete()
 
   const handleConfirm = async () => {
     await deleteProductMovement.mutateAsync(movement.id)

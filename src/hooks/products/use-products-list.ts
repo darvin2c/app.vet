@@ -24,14 +24,12 @@ export default function useProductsList(filters?: ProductFiltersSchema) {
           product_categories (
             id,
             name,
-            code,
             is_active
           ),
           product_units (
             id,
             name,
-            code,
-            decimals,
+            abbreviation,
             is_active
           )
         `

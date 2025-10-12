@@ -10,7 +10,6 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function ProductCategoryForm() {
   const { control } = useFormContext<CreateProductCategorySchema>()
@@ -34,26 +33,7 @@ export function ProductCategoryForm() {
             </FormItem>
           )}
         />
-
-        <FormField
-          control={control}
-          name="code"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Código *</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ingresa el código de la categoría"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
       </div>
-
-      <IsActiveFormField />
     </div>
   )
 }

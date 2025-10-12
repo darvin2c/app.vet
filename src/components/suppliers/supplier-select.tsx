@@ -37,7 +37,6 @@ export function SupplierSelect({
   
   const { data: suppliers, isLoading } = useSuppliers({
     search,
-    is_active: true,
   })
 
   const selectedSupplier = suppliers?.find((supplier) => supplier.id === value)

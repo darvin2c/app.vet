@@ -4,13 +4,13 @@ import { useFormContext } from 'react-hook-form'
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
+
 import { CreateSupplierSchema } from '@/schemas/suppliers.schema'
 
 export function SupplierForm() {
   const { register, formState: { errors }, setValue, watch } = useFormContext<CreateSupplierSchema>()
   
-  const isActive = watch('is_active')
+
 
   return (
     <div className="space-y-4">
@@ -102,21 +102,7 @@ export function SupplierForm() {
         </FieldContent>
       </Field>
 
-      <Field>
-        <FieldLabel htmlFor="is_active">Activo</FieldLabel>
-        <FieldContent>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="is_active"
-              checked={isActive}
-              onCheckedChange={(checked) => setValue('is_active', checked)}
-            />
-            <span className="text-sm text-muted-foreground">
-              {isActive ? 'Activo' : 'Inactivo'}
-            </span>
-          </div>
-        </FieldContent>
-      </Field>
+
 
       <Field>
         <FieldLabel htmlFor="notes">Notas</FieldLabel>

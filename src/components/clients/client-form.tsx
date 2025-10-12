@@ -6,10 +6,10 @@ import { CreateClientSchema } from '@/schemas/clients.schema'
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
+
 
 export function ClientForm() {
-  const { register, formState: { errors }, watch, setValue } = useFormContext<CreateClientSchema>()
+  const { register, formState: { errors }, watch } = useFormContext<CreateClientSchema>()
   
   // Watcher para validar campos relacionados
   const email = watch('email')
@@ -43,14 +43,15 @@ export function ClientForm() {
         </div>
 
         <Field>
-          <FieldLabel htmlFor="date_of_birth">Fecha de Nacimiento</FieldLabel>
+          <FieldLabel htmlFor="document_number">Número de Documento</FieldLabel>
           <FieldContent>
             <Input
-              id="date_of_birth"
-              type="date"
-              {...register('date_of_birth')}
+              id="document_number"
+              type="text"
+              placeholder="Ingresa el número de documento"
+              {...register('document_number')}
             />
-            <FieldError errors={[errors.date_of_birth]} />
+            <FieldError errors={[errors.document_number]} />
           </FieldContent>
         </Field>
       </div>
@@ -100,36 +101,7 @@ export function ClientForm() {
         </Field>
       </div>
 
-      {/* Contacto de Emergencia */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium">Contacto de Emergencia</h3>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field>
-            <FieldLabel htmlFor="emergency_contact_name">Nombre del Contacto</FieldLabel>
-            <FieldContent>
-              <Input
-                id="emergency_contact_name"
-                placeholder="Nombre completo"
-                {...register('emergency_contact_name')}
-              />
-              <FieldError errors={[errors.emergency_contact_name]} />
-            </FieldContent>
-          </Field>
 
-          <Field>
-            <FieldLabel htmlFor="emergency_contact_phone">Teléfono del Contacto</FieldLabel>
-            <FieldContent>
-              <Input
-                id="emergency_contact_phone"
-                placeholder="+51 999 999 999"
-                {...register('emergency_contact_phone')}
-              />
-              <FieldError errors={[errors.emergency_contact_phone]} />
-            </FieldContent>
-          </Field>
-        </div>
-      </div>
 
       {/* Notas Adicionales */}
       <div className="space-y-4">
@@ -148,21 +120,7 @@ export function ClientForm() {
           </FieldContent>
         </Field>
 
-        <Field>
-          <FieldContent>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_active"
-                {...register('is_active')}
-                onCheckedChange={(checked) => setValue('is_active', !!checked)}
-              />
-              <FieldLabel htmlFor="is_active" className="text-sm font-normal">
-                Cliente activo
-              </FieldLabel>
-            </div>
-            <FieldError errors={[errors.is_active]} />
-          </FieldContent>
-        </Field>
+
       </div>
     </div>
   )

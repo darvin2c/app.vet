@@ -4,7 +4,7 @@ import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
 import { ProductBrandFilters } from '@/schemas/product-brands.schema'
 import { Tables } from '@/types/supabase.types'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { ProductBrandActions } from './product-brand-actions'
@@ -24,10 +24,12 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
 
   if (!productBrands || productBrands.length === 0) {
     return (
-      <Empty
-        title="No hay marcas de productos"
-        description="No se encontraron marcas de productos con los filtros aplicados."
-      />
+      <Empty>
+        <EmptyHeader>
+          <EmptyTitle>No hay marcas de productos</EmptyTitle>
+          <EmptyDescription>No se encontraron marcas de productos con los filtros aplicados.</EmptyDescription>
+        </EmptyHeader>
+      </Empty>
     )
   }
 

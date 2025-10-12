@@ -23,9 +23,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { ProductCategoryActions } from './product-category-actions'
-import { IsActiveDisplay } from '@/components/ui/is-active-field'
+
 import {
   Empty,
   EmptyHeader,
@@ -42,11 +42,11 @@ import {
   Grid3X3,
   List,
 } from 'lucide-react'
-import useProductCategories from '@/hooks/product-categories/use-product-categories'
+import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 
 type ViewMode = 'table' | 'cards' | 'list'
 
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+type ProductCategory = Tables<'product_categories'>
 
 interface ProductCategoryListProps {
   filters?: any
@@ -56,12 +56,12 @@ export function ProductCategoryList({ filters }: ProductCategoryListProps) {
   // Estado para controlar la vista actual
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  // Usar el hook useProductCategories con los filtros aplicados
+  // Usar el hook useProductCategoryList con los filtros aplicados
   const {
     data: categories = [],
     isLoading,
     error,
-  } = useProductCategories(filters)
+  } = useProductCategoryList(filters)
 
   const columns: ColumnDef<ProductCategory>[] = [
     {
@@ -80,13 +80,7 @@ export function ProductCategoryList({ filters }: ProductCategoryListProps) {
         </div>
       ),
     },
-    {
-      accessorKey: 'is_active',
-      header: 'Estado',
-      cell: ({ row }: { row: Row<ProductCategory> }) => (
-        <IsActiveDisplay value={row.getValue('is_active')} />
-      ),
-    },
+
     {
       id: 'actions',
       cell: ({ row }: { row: Row<ProductCategory> }) => (
@@ -152,16 +146,16 @@ export function ProductCategoryList({ filters }: ProductCategoryListProps) {
           <div className="flex justify-between items-start">
             <div>
               <h3 className="font-medium">{category.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                Código: {category.code}
-              </p>
+              {category.description && (
+                <p className="text-sm text-muted-foreground">
+                  {category.description}
+                </p>
+              )}
             </div>
             <ProductCategoryActions category={category} />
           </div>
 
-          <div className="flex justify-between items-center">
-            <IsActiveDisplay value={category.is_active} />
-          </div>
+
         </div>
       ))}
     </div>
@@ -177,15 +171,16 @@ export function ProductCategoryList({ filters }: ProductCategoryListProps) {
               <div className="flex items-center gap-4">
                 <div>
                   <h3 className="font-medium">{category.name}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Código: {category.code}
-                  </p>
+                  {category.description && (
+                    <p className="text-sm text-muted-foreground">
+                      {category.description}
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <IsActiveDisplay value={category.is_active} />
               <ProductCategoryActions category={category} />
             </div>
           </div>

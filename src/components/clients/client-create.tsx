@@ -52,10 +52,11 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
 
   return (
     <DrawerForm
+      trigger={<></>}
       open={open}
       onOpenChange={onOpenChange}
       title="Crear Cliente"
-      description="Registra un nuevo cliente en el sistema"
+      description="Completa la información para registrar un nuevo cliente."
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">

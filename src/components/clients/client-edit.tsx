@@ -30,14 +30,11 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
     resolver: zodResolver(updateClientSchema),
     defaultValues: {
       full_name: '',
+      document_number: '',
       email: '',
       phone: '',
       address: '',
-      date_of_birth: '',
-      emergency_contact_name: '',
-      emergency_contact_phone: '',
       notes: '',
-      is_active: true,
     },
   })
 
@@ -46,14 +43,11 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
     if (client) {
       form.reset({
         full_name: client.full_name || '',
+        document_number: client.document_number || '',
         email: client.email || '',
         phone: client.phone || '',
         address: client.address || '',
-        date_of_birth: client.date_of_birth || '',
-        emergency_contact_name: client.emergency_contact_name || '',
-        emergency_contact_phone: client.emergency_contact_phone || '',
         notes: client.notes || '',
-        is_active: client.is_active ?? true,
       })
     }
   }, [client, form])
@@ -80,11 +74,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
         email: client.email || '',
         phone: client.phone || '',
         address: client.address || '',
-        date_of_birth: client.date_of_birth || '',
-        emergency_contact_name: client.emergency_contact_name || '',
-        emergency_contact_phone: client.emergency_contact_phone || '',
         notes: client.notes || '',
-        is_active: client.is_active ?? true,
       })
     }
     onOpenChange(false)
@@ -93,6 +83,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   if (isLoading) {
     return (
       <DrawerForm
+        trigger={<></>}
         open={open}
         onOpenChange={onOpenChange}
         title="Editar Cliente"
@@ -108,6 +99,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
   if (!client) {
     return (
       <DrawerForm
+        trigger={<></>}
         open={open}
         onOpenChange={onOpenChange}
         title="Cliente no encontrado"
@@ -132,6 +124,7 @@ export function ClientEdit({ clientId, open, onOpenChange }: ClientEditProps) {
 
   return (
     <DrawerForm
+      trigger={<></>}
       open={open}
       onOpenChange={onOpenChange}
       title="Editar Cliente"

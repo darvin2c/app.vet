@@ -54,7 +54,7 @@ export function ProductMovementForm() {
 
         <FormField
           control={control}
-          name="reference_type"
+          name="source"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Tipo de Movimiento</FormLabel>
@@ -115,29 +115,7 @@ export function ProductMovementForm() {
           )}
         />
 
-        <FormField
-          control={control}
-          name="movement_date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Movimiento *</FormLabel>
-              <FormControl>
-                <Input
-                  type="datetime-local"
-                  {...field}
-                  value={
-                    field.value ? format(field.value, "yyyy-MM-dd'T'HH:mm") : ''
-                  }
-                  onChange={(e) => {
-                    const value = e.target.value
-                    field.onChange(value ? new Date(value) : new Date())
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        {/* Campo movement_date removido - no existe en el schema */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

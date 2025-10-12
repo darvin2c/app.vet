@@ -39,7 +39,7 @@ export function ProductUnitEdit({
     resolver: zodResolver(updateProductUnitSchema),
     defaultValues: {
       name: unit.name || '',
-      abbreviation: unit.abbreviation,
+      abbreviation: unit.abbreviation || '',
       is_active: unit.is_active,
     },
   })

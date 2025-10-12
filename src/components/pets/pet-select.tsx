@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Check, ChevronsUpDown, Search } from 'lucide-react'
 import { usePets } from '@/hooks/pets/use-pet-list'
+import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,6 +19,11 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+
+type Pet = Tables<'pets'> & {
+  clients: Tables<'clients'> | null
+  breeds: Tables<'breeds'> | null
+}
 
 interface PetSelectProps {
   value?: string
@@ -53,7 +59,7 @@ export function PetSelect({
             <span className="flex items-center gap-2">
               <span>{selectedPet.name}</span>
               <span className="text-muted-foreground text-sm">
-                ({selectedPet.species})
+                ({selectedPet.species_id})
               </span>
             </span>
           ) : (
@@ -88,7 +94,7 @@ export function PetSelect({
                   <div className="flex flex-col">
                     <span>{pet.name}</span>
                     <span className="text-sm text-muted-foreground">
-                      {pet.species} - {pet.clients?.name}
+                      {pet.species_id} - {pet.clients?.full_name}
                     </span>
                   </div>
                 </CommandItem>

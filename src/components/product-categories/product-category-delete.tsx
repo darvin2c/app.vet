@@ -1,10 +1,10 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import useDeleteProductCategory from '@/hooks/product-categories/use-delete-product-category'
-import { Database } from '@/types/supabase.types'
+import useDeleteProductCategory from '@/hooks/product-categories/use-product-category-delete'
+import { Tables } from '@/types/supabase.types'
 
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+type ProductCategory = Tables<'product_categories'>
 
 interface ProductCategoryDeleteProps {
   category: ProductCategory

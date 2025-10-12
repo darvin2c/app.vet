@@ -18,7 +18,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { AppointmentActions } from './appointment-actions'
 import { useAppointments } from '@/hooks/appointments/use-appointments'
 import type { Tables } from '@/types/supabase.types'
@@ -173,12 +173,12 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
   if (appointments.length === 0) {
     return (
       <Empty>
-        <div className="text-center">
-          <h3 className="text-lg font-medium">No hay citas</h3>
-          <p className="text-muted-foreground">
+        <EmptyHeader>
+          <EmptyTitle>No hay citas</EmptyTitle>
+          <EmptyDescription>
             No se encontraron citas con los criterios de búsqueda.
-          </p>
-        </div>
+          </EmptyDescription>
+        </EmptyHeader>
       </Empty>
     )
   }

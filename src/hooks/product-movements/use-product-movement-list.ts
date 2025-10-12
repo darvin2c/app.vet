@@ -31,12 +31,9 @@ export default function useProductMovementList(
           `
           *,
           products (
-            *
+            *,
             product_categories (
              *
-            ),
-            product_units (
-              *
             )
           )
         `

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { updatePetSchema, UpdatePetSchema } from '@/schemas/pets.schema'
-import { usePetUpdate } from '@/hooks/pets/use-pet-update'
+import { useUpdatePet } from '@/hooks/pets/use-pet-update'
 import { Tables } from '@/types/supabase.types'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
@@ -19,8 +19,7 @@ interface PetEditProps {
 }
 
 export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { mutateAsync: updatePet } = usePetUpdate()
+  const { mutate: updatePet, isPending: isSubmitting } = useUpdatePet()
 
   const form = useForm<UpdatePetSchema>({
     resolver: zodResolver(updatePetSchema),
@@ -54,23 +53,27 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
 
   const onSubmit = async (data: UpdatePetSchema) => {
     try {
-      setIsSubmitting(true)
-      await updatePet({ id: pet.id, data })
-      onOpenChange(false)
+      updatePet({ id: pet.id, data }, {
+        onSuccess: () => {
+          onOpenChange(false)
+        },
+        onError: (error) => {
+          console.error('Error al actualizar mascota:', error)
+        }
+      })
     } catch (error) {
       console.error('Error al actualizar mascota:', error)
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
   return (
     <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Editar Mascota"
-      description={`Editar información de ${pet.name}`}
-    >
+        trigger={<></>}
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Mascota"
+        description={`Editar información de ${pet.name}`}
+      >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <PetForm />

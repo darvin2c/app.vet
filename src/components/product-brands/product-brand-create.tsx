@@ -23,8 +23,6 @@ export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreatePro
     resolver: zodResolver(createProductBrandSchema),
     defaultValues: {
       name: '',
-      description: '',
-      is_active: true,
     },
   })
 
@@ -43,6 +41,7 @@ export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreatePro
 
   return (
     <DrawerForm
+      trigger={<></>}
       open={open}
       onOpenChange={onOpenChange}
       title="Crear Marca de Producto"
@@ -55,7 +54,7 @@ export function ProductBrandCreate({ open, onOpenChange }: ProductBrandCreatePro
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
-              loading={isSubmitting}
+              isLoading={isSubmitting}
               disabled={isSubmitting}
             >
               Crear Marca

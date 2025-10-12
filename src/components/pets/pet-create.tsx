@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { createPetSchema, CreatePetSchema } from '@/schemas/pets.schema'
-import { usePetCreate } from '@/hooks/pets/use-pet-create'
+import { useCreatePet } from '@/hooks/pets/use-pet-create'
 import { DrawerForm } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
@@ -17,8 +17,7 @@ interface PetCreateProps {
 }
 
 export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { mutateAsync: createPet } = usePetCreate()
+  const { mutate: createPet, isPending: isSubmitting } = useCreatePet()
 
   const form = useForm<CreatePetSchema>({
     resolver: zodResolver(createPetSchema),
@@ -37,23 +36,27 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
 
   const onSubmit = async (data: CreatePetSchema) => {
     try {
-      setIsSubmitting(true)
-      await createPet(data)
-      form.reset()
-      onOpenChange(false)
+      createPet(data, {
+        onSuccess: () => {
+          form.reset()
+          onOpenChange(false)
+        },
+        onError: (error) => {
+          console.error('Error al crear mascota:', error)
+        }
+      })
     } catch (error) {
       console.error('Error al crear mascota:', error)
-    } finally {
-      setIsSubmitting(false)
     }
   }
 
   return (
     <DrawerForm
+      trigger={<></>}
       open={open}
       onOpenChange={onOpenChange}
       title="Crear Mascota"
-      description="Registra una nueva mascota en el sistema"
+      description="Completa la información para registrar una nueva mascota."
     >
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
@@ -62,7 +65,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
           <DrawerFooter>
             <ResponsiveButton
               type="submit"
-              loading={isSubmitting}
+              isLoading={isSubmitting}
               disabled={isSubmitting}
             >
               Crear Mascota

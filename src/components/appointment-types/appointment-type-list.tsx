@@ -18,7 +18,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Empty } from '@/components/ui/empty'
+import { Empty, EmptyHeader, EmptyTitle, EmptyDescription } from '@/components/ui/empty'
 import { AppointmentTypeActions } from './appointment-type-actions'
 import { useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-types'
 import type { Tables } from '@/types/supabase.types'
@@ -112,12 +112,12 @@ export function AppointmentTypeList({
   if (appointmentTypes.length === 0) {
     return (
       <Empty>
-        <div>
-          <h3 className="text-lg font-semibold">No hay tipos de cita</h3>
-          <p className="text-muted-foreground">
+        <EmptyHeader>
+          <EmptyTitle>No hay tipos de cita</EmptyTitle>
+          <EmptyDescription>
             No se encontraron tipos de cita con los criterios de búsqueda.
-          </p>
-        </div>
+          </EmptyDescription>
+        </EmptyHeader>
       </Empty>
     )
   }

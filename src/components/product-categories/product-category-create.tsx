@@ -2,14 +2,8 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+import { DrawerForm } from '@/components/ui/drawer-form'
+import { DrawerFooter } from '@/components/ui/drawer'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductCategoryForm } from './product-category-form'
@@ -17,7 +11,7 @@ import {
   CreateProductCategorySchema,
   createProductCategorySchema,
 } from '@/schemas/product-categories.schema'
-import useCreateProductCategory from '@/hooks/product-categories/use-create-product-category'
+import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
 
 interface ProductCategoryCreateProps {
   open: boolean
@@ -30,14 +24,12 @@ export function ProductCategoryCreate({
   onOpenChange,
   onCategoryCreated,
 }: ProductCategoryCreateProps) {
-  const createProductCategory = useCreateProductCategory()
+  const createProductCategory = useProductCategoryCreate()
 
   const form = useForm({
     resolver: zodResolver(createProductCategorySchema),
     defaultValues: {
       name: '',
-      code: '',
-      is_active: true,
     },
   })
 
@@ -45,8 +37,6 @@ export function ProductCategoryCreate({
     try {
       const result = await createProductCategory.mutateAsync({
         name: data.name,
-        code: data.code,
-        is_active: data.is_active,
       })
       form.reset()
       onOpenChange(false)
@@ -59,44 +49,34 @@ export function ProductCategoryCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
-        <DrawerHeader>
-          <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
-          <DrawerDescription>
-            Completa la información para agregar una nueva categoría de
-            producto.
-          </DrawerDescription>
-        </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
+    <DrawerForm
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Crear Categoría de Producto"
+      description="Completa la información para agregar una nueva categoría de producto."
+      trigger={<></>}
+    >
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <ProductCategoryForm />
+          
+          <DrawerFooter>
+            <Button
+              type="submit"
+              disabled={createProductCategory.isPending}
             >
-              <ProductCategoryForm />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createProductCategory.isPending}
-          >
-            {createProductCategory.isPending ? 'Creando...' : 'Crear Categoría'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createProductCategory.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+              {createProductCategory.isPending ? 'Creando...' : 'Crear Categoría'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createProductCategory.isPending}
+            >
+              Cancelar
+            </Button>
+          </DrawerFooter>
+        </form>
+      </Form>
+    </DrawerForm>
   )
 }

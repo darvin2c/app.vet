@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { Check, ChevronsUpDown } from 'lucide-react'
-import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
+import useProductBrandList from '@/hooks/product-brands/use-product-brand-list'
+import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,6 +20,8 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 
+type ProductBrand = Tables<'product_brands'>
+
 interface ProductBrandSelectProps {
   value?: string
   onValueChange: (value: string) => void
@@ -31,9 +34,9 @@ export function ProductBrandSelect({
   placeholder = "Seleccionar marca..." 
 }: ProductBrandSelectProps) {
   const [open, setOpen] = useState(false)
-  const { data: brands, isLoading } = useProductBrands({ is_active: true })
+  const { data: brands, isLoading } = useProductBrandList({})
 
-  const selectedBrand = brands?.find((brand) => brand.id === value)
+  const selectedBrand = brands?.find((brand: ProductBrand) => brand.id === value)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -56,7 +59,7 @@ export function ProductBrandSelect({
               {isLoading ? "Cargando..." : "No se encontraron marcas."}
             </CommandEmpty>
             <CommandGroup>
-              {brands?.map((brand) => (
+              {brands?.map((brand: ProductBrand) => (
                 <CommandItem
                   key={brand.id}
                   value={brand.id}
