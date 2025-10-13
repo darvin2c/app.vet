@@ -22,15 +22,9 @@ import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
-import {
-  Item,
-  ItemContent,
-  ItemTitle,
-  ItemDescription,
-  ItemActions,
-  ItemGroup,
-} from '@/components/ui/item'
 import { SpeciesTableView } from './species-table-view'
+import { SpeciesCardsView } from './species-cards-view'
+import { SpeciesListView } from './species-list-view'
 
 type Species = Tables<'species'>
 type Breed = Tables<'breeds'>
@@ -104,74 +98,7 @@ export function SpeciesList({
     return result
   }, [species, allBreeds, appliedSearch])
 
-  const renderListView = useCallback(
-    () => (
-      <ItemGroup>
-        {species.map((speciesItem) => (
-          <Item key={speciesItem.id}>
-            <ItemContent>
-              <ItemTitle>{speciesItem.name}</ItemTitle>
-              <ItemDescription>
-                <div className="space-y-1">
-                  {speciesItem.description && (
-                    <p className="text-sm text-muted-foreground">
-                      {speciesItem.description}
-                    </p>
-                  )}
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs">Estado:</span>
-                    <IsActiveDisplay value={speciesItem.is_active} />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Creado:{' '}
-                    {new Date(speciesItem.created_at).toLocaleDateString(
-                      'es-ES'
-                    )}
-                  </p>
-                </div>
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <SpeciesActions species={speciesItem} />
-            </ItemActions>
-          </Item>
-        ))}
-      </ItemGroup>
-    ),
-    [species]
-  )
 
-  const renderCardsView = useCallback(
-    () => (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {species.map((speciesItem) => (
-          <div key={speciesItem.id} className="rounded-lg border p-4 space-y-3">
-            <div className="flex items-start justify-between">
-              <div className="space-y-1">
-                <h3 className="font-semibold">{speciesItem.name}</h3>
-                {speciesItem.description && (
-                  <p className="text-sm text-muted-foreground">
-                    {speciesItem.description}
-                  </p>
-                )}
-              </div>
-              <SpeciesActions species={speciesItem} />
-            </div>
-            <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2">
-                <span>Estado:</span>
-                <IsActiveDisplay value={speciesItem.is_active} />
-              </div>
-              <span className="text-muted-foreground">
-                {new Date(speciesItem.created_at).toLocaleDateString('es-ES')}
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-    ),
-    [species]
-  )
 
   if (isPending) {
     return <TableSkeleton />
@@ -227,8 +154,13 @@ export function SpeciesList({
           appliedSearch={appliedSearch}
         />
       )}
-      {viewMode === 'list' && renderListView()}
-      {viewMode === 'cards' && renderCardsView()}
+      {viewMode === 'list' && (
+        <SpeciesListView
+          species={hierarchicalData}
+          appliedSearch={appliedSearch}
+        />
+      )}
+      {viewMode === 'cards' && <SpeciesCardsView species={species} />}
     </div>
   )
 }
