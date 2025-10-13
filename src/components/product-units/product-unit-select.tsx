@@ -1,10 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, Plus, X, Edit, Package } from 'lucide-react'
+import { Package, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
+import {
+  InputGroup,
+  InputGroupButton,
+} from '@/components/ui/input-group'
 import {
   Command,
   CommandEmpty,
@@ -18,17 +21,19 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { FormControl } from '@/components/ui/form'
-import useProductUnits from '@/hooks/product-units/use-product-unit-list'
+import useProductUnitList from '@/hooks/product-units/use-product-unit-list'
 import { ProductUnitCreate } from './product-unit-create'
 import { ProductUnitEdit } from './product-unit-edit'
 import { Tables } from '@/types/supabase.types'
 
+type ProductUnit = Tables<'product_units'>
+
 interface ProductUnitSelectProps {
   value?: string
-  onValueChange: (value: string) => void
+  onValueChange?: (value: string) => void
   placeholder?: string
   disabled?: boolean
+  className?: string
 }
 
 export function ProductUnitSelect({
@@ -36,46 +41,53 @@ export function ProductUnitSelect({
   onValueChange,
   placeholder = 'Seleccionar unidad...',
   disabled = false,
+  className,
 }: ProductUnitSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-  const { data: units = [], isLoading } = useProductUnits({
-    filters: {
-      search: searchTerm,
-      is_active: true,
-    },
+
+  const { data: productUnits = [], isLoading } = useProductUnitList({
+    filters: { search: searchTerm },
   })
 
-  const selectedUnit = units.find((unit) => unit.id === value)
+  const selectedProductUnit = productUnits.find(
+    (unit: ProductUnit) => unit.id === value
+  )
 
   const handleSelect = (unitId: string) => {
-    onValueChange(unitId === value ? '' : unitId)
+    onValueChange?.(unitId)
     setOpen(false)
   }
 
-  const handleUnitCreated = (newUnit: Tables<'product_units'>) => {
-    onValueChange(newUnit.id)
-    setCreateOpen(false)
+  const handleProductUnitCreated = (newUnit: ProductUnit) => {
+    onValueChange?.(newUnit.id)
   }
 
   return (
     <>
-      <InputGroup>
+      <InputGroup className={className}>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <InputGroupButton
               variant="ghost"
               role="combobox"
               aria-expanded={open}
-              className="flex-1 justify-between h-9 px-3 py-2 text-left font-normal"
+              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
             >
-              {selectedUnit ? (
+              {selectedProductUnit ? (
                 <div className="flex items-center gap-2">
                   <Package className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedUnit.name || selectedUnit.abbreviation}</span>
+                  <div className="flex flex-col">
+                    <span>{selectedProductUnit.name}</span>
+                    {selectedProductUnit.abbreviation && (
+                      <span className="text-xs text-muted-foreground">
+                        {selectedProductUnit.abbreviation}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
@@ -97,19 +109,19 @@ export function ProductUnitSelect({
                 {isLoading ? 'Cargando...' : 'No se encontraron unidades.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {units.map((unit) => (
+                {productUnits.map((unit: ProductUnit) => (
                   <CommandItem
                     key={unit.id}
-                    value={unit.name || unit.abbreviation || ''}
+                    value={unit.name}
                     onSelect={() => handleSelect(unit.id)}
                   >
                     <div className="flex items-center gap-2">
                       <Package className="w-4 h-4 text-muted-foreground" />
-                      <div>
-                        <span>{unit.name || unit.abbreviation}</span>
-                        {unit.name && unit.abbreviation && (
-                          <span className="ml-2 text-xs text-muted-foreground">
-                            ({unit.abbreviation})
+                      <div className="flex flex-col">
+                        <span>{unit.name}</span>
+                        {unit.abbreviation && (
+                          <span className="text-sm text-muted-foreground">
+                            {unit.abbreviation}
                           </span>
                         )}
                       </div>
@@ -127,12 +139,13 @@ export function ProductUnitSelect({
           </PopoverContent>
         </Popover>
 
-        {selectedUnit && (
+        {selectedProductUnit && (
           <InputGroupButton
             variant="ghost"
-            onClick={() => onValueChange('')}
+            onClick={() => onValueChange?.('')}
             disabled={disabled}
             aria-label="Limpiar selección"
+            className="h-full"
           >
             <X className="h-4 w-4" />
           </InputGroupButton>
@@ -143,16 +156,18 @@ export function ProductUnitSelect({
           onClick={() => setCreateOpen(true)}
           disabled={disabled}
           aria-label="Crear nueva unidad"
+          className="h-full"
         >
           <Plus className="h-4 w-4" />
         </InputGroupButton>
 
-        {selectedUnit && (
+        {selectedProductUnit && (
           <InputGroupButton
             variant="ghost"
             onClick={() => setEditOpen(true)}
             disabled={disabled}
             aria-label="Editar unidad seleccionada"
+            className="h-full"
           >
             <Edit className="h-4 w-4" />
           </InputGroupButton>
@@ -162,14 +177,14 @@ export function ProductUnitSelect({
       <ProductUnitCreate
         open={createOpen}
         onOpenChange={setCreateOpen}
-        onUnitCreated={handleUnitCreated}
+        onUnitCreated={handleProductUnitCreated}
       />
 
-      {selectedUnit && (
+      {selectedProductUnit && (
         <ProductUnitEdit
+          unit={selectedProductUnit}
           open={editOpen}
           onOpenChange={setEditOpen}
-          unit={selectedUnit}
         />
       )}
     </>

@@ -1,28 +1,28 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, Calendar, X, Plus, Edit } from 'lucide-react'
+import { Calendar, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-types'
-import { cn } from '@/lib/utils'
+import { useAppointmentTypeList } from '@/hooks/appointment-types/use-appointment-type-list'
 import { AppointmentTypeCreate } from './appointment-type-create'
 import { AppointmentTypeEdit } from './appointment-type-edit'
-import { InputGroup, InputGroupButton } from '../ui/input-group'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 
-type AppointmentType = Database['public']['Tables']['appointment_types']['Row']
+type AppointmentType = Tables<'appointment_types'>
 
 interface AppointmentTypeSelectProps {
   value?: string
@@ -43,33 +43,31 @@ export function AppointmentTypeSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-
-  const { data: appointmentTypes = [], isLoading } = useAppointmentTypes({
-    is_active: true,
+  
+  const { data: appointmentTypes = [], isLoading } = useAppointmentTypeList({
+    search: searchTerm,
   })
 
   const selectedAppointmentType = appointmentTypes.find(
-    (type) => type.id === value
+    (type: AppointmentType) => type.id === value
   )
 
-  // Función para manejar la creación de un nuevo tipo de cita
-  const handleAppointmentTypeCreated = (newType: AppointmentType) => {
-    if (onValueChange) {
-      onValueChange(newType.id)
-    }
+  const handleSelect = (typeId: string) => {
+    if (!onValueChange) return
+    onValueChange(value === typeId ? '' : typeId)
+    setOpen(false)
   }
 
   return (
     <>
-      <InputGroup className={className}>
-        {/* Selector principal - debe verse como un input real */}
+      <InputGroup>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <InputGroupButton
               variant="ghost"
               role="combobox"
               aria-expanded={open}
-              className="flex-1 justify-between h-9 px-3 py-2 text-left font-normal"
+              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
             >
               {selectedAppointmentType ? (
@@ -83,52 +81,57 @@ export function AppointmentTypeSelect({
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </InputGroupButton>
           </PopoverTrigger>
-          <PopoverContent className="w-full p-0" align="start">
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] p-0"
+            align="start"
+          >
             <Command>
-              <CommandInput placeholder="Buscar tipo de cita..." />
-              <CommandList>
-                <CommandEmpty>
-                  {isLoading
-                    ? 'Cargando...'
-                    : 'No se encontraron tipos de cita.'}
-                </CommandEmpty>
-                <CommandGroup>
-                  {appointmentTypes?.map((type) => (
-                    <CommandItem
-                      key={type.id}
-                      value={type.name}
-                      onSelect={() => {
-                        onValueChange?.(type.id === value ? '' : type.id)
-                        setOpen(false)
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <div>
-                          <div className="font-medium">{type.name}</div>
-                        </div>
-                      </div>
-                      <Check
-                        className={cn(
-                          'h-4 w-4',
-                          value === type.id ? 'opacity-100' : 'opacity-0'
+              <CommandInput
+                placeholder="Buscar tipo de cita..."
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+              />
+              <CommandEmpty>
+                {isLoading ? 'Cargando...' : 'No se encontraron tipos de cita.'}
+              </CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
+                {appointmentTypes.map((type: AppointmentType) => (
+                  <CommandItem
+                    key={type.id}
+                    value={type.name}
+                    onSelect={() => handleSelect(type.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <div className="flex flex-col">
+                        <span>{type.name}</span>
+                        {type.description && (
+                          <span className="text-sm text-muted-foreground">
+                            {type.description}
+                          </span>
                         )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
+                      </div>
+                    </div>
+                    <Check
+                      className={cn(
+                        'h-4 w-4',
+                        value === type.id ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             </Command>
           </PopoverContent>
         </Popover>
 
-        {/* Botones de acción agrupados naturalmente */}
         {selectedAppointmentType && (
           <InputGroupButton
             variant="ghost"
             onClick={() => onValueChange?.('')}
             disabled={disabled}
-            aria-label="Eliminar tipo de cita seleccionado"
+            aria-label="Limpiar selección"
+            className="h-full"
           >
             <X className="h-4 w-4" />
           </InputGroupButton>
@@ -139,6 +142,7 @@ export function AppointmentTypeSelect({
           onClick={() => setCreateOpen(true)}
           disabled={disabled}
           aria-label="Crear nuevo tipo de cita"
+          className="h-full"
         >
           <Plus className="h-4 w-4" />
         </InputGroupButton>
@@ -149,23 +153,26 @@ export function AppointmentTypeSelect({
             onClick={() => setEditOpen(true)}
             disabled={disabled}
             aria-label="Editar tipo de cita seleccionado"
+            className="h-full"
           >
             <Edit className="h-4 w-4" />
           </InputGroupButton>
         )}
       </InputGroup>
 
-      <AppointmentTypeCreate
-        open={createOpen}
+      <AppointmentTypeCreate 
+        open={createOpen} 
         onOpenChange={setCreateOpen}
-        onAppointmentTypeCreated={handleAppointmentTypeCreated}
+        onAppointmentTypeCreated={() => {
+          // Refresh data if needed
+        }}
       />
 
       {selectedAppointmentType && (
         <AppointmentTypeEdit
-          appointmentType={selectedAppointmentType}
           open={editOpen}
           onOpenChange={setEditOpen}
+          appointmentType={selectedAppointmentType}
         />
       )}
     </>

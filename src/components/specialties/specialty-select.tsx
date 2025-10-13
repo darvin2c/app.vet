@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, GraduationCap } from 'lucide-react'
+import { Check, ChevronsUpDown, GraduationCap, X, Plus, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
   CommandEmpty,
@@ -20,6 +20,9 @@ import {
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import { Tables } from '@/types/supabase.types'
+
+type Specialty = Tables<'specialties'>
 
 interface SpecialtySelectProps {
   value?: string[]
@@ -27,6 +30,7 @@ interface SpecialtySelectProps {
   placeholder?: string
   disabled?: boolean
   multiple?: boolean
+  className?: string
 }
 
 export function SpecialtySelect({
@@ -35,6 +39,7 @@ export function SpecialtySelect({
   placeholder = 'Seleccionar especialidad...',
   disabled = false,
   multiple = true,
+  className,
 }: SpecialtySelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
@@ -67,7 +72,7 @@ export function SpecialtySelect({
     enabled: !!currentTenant?.id,
   })
 
-  const selectedSpecialties = specialties.filter((specialty) =>
+  const selectedSpecialties = specialties.filter((specialty: Specialty) =>
     value.includes(specialty.id)
   )
 
@@ -94,56 +99,77 @@ export function SpecialtySelect({
   }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="w-full justify-between"
-          disabled={disabled}
-        >
-          <div className="flex items-center gap-2">
-            <GraduationCap className="h-4 w-4 text-muted-foreground" />
-            <span className="truncate">{displayText()}</span>
-          </div>
-          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-full p-0" align="start">
-        <Command>
-          <CommandInput
-            placeholder="Buscar especialidad..."
-            value={searchTerm}
-            onValueChange={setSearchTerm}
-          />
-          <CommandList>
-            <CommandEmpty>
-              {isLoading ? 'Cargando...' : 'No se encontraron especialidades.'}
-            </CommandEmpty>
-            <CommandGroup>
-              {specialties.map((specialty) => (
-                <CommandItem
-                  key={specialty.id}
-                  value={specialty.name}
-                  onSelect={() => handleSelect(specialty.id)}
-                >
-                  <div className="flex items-center gap-2">
-                    <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                    <span>{specialty.name}</span>
-                  </div>
-                  <Check
-                    className={cn(
-                      'ml-auto h-4 w-4',
-                      value.includes(specialty.id) ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <>
+      <InputGroup className={className}>
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <InputGroupButton
+              variant="ghost"
+              role="combobox"
+              aria-expanded={open}
+              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
+              disabled={disabled}
+            >
+              {selectedSpecialties.length > 0 ? (
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-muted-foreground" />
+                  <span className="truncate">{displayText()}</span>
+                </div>
+              ) : (
+                <span className="text-muted-foreground">{placeholder}</span>
+              )}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </InputGroupButton>
+          </PopoverTrigger>
+          <PopoverContent
+            className="w-[--radix-popover-trigger-width] p-0"
+            align="start"
+          >
+            <Command>
+              <CommandInput
+                placeholder="Buscar especialidad..."
+                value={searchTerm}
+                onValueChange={setSearchTerm}
+              />
+              <CommandEmpty>
+                {isLoading ? 'Cargando...' : 'No se encontraron especialidades.'}
+              </CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
+                {specialties.map((specialty: Specialty) => (
+                  <CommandItem
+                    key={specialty.id}
+                    value={specialty.name}
+                    onSelect={() => handleSelect(specialty.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-muted-foreground" />
+                      <span className="font-medium">{specialty.name}</span>
+                    </div>
+                    <Check
+                      className={cn(
+                        'h-4 w-4',
+                        value.includes(specialty.id) ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </Command>
+          </PopoverContent>
+        </Popover>
+
+        {selectedSpecialties.length > 0 && (
+          <InputGroupButton
+            variant="ghost"
+            onClick={() => onValueChange([])}
+            disabled={disabled}
+            aria-label="Limpiar selección"
+            className="h-full"
+          >
+            <X className="h-4 w-4" />
+          </InputGroupButton>
+        )}
+      </InputGroup>
+    </>
   )
 }
