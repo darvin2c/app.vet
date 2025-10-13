@@ -2,7 +2,7 @@
 
 import { useFormContext } from 'react-hook-form'
 import { useEffect } from 'react'
-import { CreateClientSchema } from '@/schemas/clients.schema'
+import { CreateCustomerSchema } from '@/schemas/customers.schema'
 import {
   Field,
   FieldContent,
@@ -12,12 +12,12 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-export function ClientForm() {
+export function CustomerForm() {
   const {
     register,
     formState: { errors },
     watch,
-  } = useFormContext<CreateClientSchema>()
+  } = useFormContext<CreateCustomerSchema>()
 
   // Watcher para validar campos relacionados
   const email = watch('email')
@@ -38,24 +38,32 @@ export function ClientForm() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
-            <FieldLabel htmlFor="full_name">Nombre Completo *</FieldLabel>
+            <FieldLabel htmlFor="first_name">Nombre *</FieldLabel>
             <FieldContent>
-              <Input id="full_name" type="text" {...register('full_name')} />
-              <FieldError errors={[errors.full_name]} />
+              <Input id="first_name" type="text" {...register('first_name')} />
+              <FieldError errors={[errors.first_name]} />
+            </FieldContent>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="last_name">Apellido *</FieldLabel>
+            <FieldContent>
+              <Input id="last_name" type="text" {...register('last_name')} />
+              <FieldError errors={[errors.last_name]} />
             </FieldContent>
           </Field>
         </div>
 
         <Field>
-          <FieldLabel htmlFor="document_number">Número de Documento</FieldLabel>
+          <FieldLabel htmlFor="doc_id">Número de Documento</FieldLabel>
           <FieldContent>
             <Input
-              id="document_number"
+              id="doc_id"
               type="text"
               placeholder="Ingresa el número de documento"
-              {...register('document_number')}
+              {...register('doc_id')}
             />
-            <FieldError errors={[errors.document_number]} />
+            <FieldError errors={[errors.doc_id]} />
           </FieldContent>
         </Field>
       </div>

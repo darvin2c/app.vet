@@ -8,7 +8,7 @@ type AppointmentWithRelations =
   Database['public']['Tables']['appointments']['Row'] & {
     pets:
       | (Database['public']['Tables']['pets']['Row'] & {
-          clients: Database['public']['Tables']['clients']['Row'] | null
+          customers: Database['public']['Tables']['customers']['Row'] | null
         })
       | null
     staff: Database['public']['Tables']['staff']['Row'] | null
@@ -34,7 +34,7 @@ export function useAppointmentList(filters?: AppointmentFiltersSchema) {
           *,
           pets(
             *,
-            clients(*)
+            customers(*)
           ),
           staff(*),
           appointment_types(*)

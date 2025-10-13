@@ -4,22 +4,22 @@ import { TablesUpdate } from '@/types/supabase.types'
 import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type UpdateClientData = Omit<TablesUpdate<'clients'>, 'tenant_id'> & {
+type UpdateCustomerData = Omit<TablesUpdate<'customers'>, 'tenant_id'> & {
   id: string
 }
 
-export default function useClientUpdate() {
+export default function useCustomerUpdate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async ({ id, ...data }: UpdateClientData) => {
+    mutationFn: async ({ id, ...data }: UpdateCustomerData) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const { data: result, error } = await supabase
-        .from('clients')
+        .from('customers')
         .update(data)
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
@@ -34,11 +34,11 @@ export default function useClientUpdate() {
     },
     onSuccess: (data) => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
-      queryClient.invalidateQueries({ queryKey: ['client', data.id] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers', data.id] })
 
       toast.success('Cliente actualizado exitosamente', {
-        description: `${data.full_name} ha sido actualizado`,
+        description: `${data.first_name} ${data.last_name} ha sido actualizado`,
       })
     },
     onError: (error) => {

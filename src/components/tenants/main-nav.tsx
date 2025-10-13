@@ -48,7 +48,7 @@ const navigationGroups: NavGroup[] = [
       },
       {
         title: 'Clientes',
-        href: '/clients',
+        href: '/customers',
         icon: User,
         tooltip: 'Clientes',
       },

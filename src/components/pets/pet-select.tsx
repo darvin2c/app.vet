@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/popover'
 
 type Pet = Tables<'pets'> & {
-  clients: Tables<'clients'> | null
+  customers: Tables<'customers'> | null
   breeds: Tables<'breeds'> | null
 }
 
@@ -98,7 +98,7 @@ export function PetSelect({
                   <div className="flex flex-col">
                     <span>{pet.name}</span>
                     <span className="text-sm text-muted-foreground">
-                      {pet.species_id} - {pet.clients?.full_name}
+                      {pet.species_id} - {pet.customers ? `${pet.customers.first_name} ${pet.customers.last_name}` : 'Sin cliente'}
                     </span>
                   </div>
                 </CommandItem>

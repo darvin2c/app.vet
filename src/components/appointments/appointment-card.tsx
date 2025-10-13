@@ -60,13 +60,13 @@ export function AppointmentCard({
 }: AppointmentCardProps) {
   // Extraer datos del appointment
   const pet = appointment?.pets
-  const client = pet?.clients
+  const client = pet?.customers
   const staff = appointment?.staff
   const appointmentType = appointment?.appointment_types
   const status = appointment?.status as keyof typeof STATUS_LABELS
 
   const petName = pet?.name || 'Sin mascota'
-  const clientName = client ? client.full_name : 'Sin cliente'
+  const clientName = client ? `${client.first_name} ${client.last_name}` : 'Sin cliente'
   const staffName = staff ? staff.full_name : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'

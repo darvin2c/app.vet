@@ -1,13 +1,18 @@
 import { z } from 'zod'
 
-// Esquema base para cliente - basado en la tabla clients de Supabase
-export const clientBaseSchema = z.object({
-  full_name: z
+// Esquema base para cliente - basado en la tabla customers de Supabase
+export const customerBaseSchema = z.object({
+  first_name: z
     .string()
-    .nonempty('El nombre completo es requerido')
-    .max(200, 'El nombre completo no puede exceder 200 caracteres'),
+    .nonempty('El nombre es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
 
-  document_number: z
+  last_name: z
+    .string()
+    .nonempty('El apellido es requerido')
+    .max(100, 'El apellido no puede exceder 100 caracteres'),
+
+  doc_id: z
     .string()
     .nonempty('El número de documento es requerido')
     .max(50, 'El número de documento no puede exceder 50 caracteres'),
@@ -38,13 +43,13 @@ export const clientBaseSchema = z.object({
 })
 
 // Esquema para crear cliente
-export const createClientSchema = clientBaseSchema
+export const createCustomerSchema = customerBaseSchema
 
 // Esquema para actualizar cliente
-export const updateClientSchema = clientBaseSchema.partial()
+export const updateCustomerSchema = customerBaseSchema.partial()
 
 // Esquema para filtros de búsqueda
-export const clientFiltersSchema = z.object({
+export const customerFiltersSchema = z.object({
   search: z.string().optional(),
   is_active: z.boolean().optional(),
   created_from: z.string().optional(),
@@ -52,6 +57,6 @@ export const clientFiltersSchema = z.object({
 })
 
 // Tipos TypeScript derivados de los esquemas
-export type CreateClientSchema = z.infer<typeof createClientSchema>
-export type UpdateClientSchema = z.infer<typeof updateClientSchema>
-export type ClientFilters = z.infer<typeof clientFiltersSchema>
+export type CreateCustomerSchema = z.infer<typeof createCustomerSchema>
+export type UpdateCustomerSchema = z.infer<typeof updateCustomerSchema>
+export type CustomerFilters = z.infer<typeof customerFiltersSchema>

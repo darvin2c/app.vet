@@ -7,7 +7,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
-import { ClientSelect } from '@/components/clients/client-select'
+import { CustomerSelect } from '@/components/customers/customer-select'
 
 export default function PetsPage() {
   // Configuración de filtros
@@ -27,7 +27,7 @@ export default function PetsPage() {
       label: 'Cliente',
       operator: 'eq',
       component: (
-        <ClientSelect
+        <CustomerSelect
           placeholder="Selecciona cliente"
           onValueChange={() => {}}
         />

@@ -79,7 +79,7 @@ function getStoredViewMode(resource: string): ViewMode {
 }
 
 type Pet = Tables<'pets'> & {
-  clients: Tables<'clients'> | null
+  customers: Tables<'customers'> | null
   breeds: Tables<'breeds'> | null
   species: Tables<'species'> | null
 }
@@ -193,7 +193,7 @@ export function PetList({
                   Cliente:
                 </span>
                 <p className="mt-1">
-                  {pet.clients?.full_name || 'Sin cliente'}
+                  {pet.customers ? `${pet.customers.first_name} ${pet.customers.last_name}` : 'Sin cliente'}
                 </p>
               </div>
 
@@ -269,7 +269,7 @@ export function PetList({
                 <ItemDescription>
                   <div className="flex items-center gap-4 text-sm">
                     <span>
-                      Cliente: {pet.clients?.full_name || 'Sin cliente'}
+                      Cliente: {pet.customers ? `${pet.customers.first_name} ${pet.customers.last_name}` : 'Sin cliente'}
                     </span>
                     <span>Especie: {pet.species?.name || '-'}</span>
                     {pet.breeds && <span>Raza: {pet.breeds.name}</span>}

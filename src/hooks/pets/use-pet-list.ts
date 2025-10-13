@@ -6,7 +6,7 @@ import { AppliedSort } from '@/types/order-by.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Pet = Tables<'pets'> & {
-  clients: Tables<'clients'> | null
+  customers: Tables<'customers'> | null
   breeds: Tables<'breeds'> | null
   species: Tables<'species'> | null
 }
@@ -31,9 +31,10 @@ export function usePets(params?: UsePetsParams) {
       let query = supabase.from('pets').select(
         `
           *,
-          clients (
+          customers (
             id,
-            full_name,
+            first_name,
+            last_name,
             email,
             phone
           ),

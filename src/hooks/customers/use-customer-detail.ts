@@ -3,20 +3,20 @@ import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type Client = Tables<'clients'>
+type Customer = Tables<'customers'>
 
-export default function useClientDetail(clientId: string | undefined) {
+export default function useCustomerDetail(customerId: string | undefined) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['client', currentTenant?.id, clientId],
-    queryFn: async (): Promise<Client | null> => {
-      if (!clientId || !currentTenant?.id) return null
+    queryKey: [currentTenant?.id, 'customers', customerId],
+    queryFn: async (): Promise<Customer | null> => {
+      if (!customerId || !currentTenant?.id) return null
 
       const { data, error } = await supabase
-        .from('clients')
+        .from('customers')
         .select('*')
-        .eq('id', clientId)
+        .eq('id', customerId)
         .eq('tenant_id', currentTenant.id)
         .single()
 
@@ -30,6 +30,6 @@ export default function useClientDetail(clientId: string | undefined) {
 
       return data
     },
-    enabled: !!clientId && !!currentTenant?.id,
+    enabled: !!customerId && !!currentTenant?.id,
   })
 }

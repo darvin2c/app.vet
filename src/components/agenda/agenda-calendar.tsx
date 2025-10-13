@@ -12,7 +12,7 @@ import AgendaHeader from './agenda-header'
 type Appointment = Tables<'appointments'> & {
   pets:
     | (Tables<'pets'> & {
-        clients: Tables<'clients'> | null
+        customers: Tables<'customers'> | null
       })
     | null
   staff: Tables<'staff'> | null

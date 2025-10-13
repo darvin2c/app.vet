@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-export default function useClientDelete() {
+export default function useCustomerDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
@@ -14,7 +14,7 @@ export default function useClientDelete() {
       }
 
       const { error } = await supabase
-        .from('clients')
+        .from('customers')
         .delete()
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
@@ -27,7 +27,7 @@ export default function useClientDelete() {
     },
     onSuccess: () => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers'] })
 
       toast.success('Cliente eliminado exitosamente')
     },

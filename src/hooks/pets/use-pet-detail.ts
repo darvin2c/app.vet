@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 
 type PetDetail = Tables<'pets'> & {
-  clients: Tables<'clients'> | null
+  customers: Tables<'customers'> | null
   breeds: Tables<'breeds'> | null
 }
 
@@ -16,9 +16,10 @@ export function usePetDetail(id: string) {
         .select(
           `
           *,
-          clients (
+          customers (
             id,
-            full_name,
+            first_name,
+            last_name,
             email,
             phone,
             address

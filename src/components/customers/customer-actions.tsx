@@ -10,30 +10,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ClientEdit } from './client-edit'
-import { ClientDelete } from './client-delete'
+import { CustomerEdit } from './customer-edit'
+import { CustomerDelete } from './customer-delete'
 import { Tables } from '@/types/supabase.types'
 
-type Client = Tables<'clients'>
+type Customer = Tables<'customers'>
 
-interface ClientActionsProps {
-  client: Client
-  onView?: (client: Client) => void
+interface CustomerActionsProps {
+  customer: Customer
+  onView?: (customer: Customer) => void
 }
 
-export function ClientActions({ client, onView }: ClientActionsProps) {
+export function CustomerActions({ customer, onView }: CustomerActionsProps) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
 
   const handleCall = () => {
-    if (client.phone) {
-      window.open(`tel:${client.phone}`, '_self')
+    if (customer.phone) {
+      window.open(`tel:${customer.phone}`, '_self')
     }
   }
 
   const handleEmail = () => {
-    if (client.email) {
-      window.open(`mailto:${client.email}`, '_self')
+    if (customer.email) {
+      window.open(`mailto:${customer.email}`, '_self')
     }
   }
 
@@ -49,7 +49,7 @@ export function ClientActions({ client, onView }: ClientActionsProps) {
         <DropdownMenuContent align="end">
           {onView && (
             <>
-              <DropdownMenuItem onClick={() => onView(client)}>
+              <DropdownMenuItem onClick={() => onView(customer)}>
                 <Eye className="mr-2 h-4 w-4" />
                 Ver detalles
               </DropdownMenuItem>
@@ -62,14 +62,14 @@ export function ClientActions({ client, onView }: ClientActionsProps) {
             Editar
           </DropdownMenuItem>
 
-          {client.phone && (
+          {customer.phone && (
             <DropdownMenuItem onClick={handleCall}>
               <Phone className="mr-2 h-4 w-4" />
               Llamar
             </DropdownMenuItem>
           )}
 
-          {client.email && (
+          {customer.email && (
             <DropdownMenuItem onClick={handleEmail}>
               <Mail className="mr-2 h-4 w-4" />
               Enviar email
@@ -88,14 +88,14 @@ export function ClientActions({ client, onView }: ClientActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <ClientEdit
-        clientId={client.id}
+      <CustomerEdit
+        customerId={customer.id}
         open={showEdit}
         onOpenChange={setShowEdit}
       />
 
-      <ClientDelete
-        client={client}
+      <CustomerDelete
+        customer={customer}
         open={showDelete}
         onOpenChange={setShowDelete}
       />

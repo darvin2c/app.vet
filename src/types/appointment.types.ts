@@ -4,7 +4,7 @@ import { Tables } from './supabase.types'
 export type AppointmentWithRelations = Tables<'appointments'> & {
   pets:
     | (Tables<'pets'> & {
-        clients: Tables<'clients'> | null
+        customers: Tables<'customers'> | null
       })
     | null
   staff: Tables<'staff'> | null

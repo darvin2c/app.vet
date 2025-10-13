@@ -13,7 +13,7 @@ type UseOrderByReturn = ReturnType<
 
 // Tipo para mascota con relaciones
 type Pet = Tables<'pets'> & {
-  clients: Tables<'clients'> | null
+  customers: Tables<'customers'> | null
   breeds: Tables<'breeds'> | null
   species: Tables<'species'> | null
 }
@@ -42,7 +42,7 @@ export function getPetTableColumns(
       ),
       cell: ({ row }: { row: Row<Pet> }) => (
         <div className="text-sm">
-          {row.original.clients?.full_name || 'Sin cliente'}
+          {row.original.customers ? `${row.original.customers.first_name} ${row.original.customers.last_name}` : 'Sin cliente'}
         </div>
       ),
     },

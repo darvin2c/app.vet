@@ -18,12 +18,12 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import useClientList from '@/hooks/clients/use-client-list'
+import useCustomerList from '@/hooks/customers/use-customer-list'
 import { Tables } from '@/types/supabase.types'
 
-type Client = Tables<'clients'>
+type Customer = Tables<'customers'>
 
-interface ClientSelectProps {
+interface CustomerSelectProps {
   value?: string
   onValueChange: (value: string | undefined) => void
   placeholder?: string
@@ -31,36 +31,37 @@ interface ClientSelectProps {
   className?: string
 }
 
-export function ClientSelect({
+export function CustomerSelect({
   value,
   onValueChange,
   placeholder = 'Seleccionar cliente...',
   disabled = false,
   className,
-}: ClientSelectProps) {
+}: CustomerSelectProps) {
   const [open, setOpen] = useState(false)
   const [search, setSearch] = useState('')
 
-  const { data: clients = [], isLoading } = useClientList({
+  const { data: customers = [], isLoading } = useCustomerList({
     filters: {
       search: search || undefined,
       is_active: true,
     },
   })
 
-  const selectedClient = clients.find((client) => client.id === value)
+  const selectedCustomer = customers.find((customer) => customer.id === value)
 
-  const handleSelect = (clientId: string) => {
-    if (clientId === value) {
+  const handleSelect = (customerId: string) => {
+    if (customerId === value) {
       onValueChange(undefined)
     } else {
-      onValueChange(clientId)
+      onValueChange(customerId)
     }
     setOpen(false)
   }
 
-  const getClientInitials = (client: Client) => {
-    return client.full_name
+  const getCustomerInitials = (customer: Customer) => {
+    const fullName = `${customer.first_name} ${customer.last_name}`
+    return fullName
       .split(' ')
       .map((name) => name[0])
       .join('')
@@ -68,8 +69,8 @@ export function ClientSelect({
       .slice(0, 2)
   }
 
-  const getClientDisplayName = (client: Client) => {
-    return client.full_name
+  const getCustomerDisplayName = (customer: Customer) => {
+    return `${customer.first_name} ${customer.last_name}`
   }
 
   return (
@@ -82,15 +83,15 @@ export function ClientSelect({
           className={cn('w-full justify-between', className)}
           disabled={disabled}
         >
-          {selectedClient ? (
+          {selectedCustomer ? (
             <div className="flex items-center space-x-2">
               <Avatar className="h-6 w-6">
                 <AvatarFallback className="text-xs">
-                  {getClientInitials(selectedClient)}
+                  {getCustomerInitials(selectedCustomer)}
                 </AvatarFallback>
               </Avatar>
               <span className="truncate">
-                {getClientDisplayName(selectedClient)}
+                {getCustomerDisplayName(selectedCustomer)}
               </span>
             </div>
           ) : (
@@ -120,31 +121,31 @@ export function ClientSelect({
                 : 'No se encontraron clientes.'}
             </CommandEmpty>
             <CommandGroup>
-              {clients.map((client) => (
+              {customers.map((customer) => (
                 <CommandItem
-                  key={client.id}
-                  value={client.id}
-                  onSelect={() => handleSelect(client.id)}
+                  key={customer.id}
+                  value={customer.id}
+                  onSelect={() => handleSelect(customer.id)}
                   className="flex items-center space-x-2"
                 >
                   <Check
                     className={cn(
                       'mr-2 h-4 w-4',
-                      value === client.id ? 'opacity-100' : 'opacity-0'
+                      value === customer.id ? 'opacity-100' : 'opacity-0'
                     )}
                   />
                   <Avatar className="h-6 w-6">
                     <AvatarFallback className="text-xs">
-                      {getClientInitials(client)}
+                      {getCustomerInitials(customer)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
                     <div className="font-medium truncate">
-                      {getClientDisplayName(client)}
+                      {getCustomerDisplayName(customer)}
                     </div>
-                    {client.email && (
+                    {customer.email && (
                       <div className="text-sm text-muted-foreground truncate">
-                        {client.email}
+                        {customer.email}
                       </div>
                     )}
                   </div>

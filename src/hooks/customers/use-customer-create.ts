@@ -4,20 +4,20 @@ import { TablesInsert } from '@/types/supabase.types'
 import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type CreateClientData = Omit<TablesInsert<'clients'>, 'tenant_id'>
+type CreateCustomerData = Omit<TablesInsert<'customers'>, 'tenant_id'>
 
-export default function useClientCreate() {
+export default function useCustomerCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: CreateClientData) => {
+    mutationFn: async (data: CreateCustomerData) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const { data: result, error } = await supabase
-        .from('clients')
+        .from('customers')
         .insert({ ...data, tenant_id: currentTenant.id })
         .select()
         .single()
@@ -30,10 +30,10 @@ export default function useClientCreate() {
     },
     onSuccess: (data) => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ['clients'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers'] })
 
       toast.success('Cliente creado exitosamente', {
-        description: `${data.full_name} ha sido registrado`,
+        description: `${data.first_name} ${data.last_name} ha sido registrado`,
       })
     },
     onError: (error) => {

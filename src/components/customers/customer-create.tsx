@@ -4,30 +4,31 @@ import { useState } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  createClientSchema,
-  CreateClientSchema,
-} from '@/schemas/clients.schema'
-import useClientCreate from '@/hooks/clients/use-client-create'
-import { ClientForm } from './client-form'
+  createCustomerSchema,
+  CreateCustomerSchema,
+} from '@/schemas/customers.schema'
+import useCustomerCreate from '@/hooks/customers/use-customer-create'
+import { CustomerForm } from './customer-form'
 import { Drawer } from '@/components/ui/drawer-form'
 import { DrawerFooter } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Plus, X } from 'lucide-react'
 
-interface ClientCreateProps {
+interface CustomerCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
+export function CustomerCreate({ open, onOpenChange }: CustomerCreateProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const createClient = useClientCreate()
+  const createCustomer = useCustomerCreate()
 
-  const form = useForm<CreateClientSchema>({
-    resolver: zodResolver(createClientSchema),
+  const form = useForm<CreateCustomerSchema>({
+    resolver: zodResolver(createCustomerSchema),
     defaultValues: {
-      full_name: '',
-      document_number: '',
+      first_name: '',
+      last_name: '',
+      doc_id: '',
       email: '',
       phone: '',
       address: '',
@@ -35,10 +36,10 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
     },
   })
 
-  const onSubmit = async (data: CreateClientSchema) => {
+  const onSubmit = async (data: CreateCustomerSchema) => {
     try {
       setIsSubmitting(true)
-      await createClient.mutateAsync(data)
+      await createCustomer.mutateAsync(data)
       form.reset()
       onOpenChange(false)
     } catch (error) {
@@ -57,7 +58,7 @@ export function ClientCreate({ open, onOpenChange }: ClientCreateProps) {
     <Drawer open={open} onOpenChange={onOpenChange}>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ClientForm />
+          <CustomerForm />
 
           <DrawerFooter>
             <ResponsiveButton

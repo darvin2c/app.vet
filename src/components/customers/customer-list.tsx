@@ -24,29 +24,29 @@ import {
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { ClientActions } from './client-actions'
+import { CustomerActions } from './customer-actions'
 import { Tables } from '@/types/supabase.types'
 import { ArrowUpDown, Phone, Mail, MapPin } from 'lucide-react'
 
-type Client = Tables<'clients'>
+type Customer = Tables<'customers'>
 
-interface ClientListProps {
-  clients: Client[]
+interface CustomerListProps {
+  customers: Customer[]
   isLoading?: boolean
-  onClientSelect?: (client: Client) => void
+  onCustomerSelect?: (customer: Customer) => void
   view?: 'table' | 'card' | 'list'
 }
 
-export function ClientList({
-  clients,
+export function CustomerList({
+  customers,
   isLoading = false,
-  onClientSelect,
+  onCustomerSelect,
   view = 'table',
-}: ClientListProps) {
-  const columns = useMemo<ColumnDef<Client>[]>(
+}: CustomerListProps) {
+  const columns = useMemo<ColumnDef<Customer>[]>(
     () => [
       {
-        accessorKey: 'full_name',
+        accessorKey: 'first_name',
         header: ({ column }) => (
           <Button
             variant="ghost"
@@ -57,8 +57,9 @@ export function ClientList({
           </Button>
         ),
         cell: ({ row }) => {
-          const client = row.original
-          const initials = client.full_name
+          const customer = row.original
+          const fullName = `${customer.first_name} ${customer.last_name}`
+          const initials = fullName
             .split(' ')
             .map((name) => name[0])
             .join('')
@@ -71,10 +72,10 @@ export function ClientList({
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <div>
-                <div className="font-medium">{client.full_name}</div>
-                {client.email && (
+                <div className="font-medium">{fullName}</div>
+                {customer.email && (
                   <div className="text-sm text-muted-foreground">
-                    {client.email}
+                    {customer.email}
                   </div>
                 )}
               </div>
@@ -144,15 +145,15 @@ export function ClientList({
         id: 'actions',
         header: 'Acciones',
         cell: ({ row }) => (
-          <ClientActions client={row.original} onView={onClientSelect} />
+          <CustomerActions customer={row.original} onView={onCustomerSelect} />
         ),
       },
     ],
-    [onClientSelect]
+    [onCustomerSelect]
   )
 
   const table = useReactTable({
-    data: clients,
+    data: customers,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
@@ -166,10 +167,10 @@ export function ClientList({
   })
 
   if (isLoading) {
-    return <ClientListSkeleton view={view} />
+    return <CustomerListSkeleton view={view} />
   }
 
-  if (clients.length === 0) {
+  if (customers.length === 0) {
     return (
       <div className="text-center py-12">
         <div className="text-muted-foreground">No se encontraron clientes</div>
@@ -178,11 +179,11 @@ export function ClientList({
   }
 
   if (view === 'card') {
-    return <ClientCardView clients={clients} onClientSelect={onClientSelect} />
+    return <CustomerCardView customers={customers} onCustomerSelect={onCustomerSelect} />
   }
 
   if (view === 'list') {
-    return <ClientListView clients={clients} onClientSelect={onClientSelect} />
+    return <CustomerListView customers={customers} onCustomerSelect={onCustomerSelect} />
   }
 
   return (
@@ -212,7 +213,7 @@ export function ClientList({
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
                   className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => onClientSelect?.(row.original)}
+                  onClick={() => onCustomerSelect?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -249,9 +250,9 @@ export function ClientList({
           {Math.min(
             (table.getState().pagination.pageIndex + 1) *
               table.getState().pagination.pageSize,
-            clients.length
+            customers.length
           )}{' '}
-          de {clients.length} clientes
+          de {customers.length} clientes
         </div>
         <div className="space-x-2">
           <Button
@@ -276,17 +277,18 @@ export function ClientList({
   )
 }
 
-function ClientCardView({
-  clients,
-  onClientSelect,
+function CustomerCardView({
+  customers,
+  onCustomerSelect,
 }: {
-  clients: Client[]
-  onClientSelect?: (client: Client) => void
+  customers: Customer[]
+  onCustomerSelect?: (customer: Customer) => void
 }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {clients.map((client) => {
-        const initials = client.full_name
+      {customers.map((customer) => {
+        const fullName = `${customer.first_name} ${customer.last_name}`
+        const initials = fullName
           .split(' ')
           .map((name) => name[0])
           .join('')
@@ -295,9 +297,9 @@ function ClientCardView({
 
         return (
           <Card
-            key={client.id}
+            key={customer.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => onClientSelect?.(client)}
+            onClick={() => onCustomerSelect?.(customer)}
           >
             <CardContent className="p-6">
               <div className="flex items-start justify-between">
@@ -306,29 +308,29 @@ function ClientCardView({
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-semibold">{client.full_name}</h3>
+                    <h3 className="font-semibold">{fullName}</h3>
                   </div>
                 </div>
-                <ClientActions client={client} onView={onClientSelect} />
+                <CustomerActions customer={customer} onView={onCustomerSelect} />
               </div>
 
               <div className="mt-4 space-y-2">
-                {client.email && (
+                {customer.email && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Mail className="h-4 w-4" />
-                    <span>{client.email}</span>
+                    <span>{customer.email}</span>
                   </div>
                 )}
-                {client.phone && (
+                {customer.phone && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Phone className="h-4 w-4" />
-                    <span>{client.phone}</span>
+                    <span>{customer.phone}</span>
                   </div>
                 )}
-                {client.address && (
+                {customer.address && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span className="truncate">{client.address}</span>
+                    <span className="truncate">{customer.address}</span>
                   </div>
                 )}
               </div>
@@ -340,17 +342,18 @@ function ClientCardView({
   )
 }
 
-function ClientListView({
-  clients,
-  onClientSelect,
+function CustomerListView({
+  customers,
+  onCustomerSelect,
 }: {
-  clients: Client[]
-  onClientSelect?: (client: Client) => void
+  customers: Customer[]
+  onCustomerSelect?: (customer: Customer) => void
 }) {
   return (
     <div className="space-y-2">
-      {clients.map((client) => {
-        const initials = client.full_name
+      {customers.map((customer) => {
+        const fullName = `${customer.first_name} ${customer.last_name}`
+        const initials = fullName
           .split(' ')
           .map((name) => name[0])
           .join('')
@@ -359,9 +362,9 @@ function ClientListView({
 
         return (
           <Card
-            key={client.id}
+            key={customer.id}
             className="cursor-pointer hover:shadow-sm transition-shadow"
-            onClick={() => onClientSelect?.(client)}
+            onClick={() => onCustomerSelect?.(customer)}
           >
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
@@ -370,25 +373,25 @@ function ClientListView({
                     <AvatarFallback>{initials}</AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="font-medium">{client.full_name}</h3>
+                    <h3 className="font-medium">{fullName}</h3>
                     <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                      {client.email && (
+                      {customer.email && (
                         <span className="flex items-center space-x-1">
                           <Mail className="h-3 w-3" />
-                          <span>{client.email}</span>
+                          <span>{customer.email}</span>
                         </span>
                       )}
-                      {client.phone && (
+                      {customer.phone && (
                         <span className="flex items-center space-x-1">
                           <Phone className="h-3 w-3" />
-                          <span>{client.phone}</span>
+                          <span>{customer.phone}</span>
                         </span>
                       )}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <ClientActions client={client} onView={onClientSelect} />
+                  <CustomerActions customer={customer} onView={onCustomerSelect} />
                 </div>
               </div>
             </CardContent>
@@ -399,7 +402,7 @@ function ClientListView({
   )
 }
 
-function ClientListSkeleton({ view }: { view: 'table' | 'card' | 'list' }) {
+function CustomerListSkeleton({ view }: { view: 'table' | 'card' | 'list' }) {
   if (view === 'card') {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

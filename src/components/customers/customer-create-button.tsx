@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { ClientCreate } from './client-create'
+import { CustomerCreate } from './customer-create'
 
-export function ClientCreateButton() {
+export function CustomerCreateButton() {
   const [showCreate, setShowCreate] = useState(false)
 
   return (
@@ -15,7 +15,7 @@ export function ClientCreateButton() {
         Nuevo Cliente
       </ResponsiveButton>
 
-      <ClientCreate open={showCreate} onOpenChange={setShowCreate} />
+      <CustomerCreate open={showCreate} onOpenChange={setShowCreate} />
     </>
   )
 }
