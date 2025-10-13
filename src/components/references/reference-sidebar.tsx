@@ -62,7 +62,7 @@ export function ReferenceSidebar({ onItemClick }: ReferenceSidebarProps) {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="offcanvas">
+    <Sidebar collapsible="offcanvas" className="absolute top-0 right-0">
       <SidebarHeader className="p-6 border-b">
         <div className="flex items-center gap-3">
           <div className="p-2 bg-primary/10 rounded-lg">
