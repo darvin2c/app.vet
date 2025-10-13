@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { PetActions } from './pet-actions'
@@ -222,56 +223,56 @@ export function PetList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {pets.map((pet) => (
-        <div key={pet.id} className="border rounded-lg p-4 space-y-3">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-medium">{pet.name}</h3>
-              <p className="text-sm text-muted-foreground">
-                Cliente:{' '}
-                {pet.customers
-                  ? `${pet.customers.first_name} ${pet.customers.last_name}`
-                  : 'Sin cliente'}
-              </p>
+        <Card key={pet.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{pet.name}</h3>
+                <p className="text-sm text-muted-foreground">
+                  Cliente:{' '}
+                  {pet.customers
+                    ? `${pet.customers.first_name} ${pet.customers.last_name}`
+                    : 'Sin cliente'}
+                </p>
+              </div>
+              <PetActions pet={pet} />
             </div>
-            <PetActions pet={pet} />
-          </div>
 
-          <div className="space-y-2">
-            <div className="text-sm">
-              <span className="text-muted-foreground">Especie:</span>{' '}
-              {pet.species?.name || '-'}
+            <div className="space-y-2">
+              <div className="text-sm">
+                <span className="text-muted-foreground">Especie:</span>{' '}
+                {pet.species?.name || '-'}
+              </div>
+              {pet.breeds && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Raza:</span>{' '}
+                  {pet.breeds.name}
+                </div>
+              )}
+              <div className="text-sm">
+                <span className="text-muted-foreground">Sexo:</span>{' '}
+                <Badge
+                  variant={pet.sex === 'M' ? 'default' : 'secondary'}
+                  className="text-xs"
+                >
+                  {pet.sex === 'M' ? 'Macho' : 'Hembra'}
+                </Badge>
+              </div>
+              {pet.birth_date && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Nacimiento:</span>{' '}
+                  {format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es })}
+                </div>
+              )}
+              {pet.weight && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Peso:</span>{' '}
+                  {pet.weight} kg
+                </div>
+              )}
             </div>
-            {pet.breeds && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Raza:</span>{' '}
-                {pet.breeds.name}
-              </div>
-            )}
-            <div className="text-sm">
-              <span className="text-muted-foreground">Sexo:</span>{' '}
-              <Badge
-                variant={pet.sex === 'M' ? 'default' : 'secondary'}
-                className="text-xs"
-              >
-                {pet.sex === 'M' ? 'Macho' : 'Hembra'}
-              </Badge>
-            </div>
-            {pet.birth_date && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Nacimiento:</span>{' '}
-                {format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es })}
-              </div>
-            )}
-            {pet.weight && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Peso:</span>{' '}
-                {pet.weight} kg
-              </div>
-            )}
-          </div>
-
-          <div className="flex justify-between items-center"></div>
-        </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   )
