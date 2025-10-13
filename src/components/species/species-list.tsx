@@ -160,7 +160,12 @@ export function SpeciesList({
           appliedSearch={appliedSearch}
         />
       )}
-      {viewMode === 'cards' && <SpeciesCardsView species={species} />}
+      {viewMode === 'cards' && (
+        <SpeciesCardsView
+          species={hierarchicalData}
+          appliedSearch={appliedSearch}
+        />
+      )}
     </div>
   )
 }

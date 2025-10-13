@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
 import { Tables } from '@/types/supabase.types'
 import { SpeciesEdit } from './species-edit'
 import { SpeciesDelete } from './species-delete'
+import { BreedCreate } from '../breeds/breed-create'
 
 interface SpeciesActionsProps {
   species: Tables<'species'>
@@ -20,6 +21,7 @@ interface SpeciesActionsProps {
 export function SpeciesActions({ species }: SpeciesActionsProps) {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showBreedCreateDialog, setShowBreedCreateDialog] = useState(false)
 
   return (
     <>
@@ -31,6 +33,10 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Agregar Raza
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
@@ -55,6 +61,12 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
         species={species}
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
+      />
+
+      <BreedCreate
+        open={showBreedCreateDialog}
+        onOpenChange={setShowBreedCreateDialog}
+        selectedSpeciesId={species.id}
       />
     </>
   )
