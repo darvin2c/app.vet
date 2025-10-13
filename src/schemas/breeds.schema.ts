@@ -19,7 +19,9 @@ export const breedBaseSchema = z.object({
 })
 
 // Esquema para crear raza
-export const breedCreateSchema = breedBaseSchema
+export const breedCreateSchema = breedBaseSchema.extend({
+  is_active: z.boolean().optional().default(true),
+})
 
 // Esquema para actualizar raza
 export const breedUpdateSchema = breedBaseSchema.partial().extend({

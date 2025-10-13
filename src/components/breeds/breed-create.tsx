@@ -30,7 +30,7 @@ export function BreedCreate({
 }: BreedCreateProps) {
   const createBreed = useBreedCreate()
 
-  const form = useForm<BreedCreate>({
+  const form = useForm({
     resolver: zodResolver(breedCreateSchema),
     defaultValues: {
       name: '',
@@ -40,7 +40,7 @@ export function BreedCreate({
     },
   })
 
-  const onSubmit = async (data: BreedCreate) => {
+  const onSubmit = async (data: any) => {
     try {
       await createBreed.mutateAsync(data)
       toast.success('Raza creada exitosamente')
@@ -62,32 +62,31 @@ export function BreedCreate({
           </DrawerDescription>
         </DrawerHeader>
 
-        <div className="flex-1 overflow-y-auto px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <div className="flex-1 overflow-y-auto px-4">
               <BreedForm selectedSpeciesId={selectedSpeciesId} />
-            </form>
-          </FormProvider>
-        </div>
+            </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            icon={Plus}
-            isLoading={createBreed.isPending}
-            disabled={createBreed.isPending}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            {createBreed.isPending ? 'Creando...' : 'Crear Raza'}
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createBreed.isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+            <DrawerFooter>
+              <ResponsiveButton
+                type="submit"
+                icon={Plus}
+                isLoading={createBreed.isPending}
+                disabled={createBreed.isPending}
+              >
+                {createBreed.isPending ? 'Creando...' : 'Crear Raza'}
+              </ResponsiveButton>
+              <ResponsiveButton
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={createBreed.isPending}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </DrawerFooter>
+          </form>
+        </FormProvider>
       </DrawerContent>
     </Drawer>
   )

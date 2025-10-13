@@ -102,7 +102,7 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
                         {speciesItem.name}
                         {hasActiveBreeds && (
                           <span className="ml-2 text-xs text-muted-foreground">
-                            ({speciesItem.subRows.length} razas)
+                            ({speciesItem.subRows?.length || 0} razas)
                           </span>
                         )}
                       </ItemTitle>
@@ -129,7 +129,7 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
               {/* Razas expandidas */}
               {isExpanded && hasActiveBreeds && (
                 <div className="ml-8 mt-2 space-y-2">
-                  {speciesItem.subRows.map((breed) => (
+                  {speciesItem.subRows?.map((breed) => (
                     <Item key={breed.id} variant="muted" size="sm">
                       <ItemContent>
                         <ItemTitle className="text-sm text-muted-foreground">
