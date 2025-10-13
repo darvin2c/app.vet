@@ -1,131 +1,91 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
-import {
-  CreateProductUnitSchema,
-  createProductUnitSchema,
-} from '@/schemas/product-units.schema'
-import { Form } from '@/components/ui/form'
-import { ProductUnitForm } from './product-unit-form'
-import useCreateProductUnit from '@/hooks/product-units/use-product-unit-create'
+
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerFooter,
-  DrawerDescription,
-} from '@/components/ui/drawer-form'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Tables } from '@/types/supabase.types'
-import { Plus } from 'lucide-react'
+  DrawerTrigger,
+} from '@/components/ui/drawer'
+import { Form } from '@/components/ui/form'
+
+import { ProductUnitForm } from './product-unit-form'
+import { ProductUnitSchema, type ProductUnitSchemaType } from '@/schemas/product-unit.schema'
+import { useProductUnitCreate } from '@/hooks/product-units/use-product-unit-create'
 
 interface ProductUnitCreateProps {
+  children?: React.ReactNode
+  controlled?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  onUnitCreated?: (unit: Tables<'product_units'>) => void
+  onUnitCreated?: (unit: any) => void
 }
 
-export function ProductUnitCreate({
-  open: controlledOpen,
+export function ProductUnitCreate({ 
+  children, 
+  controlled = false, 
+  open: controlledOpen, 
   onOpenChange: controlledOnOpenChange,
-  onUnitCreated,
+  onUnitCreated 
 }: ProductUnitCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
+  const mutation = useProductUnitCreate()
 
-  // Use controlled props if provided, otherwise use internal state
-  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
-  const setOpen = controlledOnOpenChange || setInternalOpen
-  const createProductUnit = useCreateProductUnit()
+  const open = controlled ? controlledOpen : internalOpen
+  const onOpenChange = controlled ? controlledOnOpenChange : setInternalOpen
 
-  const form = useForm<CreateProductUnitSchema>({
-    resolver: zodResolver(createProductUnitSchema),
-    defaultValues: {
-      name: '',
-      abbreviation: '',
-      is_active: true,
-    },
+  const form = useForm<ProductUnitSchemaType>({
+    resolver: zodResolver(ProductUnitSchema),
   })
 
-  const handleOpenChange = (isOpen: boolean) => {
-    setOpen(isOpen)
-    if (!isOpen) {
-      form.reset()
-    }
-  }
-
-  const onSubmit = async (data: CreateProductUnitSchema) => {
-    try {
-      const result = await createProductUnit.mutateAsync({
-        name: data.name,
-        abbreviation: data.abbreviation,
-        is_active: data.is_active,
-      })
-      form.reset()
-      handleOpenChange(false)
-      if (onUnitCreated && result) {
-        onUnitCreated(result)
-      }
-    } catch (error) {
-      // Error ya manejado en el hook
-    }
+  const onSubmit = async (data: ProductUnitSchemaType) => {
+    const result = await mutation.mutateAsync(data)
+    form.reset()
+    onOpenChange?.(false)
+    onUnitCreated?.(result)
   }
 
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
-      {/* Only show the trigger button if not controlled */}
-      {controlledOpen === undefined && (
-        <ResponsiveButton
-          icon={Plus}
-          variant="outline"
-          size="sm"
-          onClick={() => setOpen(true)}
-          className="h-8 w-8 p-0"
-          tooltip="Crear nueva unidad"
-        />
-      )}
-
-      <DrawerContent className="!w-full !max-w-md">
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      {!controlled && <DrawerTrigger asChild>{children}</DrawerTrigger>}
+      <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
           <DrawerTitle>Crear Unidad de Producto</DrawerTitle>
           <DrawerDescription>
-            Completa la información para agregar una nueva unidad de producto.
+            Completa los datos para crear una nueva unidad de producto.
           </DrawerDescription>
         </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+            <div className="px-4">
               <ProductUnitForm />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <ResponsiveButton
-            icon={Plus}
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createProductUnit.isPending}
-            isLoading={createProductUnit.isPending}
-          >
-            Crear Unidad
-          </ResponsiveButton>
-          <ResponsiveButton
-            icon={Plus}
-            type="button"
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-            disabled={createProductUnit.isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+            </div>
+            <DrawerFooter>
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={mutation.isPending}
+              >
+                Crear Unidad
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange?.(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+            </DrawerFooter>
+          </form>
+        </Form>
       </DrawerContent>
     </Drawer>
   )

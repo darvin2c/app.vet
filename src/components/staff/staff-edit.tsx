@@ -1,7 +1,10 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -9,15 +12,13 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/drawer'
 import { Form } from '@/components/ui/form'
+
 import { StaffForm } from './staff-form'
-import { UpdateStaffSchema, updateStaffSchema } from '@/schemas/staff.schema'
-import useUpdateStaff from '@/hooks/staff/use-staff-update'
+import { StaffSchema, type StaffSchemaType } from '@/schemas/staff.schema'
+import { useStaffUpdate } from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
-import useStaffSpecialties from '@/hooks/staff-specialties/use-staff-specialty-list'
-import { useEffect } from 'react'
 
 interface StaffEditProps {
   staff: Tables<'staff'>
@@ -26,11 +27,10 @@ interface StaffEditProps {
 }
 
 export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
-  const updateStaff = useUpdateStaff()
-  const { data: staffSpecialties } = useStaffSpecialties({ staff_id: staff.id })
+  const mutation = useStaffUpdate()
 
-  const form = useForm({
-    resolver: zodResolver(updateStaffSchema),
+  const form = useForm<StaffSchemaType>({
+    resolver: zodResolver(StaffSchema),
     defaultValues: {
       full_name: staff.full_name,
       email: staff.email,
@@ -40,59 +40,59 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     },
   })
 
-  const onSubmit = async (data: UpdateStaffSchema) => {
-    try {
-      await updateStaff.mutateAsync({
-        id: staff.id,
-        full_name: data.full_name,
-        email: data.email,
-        phone: data.phone,
-        license_number: data.license_number,
-        is_active: data.is_active,
+  useEffect(() => {
+    if (staff) {
+      form.reset({
+        full_name: staff.full_name,
+        email: staff.email,
+        phone: staff.phone,
+        license_number: staff.license_number,
+        is_active: staff.is_active,
       })
-      onOpenChange(false)
-    } catch (error) {
-      // Error ya manejado en el hook
     }
+  }, [staff, form])
+
+  const onSubmit = async (data: StaffSchemaType) => {
+    await mutation.mutateAsync({
+      id: staff.id,
+      data,
+    })
+    onOpenChange(false)
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-[600px]">
+      <DrawerContent className="!w-full !max-w-4xl">
         <DrawerHeader>
-          <DrawerTitle>Editar Miembro del Staff</DrawerTitle>
+          <DrawerTitle>Editar Personal</DrawerTitle>
           <DrawerDescription>
-            Modifica la información del miembro del staff.
+            Modifica los datos del miembro del personal.
           </DrawerDescription>
         </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+            <div className="px-4 overflow-y-auto">
               <StaffForm />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateStaff.isPending}
-          >
-            {updateStaff.isPending ? 'Actualizando...' : 'Actualizar Staff'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateStaff.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
+            </div>
+            <DrawerFooter>
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={mutation.isPending}
+              >
+                Actualizar Personal
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+            </DrawerFooter>
+          </form>
+        </Form>
       </DrawerContent>
     </Drawer>
   )

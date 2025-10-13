@@ -4,25 +4,22 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer-form'
+import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
+import { CustomerForm } from './customer-form'
+import {
   updateCustomerSchema,
   UpdateCustomerSchema,
 } from '@/schemas/customers.schema'
 import useCustomerUpdate from '@/hooks/customers/use-customer-update'
 import useCustomerDetail from '@/hooks/customers/use-customer-detail'
-import { CustomerForm } from './customer-form'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
-import { Tables } from '@/types/supabase.types'
-import { Form } from '../ui/form'
-import { Button } from '../ui/button'
-
-type Customer = Tables<'customers'>
 
 interface CustomerEditProps {
   customerId: string
@@ -71,6 +68,7 @@ export function CustomerEdit({
       id: customerId,
       ...data,
     })
+    onOpenChange(false)
   }
 
   return (
@@ -85,7 +83,10 @@ export function CustomerEdit({
 
         <div className="px-4 overflow-y-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit as any)}
+              className="space-y-4"
+            >
               <CustomerForm mode="edit" />
             </form>
           </Form>

@@ -1,18 +1,24 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Button } from '@/components/ui/button'
 import {
-  updateProductBrandSchema,
-  UpdateProductBrand,
-} from '@/schemas/product-brands.schema'
-import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
-import { Tables } from '@/types/supabase.types'
-import { Drawer } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer'
+import { Form } from '@/components/ui/form'
+
 import { ProductBrandForm } from './product-brand-form'
+import { ProductBrandSchema, type ProductBrandSchemaType } from '@/schemas/product-brand.schema'
+import { useProductBrandUpdate } from '@/hooks/product-brands/use-product-brand-update'
+import { Tables } from '@/types/supabase.types'
 
 interface ProductBrandEditProps {
   brand: Tables<'product_brands'>
@@ -25,64 +31,67 @@ export function ProductBrandEdit({
   open,
   onOpenChange,
 }: ProductBrandEditProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const { mutateAsync: updateProductBrand } = useProductBrandUpdate()
+  const mutation = useProductBrandUpdate()
 
-  const form = useForm<UpdateProductBrand>({
-    resolver: zodResolver(updateProductBrandSchema),
+  const form = useForm<ProductBrandSchemaType>({
+    resolver: zodResolver(ProductBrandSchema),
     defaultValues: {
       name: brand.name,
-      description: brand.description || '',
+      description: brand.description,
     },
   })
 
-  // Actualizar valores del formulario cuando cambie la marca
   useEffect(() => {
     if (brand) {
       form.reset({
         name: brand.name,
-        description: brand.description || '',
+        description: brand.description,
       })
     }
   }, [brand, form])
 
-  const onSubmit = async (data: UpdateProductBrand) => {
-    try {
-      setIsSubmitting(true)
-      await updateProductBrand({ id: brand.id, data })
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Error al actualizar marca de producto:', error)
-    } finally {
-      setIsSubmitting(false)
-    }
+  const onSubmit = async (data: ProductBrandSchemaType) => {
+    await mutation.mutateAsync({
+      id: brand.id,
+      data,
+    })
+    onOpenChange(false)
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ProductBrandForm />
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isSubmitting}
-              disabled={isSubmitting}
-            >
-              Guardar Cambios
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isSubmitting}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </form>
-      </FormProvider>
+      <DrawerContent className="!w-full !max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Editar Marca de Producto</DrawerTitle>
+          <DrawerDescription>
+            Modifica los datos de la marca de producto.
+          </DrawerDescription>
+        </DrawerHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+            <div className="px-4 overflow-y-auto">
+              <ProductBrandForm />
+            </div>
+            <DrawerFooter>
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={mutation.isPending}
+              >
+                Actualizar Marca
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+            </DrawerFooter>
+          </form>
+        </Form>
+      </DrawerContent>
     </Drawer>
   )
 }

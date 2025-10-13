@@ -1,7 +1,10 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+
+import { Button } from '@/components/ui/button'
 import {
   Drawer,
   DrawerContent,
@@ -9,21 +12,16 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { Button } from '@/components/ui/button'
+} from '@/components/ui/drawer'
 import { Form } from '@/components/ui/form'
+
 import { ProductCategoryForm } from './product-category-form'
-import {
-  UpdateProductCategorySchema,
-  updateProductCategorySchema,
-} from '@/schemas/product-categories.schema'
-import useUpdateProductCategory from '@/hooks/product-categories/use-product-category-update'
+import { ProductCategorySchema, type ProductCategorySchemaType } from '@/schemas/product-category.schema'
+import { useProductCategoryUpdate } from '@/hooks/product-categories/use-product-category-update'
 import { Tables } from '@/types/supabase.types'
 
-type ProductCategory = Tables<'product_categories'>
-
 interface ProductCategoryEditProps {
-  category: ProductCategory
+  category: Tables<'product_categories'>
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -33,85 +31,68 @@ export function ProductCategoryEdit({
   open,
   onOpenChange,
 }: ProductCategoryEditProps) {
-  const updateProductCategory = useUpdateProductCategory()
+  const mutation = useProductCategoryUpdate()
 
-  const form = useForm({
-    resolver: zodResolver(updateProductCategorySchema),
+  const form = useForm<ProductCategorySchemaType>({
+    resolver: zodResolver(ProductCategorySchema),
     defaultValues: {
       name: category.name,
-      description: category.description || undefined,
+      description: category.description,
       is_active: category.is_active,
     },
   })
 
-  const onSubmit = async (data: UpdateProductCategorySchema) => {
-    try {
-      await updateProductCategory.mutateAsync({
-        id: category.id,
-        data,
+  useEffect(() => {
+    if (category) {
+      form.reset({
+        name: category.name,
+        description: category.description,
+        is_active: category.is_active,
       })
-      onOpenChange(false)
-    } catch (error) {
-      // Error ya manejado en el hook
     }
-  }
+  }, [category, form])
 
-  const footer = (
-    <DrawerFooter>
-      <Button type="submit" disabled={updateProductCategory.isPending}>
-        {updateProductCategory.isPending
-          ? 'Actualizando...'
-          : 'Actualizar Categoría'}
-      </Button>
-      <Button
-        variant="outline"
-        onClick={() => onOpenChange(false)}
-        disabled={updateProductCategory.isPending}
-      >
-        Cancelar
-      </Button>
-    </DrawerFooter>
-  )
+  const onSubmit = async (data: ProductCategorySchemaType) => {
+    await mutation.mutateAsync({
+      id: category.id,
+      data,
+    })
+    onOpenChange(false)
+  }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!w-full !max-w-4xl">
         <DrawerHeader>
-          <DrawerTitle>Editar Categoría</DrawerTitle>
+          <DrawerTitle>Editar Categoría de Producto</DrawerTitle>
           <DrawerDescription>
-            Modifica la información de la categoría.
+            Modifica los datos de la categoría de producto.
           </DrawerDescription>
         </DrawerHeader>
-
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+            <div className="px-4 overflow-y-auto">
               <ProductCategoryForm />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateProductCategory.isPending}
-          >
-            {updateProductCategory.isPending
-              ? 'Actualizando...'
-              : 'Actualizar Categoría'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateProductCategory.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
+            </div>
+            <DrawerFooter>
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={mutation.isPending}
+              >
+                Actualizar Categoría
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={mutation.isPending}
+              >
+                Cancelar
+              </Button>
+            </DrawerFooter>
+          </form>
+        </Form>
       </DrawerContent>
     </Drawer>
   )

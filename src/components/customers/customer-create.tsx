@@ -1,26 +1,23 @@
 'use client'
 
-import { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer-form'
+import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
+import { CustomerForm } from './customer-form'
 import {
   createCustomerSchema,
   CreateCustomerSchema,
 } from '@/schemas/customers.schema'
 import useCustomerCreate from '@/hooks/customers/use-customer-create'
-import { CustomerForm } from './customer-form'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Plus, X } from 'lucide-react'
-import { Form } from '../ui/form'
-import { Button } from '../ui/button'
 
 interface CustomerCreateProps {
   open: boolean

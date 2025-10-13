@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form'
 import {
   Drawer,
   DrawerContent,
@@ -12,14 +10,13 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@/components/ui/drawer-form'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { Button } from '@/components/ui/button'
+import { Form } from '@/components/ui/form'
 import { AppointmentTypeForm } from './appointment-type-form'
 import {
   CreateAppointmentTypeSchema,
   createAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
-import { toast } from 'sonner'
-import { X, Check } from 'lucide-react'
 import { useAppointmentTypeCreate } from '@/hooks/appointment-types/use-appointment-type-create'
 
 interface AppointmentTypeCreateProps {
@@ -33,8 +30,10 @@ export function AppointmentTypeCreate({
   onOpenChange,
   onAppointmentTypeCreated,
 }: AppointmentTypeCreateProps) {
+  const createAppointmentType = useAppointmentTypeCreate()
+
   const form = useForm<CreateAppointmentTypeSchema>({
-    resolver: zodResolver(createAppointmentTypeSchema) as any,
+    resolver: zodResolver(createAppointmentTypeSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -44,62 +43,54 @@ export function AppointmentTypeCreate({
     },
   })
 
-  const createAppointmentType = useAppointmentTypeCreate()
-
-  const onSubmit: SubmitHandler<CreateAppointmentTypeSchema> = async (data) => {
-    try {
-      const newAppointmentType = await createAppointmentType.mutateAsync({
-        name: data.name,
-        description: data.description,
-        color: data.color,
-        is_active: data.is_active,
-      })
-      toast.success('Tipo de cita creado exitosamente')
-      form.reset()
-      onOpenChange(false)
-      onAppointmentTypeCreated?.(newAppointmentType)
-    } catch (error) {
-      toast.error('Error al crear el tipo de cita')
-      console.error('Error creating appointment type:', error)
-    }
+  const onSubmit = async (data: CreateAppointmentTypeSchema) => {
+    const newAppointmentType = await createAppointmentType.mutateAsync({
+      name: data.name,
+      description: data.description,
+      color: data.color,
+      is_active: data.is_active,
+    })
+    form.reset()
+    onOpenChange(false)
+    onAppointmentTypeCreated?.(newAppointmentType)
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
           <DrawerTitle>Nuevo Tipo de Cita</DrawerTitle>
           <DrawerDescription>
             Crea un nuevo tipo de cita médica
           </DrawerDescription>
         </DrawerHeader>
-        <div className="px-4 pb-4">
+
+        <div className="px-4">
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-6"
+              className="space-y-4"
             >
               <AppointmentTypeForm />
             </form>
           </Form>
         </div>
+
         <DrawerFooter>
-          <ResponsiveButton
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit as any)}
+            disabled={createAppointmentType.isPending}
+          >
+            {createAppointmentType.isPending ? 'Creando...' : 'Crear Tipo'}
+          </Button>
+          <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={createAppointmentType.isPending}
-            icon={X}
           >
             Cancelar
-          </ResponsiveButton>
-          <ResponsiveButton
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            isLoading={createAppointmentType.isPending}
-            icon={Check}
-          >
-            Crear Tipo
-          </ResponsiveButton>
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
