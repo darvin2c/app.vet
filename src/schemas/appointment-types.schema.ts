@@ -9,17 +9,14 @@ export const createAppointmentTypeSchema = z.object({
   description: z.string().optional(),
   duration_minutes: z
     .number()
-    .min(1, 'La duración debe ser mayor a 0')
-    .default(30),
+    .min(1, 'La duración debe ser mayor a 0'),
   color: z
     .string()
     .regex(
       /^#[0-9A-Fa-f]{6}$/,
       'El color debe ser un código hexadecimal válido (#ffffff)'
-    )
-    .optional()
-    .default('#3b82f6'),
-  is_active: z.boolean().optional().default(true),
+    ),
+  is_active: z.boolean(),
 })
 
 // Schema para actualizar un tipo de cita

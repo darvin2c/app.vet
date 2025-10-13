@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { CreateProductCategorySchema } from '@/schemas/product-categories.schema'
+import { CreateProductCategorySchema, UpdateProductCategorySchema } from '@/schemas/product-categories.schema'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -25,7 +25,7 @@ export function ProductCategoryForm({
   const {
     register,
     formState: { errors },
-  } = useFormContext<CreateProductCategorySchema>()
+  } = useFormContext<CreateProductCategorySchema | UpdateProductCategorySchema>()
 
   return (
     <div className="space-y-6">

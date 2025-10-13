@@ -17,22 +17,33 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import { StaffSchema, type StaffSchemaType } from '@/schemas/staff.schema'
-import { useStaffCreate } from '@/hooks/staff/use-staff-create'
+import { createStaffSchema, type CreateStaffSchema } from '@/schemas/staff.schema'
+import useCreateStaff from '@/hooks/staff/use-staff-create'
 
 interface StaffCreateProps {
   children?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function StaffCreate({ children }: StaffCreateProps) {
-  const [open, setOpen] = useState(false)
-  const mutation = useStaffCreate()
+export function StaffCreate({ 
+  children, 
+  open: controlledOpen, 
+  onOpenChange: controlledOnOpenChange 
+}: StaffCreateProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
+  const setOpen = controlledOnOpenChange ?? setInternalOpen
+  const mutation = useCreateStaff()
 
-  const form = useForm<StaffSchemaType>({
-    resolver: zodResolver(StaffSchema),
+  const form = useForm({
+    resolver: zodResolver(createStaffSchema),
+    defaultValues: {
+      is_active: true,
+    },
   })
 
-  const onSubmit = async (data: StaffSchemaType) => {
+  const onSubmit = async (data: CreateStaffSchema) => {
     await mutation.mutateAsync(data)
     form.reset()
     setOpen(false)

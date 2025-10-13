@@ -17,15 +17,23 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import { ProductBrandSchema, type ProductBrandSchemaType } from '@/schemas/product-brand.schema'
-import { useProductBrandCreate } from '@/hooks/product-brands/use-product-brand-create'
+import { ProductBrandSchema, type ProductBrandSchemaType } from '@/schemas/product-brands.schema'
+import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 
 interface ProductBrandCreateProps {
   children?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function ProductBrandCreate({ children }: ProductBrandCreateProps) {
-  const [open, setOpen] = useState(false)
+export function ProductBrandCreate({ 
+  children, 
+  open: controlledOpen, 
+  onOpenChange: controlledOnOpenChange 
+}: ProductBrandCreateProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
+  const setOpen = controlledOnOpenChange ?? setInternalOpen
   const mutation = useProductBrandCreate()
 
   const form = useForm<ProductBrandSchemaType>({

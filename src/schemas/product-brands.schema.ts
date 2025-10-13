@@ -20,5 +20,11 @@ export const productBrandFiltersSchema = z.object({
 // Tipos TypeScript
 export type ProductBrandBase = z.infer<typeof productBrandBaseSchema>
 export type CreateProductBrand = z.infer<typeof createProductBrandSchema>
+export type CreateProductBrandSchema = z.infer<typeof createProductBrandSchema>
 export type UpdateProductBrand = z.infer<typeof updateProductBrandSchema>
+export type UpdateProductBrandSchema = z.infer<typeof updateProductBrandSchema>
 export type ProductBrandFilters = z.infer<typeof productBrandFiltersSchema>
+
+// Tipos para compatibilidad
+export type ProductBrandSchemaType = CreateProductBrand
+export const ProductBrandSchema = createProductBrandSchema

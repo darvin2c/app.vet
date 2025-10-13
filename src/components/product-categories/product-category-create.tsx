@@ -17,22 +17,33 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import { ProductCategorySchema, type ProductCategorySchemaType } from '@/schemas/product-category.schema'
-import { useProductCategoryCreate } from '@/hooks/product-categories/use-product-category-create'
+import { createProductCategorySchema, type CreateProductCategorySchema } from '@/schemas/product-categories.schema'
+import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
 
 interface ProductCategoryCreateProps {
   children?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function ProductCategoryCreate({ children }: ProductCategoryCreateProps) {
-  const [open, setOpen] = useState(false)
+export function ProductCategoryCreate({ 
+  children, 
+  open: controlledOpen, 
+  onOpenChange: controlledOnOpenChange 
+}: ProductCategoryCreateProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen ?? internalOpen
+  const setOpen = controlledOnOpenChange ?? setInternalOpen
   const mutation = useProductCategoryCreate()
 
-  const form = useForm<ProductCategorySchemaType>({
-    resolver: zodResolver(ProductCategorySchema),
+  const form = useForm({
+    resolver: zodResolver(createProductCategorySchema),
+    defaultValues: {
+      is_active: true,
+    },
   })
 
-  const onSubmit = async (data: ProductCategorySchemaType) => {
+  const onSubmit = async (data: CreateProductCategorySchema) => {
     await mutation.mutateAsync(data)
     form.reset()
     setOpen(false)

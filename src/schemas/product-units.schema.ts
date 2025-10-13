@@ -2,7 +2,7 @@ import { z } from 'zod'
 
 export const productUnitBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
-  abbreviation: z.string().nonempty('La abreviación es requerida'),
+  abbreviation: z.string().nonempty('La abreviación es requerida').nullable(),
   is_active: z.boolean().default(true),
 })
 
@@ -21,6 +21,10 @@ export type ProductUnitBaseSchema = z.infer<typeof productUnitBaseSchema>
 export type CreateProductUnitSchema = z.infer<typeof createProductUnitSchema>
 export type UpdateProductUnitSchema = z.infer<typeof updateProductUnitSchema>
 export type ProductUnitFiltersSchema = z.infer<typeof productUnitFiltersSchema>
+
+// Tipos para compatibilidad
+export type ProductUnitSchemaType = CreateProductUnitSchema
+export const ProductUnitSchema = createProductUnitSchema
 
 export const activeStatusOptions = [
   { value: true, label: 'Activo' },

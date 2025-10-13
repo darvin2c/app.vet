@@ -46,10 +46,6 @@ export const staffBaseSchema = z.object({
 
 // Esquema para crear staff
 export const createStaffSchema = staffBaseSchema
-  .omit({ is_active: true })
-  .extend({
-    is_active: z.boolean().default(true),
-  })
 
 // Esquema para actualizar staff
 export const updateStaffSchema = staffBaseSchema.partial()
@@ -66,6 +62,11 @@ export const staffFiltersSchema = z.object({
 export type CreateStaffSchema = z.infer<typeof createStaffSchema>
 export type UpdateStaffSchema = z.infer<typeof updateStaffSchema>
 export type StaffFilters = z.infer<typeof staffFiltersSchema>
+
+// Tipos para compatibilidad
+export type StaffSchema = CreateStaffSchema
+export const StaffSchema = createStaffSchema
+export type StaffSchemaType = CreateStaffSchema
 
 // Las especialidades ahora se obtienen dinámicamente de la tabla specialties
 // Se mantienen las opciones de estado activo

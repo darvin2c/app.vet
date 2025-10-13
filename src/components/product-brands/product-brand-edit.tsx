@@ -16,8 +16,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import { ProductBrandSchema, type ProductBrandSchemaType } from '@/schemas/product-brand.schema'
-import { useProductBrandUpdate } from '@/hooks/product-brands/use-product-brand-update'
+import { updateProductBrandSchema, type UpdateProductBrandSchema } from '@/schemas/product-brands.schema'
+import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
 
 interface ProductBrandEditProps {
@@ -33,11 +33,11 @@ export function ProductBrandEdit({
 }: ProductBrandEditProps) {
   const mutation = useProductBrandUpdate()
 
-  const form = useForm<ProductBrandSchemaType>({
-    resolver: zodResolver(ProductBrandSchema),
+  const form = useForm<UpdateProductBrandSchema>({
+    resolver: zodResolver(updateProductBrandSchema),
     defaultValues: {
       name: brand.name,
-      description: brand.description,
+      description: brand.description || '',
     },
   })
 
@@ -45,15 +45,15 @@ export function ProductBrandEdit({
     if (brand) {
       form.reset({
         name: brand.name,
-        description: brand.description,
+        description: brand.description || '',
       })
     }
   }, [brand, form])
 
-  const onSubmit = async (data: ProductBrandSchemaType) => {
+  const onSubmit = async (data: UpdateProductBrandSchema) => {
     await mutation.mutateAsync({
       id: brand.id,
-      data,
+      ...data,
     })
     onOpenChange(false)
   }

@@ -29,6 +29,10 @@ export type ProductCategoryFiltersSchema = z.infer<
   typeof productCategoryFiltersSchema
 >
 
+// Tipos para compatibilidad
+export type ProductCategorySchemaType = CreateProductCategorySchema
+export const ProductCategorySchema = createProductCategorySchema
+
 export const activeStatusOptions = [
   { value: true, label: 'Activo' },
   { value: false, label: 'Inactivo' },

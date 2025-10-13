@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { CreateProductBrand } from '@/schemas/product-brands.schema'
+import { CreateProductBrandSchema } from '@/schemas/product-brands.schema'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
@@ -16,7 +16,7 @@ export function ProductBrandForm() {
   const {
     control,
     formState: { errors },
-  } = useFormContext<CreateProductBrand>()
+  } = useFormContext<CreateProductBrandSchema>()
 
   return (
     <div className="space-y-4">

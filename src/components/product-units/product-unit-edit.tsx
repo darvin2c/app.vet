@@ -16,42 +16,42 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductUnitForm } from './product-unit-form'
-import { ProductUnitSchema, type ProductUnitSchemaType } from '@/schemas/product-unit.schema'
-import { useProductUnitUpdate } from '@/hooks/product-units/use-product-unit-update'
+import { updateProductUnitSchema, type UpdateProductUnitSchema } from '@/schemas/product-units.schema'
+import useProductUnitUpdate from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
 
 interface ProductUnitEditProps {
-  productUnit: Tables<'product_units'>
+  unit: Tables<'product_units'>
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function ProductUnitEdit({ productUnit, open, onOpenChange }: ProductUnitEditProps) {
+export function ProductUnitEdit({ unit, open, onOpenChange }: ProductUnitEditProps) {
   const mutation = useProductUnitUpdate()
 
-  const form = useForm<ProductUnitSchemaType>({
-    resolver: zodResolver(ProductUnitSchema),
+  const form = useForm<UpdateProductUnitSchema>({
+    resolver: zodResolver(updateProductUnitSchema),
     defaultValues: {
-      name: productUnit.name,
-      abbreviation: productUnit.abbreviation,
-      is_active: productUnit.is_active,
+      name: unit.name,
+      abbreviation: unit.abbreviation,
+      is_active: unit.is_active,
     },
   })
 
   useEffect(() => {
-    if (productUnit) {
+    if (unit) {
       form.reset({
-        name: productUnit.name,
-        abbreviation: productUnit.abbreviation,
-        is_active: productUnit.is_active,
+        name: unit.name,
+        abbreviation: unit.abbreviation,
+        is_active: unit.is_active,
       })
     }
-  }, [productUnit, form])
+  }, [unit, form])
 
-  const onSubmit = async (data: ProductUnitSchemaType) => {
+  const onSubmit = async (data: UpdateProductUnitSchema) => {
     await mutation.mutateAsync({
-      id: productUnit.id,
-      data,
+      id: unit.id,
+      ...data,
     })
     onOpenChange(false)
   }

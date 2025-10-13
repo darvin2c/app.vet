@@ -11,20 +11,17 @@ export default function useProductBrandUpdate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: UpdateProductBrandData
-    }) => {
+    mutationFn: async (data: UpdateProductBrandData & { id: string }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
+      const { id, ...updateFields } = data
+      const updateData: UpdateProductBrandData = updateFields
+
       const { data: result, error } = await supabase
         .from('product_brands')
-        .update(data)
+        .update(updateData)
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
         .select()

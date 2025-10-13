@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { CreateStaffSchema } from '@/schemas/staff.schema'
+import { CreateStaffSchema, UpdateStaffSchema } from '@/schemas/staff.schema'
 import { Input } from '@/components/ui/input'
 import {
   Select,
@@ -20,7 +20,7 @@ import { SpecialtySelect } from '@/components/specialties/specialty-select'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function StaffForm() {
-  const form = useFormContext<CreateStaffSchema>()
+  const form = useFormContext<CreateStaffSchema | UpdateStaffSchema>()
   const { formState: { errors } } = form
 
   return (

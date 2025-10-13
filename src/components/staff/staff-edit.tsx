@@ -16,8 +16,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import { StaffSchema, type StaffSchemaType } from '@/schemas/staff.schema'
-import { useStaffUpdate } from '@/hooks/staff/use-staff-update'
+import { updateStaffSchema, type UpdateStaffSchema } from '@/schemas/staff.schema'
+import useStaffUpdate from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
 
 interface StaffEditProps {
@@ -29,8 +29,8 @@ interface StaffEditProps {
 export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const mutation = useStaffUpdate()
 
-  const form = useForm<StaffSchemaType>({
-    resolver: zodResolver(StaffSchema),
+  const form = useForm<UpdateStaffSchema>({
+    resolver: zodResolver(updateStaffSchema),
     defaultValues: {
       full_name: staff.full_name,
       email: staff.email,
@@ -52,10 +52,10 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     }
   }, [staff, form])
 
-  const onSubmit = async (data: StaffSchemaType) => {
+  const onSubmit = async (data: UpdateStaffSchema) => {
     await mutation.mutateAsync({
       id: staff.id,
-      data,
+      ...data,
     })
     onOpenChange(false)
   }
@@ -70,14 +70,14 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <StaffForm />
             </div>
             <DrawerFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={form.handleSubmit(onSubmit)}
                 disabled={mutation.isPending}
               >
                 Actualizar Personal

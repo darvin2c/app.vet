@@ -16,8 +16,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import { ProductCategorySchema, type ProductCategorySchemaType } from '@/schemas/product-category.schema'
-import { useProductCategoryUpdate } from '@/hooks/product-categories/use-product-category-update'
+import { updateProductCategorySchema, type UpdateProductCategorySchema } from '@/schemas/product-categories.schema'
+import useUpdateProductCategory from '@/hooks/product-categories/use-product-category-update'
 import { Tables } from '@/types/supabase.types'
 
 interface ProductCategoryEditProps {
@@ -31,13 +31,13 @@ export function ProductCategoryEdit({
   open,
   onOpenChange,
 }: ProductCategoryEditProps) {
-  const mutation = useProductCategoryUpdate()
+  const mutation = useUpdateProductCategory()
 
-  const form = useForm<ProductCategorySchemaType>({
-    resolver: zodResolver(ProductCategorySchema),
+  const form = useForm<UpdateProductCategorySchema>({
+    resolver: zodResolver(updateProductCategorySchema),
     defaultValues: {
       name: category.name,
-      description: category.description,
+      description: category.description || '',
       is_active: category.is_active,
     },
   })
@@ -46,16 +46,16 @@ export function ProductCategoryEdit({
     if (category) {
       form.reset({
         name: category.name,
-        description: category.description,
+        description: category.description || '',
         is_active: category.is_active,
       })
     }
   }, [category, form])
 
-  const onSubmit = async (data: ProductCategorySchemaType) => {
+  const onSubmit = async (data: UpdateProductCategorySchema) => {
     await mutation.mutateAsync({
       id: category.id,
-      data,
+      ...data,
     })
     onOpenChange(false)
   }

@@ -8,6 +8,7 @@ import {
   ListCollapse,
   LucideIcon,
   PawPrint,
+  Handshake,
 } from 'lucide-react'
 
 import {
@@ -73,6 +74,12 @@ const navigationGroups: NavGroup[] = [
         href: '/kardex',
         icon: Boxes,
         tooltip: 'Kardex',
+      },
+      {
+        title: 'Proveedores',
+        href: '/suppliers',
+        icon: Handshake,
+        tooltip: 'Proveedores',
       },
     ],
   },
