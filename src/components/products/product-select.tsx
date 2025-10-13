@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, Plus, X, Edit, Package } from 'lucide-react'
+import { Check, ChevronsUpDown, X, Package } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,

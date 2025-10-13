@@ -3,28 +3,7 @@
 import PageBase from '@/components/page-base'
 import { ProductUnitList } from '@/components/product-units/product-unit-list'
 import { SearchInput } from '@/components/ui/search-input'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { ProductUnitCreate } from '@/components/product-units/product-unit-create'
-import { Ruler, Plus } from 'lucide-react'
-import { useState } from 'react'
-
-function ProductUnitCreateButton() {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <>
-      <ResponsiveButton
-        icon={Plus}
-        tooltip="Nueva Unidad"
-        onClick={() => setOpen(true)}
-      >
-        Nueva Unidad
-      </ResponsiveButton>
-
-      <ProductUnitCreate open={open} onOpenChange={setOpen} />
-    </>
-  )
-}
+import { Ruler } from 'lucide-react'
 
 export default function ProductUnitsPage() {
   return (

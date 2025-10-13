@@ -66,7 +66,7 @@ export function ProductCategorySelect({
               variant="ghost"
               role="combobox"
               aria-expanded={open}
-              className="flex-1 justify-between h-9 px-3 py-2 text-left font-normal"
+              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
             >
               {selectedCategory ? (
@@ -123,6 +123,7 @@ export function ProductCategorySelect({
             onClick={() => onValueChange?.('')}
             disabled={disabled}
             aria-label="Limpiar selección"
+            className="h-full"
           >
             <X className="h-4 w-4" />
           </InputGroupButton>
@@ -133,6 +134,7 @@ export function ProductCategorySelect({
           onClick={() => setCreateOpen(true)}
           disabled={disabled}
           aria-label="Crear nueva categoría"
+          className="h-full"
         >
           <Plus className="h-4 w-4" />
         </InputGroupButton>
@@ -143,6 +145,7 @@ export function ProductCategorySelect({
             onClick={() => setEditOpen(true)}
             disabled={disabled}
             aria-label="Editar categoría seleccionada"
+            className="h-full"
           >
             <Edit className="h-4 w-4" />
           </InputGroupButton>
