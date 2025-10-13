@@ -272,7 +272,10 @@ export default function ResourcePage() {
 
 ## Listas
 
-- Para listas se debe de usar `react-table`, y se debe de mostrar tanto en `table`, `Card` y `list`
+- Para listas se debe de usar `react-table`, y se debe de mostrar tanto en `table`, `cards` y `list`
+- Para la vista `cards` se debe de usar el componente `Card`
+- Para la vista `list` se debe de usar el componente `ItemGroup`
+- Para la vista `table` se debe de usar el componente `Table`
 
 ```typescript
 // state loading: table-skeleton
