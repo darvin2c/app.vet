@@ -23,6 +23,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Database } from '@/types/supabase.types'
 import { ProductActions } from './product-actions'
 import { ProductCreateButton } from './product-create-button'
@@ -69,8 +70,7 @@ export function ProductList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
-  // Usar el hook useProducts con los filtros aplicados (sin componentes React)
-  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
+
   const {
     data: products = [],
     isPending,
@@ -204,38 +204,40 @@ export function ProductList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {products.map((product) => (
-        <div key={product.id} className="border rounded-lg p-4 space-y-3">
-          <div className="flex justify-between items-start">
-            <div>
-              <h3 className="font-medium">{product.name}</h3>
-              {product.sku && (
-                <p className="text-sm text-muted-foreground">
-                  SKU: {product.sku}
-                </p>
+        <Card key={product.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{product.name}</h3>
+                {product.sku && (
+                  <p className="text-sm text-muted-foreground">
+                    SKU: {product.sku}
+                  </p>
+                )}
+              </div>
+              <ProductActions product={product} />
+            </div>
+
+            <div className="space-y-2">
+              {product.category_id && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Categoría:</span>{' '}
+                  {product.category_id}
+                </div>
+              )}
+              {product.unit_id && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Unidad:</span>{' '}
+                  {product.unit_id}
+                </div>
               )}
             </div>
-            <ProductActions product={product} />
-          </div>
 
-          <div className="space-y-2">
-            {product.category_id && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Categoría:</span>{' '}
-                {product.category_id}
-              </div>
-            )}
-            {product.unit_id && (
-              <div className="text-sm">
-                <span className="text-muted-foreground">Unidad:</span>{' '}
-                {product.unit_id}
-              </div>
-            )}
-          </div>
-
-          <div className="flex justify-between items-center">
-            <IsActiveDisplay value={product.is_active} />
-          </div>
-        </div>
+            <div className="flex justify-between items-center">
+              <IsActiveDisplay value={product.is_active} />
+            </div>
+          </CardContent>
+        </Card>
       ))}
     </div>
   )
