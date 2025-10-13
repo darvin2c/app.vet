@@ -223,8 +223,8 @@ export function FeatureForm() {
 - Para los botones de acción se usara `ui/responsive-button`
 - Los botones de acción (Crear, Actualizar, Cancelar, etc.) **NO** deben estar dentro del componente `<feature>-form.tsx`
 - Los botones de acción deben estar en los componentes de acción: `<feature>-create.tsx` y `<feature>-edit.tsx`
-- En formularios con `drawer-form.tsx`, los botones deben ubicarse en el `DrawerFooter`, _no_ usar `drawer.tsx`
-- El componente form solo debe contener los campos (`FormField`) y la lógica de presentación
+- En formularios con `drawer-form.tsx` con el compondente `Drawer`, los botones deben ubicarse en el `DrawerFooter`, _no_ usar `drawer.tsx`
+- El componente `DrawerForm` no existe y no debe de ser creado.
 - Los componentes de acción manejan la lógica del formulario, estados de carga y envío
 
 ## Páginas

@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
-export function CustomerForm() {
+export function CustomerForm({ mode }: { mode: 'create' | 'edit' }) {
   const {
     register,
     formState: { errors },

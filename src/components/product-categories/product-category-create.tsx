@@ -2,7 +2,14 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { DrawerForm, DrawerFooter } from '@/components/ui/drawer-form'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer-form'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductCategoryForm } from './product-category-form'
@@ -33,22 +40,33 @@ export function ProductCategoryCreate({
   })
 
   const onSubmit = async (data: CreateProductCategorySchema) => {
-    try {
-      await createProductCategory.mutateAsync(data)
-      form.reset()
-      onOpenChange(false)
-    } catch (error) {
-      // Error ya manejado en el hook
-    }
+    await createProductCategory.mutateAsync(data)
+    form.reset()
+    onOpenChange(false)
   }
 
   return (
-    <DrawerForm
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Crear Categoría de Producto"
-      description="Completa la información para agregar una nueva categoría de producto."
-      footer={
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="!max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
+          <DrawerDescription>
+            Completa la información para registrar una nueva categoría de
+            producto.
+          </DrawerDescription>
+        </DrawerHeader>
+
+        <div className="px-4">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit as any)}
+              className="space-y-4"
+            >
+              <ProductCategoryForm />
+            </form>
+          </Form>
+        </div>
+
         <DrawerFooter>
           <Button
             type="submit"
@@ -67,18 +85,7 @@ export function ProductCategoryCreate({
             Cancelar
           </Button>
         </DrawerFooter>
-      }
-    >
-      <div className="px-4">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
-            <ProductCategoryForm mode="create" />
-          </form>
-        </Form>
-      </div>
-    </DrawerForm>
+      </DrawerContent>
+    </Drawer>
   )
 }

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   updateCustomerSchema,
@@ -10,10 +10,17 @@ import {
 import useCustomerUpdate from '@/hooks/customers/use-customer-update'
 import useCustomerDetail from '@/hooks/customers/use-customer-detail'
 import { CustomerForm } from './customer-form'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Save, X } from 'lucide-react'
-import { DrawerForm } from '@/components/ui/drawer-form'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+  DrawerFooter,
+} from '@/components/ui/drawer-form'
 import { Tables } from '@/types/supabase.types'
+import { Form } from '../ui/form'
+import { Button } from '../ui/button'
 
 type Customer = Tables<'customers'>
 
@@ -23,8 +30,11 @@ interface CustomerEditProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function CustomerEdit({ customerId, open, onOpenChange }: CustomerEditProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
+export function CustomerEdit({
+  customerId,
+  open,
+  onOpenChange,
+}: CustomerEditProps) {
   const updateCustomer = useCustomerUpdate()
   const { data: customer, isLoading } = useCustomerDetail(customerId)
 
@@ -57,74 +67,49 @@ export function CustomerEdit({ customerId, open, onOpenChange }: CustomerEditPro
   }, [customer, form])
 
   const onSubmit = async (data: UpdateCustomerSchema) => {
-    try {
-      setIsSubmitting(true)
-      await updateCustomer.mutateAsync({
-        id: customerId,
-        ...data,
-      })
-      onOpenChange(false)
-    } catch (error) {
-      // Error ya manejado en el hook
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const handleCancel = () => {
-    if (customer) {
-      form.reset({
-        first_name: customer.first_name || '',
-        last_name: customer.last_name || '',
-        doc_id: customer.doc_id || '',
-        email: customer.email || '',
-        phone: customer.phone || '',
-        address: customer.address || '',
-        notes: customer.notes || '',
-      })
-    }
-    onOpenChange(false)
-  }
-
-  const footer = (
-    <>
-      <ResponsiveButton
-        type="submit"
-        isLoading={isSubmitting}
-        disabled={isSubmitting}
-        icon={Save}
-      >
-        Guardar Cambios
-      </ResponsiveButton>
-      <ResponsiveButton
-        type="button"
-        variant="outline"
-        onClick={handleCancel}
-        disabled={isSubmitting}
-        icon={X}
-      >
-        Cancelar
-      </ResponsiveButton>
-    </>
-  )
-
-  if (isLoading) {
-    return null
+    await updateCustomer.mutateAsync({
+      id: customerId,
+      ...data,
+    })
   }
 
   return (
-    <DrawerForm
-      title="Editar Cliente"
-      description="Modifica la información del cliente."
-      open={open}
-      onOpenChange={onOpenChange}
-      footer={footer}
-    >
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <CustomerForm />
-        </form>
-      </FormProvider>
-    </DrawerForm>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="!w-full !max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Editar Cliente</DrawerTitle>
+          <DrawerDescription>
+            Modifica la información del cliente.
+          </DrawerDescription>
+        </DrawerHeader>
+
+        <div className="px-4 overflow-y-auto">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <CustomerForm mode="edit" />
+            </form>
+          </Form>
+        </div>
+
+        <DrawerFooter>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit as any)}
+            disabled={updateCustomer.isPending}
+          >
+            {updateCustomer.isPending
+              ? 'Actualizando...'
+              : 'Actualizar Cliente'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={updateCustomer.isPending}
+          >
+            Cancelar
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
   )
 }

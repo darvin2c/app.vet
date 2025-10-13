@@ -42,15 +42,11 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
   })
 
   const onSubmit = async (data: UpdateProductSchema) => {
-    try {
-      await updateProduct.mutateAsync({
-        id: product.id,
-        data,
-      })
-      onOpenChange(false)
-    } catch (error) {
-      // Error ya manejado en el hook
-    }
+    await updateProduct.mutateAsync({
+      id: product.id,
+      data,
+    })
+    onOpenChange(false)
   }
 
   return (
