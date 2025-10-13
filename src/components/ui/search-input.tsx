@@ -13,7 +13,9 @@ import {
   InputGroupText,
 } from '@/components/ui/input-group'
 import { Kbd } from './kbd'
-import { SidebarTrigger } from './sidebar'
+import { SidebarTrigger as SidebarTriggerLeft } from './sidebar-left'
+import { SidebarTrigger as SidebarTriggerRight } from './sidebar-right'
+
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsFetching } from '@tanstack/react-query'
 
@@ -29,7 +31,8 @@ export interface SearchProps
   size?: 'sm' | 'default' | 'lg'
   containerClassName?: string
   urlParamName?: string
-  hasSidebarTrigger?: boolean
+  hasSidebarTriggerLeft?: boolean
+  hasSidebarTriggerRight?: boolean
 }
 
 // Componente de UI puro interno
@@ -42,7 +45,8 @@ interface InternalSearchInputProps
   showClear?: boolean
   size?: 'sm' | 'default' | 'lg'
   containerClassName?: string
-  hasSidebarTrigger?: boolean
+  hasSidebarTriggerLeft?: boolean
+  hasSidebarTriggerRight?: boolean
 }
 
 const InternalSearchInput = React.forwardRef<
@@ -62,7 +66,8 @@ const InternalSearchInput = React.forwardRef<
       showClear = true,
       size = 'default',
       placeholder = 'Buscar...',
-      hasSidebarTrigger = false,
+      hasSidebarTriggerLeft = true,
+      hasSidebarTriggerRight = false,
       ...props
     },
     ref
@@ -90,8 +95,8 @@ const InternalSearchInput = React.forwardRef<
       <InputGroup className={cn(sizeClasses[size], containerClassName)}>
         {/* Search icon - left side */}
         <InputGroupAddon align="inline-start">
-          {hasSidebarTrigger && isMobile && (
-            <SidebarTrigger className="cursor-ew-resize" />
+          {hasSidebarTriggerLeft && isMobile && (
+            <SidebarTriggerLeft className="cursor-ew-resize" />
           )}
           <SearchIcon className={iconSizeClasses[size]} />
         </InputGroupAddon>
@@ -144,6 +149,10 @@ const InternalSearchInput = React.forwardRef<
 
           {/* Suffix */}
           {showSuffix ? <InputGroupText>{suffix}</InputGroupText> : null}
+          {/* Search icon - right side */}
+          {hasSidebarTriggerRight && isMobile && (
+            <SidebarTriggerRight className="cursor-ew-resize" />
+          )}
         </InputGroupAddon>
       </InputGroup>
     )
@@ -167,7 +176,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchProps>(
       size = 'default',
       placeholder = 'Buscar...',
       urlParamName = 'search',
-      hasSidebarTrigger = false,
+      hasSidebarTriggerLeft = true,
+      hasSidebarTriggerRight = false,
       ...restProps
     } = props
 
@@ -250,7 +260,8 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchProps>(
         showClear={showClear}
         size={size}
         placeholder={placeholder}
-        hasSidebarTrigger={hasSidebarTrigger}
+        hasSidebarTriggerLeft={hasSidebarTriggerLeft}
+        hasSidebarTriggerRight={hasSidebarTriggerRight}
         {...restProps}
       />
     )

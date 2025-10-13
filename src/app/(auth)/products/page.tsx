@@ -71,7 +71,7 @@ export default function ProductsPage() {
       subtitle="Gestiona el catálogo de productos"
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
           placeholder="Buscar producto"
           size="lg"
           suffix={

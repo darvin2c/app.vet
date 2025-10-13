@@ -19,8 +19,9 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarTrigger,
-} from '@/components/ui/sidebar'
+  SidebarProvider,
+  SidebarInset,
+} from '@/components/ui/sidebar-right'
 import { cn } from '@/lib/utils'
 
 interface NavItem {
@@ -68,51 +69,64 @@ const navigationGroups: NavGroup[] = [
   },
 ]
 
-interface ReferenceSidebarProps {
+export function ReferenceSidebar({
+  children,
+  onItemClick,
+}: {
+  children: React.ReactNode
   onItemClick?: () => void
-}
-
-export function ReferenceSidebar({ onItemClick }: ReferenceSidebarProps) {
+}) {
   const pathname = usePathname()
 
   return (
-    <Sidebar collapsible="icon" className="absolute">
-      <SidebarHeader className="flex flex-row items-center justify-between">
-        <div className="flex items-center gap-2 data-[state=expanded]:bg-sidebar-accent data-[state=expanded]:text-sidebar-accent-foreground">
-          <Settings className="h-5 w-5 text-primary" />
-          <span className="font-semibold">Referencias</span>
-        </div>
-      </SidebarHeader>
-      <SidebarContent>
-        {navigationGroups.map((group) => (
-          <SidebarGroup key={group.label} className="">
-            <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
-            <SidebarMenu>
-              {group.items.map((item) => {
-                const Icon = item.icon
-                const isActive =
-                  pathname === item.href || pathname.startsWith(item.href + '/')
+    <SidebarProvider className="items-start relative">
+      <Sidebar
+        side="right"
+        collapsible="icon"
+        className="absolute top-0 left-0"
+      >
+        <SidebarHeader className="flex flex-row items-center justify-between">
+          <div className="flex items-center gap-2 data-[state=expanded]:bg-sidebar-accent data-[state=expanded]:text-sidebar-accent-foreground">
+            <Settings className="h-5 w-5 text-primary" />
+            <span className="font-semibold">Referencias</span>
+          </div>
+        </SidebarHeader>
+        <SidebarContent>
+          {navigationGroups.map((group) => (
+            <SidebarGroup key={group.label} className="">
+              <SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+              <SidebarMenu>
+                {group.items.map((item) => {
+                  const Icon = item.icon
+                  const isActive =
+                    pathname === item.href ||
+                    pathname.startsWith(item.href + '/')
 
-                return (
-                  <SidebarMenuItem key={item.href}>
-                    <SidebarMenuButton
-                      title={item.title}
-                      asChild
-                      tooltip={item.tooltip}
-                      className={cn(isActive && 'bg-muted')}
-                    >
-                      <Link href={item.href} onClick={onItemClick}>
-                        <Icon />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                )
-              })}
-            </SidebarMenu>
-          </SidebarGroup>
-        ))}
-      </SidebarContent>
-    </Sidebar>
+                  return (
+                    <SidebarMenuItem key={item.href}>
+                      <SidebarMenuButton
+                        title={item.title}
+                        asChild
+                        tooltip={item.tooltip}
+                        className={cn(isActive && 'bg-muted')}
+                      >
+                        <Link href={item.href} onClick={onItemClick}>
+                          <Icon />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  )
+                })}
+              </SidebarMenu>
+            </SidebarGroup>
+          ))}
+        </SidebarContent>
+      </Sidebar>
+      <SidebarInset>
+        {/* Contenido principal */}
+        <main className="h-full">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   )
 }

@@ -17,7 +17,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar'
+} from '@/components/ui/sidebar-left'
 import useUser, { useProfile } from '@/hooks/auth/use-user'
 import useLogout from '@/hooks/auth/use-logout'
 import Link from 'next/link'

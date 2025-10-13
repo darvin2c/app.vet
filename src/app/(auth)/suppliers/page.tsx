@@ -52,7 +52,7 @@ export default function SuppliersPage() {
       subtitle="Gestiona los proveedores de tu clínica veterinaria"
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
           placeholder="Buscar proveedores..."
           size="lg"
           suffix={

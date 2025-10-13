@@ -93,7 +93,7 @@ export default function StaffPage() {
       subtitle="Gestiona la información de tu equipo de trabajo"
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
           placeholder="Buscar miembro del staff"
           size="lg"
           suffix={

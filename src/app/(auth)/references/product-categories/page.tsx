@@ -48,7 +48,8 @@ export default function ProductCategoriesPage() {
       icon={Package}
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
+          hasSidebarTriggerRight
           placeholder="Buscar categoría"
           size="lg"
           suffix={

@@ -88,7 +88,7 @@ export default function PetsPage() {
       subtitle="Gestiona las mascotas registradas en el sistema"
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
           placeholder="Buscar por nombre o microchip"
           size="lg"
           suffix={

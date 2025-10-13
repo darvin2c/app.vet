@@ -10,7 +10,7 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from '@/components/ui/sidebar'
+} from '@/components/ui/sidebar-left'
 import { TenantSwitcher } from '../tenants/tenant-switcher'
 import { UserNav } from '../auth/user-nav'
 import { MainNav } from './main-nav'

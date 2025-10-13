@@ -45,7 +45,7 @@ export default function CustomersPage() {
       subtitle="Gestiona la información de tus clientes"
       search={
         <SearchInput
-          hasSidebarTrigger
+          hasSidebarTriggerLeft
           placeholder="Buscar cliente"
           size="lg"
           suffix={
