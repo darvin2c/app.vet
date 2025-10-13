@@ -32,7 +32,9 @@ export default function useSupplierCreate() {
       return supplier
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['suppliers'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'suppliers'],
+      })
       toast.success('Proveedor creado exitosamente')
     },
     onError: (error) => {

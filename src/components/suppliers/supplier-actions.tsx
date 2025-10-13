@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Database, IdCard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -9,11 +9,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { SupplierEdit } from './supplier-edit'
 import { SupplierDelete } from './supplier-delete'
+import Link from 'next/link'
 
-type Supplier = Database['public']['Tables']['suppliers']['Row']
+type Supplier = Tables<'suppliers'>
 
 interface SupplierActionsProps {
   supplier: Supplier
@@ -33,6 +34,15 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem asChild>
+            <Link
+              href={`/suppliers/${supplier.id}`}
+              className="flex items-center"
+            >
+              <IdCard className="mr-2 h-4 w-4" />
+              Ver perfil
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar

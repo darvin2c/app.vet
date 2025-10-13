@@ -1,9 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 export default function useSupplierDelete() {
   const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (id: string) => {
@@ -16,7 +18,9 @@ export default function useSupplierDelete() {
       return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['suppliers'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'suppliers'],
+      })
       toast.success('Proveedor eliminado exitosamente')
     },
     onError: (error) => {

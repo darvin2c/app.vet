@@ -8,7 +8,6 @@ import {
   useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -39,7 +38,7 @@ import {
   EmptyDescription,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ChevronLeft, ChevronRight, Building } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Building, Handshake } from 'lucide-react'
 import useSupplierList from '@/hooks/suppliers/use-supplier-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
@@ -178,18 +177,12 @@ export function SupplierList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: suppliers,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
     initialState: {
       pagination: {
         pageSize: 10,
@@ -325,17 +318,23 @@ export function SupplierList({
 
   if (!suppliers || suppliers.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Building className="h-10 w-10" />
-          </EmptyMedia>
-          <EmptyTitle>No hay proveedores</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron proveedores con los filtros aplicados.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia>
+              <Handshake className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay proveedores</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron proveedores que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+            <div className="mt-4">
+              <SupplierCreateButton children="Nuevo Proveedor" />
+            </div>
+          </EmptyHeader>
+        </Empty>
+      </div>
     )
   }
 
