@@ -82,30 +82,15 @@ export function CustomerList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
-  // Convertir filtros aplicados al formato esperado por useCustomerList
-  const customerFilters = {
-    search: appliedSearch,
-    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
-      | boolean
-      | undefined,
-    created_from: appliedFilters.find((f) => f.field === 'created_from')
-      ?.value as string | undefined,
-    created_to: appliedFilters.find((f) => f.field === 'created_to')?.value as
-      | string
-      | undefined,
-  }
-
-  // Usar el hook useCustomerList con los filtros aplicados
-  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
+  // Convertir filtros aplicados al formato esperado por useCustomerLis
   const {
     data: customers = [],
     isPending,
     error,
   } = useCustomerList({
-    filters: {
-      search: appliedSearch,
-      // Agregar otros filtros según sea necesario
-    },
+    filters: appliedFilters,
+    orders: orderByHook.appliedSorts,
+    search: appliedSearch,
   })
   // Callback para manejar la selección de clientes
   const handleCustomerSelect = useCallback((customer: Customer) => {

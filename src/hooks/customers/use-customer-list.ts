@@ -1,18 +1,21 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
-import { CustomerFilters } from '@/schemas/customers.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/types/filters.types'
+import { AppliedSort } from '@/types/order-by.types'
 
 type Customer = Tables<'customers'>
 
-interface UseCustomerListOptions {
-  filters?: CustomerFilters
-  enabled?: boolean
-}
-
-export default function useCustomerList(options: UseCustomerListOptions = {}) {
-  const { filters = {}, enabled = true } = options
+export default function useCustomerList({
+  filters = [],
+  orders = [],
+  search,
+}: {
+  filters?: AppliedFilter[]
+  orders?: AppliedSort[]
+  search?: string
+}) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
@@ -26,26 +29,20 @@ export default function useCustomerList(options: UseCustomerListOptions = {}) {
         .from('customers')
         .select('*')
         .eq('tenant_id', currentTenant.id)
-        .order('created_at', { ascending: false })
+
+      filters.forEach((filter) => {
+        query = query.filter(filter.field, filter.operator, filter.value)
+      })
 
       // Aplicar filtros
-      if (filters.search) {
-        query = query.or(
-          `full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
-        )
+      if (search) {
+        query = query.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`)
       }
 
-      if (filters.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
-
-      if (filters.created_from) {
-        query = query.gte('created_at', filters.created_from)
-      }
-
-      if (filters.created_to) {
-        query = query.lte('created_at', filters.created_to)
-      }
+      // Aplicar ordenamientos
+      orders.forEach((order) => {
+        query = query.order(order.field, { ascending: order.ascending })
+      })
 
       const { data, error } = await query
 
@@ -55,6 +52,5 @@ export default function useCustomerList(options: UseCustomerListOptions = {}) {
 
       return data || []
     },
-    enabled,
   })
 }
