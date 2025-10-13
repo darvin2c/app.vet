@@ -100,32 +100,41 @@ export function SpeciesList({
 
   // Obtener todas las razas para la vista jerárquica
   const { data: allBreeds = [] } = useBreedsList({
-    filters: appliedSearch ? [] : [{ field: 'is_active', operator: 'eq', value: true }],
+    filters: [{ field: 'is_active', operator: 'eq', value: true }],
     search: appliedSearch,
   })
 
   // Crear datos jerárquicos con subRows para react-table
   const hierarchicalData: HierarchicalSpecies[] = useMemo(() => {
-    return species.map((speciesItem) => {
+    const result = species.map((speciesItem) => {
+      // Solo obtener razas activas para esta especie
       const speciesBreeds = allBreeds.filter(
-        (breed) => breed.species_id === speciesItem.id
+        (breed) => breed.species_id === speciesItem.id && breed.is_active
       )
-      
-      // Filtrar razas según búsqueda y filtros aplicados
+
+      // Filtrar razas según búsqueda si existe
       let filteredBreeds = speciesBreeds
-      
+
       if (appliedSearch) {
-        filteredBreeds = speciesBreeds.filter(breed =>
-          breed.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-          (breed.description && breed.description.toLowerCase().includes(appliedSearch.toLowerCase()))
+        filteredBreeds = speciesBreeds.filter(
+          (breed) =>
+            breed.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
+            (breed.description &&
+              breed.description
+                .toLowerCase()
+                .includes(appliedSearch.toLowerCase()))
         )
       }
 
+      const hasActiveBreeds = filteredBreeds.length > 0
+
       return {
         ...speciesItem,
-        subRows: filteredBreeds.length > 0 ? filteredBreeds : undefined,
+        subRows: hasActiveBreeds ? filteredBreeds : undefined,
       }
     })
+
+    return result
   }, [species, allBreeds, appliedSearch])
 
   // Auto-expandir especies cuando se busca una raza
@@ -135,9 +144,13 @@ export function SpeciesList({
       hierarchicalData.forEach((speciesItem, index) => {
         if (speciesItem.subRows && speciesItem.subRows.length > 0) {
           // Verificar si alguna raza coincide con la búsqueda
-          const hasMatchingBreed = speciesItem.subRows.some(breed =>
-            breed.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-            (breed.description && breed.description.toLowerCase().includes(appliedSearch.toLowerCase()))
+          const hasMatchingBreed = speciesItem.subRows.some(
+            (breed) =>
+              breed.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
+              (breed.description &&
+                breed.description
+                  .toLowerCase()
+                  .includes(appliedSearch.toLowerCase()))
           )
           if (hasMatchingBreed) {
             newExpanded[index] = true
@@ -153,26 +166,30 @@ export function SpeciesList({
       id: 'expander',
       header: '',
       cell: ({ row }) => {
-        const hasSubRows = row.original.subRows && row.original.subRows.length > 0
-        
-        if (row.depth === 0 && hasSubRows) {
-          return (
-            <button
-              {...{
-                onClick: row.getToggleExpandedHandler(),
-                style: { cursor: 'pointer' },
-              }}
-              className="p-1 hover:bg-muted rounded flex items-center justify-center"
-            >
-              {row.getIsExpanded() ? (
-                <ChevronDown className="h-4 w-4" />
-              ) : (
-                <ChevronRight className="h-4 w-4" />
-              )}
-            </button>
-          )
+        // Solo mostrar botón de expansión para especies (depth 0) que tienen razas activas
+        if (row.depth === 0) {
+          const hasActiveBreeds =
+            row.original.subRows && row.original.subRows.length > 0
+
+          if (hasActiveBreeds) {
+            return (
+              <button
+                onClick={row.getToggleExpandedHandler()}
+                className="p-1 hover:bg-muted rounded flex items-center justify-center transition-colors"
+                aria-label={
+                  row.getIsExpanded() ? 'Contraer razas' : 'Expandir razas'
+                }
+              >
+                {row.getIsExpanded() ? (
+                  <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                ) : (
+                  <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                )}
+              </button>
+            )
+          }
         }
-        
+
         return <div className="w-6" />
       },
       size: 40,
@@ -187,7 +204,7 @@ export function SpeciesList({
       cell: ({ row }) => {
         const isBreed = row.depth > 0
         const name = row.getValue('name') as string
-        
+
         return (
           <div
             className={`font-medium ${
@@ -223,9 +240,7 @@ export function SpeciesList({
           Estado
         </OrderByTableHeader>
       ),
-      cell: ({ row }) => (
-        <IsActiveDisplay value={row.getValue('is_active')} />
-      ),
+      cell: ({ row }) => <IsActiveDisplay value={row.getValue('is_active')} />,
     },
     {
       accessorKey: 'created_at',
@@ -244,7 +259,7 @@ export function SpeciesList({
       header: 'Acciones',
       cell: ({ row }) => {
         const isBreed = row.depth > 0
-        
+
         if (isBreed) {
           return <BreedActions breed={row.original as Breed} />
         } else {
@@ -262,6 +277,13 @@ export function SpeciesList({
     },
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.subRows,
+    getRowCanExpand: (row) => {
+      // Solo las especies (depth 0) con razas activas pueden expandirse
+      return (
+        row.depth === 0 &&
+        !!(row.original.subRows && row.original.subRows.length > 0)
+      )
+    },
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -275,16 +297,18 @@ export function SpeciesList({
 
   const renderTableRow = useCallback(
     (row: Row<HierarchicalSpecies>) => (
-      <TableRow 
-        key={row.id} 
+      <TableRow
+        key={row.id}
         data-state={row.getIsSelected() && 'selected'}
         className={row.depth > 0 ? 'bg-muted/30' : ''}
       >
-        {row.getVisibleCells().map((cell: Cell<HierarchicalSpecies, unknown>) => (
-          <TableCell key={cell.id}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        ))}
+        {row
+          .getVisibleCells()
+          .map((cell: Cell<HierarchicalSpecies, unknown>) => (
+            <TableCell key={cell.id}>
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          ))}
       </TableRow>
     ),
     []
@@ -458,17 +482,16 @@ export function SpeciesList({
       {viewMode === 'table' && (
         <div className="flex items-center justify-between space-x-2 py-4">
           <div className="flex-1 text-sm text-muted-foreground">
-            {currentTable.getFilteredSelectedRowModel().rows.length} de{' '}
-            {currentTable.getFilteredRowModel().rows.length} fila(s)
-            seleccionada(s).
+            {table.getFilteredSelectedRowModel().rows.length} de{' '}
+            {table.getFilteredRowModel().rows.length} fila(s) seleccionada(s).
           </div>
           <div className="flex items-center space-x-6 lg:space-x-8">
             <div className="flex items-center space-x-2">
               <p className="text-sm font-medium">Filas por página</p>
               <select
-                value={currentTable.getState().pagination.pageSize}
+                value={table.getState().pagination.pageSize}
                 onChange={(e) => {
-                  currentTable.setPageSize(Number(e.target.value))
+                  table.setPageSize(Number(e.target.value))
                 }}
                 className="h-8 w-[70px] rounded border border-input bg-background px-3 py-1 text-sm"
               >
@@ -480,15 +503,15 @@ export function SpeciesList({
               </select>
             </div>
             <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-              Página {currentTable.getState().pagination.pageIndex + 1} de{' '}
-              {currentTable.getPageCount()}
+              Página {table.getState().pagination.pageIndex + 1} de{' '}
+              {table.getPageCount()}
             </div>
             <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 className="h-8 w-8 p-0"
-                onClick={() => currentTable.previousPage()}
-                disabled={!currentTable.getCanPreviousPage()}
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
               >
                 <span className="sr-only">Ir a la página anterior</span>
                 <ChevronLeft className="h-4 w-4" />
@@ -496,8 +519,8 @@ export function SpeciesList({
               <Button
                 variant="outline"
                 className="h-8 w-8 p-0"
-                onClick={() => currentTable.nextPage()}
-                disabled={!currentTable.getCanNextPage()}
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
               >
                 <span className="sr-only">Ir a la página siguiente</span>
                 <ChevronRight className="h-4 w-4" />
