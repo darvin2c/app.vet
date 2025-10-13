@@ -338,7 +338,7 @@ export function PetList({
               aplicados.
             </EmptyDescription>
             <div className="mt-4">
-              <PetCreateButton children="Nueva Mascota" />
+              <PetCreateButton />
             </div>
           </EmptyHeader>
         </Empty>

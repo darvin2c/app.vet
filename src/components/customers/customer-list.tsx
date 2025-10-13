@@ -17,7 +17,6 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Table,
@@ -32,7 +31,14 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { CustomerActions } from './customer-actions'
 import { CustomerCreateButton } from './customer-create-button'
 import { Tables } from '@/types/supabase.types'
-import { ArrowUpDown, Phone, Mail, MapPin, ChevronLeft, ChevronRight, Users } from 'lucide-react'
+import {
+  Phone,
+  Mail,
+  MapPin,
+  ChevronLeft,
+  ChevronRight,
+  Users,
+} from 'lucide-react'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/hooks/use-order-by'
@@ -79,9 +85,14 @@ export function CustomerList({
   // Convertir filtros aplicados al formato esperado por useCustomerList
   const customerFilters = {
     search: appliedSearch,
-    is_active: appliedFilters.find(f => f.field === 'is_active')?.value as boolean | undefined,
-    created_from: appliedFilters.find(f => f.field === 'created_from')?.value as string | undefined,
-    created_to: appliedFilters.find(f => f.field === 'created_to')?.value as string | undefined,
+    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
+      | boolean
+      | undefined,
+    created_from: appliedFilters.find((f) => f.field === 'created_from')
+      ?.value as string | undefined,
+    created_to: appliedFilters.find((f) => f.field === 'created_to')?.value as
+      | string
+      | undefined,
   }
 
   // Usar el hook useCustomerList con los filtros aplicados
@@ -107,10 +118,7 @@ export function CustomerList({
     {
       accessorKey: 'first_name',
       header: () => (
-        <OrderByTableHeader
-          field="first_name"
-          orderByHook={orderByHook}
-        >
+        <OrderByTableHeader field="first_name" orderByHook={orderByHook}>
           Cliente
         </OrderByTableHeader>
       ),
@@ -182,10 +190,7 @@ export function CustomerList({
     {
       accessorKey: 'created_at',
       header: () => (
-        <OrderByTableHeader
-          field="created_at"
-          orderByHook={orderByHook}
-        >
+        <OrderByTableHeader field="created_at" orderByHook={orderByHook}>
           Fecha de Registro
         </OrderByTableHeader>
       ),
@@ -198,12 +203,17 @@ export function CustomerList({
       id: 'actions',
       header: 'Acciones',
       cell: ({ row }) => (
-        <CustomerActions customer={row.original} onView={handleCustomerSelect} />
+        <CustomerActions
+          customer={row.original}
+          onView={handleCustomerSelect}
+        />
       ),
     },
   ]
 
   // Configuración de la tabla con React Table
+  const [sorting, setSorting] = useState<SortingState>([])
+
   const table = useReactTable({
     data: customers,
     columns,
@@ -211,6 +221,10 @@ export function CustomerList({
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
     initialState: {
       pagination: {
         pageSize: 10,
@@ -218,154 +232,43 @@ export function CustomerList({
     },
   })
 
-  // Estados de carga y error
-  if (isPending) {
-    return <TableSkeleton />
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <div className="text-destructive">Error al cargar los clientes</div>
-      </div>
-    )
-  }
-
-  // Estado vacío
-  if (customers.length === 0) {
-    return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Users className="h-12 w-12" />
-          </EmptyMedia>
-          <EmptyTitle>No hay clientes</EmptyTitle>
-          <EmptyDescription>
-            Comienza agregando tu primer cliente al sistema.
-          </EmptyDescription>
-        </EmptyHeader>
-        <CustomerCreateButton />
-      </Empty>
-    )
-  }
-
-  return (
-    <div className="space-y-4">
-      {/* Toggle de modo de vista */}
-      <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="customers" />
-      </div>
-
-      {/* Renderizado condicional basado en el modo de vista */}
-      {viewMode === 'table' && (
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && 'selected'}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => handleCustomerSelect(row.original)}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No se encontraron resultados.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      )}
-
-      {viewMode === 'cards' && (
-        <CustomerCardView customers={customers} onCustomerSelect={handleCustomerSelect} />
-      )}
-
-      {viewMode === 'list' && (
-        <CustomerListView customers={customers} onCustomerSelect={handleCustomerSelect} />
-      )}
-
-      {/* Paginación */}
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="text-sm text-muted-foreground">
-          Mostrando{' '}
-          {table.getState().pagination.pageIndex *
-            table.getState().pagination.pageSize +
-            1}{' '}
-          a{' '}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) *
-              table.getState().pagination.pageSize,
-            customers.length
-          )}{' '}
-          de {customers.length} clientes
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
+  // Función para renderizar el encabezado de la tabla
+  const renderTableHeader = useCallback(
+    (headerGroup: HeaderGroup<Customer>) => (
+      <TableRow key={headerGroup.id}>
+        {headerGroup.headers.map((header: Header<Customer, unknown>) => (
+          <TableHead key={header.id}>
+            {header.isPlaceholder
+              ? null
+              : flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        ))}
+      </TableRow>
+    ),
+    []
   )
-}
 
-function CustomerCardView({
-  customers,
-  onCustomerSelect,
-}: {
-  customers: Customer[]
-  onCustomerSelect?: (customer: Customer) => void
-}) {
-  return (
+  // Función para renderizar las filas de la tabla
+  const renderTableRow = useCallback(
+    (row: Row<Customer>) => (
+      <TableRow
+        key={row.id}
+        data-state={row.getIsSelected() && 'selected'}
+        className="cursor-pointer hover:bg-muted/50"
+        onClick={() => handleCustomerSelect(row.original)}
+      >
+        {row.getVisibleCells().map((cell: Cell<Customer, unknown>) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ),
+    [handleCustomerSelect]
+  )
+
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {customers.map((customer) => {
         const fullName = `${customer.first_name} ${customer.last_name}`
@@ -380,9 +283,9 @@ function CustomerCardView({
           <Card
             key={customer.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => onCustomerSelect?.(customer)}
+            onClick={() => handleCustomerSelect(customer)}
           >
-            <CardContent className="p-6">
+            <CardContent className="p-6 space-y-3">
               <div className="flex items-start justify-between">
                 <div className="flex items-center space-x-3">
                   <Avatar>
@@ -392,10 +295,13 @@ function CustomerCardView({
                     <h3 className="font-semibold">{fullName}</h3>
                   </div>
                 </div>
-                <CustomerActions customer={customer} onView={onCustomerSelect} />
+                <CustomerActions
+                  customer={customer}
+                  onView={handleCustomerSelect}
+                />
               </div>
 
-              <div className="mt-4 space-y-2">
+              <div className="space-y-2">
                 {customer.email && (
                   <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                     <Mail className="h-4 w-4" />
@@ -415,23 +321,20 @@ function CustomerCardView({
                   </div>
                 )}
               </div>
+
+              <div className="flex justify-between items-center">
+                <IsActiveDisplay value={true} />
+              </div>
             </CardContent>
           </Card>
         )
       })}
     </div>
   )
-}
 
-function CustomerListView({
-  customers,
-  onCustomerSelect,
-}: {
-  customers: Customer[]
-  onCustomerSelect?: (customer: Customer) => void
-}) {
-  return (
-    <ItemGroup>
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
       {customers.map((customer) => {
         const fullName = `${customer.first_name} ${customer.last_name}`
         const initials = fullName
@@ -444,8 +347,9 @@ function CustomerListView({
         return (
           <Item
             key={customer.id}
+            variant="outline"
             className="cursor-pointer"
-            onClick={() => onCustomerSelect?.(customer)}
+            onClick={() => handleCustomerSelect(customer)}
           >
             <ItemContent>
               <div className="flex items-center space-x-3">
@@ -475,107 +379,127 @@ function CustomerListView({
               </div>
             </ItemContent>
             <ItemActions>
-              <CustomerActions customer={customer} onView={onCustomerSelect} />
+              <CustomerActions
+                customer={customer}
+                onView={handleCustomerSelect}
+              />
             </ItemActions>
           </Item>
         )
       })}
     </ItemGroup>
   )
-}
 
-function CustomerListSkeleton({ view }: { view: 'table' | 'card' | 'list' }) {
-  if (view === 'card') {
+  // Estados de carga y error
+  if (isPending) {
+    return <TableSkeleton variant={viewMode} />
+  }
+
+  if (error) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {Array.from({ length: 6 }).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-6">
-              <div className="animate-pulse space-y-4">
-                <div className="flex items-center space-x-3">
-                  <div className="h-10 w-10 bg-muted rounded-full" />
-                  <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded w-24" />
-                    <div className="h-3 bg-muted rounded w-16" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="h-3 bg-muted rounded w-32" />
-                  <div className="h-3 bg-muted rounded w-28" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar clientes: {error.message}
+        </p>
       </div>
     )
   }
 
-  if (view === 'list') {
+  if (customers.length === 0) {
     return (
-      <div className="space-y-2">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-4">
-              <div className="animate-pulse flex items-center space-x-3">
-                <div className="h-10 w-10 bg-muted rounded-full" />
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-muted rounded w-32" />
-                  <div className="h-3 bg-muted rounded w-48" />
-                </div>
-                <div className="h-6 bg-muted rounded w-16" />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia>
+              <Users className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay clientes</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron clientes que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+            <div className="mt-4">
+              <CustomerCreateButton />
+            </div>
+          </EmptyHeader>
+        </Empty>
       </div>
     )
   }
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Cliente</TableHead>
-            <TableHead>Teléfono</TableHead>
-            <TableHead>Dirección</TableHead>
-            <TableHead>Estado</TableHead>
-            <TableHead>Fecha de Registro</TableHead>
-            <TableHead>Acciones</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                <div className="animate-pulse flex items-center space-x-3">
-                  <div className="h-8 w-8 bg-muted rounded-full" />
-                  <div className="space-y-2">
-                    <div className="h-4 bg-muted rounded w-24" />
-                    <div className="h-3 bg-muted rounded w-32" />
-                  </div>
-                </div>
-              </TableCell>
-              <TableCell>
-                <div className="animate-pulse h-4 bg-muted rounded w-24" />
-              </TableCell>
-              <TableCell>
-                <div className="animate-pulse h-4 bg-muted rounded w-32" />
-              </TableCell>
-              <TableCell>
-                <div className="animate-pulse h-6 bg-muted rounded w-16" />
-              </TableCell>
-              <TableCell>
-                <div className="animate-pulse h-4 bg-muted rounded w-20" />
-              </TableCell>
-              <TableCell>
-                <div className="animate-pulse h-8 w-8 bg-muted rounded" />
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+    <div className="space-y-4">
+      {/* Controles de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="customers" />
+      </div>
+
+      {/* Contenido según la vista seleccionada */}
+      {viewMode === 'table' && (
+        <>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map(renderTableHeader)}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map(renderTableRow)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                customers.length
+              )}{' '}
+              de {customers.length} clientes
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {viewMode === 'cards' && renderCardsView()}
+      {viewMode === 'list' && renderListView()}
     </div>
   )
 }
