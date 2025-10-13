@@ -19,8 +19,8 @@ import {
 } from '@/components/ui/field'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { CustomerSelect } from '@/components/customers/customer-select'
-import { SpeciesSelect } from '@/components/references/species/species-select'
-import { BreedSelect } from '@/components/references/breeds/breed-select'
+import { SpeciesSelect } from '@/components/species/species-select'
+import { BreedSelect } from '@/components/breeds/breed-select'
 import { Tables } from '@/types/supabase.types'
 
 interface PetFormProps {

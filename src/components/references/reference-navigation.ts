@@ -41,6 +41,12 @@ export const navigationGroups: NavGroup[] = [
         icon: Ruler,
         tooltip: 'Definir unidades de medida',
       },
+      {
+        title: 'Especies',
+        href: '/references/species',
+        icon: Ruler,
+        tooltip: 'Definir especies de animales',
+      },
     ],
   },
 ]
