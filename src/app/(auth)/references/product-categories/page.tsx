@@ -1,6 +1,6 @@
 'use client'
 
-import { ReferencePageLayout } from '@/components/references/reference-page-layout'
+import PageBase from '@/components/page-base'
 import { ProductCategoryList } from '@/components/product-categories/product-category-list'
 import { ProductCategoryCreateButton } from '@/components/product-categories/product-category-create-button'
 import { SearchInput } from '@/components/ui/search-input'
@@ -9,7 +9,6 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
-import { Package } from 'lucide-react'
 
 export default function ProductCategoriesPage() {
   // Configuración de filtros
@@ -42,10 +41,9 @@ export default function ProductCategoriesPage() {
   }
 
   return (
-    <ReferencePageLayout
+    <PageBase
       title="Categorías de Productos"
       subtitle="Organiza productos en categorías para mejor gestión"
-      icon={Package}
       search={
         <SearchInput
           hasSidebarTriggerLeft
@@ -66,6 +64,6 @@ export default function ProductCategoriesPage() {
         filterConfig={filters}
         orderByConfig={orderByConfig}
       />
-    </ReferencePageLayout>
+    </PageBase>
   )
 }

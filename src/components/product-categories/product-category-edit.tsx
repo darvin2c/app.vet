@@ -12,7 +12,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
@@ -65,7 +65,7 @@ export function ProductCategoryEdit({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-4xl">
+      <DrawerContent className="!w-full !max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Editar Categoría de Producto</DrawerTitle>
           <DrawerDescription>

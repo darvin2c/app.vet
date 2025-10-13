@@ -13,7 +13,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
@@ -55,7 +55,7 @@ export function ProductCategoryCreate({
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="!max-w-4xl">
+      <DrawerContent className="!max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
           <DrawerDescription>
