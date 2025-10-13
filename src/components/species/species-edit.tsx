@@ -12,7 +12,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpeciesForm } from './species-form'
 import {
@@ -27,10 +27,20 @@ interface SpeciesEditProps {
   species: Tables<'species'>
   onSuccess?: () => void
   trigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function SpeciesEdit({ species, onSuccess, trigger }: SpeciesEditProps) {
-  const [open, setOpen] = useState(false)
+export function SpeciesEdit({
+  species,
+  onSuccess,
+  trigger,
+  open: controlledOpen,
+  onOpenChange,
+}: SpeciesEditProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const open = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
   const updateSpecies = useSpeciesUpdate()
 
   const form = useForm<SpeciesUpdate>({
@@ -71,19 +81,7 @@ export function SpeciesEdit({ species, onSuccess, trigger }: SpeciesEditProps) {
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        {trigger || (
-          <ResponsiveButton
-            variant="ghost"
-            size="sm"
-            icon={Edit}
-            tooltip="Editar especie"
-          >
-            Editar
-          </ResponsiveButton>
-        )}
-      </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="!max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Editar Especie</DrawerTitle>
           <DrawerDescription>

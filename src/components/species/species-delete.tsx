@@ -12,14 +12,20 @@ interface SpeciesDeleteProps {
   species: Tables<'species'>
   onSuccess?: () => void
   trigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export function SpeciesDelete({
   species,
   onSuccess,
   trigger,
+  open: controlledOpen,
+  onOpenChange,
 }: SpeciesDeleteProps) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [internalOpen, setInternalOpen] = useState(false)
+  const isOpen = controlledOpen !== undefined ? controlledOpen : internalOpen
+  const setIsOpen = onOpenChange || setInternalOpen
   const deleteSpecies = useSpeciesDelete()
 
   const handleConfirm = async () => {
@@ -37,20 +43,6 @@ export function SpeciesDelete({
 
   return (
     <>
-      {trigger ? (
-        <div onClick={() => setIsOpen(true)}>{trigger}</div>
-      ) : (
-        <ResponsiveButton
-          variant="ghost"
-          size="sm"
-          icon={Trash2}
-          tooltip="Eliminar especie"
-          onClick={() => setIsOpen(true)}
-        >
-          Eliminar
-        </ResponsiveButton>
-      )}
-
       <AlertConfirmation
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}

@@ -1,58 +1,61 @@
 'use client'
 
-import { SpeciesEdit } from './species-edit'
-import { SpeciesDelete } from './species-delete'
-import { Tables } from '@/types/supabase.types'
+import { useState } from 'react'
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { Tables } from '@/types/supabase.types'
+import { SpeciesEdit } from './species-edit'
+import { SpeciesDelete } from './species-delete'
 
 interface SpeciesActionsProps {
   species: Tables<'species'>
 }
 
 export function SpeciesActions({ species }: SpeciesActionsProps) {
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <ResponsiveButton
-          variant="ghost"
-          size="sm"
-          icon={MoreHorizontal}
-          tooltip="Acciones"
-        >
-          Acciones
-        </ResponsiveButton>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuItem asChild>
-          <SpeciesEdit
-            species={species}
-            trigger={
-              <div className="flex items-center gap-2 w-full">
-                <Edit className="h-4 w-4" />
-                Editar
-              </div>
-            }
-          />
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <SpeciesDelete
-            species={species}
-            trigger={
-              <div className="flex items-center gap-2 w-full text-destructive">
-                <Trash2 className="h-4 w-4" />
-                Eliminar
-              </div>
-            }
-          />
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Abrir menú</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Editar
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setShowDeleteDialog(true)}
+            className="text-destructive"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Eliminar
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <SpeciesEdit
+        species={species}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+      />
+
+      <SpeciesDelete
+        species={species}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+      />
+    </>
   )
 }

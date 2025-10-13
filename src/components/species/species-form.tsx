@@ -9,18 +9,14 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Checkbox } from '@/components/ui/checkbox'
+import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { SpeciesCreate } from '@/schemas/species.schema'
 
 export function SpeciesForm() {
   const {
     register,
     formState: { errors },
-    setValue,
-    watch,
   } = useFormContext<SpeciesCreate>()
-
-  const isActive = watch('is_active')
 
   return (
     <div className="space-y-4">
@@ -29,7 +25,7 @@ export function SpeciesForm() {
         <FieldContent>
           <Input
             id="name"
-            placeholder="Ej: Perro, Gato, Ave..."
+            placeholder="Ej: Canino, Felino..."
             {...register('name')}
           />
           <FieldError errors={[errors.name]} />
@@ -49,21 +45,7 @@ export function SpeciesForm() {
         </FieldContent>
       </Field>
 
-      <Field>
-        <FieldContent>
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="is_active"
-              checked={isActive}
-              onCheckedChange={(checked) => setValue('is_active', !!checked)}
-            />
-            <FieldLabel htmlFor="is_active" className="text-sm font-normal">
-              Especie activa
-            </FieldLabel>
-          </div>
-          <FieldError errors={[errors.is_active]} />
-        </FieldContent>
-      </Field>
+      <IsActiveFormField name="is_active" label="Especie activa" />
     </div>
   )
 }

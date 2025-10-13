@@ -11,13 +11,11 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpeciesForm } from './species-form'
 import { speciesCreateSchema } from '@/schemas/species.schema'
 import { useSpeciesCreate } from '@/hooks/species/use-species-create'
-import { Plus } from 'lucide-react'
 
 interface SpeciesCreateProps {
   onSuccess?: () => void
@@ -54,12 +52,7 @@ export function SpeciesCreate({
 
   return (
     <Drawer open={isOpen} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <ResponsiveButton icon={Plus} tooltip="Crear nueva especie">
-          Nueva Especie
-        </ResponsiveButton>
-      </DrawerTrigger>
-      <DrawerContent>
+      <DrawerContent className="!max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Crear Nueva Especie</DrawerTitle>
           <DrawerDescription>
