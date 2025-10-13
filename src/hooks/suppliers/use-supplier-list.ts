@@ -1,30 +1,64 @@
-import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
-import { SupplierFilters } from '@/schemas/suppliers.schema'
-import { Tables } from '@/types/supabase.types'
+import { useQuery } from '@tanstack/react-query'
+import { Database } from '@/types/supabase.types'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/types/filters.types'
+import { AppliedSort } from '@/types/order-by.types'
 
-export default function useSuppliers(filters?: SupplierFilters) {
+type Supplier = Database['public']['Tables']['suppliers']['Row']
+
+export default function useSupplierList({
+  filters = [],
+  search,
+  orders = [
+    {
+      field: 'created_at',
+      ascending: false,
+      direction: 'desc',
+    },
+  ],
+}: {
+  filters?: AppliedFilter[]
+  search?: string
+  orders?: AppliedSort[]
+}) {
+  const { currentTenant } = useCurrentTenantStore()
+
   return useQuery({
-    queryKey: ['suppliers', filters],
-    queryFn: async () => {
+    queryKey: [currentTenant?.id, 'suppliers', JSON.stringify(filters)],
+    queryFn: async (): Promise<Supplier[]> => {
+      if (!currentTenant?.id) {
+        return []
+      }
+
       let query = supabase
         .from('suppliers')
         .select('*')
-        .order('created_at', { ascending: false })
+        .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      if (filters?.search) {
+      filters.forEach((filter) => {
+        if (filter.field === 'search' && filter.value) {
+          query = query.or(
+            `name.ilike.%${filter.value}%,contact_person.ilike.%${filter.value}%,email.ilike.%${filter.value}%`
+          )
+        } else {
+          query = query.eq(filter.field, filter.value)
+        }
+      })
+
+      // Aplicar ordenamiento
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.ascending,
+        })
+      })
+
+      // Aplicar búsqueda global
+      if (search) {
         query = query.or(
-          `name.ilike.%${filters.search}%,contact_person.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
+          `name.ilike.%${search}%,contact_person.ilike.%${search}%,email.ilike.%${search}%`
         )
-      }
-
-      if (filters?.created_from) {
-        query = query.gte('created_at', filters.created_from)
-      }
-
-      if (filters?.created_to) {
-        query = query.lte('created_at', filters.created_to)
       }
 
       const { data, error } = await query
@@ -33,7 +67,8 @@ export default function useSuppliers(filters?: SupplierFilters) {
         throw new Error(`Error al obtener proveedores: ${error.message}`)
       }
 
-      return data as Tables<'suppliers'>[]
+      return data || []
     },
+    enabled: !!currentTenant?.id,
   })
 }

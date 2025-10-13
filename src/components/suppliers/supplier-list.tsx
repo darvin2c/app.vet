@@ -23,14 +23,27 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { Card, CardContent } from '@/components/ui/card'
+import { Database } from '@/types/supabase.types'
+import { SupplierActions } from './supplier-actions'
+import { SupplierCreateButton } from './supplier-create-button'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/hooks/use-order-by'
+import { OrderByConfig } from '@/types/order-by.types'
 import {
   Empty,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { ChevronLeft, ChevronRight, Building } from 'lucide-react'
+import useSupplierList from '@/hooks/suppliers/use-supplier-list'
+import { useFilters } from '@/hooks/use-filters'
+import { FilterConfig } from '@/types/filters.types'
+import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -40,24 +53,33 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { ChevronLeft, ChevronRight, Mail, Phone, Globe, MapPin } from 'lucide-react'
-import { SupplierActions } from './supplier-actions'
-import useSuppliers from '@/hooks/suppliers/use-supplier-list'
-import { SupplierFilters } from '@/schemas/suppliers.schema'
-import { Tables } from '@/types/supabase.types'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
 
-type Supplier = Tables<'suppliers'>
+type Supplier = Database['public']['Tables']['suppliers']['Row']
 
-interface SupplierListProps {
-  filters?: SupplierFilters
-}
-
-export function SupplierList({ filters }: SupplierListProps) {
+export function SupplierList({
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: suppliers = [], isLoading } = useSuppliers(filters)
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
+
+  const {
+    data: suppliers = [],
+    isPending,
+    error,
+  } = useSupplierList({
+    filters: appliedFilters,
+    search: appliedSearch,
+    orders: orderByHook.appliedSorts,
+  })
 
   const handleEdit = useCallback((supplier: Supplier) => {
     // Handle edit logic
@@ -72,64 +94,85 @@ export function SupplierList({ filters }: SupplierListProps) {
   const columns: ColumnDef<Supplier>[] = [
     {
       accessorKey: 'name',
-      header: 'Nombre',
-      cell: ({ row }) => (
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Supplier> }) => (
         <div className="font-medium">{row.getValue('name')}</div>
       ),
     },
     {
       accessorKey: 'contact_person',
-      header: 'Contacto',
-      cell: ({ row }) => {
+      header: ({ header }) => (
+        <OrderByTableHeader field="contact_person" orderByHook={orderByHook}>
+          Contacto
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Supplier> }) => {
         const contact = row.getValue('contact_person') as string
-        return contact || '-'
+        return (
+          <div className="text-sm text-muted-foreground">{contact || '-'}</div>
+        )
       },
     },
     {
       accessorKey: 'email',
-      header: 'Email',
-      cell: ({ row }) => {
+      header: ({ header }) => (
+        <OrderByTableHeader field="email" orderByHook={orderByHook}>
+          Email
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Supplier> }) => {
         const email = row.getValue('email') as string
         return email ? (
           <a
             href={`mailto:${email}`}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline text-sm"
           >
             {email}
           </a>
         ) : (
-          '-'
+          <div className="text-sm text-muted-foreground">-</div>
         )
       },
     },
     {
       accessorKey: 'phone',
-      header: 'Teléfono',
-      cell: ({ row }) => {
+      header: ({ header }) => (
+        <OrderByTableHeader field="phone" orderByHook={orderByHook}>
+          Teléfono
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Supplier> }) => {
         const phone = row.getValue('phone') as string
         return phone ? (
           <a
             href={`tel:${phone}`}
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline text-sm"
           >
             {phone}
           </a>
         ) : (
-          '-'
+          <div className="text-sm text-muted-foreground">-</div>
         )
       },
     },
     {
-      accessorKey: 'created_at',
-      header: 'Fecha de Registro',
-      cell: ({ row }) => {
-        const date = row.getValue('created_at') as string
-        return format(new Date(date), 'dd/MM/yyyy', { locale: es })
-      },
+      accessorKey: 'is_active',
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Supplier> }) => (
+        <IsActiveDisplay value={row.getValue('is_active')} />
+      ),
     },
     {
       id: 'actions',
-      cell: ({ row }) => (
+      cell: ({ row }: { row: Row<Supplier> }) => (
         <SupplierActions supplier={row.original} />
       ),
     },
@@ -189,121 +232,54 @@ export function SupplierList({ filters }: SupplierListProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {suppliers.map((supplier) => (
         <Card key={supplier.id} className="hover:shadow-md transition-shadow">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
+          <CardContent className="p-6">
+            <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <CardTitle className="text-lg">{supplier.name}</CardTitle>
-              </div>
-              <SupplierActions supplier={supplier} />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-              {supplier.contact_person && (
+                <Building className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <span className="font-medium text-muted-foreground">
-                    Contacto:
-                  </span>
-                  <p className="mt-1">{supplier.contact_person}</p>
+                  <h3 className="font-semibold">{supplier.name}</h3>
+                  {supplier.contact_person && (
+                    <p className="text-sm text-muted-foreground">
+                      {supplier.contact_person}
+                    </p>
+                  )}
                 </div>
-              )}
-
+              </div>
+              <div className="flex items-center gap-2">
+                <IsActiveDisplay value={supplier.is_active} />
+                <SupplierActions supplier={supplier} />
+              </div>
+            </div>
+            <div className="space-y-2 text-sm">
               {supplier.email && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Email:
-                  </span>
-                  <div className="mt-1 flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted-foreground" />
-                    <a
-                      href={`mailto:${supplier.email}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {supplier.email}
-                    </a>
-                  </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <span>Email:</span>
+                  <a
+                    href={`mailto:${supplier.email}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {supplier.email}
+                  </a>
                 </div>
               )}
-
               {supplier.phone && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Teléfono:
-                  </span>
-                  <div className="mt-1 flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <a
-                      href={`tel:${supplier.phone}`}
-                      className="text-blue-600 hover:underline"
-                    >
-                      {supplier.phone}
-                    </a>
-                  </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <span>Teléfono:</span>
+                  <a
+                    href={`tel:${supplier.phone}`}
+                    className="text-blue-600 hover:underline"
+                  >
+                    {supplier.phone}
+                  </a>
                 </div>
               )}
-
               {supplier.address && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Dirección:
-                  </span>
-                  <div className="mt-1 flex items-start gap-2">
-                    <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
-                    <div>
-                      <p>{supplier.address}</p>
-                    </div>
-                  </div>
+                <div className="flex items-start gap-2 text-muted-foreground">
+                  <span>Dirección:</span>
+                  <span>{supplier.address}</span>
                 </div>
               )}
-
-              {supplier.website && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Sitio Web:
-                  </span>
-                  <div className="mt-1 flex items-center gap-2">
-                    <Globe className="h-4 w-4 text-muted-foreground" />
-                    <a
-                      href={supplier.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                    >
-                      {supplier.website}
-                    </a>
-                  </div>
-                </div>
-              )}
-
-              {supplier.document_number && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Documento:
-                  </span>
-                  <p className="mt-1">{supplier.document_number}</p>
-                </div>
-              )}
-
-              <div>
-                <span className="font-medium text-muted-foreground">
-                  Registrado:
-                </span>
-                <p className="mt-1">
-                  {format(new Date(supplier.created_at), 'dd/MM/yyyy', {
-                    locale: es,
-                  })}
-                </p>
-              </div>
             </div>
-
-            {supplier.notes && (
-              <div className="mt-4 pt-4 border-t">
-                <span className="font-medium text-muted-foreground">
-                  Notas:
-                </span>
-                <p className="mt-1 text-sm">{supplier.notes}</p>
-              </div>
-            )}
           </CardContent>
         </Card>
       ))}
@@ -316,22 +292,23 @@ export function SupplierList({ filters }: SupplierListProps) {
       {suppliers.map((supplier) => (
         <Item key={supplier.id} variant="outline">
           <ItemContent>
-            <ItemTitle>{supplier.name}</ItemTitle>
+            <ItemTitle className="flex items-center gap-2">
+              <Building className="h-4 w-4 text-muted-foreground" />
+              {supplier.name}
+              <IsActiveDisplay value={supplier.is_active} />
+            </ItemTitle>
             <ItemDescription>
-              {supplier.contact_person && `Contacto: ${supplier.contact_person}`}
+              {supplier.contact_person &&
+                `Contacto: ${supplier.contact_person}`}
               {supplier.email && ` • Email: ${supplier.email}`}
               {supplier.phone && ` • Tel: ${supplier.phone}`}
             </ItemDescription>
             <div className="flex gap-2 mt-2 text-xs text-muted-foreground">
               {supplier.address && (
                 <span className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3" />
-                  {supplier.address}
+                  <span>Dirección: {supplier.address}</span>
                 </span>
               )}
-              <span>
-                Registrado: {format(new Date(supplier.created_at), 'dd/MM/yyyy', { locale: es })}
-              </span>
             </div>
           </ItemContent>
           <ItemActions>
@@ -342,7 +319,7 @@ export function SupplierList({ filters }: SupplierListProps) {
     </ItemGroup>
   )
 
-  if (isLoading) {
+  if (isPending) {
     return <TableSkeleton variant={viewMode} />
   }
 
@@ -350,6 +327,9 @@ export function SupplierList({ filters }: SupplierListProps) {
     return (
       <Empty>
         <EmptyHeader>
+          <EmptyMedia>
+            <Building className="h-10 w-10" />
+          </EmptyMedia>
           <EmptyTitle>No hay proveedores</EmptyTitle>
           <EmptyDescription>
             No se encontraron proveedores con los filtros aplicados.
@@ -431,6 +411,7 @@ export function SupplierList({ filters }: SupplierListProps) {
       )}
 
       {viewMode === 'cards' && renderCardsView()}
+
       {viewMode === 'list' && renderListView()}
     </div>
   )

@@ -17,7 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import { createStaffSchema, type CreateStaffSchema } from '@/schemas/staff.schema'
+import {
+  createStaffSchema,
+  type CreateStaffSchema,
+} from '@/schemas/staff.schema'
 import useCreateStaff from '@/hooks/staff/use-staff-create'
 
 interface StaffCreateProps {
@@ -26,10 +29,10 @@ interface StaffCreateProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function StaffCreate({ 
-  children, 
-  open: controlledOpen, 
-  onOpenChange: controlledOnOpenChange 
+export function StaffCreate({
+  children,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: StaffCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
@@ -60,7 +63,10 @@ export function StaffCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4">
               <StaffForm />
             </div>

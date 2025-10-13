@@ -22,13 +22,15 @@ export function useBreedsList(params?: UseBreedsParams) {
 
       let query = supabase
         .from('breeds')
-        .select(`
+        .select(
+          `
           *,
           species (
             id,
             name
           )
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
         .eq('is_active', is_active)
         .order('name')
@@ -47,7 +49,9 @@ export function useBreedsList(params?: UseBreedsParams) {
         throw new Error(`Error al obtener razas: ${error.message}`)
       }
 
-      return data as (Tables<'breeds'> & { species: Tables<'species'> | null })[]
+      return data as (Tables<'breeds'> & {
+        species: Tables<'species'> | null
+      })[]
     },
     enabled: !!currentTenant?.id,
   })

@@ -261,7 +261,9 @@ export function PetList({
               {pet.birth_date && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">Nacimiento:</span>{' '}
-                  {format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es })}
+                  {format(new Date(pet.birth_date), 'dd/MM/yyyy', {
+                    locale: es,
+                  })}
                 </div>
               )}
               {pet.weight && (

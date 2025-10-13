@@ -16,7 +16,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import { updateStaffSchema, type UpdateStaffSchema } from '@/schemas/staff.schema'
+import {
+  updateStaffSchema,
+  type UpdateStaffSchema,
+} from '@/schemas/staff.schema'
 import useStaffUpdate from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
 

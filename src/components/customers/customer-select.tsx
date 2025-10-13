@@ -51,7 +51,9 @@ export function CustomerSelect({
     orders: [],
   })
 
-  const selectedCustomer = customers.find((customer: Customer) => customer.id === value)
+  const selectedCustomer = customers.find(
+    (customer: Customer) => customer.id === value
+  )
 
   const handleSelect = (customerId: string) => {
     if (!onValueChange) return
@@ -177,10 +179,7 @@ export function CustomerSelect({
         )}
       </InputGroup>
 
-      <CustomerCreate 
-        open={createOpen} 
-        onOpenChange={setCreateOpen}
-      />
+      <CustomerCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedCustomer && (
         <CustomerEdit

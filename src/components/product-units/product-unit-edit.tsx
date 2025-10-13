@@ -16,7 +16,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductUnitForm } from './product-unit-form'
-import { updateProductUnitSchema, type UpdateProductUnitSchema } from '@/schemas/product-units.schema'
+import {
+  updateProductUnitSchema,
+  type UpdateProductUnitSchema,
+} from '@/schemas/product-units.schema'
 import useProductUnitUpdate from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
 
@@ -26,7 +29,11 @@ interface ProductUnitEditProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ProductUnitEdit({ unit, open, onOpenChange }: ProductUnitEditProps) {
+export function ProductUnitEdit({
+  unit,
+  open,
+  onOpenChange,
+}: ProductUnitEditProps) {
   const mutation = useProductUnitUpdate()
 
   const form = useForm<UpdateProductUnitSchema>({
@@ -66,7 +73,10 @@ export function ProductUnitEdit({ unit, open, onOpenChange }: ProductUnitEditPro
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4 overflow-y-auto">
               <ProductUnitForm />
             </div>

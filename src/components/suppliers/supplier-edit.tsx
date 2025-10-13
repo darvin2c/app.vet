@@ -12,10 +12,12 @@ import {
   updateSupplierSchema,
 } from '@/schemas/suppliers.schema'
 import useSupplierUpdate from '@/hooks/suppliers/use-supplier-update'
-import { Tables } from '@/types/supabase.types'
+import { Database } from '@/types/supabase.types'
+
+type Supplier = Database['public']['Tables']['suppliers']['Row']
 
 interface SupplierEditProps {
-  supplier: Tables<'suppliers'>
+  supplier: Supplier
   open: boolean
   onOpenChange: (open: boolean) => void
 }

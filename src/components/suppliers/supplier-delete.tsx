@@ -1,11 +1,13 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
+import { Database } from '@/types/supabase.types'
 import useSupplierDelete from '@/hooks/suppliers/use-supplier-delete'
-import { Tables } from '@/types/supabase.types'
+
+type Supplier = Database['public']['Tables']['suppliers']['Row']
 
 interface SupplierDeleteProps {
-  supplier: Tables<'suppliers'>
+  supplier: Supplier
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -15,25 +17,28 @@ export function SupplierDelete({
   open,
   onOpenChange,
 }: SupplierDeleteProps) {
-  const { mutate: deleteSupplier, isPending } = useSupplierDelete()
+  const deleteSupplier = useSupplierDelete()
 
-  const handleDelete = () => {
-    deleteSupplier(supplier.id, {
-      onSuccess: () => {
-        onOpenChange(false)
-      },
-    })
+  const handleConfirm = async () => {
+    await deleteSupplier.mutateAsync(supplier.id)
+    onOpenChange(false)
   }
 
   return (
     <AlertConfirmation
       isOpen={open}
       onClose={() => onOpenChange(false)}
+      onConfirm={handleConfirm}
       title="Eliminar Proveedor"
-      description={`¿Estás seguro de que deseas eliminar el proveedor "${supplier.name}"? Esta acción no se puede deshacer.`}
-      confirmText={supplier.name}
-      onConfirm={handleDelete}
-      isLoading={isPending}
+      description={
+        <>
+          ¿Estás seguro de que deseas eliminar el proveedor{' '}
+          <strong>{supplier.name}</strong>? Esta acción no se puede deshacer y
+          se perderán todos los datos asociados.
+        </>
+      }
+      confirmText="ELIMINAR"
+      isLoading={deleteSupplier.isPending}
     />
   )
 }

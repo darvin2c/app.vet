@@ -70,7 +70,8 @@ interface StaffSpecialtyListProps {
 export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: staffSpecialties = [], isLoading } = useStaffSpecialties(filters)
+  const { data: staffSpecialties = [], isLoading } =
+    useStaffSpecialties(filters)
 
   const columns: ColumnDef<StaffSpecialty>[] = [
     {
@@ -271,7 +272,10 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
   const renderListView = () => (
     <ItemGroup className="space-y-2">
       {staffSpecialties.map((staffSpecialty) => (
-        <Item key={`${staffSpecialty.staff_id}-${staffSpecialty.specialty_id}`} variant="outline">
+        <Item
+          key={`${staffSpecialty.staff_id}-${staffSpecialty.specialty_id}`}
+          variant="outline"
+        >
           <ItemContent>
             <ItemTitle className="flex items-center gap-2">
               <User className="h-4 w-4 text-blue-600" />
@@ -296,7 +300,10 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
                 <span>Email: {staffSpecialty.staff.email}</span>
               )}
               <span>
-                Asignado: {format(new Date(staffSpecialty.created_at), 'dd/MM/yyyy', { locale: es })}
+                Asignado:{' '}
+                {format(new Date(staffSpecialty.created_at), 'dd/MM/yyyy', {
+                  locale: es,
+                })}
               </span>
               <Badge
                 variant={
@@ -338,7 +345,10 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="staff-specialties" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="staff-specialties"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

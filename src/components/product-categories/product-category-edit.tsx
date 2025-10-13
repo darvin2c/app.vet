@@ -16,7 +16,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import { updateProductCategorySchema, type UpdateProductCategorySchema } from '@/schemas/product-categories.schema'
+import {
+  updateProductCategorySchema,
+  type UpdateProductCategorySchema,
+} from '@/schemas/product-categories.schema'
 import useUpdateProductCategory from '@/hooks/product-categories/use-product-category-update'
 import { Tables } from '@/types/supabase.types'
 
@@ -70,7 +73,10 @@ export function ProductCategoryEdit({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4 overflow-y-auto">
               <ProductCategoryForm />
             </div>

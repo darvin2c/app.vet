@@ -28,8 +28,10 @@ export function usePets(params?: UsePetsParams) {
         return []
       }
 
-      let query = supabase.from('pets').select(
-        `
+      let query = supabase
+        .from('pets')
+        .select(
+          `
           *,
           customers (
             id,
@@ -47,7 +49,8 @@ export function usePets(params?: UsePetsParams) {
             name
           )
         `
-      ).eq('tenant_id', currentTenant.id)
+        )
+        .eq('tenant_id', currentTenant.id)
 
       // Aplicar búsqueda
       if (search) {

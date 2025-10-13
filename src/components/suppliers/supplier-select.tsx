@@ -20,9 +20,9 @@ import {
 import useSuppliers from '@/hooks/suppliers/use-supplier-list'
 import { SupplierCreate } from './supplier-create'
 import { SupplierEdit } from './supplier-edit'
-import { Tables } from '@/types/supabase.types'
+import { Database } from '@/types/supabase.types'
 
-type Supplier = Tables<'suppliers'>
+type Supplier = Database['public']['Tables']['suppliers']['Row']
 
 interface SupplierSelectProps {
   value?: string
@@ -48,7 +48,9 @@ export function SupplierSelect({
     search: searchTerm,
   })
 
-  const selectedSupplier = suppliers.find((supplier: Supplier) => supplier.id === value)
+  const selectedSupplier = suppliers.find(
+    (supplier: Supplier) => supplier.id === value
+  )
 
   const handleSelect = (supplierId: string) => {
     if (!onValueChange) return
@@ -158,10 +160,7 @@ export function SupplierSelect({
         )}
       </InputGroup>
 
-      <SupplierCreate
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
+      <SupplierCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedSupplier && (
         <SupplierEdit

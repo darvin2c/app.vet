@@ -108,9 +108,7 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
     },
     {
       id: 'actions',
-      cell: ({ row }) => (
-        <ProductBrandActions brand={row.original} />
-      ),
+      cell: ({ row }) => <ProductBrandActions brand={row.original} />,
     },
   ]
 
@@ -215,8 +213,8 @@ export function ProductBrandList({ filters }: ProductBrandListProps) {
           <ItemContent>
             <ItemTitle>{brand.name}</ItemTitle>
             <ItemDescription>
-              {brand.description || 'Sin descripción'} • 
-              Registrado: {format(new Date(brand.created_at), 'dd/MM/yyyy', { locale: es })}
+              {brand.description || 'Sin descripción'} • Registrado:{' '}
+              {format(new Date(brand.created_at), 'dd/MM/yyyy', { locale: es })}
             </ItemDescription>
             <div className="flex gap-2 mt-2">
               <Badge variant={brand.is_active ? 'default' : 'secondary'}>

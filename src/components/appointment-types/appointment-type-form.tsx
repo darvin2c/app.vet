@@ -31,7 +31,9 @@ export function AppointmentTypeForm() {
   const form = useFormContext<
     CreateAppointmentTypeSchema | UpdateAppointmentTypeSchema
   >()
-  const { formState: { errors } } = form
+  const {
+    formState: { errors },
+  } = form
 
   const selectedColor = form.watch('color')
 

@@ -151,10 +151,7 @@ export function ProductBrandSelect({
         )}
       </InputGroup>
 
-      <ProductBrandCreate 
-        open={createOpen} 
-        onOpenChange={setCreateOpen}
-      />
+      <ProductBrandCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedBrand && (
         <ProductBrandEdit

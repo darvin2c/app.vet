@@ -59,7 +59,9 @@ export function ProductSelect({
     ],
   })
 
-  const selectedProduct = products.find((product: Product) => product.id === value)
+  const selectedProduct = products.find(
+    (product: Product) => product.id === value
+  )
 
   const handleSelect = (productId: string) => {
     onValueChange?.(productId)
@@ -180,10 +182,7 @@ export function ProductSelect({
         )}
       </InputGroup>
 
-      <ProductCreate 
-        open={createOpen} 
-        onOpenChange={setCreateOpen}
-      />
+      <ProductCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedProduct && (
         <ProductEdit

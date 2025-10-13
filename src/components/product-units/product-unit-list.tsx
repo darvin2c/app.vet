@@ -44,11 +44,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  ChevronLeft,
-  ChevronRight,
-  Scale,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight, Scale } from 'lucide-react'
 import useProductUnits from '@/hooks/product-units/use-product-unit-list'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
@@ -146,79 +142,86 @@ export function ProductUnitList({ filters }: ProductUnitListProps) {
     []
   )
 
-  const renderTableView = useCallback(() => (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map(renderTableHeader)}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map(renderTableRow)
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                No hay resultados.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  ), [table, columns.length, renderTableHeader, renderTableRow])
+  const renderTableView = useCallback(
+    () => (
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(renderTableHeader)}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map(renderTableRow)
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  No hay resultados.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    ),
+    [table, columns.length, renderTableHeader, renderTableRow]
+  )
 
-  const renderCardsView = useCallback(() => (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {units.map((unit) => (
-        <Card key={unit.id}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              {unit.name}
-            </CardTitle>
-            <ProductUnitActions unit={unit} />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <p className="text-sm text-muted-foreground">
-                Abreviación: {unit.abbreviation}
-              </p>
-              <div className="flex justify-between items-center">
-                <IsActiveDisplay value={unit.is_active} />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  ), [units])
-
-  const renderListView = useCallback(() => (
-    <ItemGroup>
-      {units.map((unit) => (
-        <Item key={unit.id}>
-          <ItemContent>
-            <ItemTitle>{unit.name}</ItemTitle>
-            <ItemDescription>
-              <div className="space-y-1">
-                <div className="text-sm text-muted-foreground">
+  const renderCardsView = useCallback(
+    () => (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {units.map((unit) => (
+          <Card key={unit.id}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">{unit.name}</CardTitle>
+              <ProductUnitActions unit={unit} />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
                   Abreviación: {unit.abbreviation}
-                </div>
-                <div className="flex items-center gap-2">
+                </p>
+                <div className="flex justify-between items-center">
                   <IsActiveDisplay value={unit.is_active} />
                 </div>
               </div>
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <ProductUnitActions unit={unit} />
-          </ItemActions>
-        </Item>
-      ))}
-    </ItemGroup>
-  ), [units])
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    ),
+    [units]
+  )
+
+  const renderListView = useCallback(
+    () => (
+      <ItemGroup>
+        {units.map((unit) => (
+          <Item key={unit.id}>
+            <ItemContent>
+              <ItemTitle>{unit.name}</ItemTitle>
+              <ItemDescription>
+                <div className="space-y-1">
+                  <div className="text-sm text-muted-foreground">
+                    Abreviación: {unit.abbreviation}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <IsActiveDisplay value={unit.is_active} />
+                  </div>
+                </div>
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <ProductUnitActions unit={unit} />
+            </ItemActions>
+          </Item>
+        ))}
+      </ItemGroup>
+    ),
+    [units]
+  )
 
   if (isLoading) {
     return <TableSkeleton variant={viewMode} />

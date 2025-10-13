@@ -9,17 +9,19 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Database } from '@/types/supabase.types'
 import { SupplierEdit } from './supplier-edit'
 import { SupplierDelete } from './supplier-delete'
-import { Tables } from '@/types/supabase.types'
+
+type Supplier = Database['public']['Tables']['suppliers']['Row']
 
 interface SupplierActionsProps {
-  supplier: Tables<'suppliers'>
+  supplier: Supplier
 }
 
 export function SupplierActions({ supplier }: SupplierActionsProps) {
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
+  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   return (
     <>
@@ -31,12 +33,12 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
+          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => setDeleteOpen(true)}
+            onClick={() => setShowDeleteDialog(true)}
             className="text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
@@ -47,14 +49,14 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
 
       <SupplierEdit
         supplier={supplier}
-        open={editOpen}
-        onOpenChange={setEditOpen}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
       />
 
       <SupplierDelete
         supplier={supplier}
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
       />
     </>
   )

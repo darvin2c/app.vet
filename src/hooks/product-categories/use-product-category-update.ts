@@ -10,13 +10,16 @@ export default function useUpdateProductCategory() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: TablesUpdate<'product_categories'> & { id: string }) => {
+    mutationFn: async (
+      data: TablesUpdate<'product_categories'> & { id: string }
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const { id, ...updateFields } = data
-      const updateData: TablesUpdate<'product_categories'> = removeUndefined(updateFields)
+      const updateData: TablesUpdate<'product_categories'> =
+        removeUndefined(updateFields)
 
       const { error } = await supabase
         .from('product_categories')

@@ -285,7 +285,10 @@ export function AppointmentTypeList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="appointment-types" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="appointment-types"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

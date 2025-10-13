@@ -43,7 +43,7 @@ export function AppointmentTypeSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-  
+
   const { data: appointmentTypes = [], isLoading } = useAppointmentTypeList({
     search: searchTerm,
   })
@@ -160,8 +160,8 @@ export function AppointmentTypeSelect({
         )}
       </InputGroup>
 
-      <AppointmentTypeCreate 
-        open={createOpen} 
+      <AppointmentTypeCreate
+        open={createOpen}
         onOpenChange={setCreateOpen}
         onAppointmentTypeCreated={() => {
           // Refresh data if needed

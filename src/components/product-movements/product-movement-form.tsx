@@ -25,7 +25,11 @@ import { format } from 'date-fns'
 
 export function ProductMovementForm() {
   const form = useFormContext<ProductMovementFormData>()
-  const { formState: { errors }, watch, setValue } = form
+  const {
+    formState: { errors },
+    watch,
+    setValue,
+  } = form
 
   // Observar la cantidad para determinar si es entrada o salida
   const quantity = watch('quantity')
@@ -89,7 +93,7 @@ export function ProductMovementForm() {
               placeholder="0.00"
               {...form.register('quantity', {
                 valueAsNumber: true,
-                setValueAs: (value) => value === '' ? 0 : Number(value)
+                setValueAs: (value) => (value === '' ? 0 : Number(value)),
               })}
             />
             <FieldError errors={[errors.quantity]} />
@@ -110,7 +114,7 @@ export function ProductMovementForm() {
               placeholder="0.00"
               {...form.register('unit_cost', {
                 valueAsNumber: true,
-                setValueAs: (value) => value === '' ? 0 : Number(value)
+                setValueAs: (value) => (value === '' ? 0 : Number(value)),
               })}
             />
             <FieldError errors={[errors.unit_cost]} />

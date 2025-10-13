@@ -21,7 +21,9 @@ import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function StaffForm() {
   const form = useFormContext<CreateStaffSchema | UpdateStaffSchema>()
-  const { formState: { errors } } = form
+  const {
+    formState: { errors },
+  } = form
 
   return (
     <div className="space-y-4">

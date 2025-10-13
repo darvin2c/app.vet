@@ -103,9 +103,7 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
       header: 'Estado Proveedor',
       cell: ({ row }) => (
         <Badge
-          variant={
-            row.original.suppliers?.is_active ? 'default' : 'secondary'
-          }
+          variant={row.original.suppliers?.is_active ? 'default' : 'secondary'}
         >
           {row.original.suppliers?.is_active ? 'Activo' : 'Inactivo'}
         </Badge>
@@ -174,134 +172,95 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
     []
   )
 
-  const renderTableRow = useCallback((row: Row<SupplierBrand>) => (
-    <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-      {row.getVisibleCells().map((cell: Cell<SupplierBrand, unknown>) => (
-        <TableCell key={cell.id}>
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
-        </TableCell>
-      ))}
-    </TableRow>
-  ), [])
+  const renderTableRow = useCallback(
+    (row: Row<SupplierBrand>) => (
+      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+        {row.getVisibleCells().map((cell: Cell<SupplierBrand, unknown>) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
 
-  const renderTableView = useCallback(() => (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map(renderTableHeader)}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map(renderTableRow)
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center"
-              >
-                No hay resultados.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
-  ), [table, columns.length, renderTableHeader, renderTableRow])
-
-  const renderCardsView = useCallback(() => (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-      {supplierBrands.map((supplierBrand) => (
-        <Card key={`${supplierBrand.supplier_id}-${supplierBrand.brand_id}`}>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Asignación de Marca
-            </CardTitle>
-            <SupplierBrandActions
-              supplierId={supplierBrand.supplier_id}
-              brandId={supplierBrand.brand_id}
-            />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Proveedor
-                </p>
-                <p className="text-sm">{supplierBrand.suppliers?.name}</p>
-                {supplierBrand.suppliers?.contact_person && (
-                  <p className="text-xs text-muted-foreground">
-                    Contacto: {supplierBrand.suppliers.contact_person}
-                  </p>
-                )}
-                <Badge
-                  variant={
-                    supplierBrand.suppliers?.is_active ? 'default' : 'secondary'
-                  }
+  const renderTableView = useCallback(
+    () => (
+      <div className="rounded-md border">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map(renderTableHeader)}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows?.length ? (
+              table.getRowModel().rows.map(renderTableRow)
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
                 >
-                  {supplierBrand.suppliers?.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
-              </div>
+                  No hay resultados.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    ),
+    [table, columns.length, renderTableHeader, renderTableRow]
+  )
 
-              <div>
-                <p className="text-sm font-medium text-muted-foreground">
-                  Marca
-                </p>
-                <p className="text-sm">{supplierBrand.product_brands?.name}</p>
-                {supplierBrand.product_brands?.description && (
-                  <p className="text-xs text-muted-foreground">
-                    {supplierBrand.product_brands.description}
+  const renderCardsView = useCallback(
+    () => (
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {supplierBrands.map((supplierBrand) => (
+          <Card key={`${supplierBrand.supplier_id}-${supplierBrand.brand_id}`}>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">
+                Asignación de Marca
+              </CardTitle>
+              <SupplierBrandActions
+                supplierId={supplierBrand.supplier_id}
+                brandId={supplierBrand.brand_id}
+              />
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Proveedor
                   </p>
-                )}
-                <Badge
-                  variant={
-                    supplierBrand.product_brands?.is_active
-                      ? 'default'
-                      : 'secondary'
-                  }
-                >
-                  {supplierBrand.product_brands?.is_active
-                    ? 'Activa'
-                    : 'Inactiva'}
-                </Badge>
-              </div>
-
-              <div>
-                <p className="text-xs text-muted-foreground">
-                  Asignado el{' '}
-                  {format(new Date(supplierBrand.created_at), 'dd/MM/yyyy', {
-                    locale: es,
-                  })}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
-  ), [supplierBrands])
-
-  const renderListView = useCallback(() => (
-    <ItemGroup>
-      {supplierBrands.map((supplierBrand) => (
-        <Item key={`${supplierBrand.supplier_id}-${supplierBrand.brand_id}`}>
-          <ItemContent>
-            <ItemTitle>
-              {supplierBrand.suppliers?.name} - {supplierBrand.product_brands?.name}
-            </ItemTitle>
-            <ItemDescription>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs">Proveedor:</span>
+                  <p className="text-sm">{supplierBrand.suppliers?.name}</p>
+                  {supplierBrand.suppliers?.contact_person && (
+                    <p className="text-xs text-muted-foreground">
+                      Contacto: {supplierBrand.suppliers.contact_person}
+                    </p>
+                  )}
                   <Badge
                     variant={
-                      supplierBrand.suppliers?.is_active ? 'default' : 'secondary'
+                      supplierBrand.suppliers?.is_active
+                        ? 'default'
+                        : 'secondary'
                     }
                   >
                     {supplierBrand.suppliers?.is_active ? 'Activo' : 'Inactivo'}
                   </Badge>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs">Marca:</span>
+
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    Marca
+                  </p>
+                  <p className="text-sm">
+                    {supplierBrand.product_brands?.name}
+                  </p>
+                  {supplierBrand.product_brands?.description && (
+                    <p className="text-xs text-muted-foreground">
+                      {supplierBrand.product_brands.description}
+                    </p>
+                  )}
                   <Badge
                     variant={
                       supplierBrand.product_brands?.is_active
@@ -314,25 +273,85 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
                       : 'Inactiva'}
                   </Badge>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  Asignado el{' '}
-                  {format(new Date(supplierBrand.created_at), 'dd/MM/yyyy', {
-                    locale: es,
-                  })}
+
+                <div>
+                  <p className="text-xs text-muted-foreground">
+                    Asignado el{' '}
+                    {format(new Date(supplierBrand.created_at), 'dd/MM/yyyy', {
+                      locale: es,
+                    })}
+                  </p>
                 </div>
               </div>
-            </ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <SupplierBrandActions
-              supplierId={supplierBrand.supplier_id}
-              brandId={supplierBrand.brand_id}
-            />
-          </ItemActions>
-        </Item>
-      ))}
-    </ItemGroup>
-  ), [supplierBrands])
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    ),
+    [supplierBrands]
+  )
+
+  const renderListView = useCallback(
+    () => (
+      <ItemGroup>
+        {supplierBrands.map((supplierBrand) => (
+          <Item key={`${supplierBrand.supplier_id}-${supplierBrand.brand_id}`}>
+            <ItemContent>
+              <ItemTitle>
+                {supplierBrand.suppliers?.name} -{' '}
+                {supplierBrand.product_brands?.name}
+              </ItemTitle>
+              <ItemDescription>
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">Proveedor:</span>
+                    <Badge
+                      variant={
+                        supplierBrand.suppliers?.is_active
+                          ? 'default'
+                          : 'secondary'
+                      }
+                    >
+                      {supplierBrand.suppliers?.is_active
+                        ? 'Activo'
+                        : 'Inactivo'}
+                    </Badge>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs">Marca:</span>
+                    <Badge
+                      variant={
+                        supplierBrand.product_brands?.is_active
+                          ? 'default'
+                          : 'secondary'
+                      }
+                    >
+                      {supplierBrand.product_brands?.is_active
+                        ? 'Activa'
+                        : 'Inactiva'}
+                    </Badge>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Asignado el{' '}
+                    {format(new Date(supplierBrand.created_at), 'dd/MM/yyyy', {
+                      locale: es,
+                    })}
+                  </div>
+                </div>
+              </ItemDescription>
+            </ItemContent>
+            <ItemActions>
+              <SupplierBrandActions
+                supplierId={supplierBrand.supplier_id}
+                brandId={supplierBrand.brand_id}
+              />
+            </ItemActions>
+          </Item>
+        ))}
+      </ItemGroup>
+    ),
+    [supplierBrands]
+  )
 
   if (isLoading) {
     return <TableSkeleton variant={viewMode} />
@@ -356,7 +375,10 @@ export function SupplierBrandList({ filters }: SupplierBrandListProps) {
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="supplier-brands" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="supplier-brands"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

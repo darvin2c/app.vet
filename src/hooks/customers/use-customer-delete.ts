@@ -27,7 +27,9 @@ export default function useCustomerDelete() {
     },
     onSuccess: () => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'customers'],
+      })
 
       toast.success('Cliente eliminado exitosamente')
     },

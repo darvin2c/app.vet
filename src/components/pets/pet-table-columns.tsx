@@ -42,7 +42,9 @@ export function getPetTableColumns(
       ),
       cell: ({ row }: { row: Row<Pet> }) => (
         <div className="text-sm">
-          {row.original.customers ? `${row.original.customers.first_name} ${row.original.customers.last_name}` : 'Sin cliente'}
+          {row.original.customers
+            ? `${row.original.customers.first_name} ${row.original.customers.last_name}`
+            : 'Sin cliente'}
         </div>
       ),
     },

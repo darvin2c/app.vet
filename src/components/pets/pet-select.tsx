@@ -48,7 +48,9 @@ export function PetSelect({
 
   const { data: pets = [], isLoading } = usePets({
     search: searchTerm,
-    filters: customerId ? [{ field: 'customer_id', operator: 'eq', value: customerId }] : [],
+    filters: customerId
+      ? [{ field: 'customer_id', operator: 'eq', value: customerId }]
+      : [],
   })
 
   const selectedPet = pets.find((pet: Pet) => pet.id === value)
@@ -168,11 +170,7 @@ export function PetSelect({
       />
 
       {selectedPet && (
-        <PetEdit
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          pet={selectedPet}
-        />
+        <PetEdit open={editOpen} onOpenChange={setEditOpen} pet={selectedPet} />
       )}
     </>
   )

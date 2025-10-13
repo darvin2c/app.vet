@@ -17,7 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import { ProductBrandSchema, type ProductBrandSchemaType } from '@/schemas/product-brands.schema'
+import {
+  ProductBrandSchema,
+  type ProductBrandSchemaType,
+} from '@/schemas/product-brands.schema'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 
 interface ProductBrandCreateProps {
@@ -26,10 +29,10 @@ interface ProductBrandCreateProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function ProductBrandCreate({ 
-  children, 
-  open: controlledOpen, 
-  onOpenChange: controlledOnOpenChange 
+export function ProductBrandCreate({
+  children,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ProductBrandCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
@@ -57,7 +60,10 @@ export function ProductBrandCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4">
               <ProductBrandForm />
             </div>

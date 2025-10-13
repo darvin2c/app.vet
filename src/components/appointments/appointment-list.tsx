@@ -300,8 +300,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                       style={{
                         borderColor:
                           appointment.appointment_types.color || undefined,
-                        color:
-                          appointment.appointment_types.color || undefined,
+                        color: appointment.appointment_types.color || undefined,
                       }}
                       className="text-xs"
                     >
@@ -339,8 +338,13 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
               )}
             </ItemTitle>
             <ItemDescription>
-              {appointment.pets ? `Paciente: ${appointment.pets.name}` : 'Sin paciente'} • 
-              {appointment.staff ? `Personal: ${appointment.staff.full_name}` : 'Sin personal'}
+              {appointment.pets
+                ? `Paciente: ${appointment.pets.name}`
+                : 'Sin paciente'}{' '}
+              •
+              {appointment.staff
+                ? `Personal: ${appointment.staff.full_name}`
+                : 'Sin personal'}
             </ItemDescription>
             <div className="flex gap-2 mt-2">
               <Badge
@@ -350,13 +354,18 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                   ] as any
                 }
               >
-                {STATUS_LABELS[appointment.status as keyof typeof STATUS_LABELS]}
+                {
+                  STATUS_LABELS[
+                    appointment.status as keyof typeof STATUS_LABELS
+                  ]
+                }
               </Badge>
               {appointment.appointment_types && (
                 <Badge
                   variant="outline"
                   style={{
-                    borderColor: appointment.appointment_types.color || undefined,
+                    borderColor:
+                      appointment.appointment_types.color || undefined,
                     color: appointment.appointment_types.color || undefined,
                   }}
                 >

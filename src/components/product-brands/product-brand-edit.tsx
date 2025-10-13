@@ -16,7 +16,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import { updateProductBrandSchema, type UpdateProductBrandSchema } from '@/schemas/product-brands.schema'
+import {
+  updateProductBrandSchema,
+  type UpdateProductBrandSchema,
+} from '@/schemas/product-brands.schema'
 import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
 
@@ -68,7 +71,10 @@ export function ProductBrandEdit({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4 overflow-y-auto">
               <ProductBrandForm />
             </div>

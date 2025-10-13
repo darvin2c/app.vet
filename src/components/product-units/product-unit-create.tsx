@@ -17,7 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductUnitForm } from './product-unit-form'
-import { ProductUnitSchema, type ProductUnitSchemaType } from '@/schemas/product-units.schema'
+import {
+  ProductUnitSchema,
+  type ProductUnitSchemaType,
+} from '@/schemas/product-units.schema'
 import useProductUnitCreate from '@/hooks/product-units/use-product-unit-create'
 
 interface ProductUnitCreateProps {
@@ -28,12 +31,12 @@ interface ProductUnitCreateProps {
   onUnitCreated?: (unit: any) => void
 }
 
-export function ProductUnitCreate({ 
-  children, 
-  controlled = false, 
-  open: controlledOpen, 
+export function ProductUnitCreate({
+  children,
+  controlled = false,
+  open: controlledOpen,
   onOpenChange: controlledOnOpenChange,
-  onUnitCreated 
+  onUnitCreated,
 }: ProductUnitCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const mutation = useProductUnitCreate()
@@ -63,7 +66,10 @@ export function ProductUnitCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4">
               <ProductUnitForm />
             </div>

@@ -13,7 +13,9 @@ import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function ProductUnitForm() {
   const form = useFormContext<CreateProductUnitSchema>()
-  const { formState: { errors } } = form
+  const {
+    formState: { errors },
+  } = form
 
   return (
     <div className="space-y-4">

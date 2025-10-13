@@ -17,7 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import { createProductCategorySchema, type CreateProductCategorySchema } from '@/schemas/product-categories.schema'
+import {
+  createProductCategorySchema,
+  type CreateProductCategorySchema,
+} from '@/schemas/product-categories.schema'
 import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
 
 interface ProductCategoryCreateProps {
@@ -26,10 +29,10 @@ interface ProductCategoryCreateProps {
   onOpenChange?: (open: boolean) => void
 }
 
-export function ProductCategoryCreate({ 
-  children, 
-  open: controlledOpen, 
-  onOpenChange: controlledOnOpenChange 
+export function ProductCategoryCreate({
+  children,
+  open: controlledOpen,
+  onOpenChange: controlledOnOpenChange,
 }: ProductCategoryCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
@@ -60,7 +63,10 @@ export function ProductCategoryCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit as any)} className="space-y-4">
+          <form
+            onSubmit={form.handleSubmit(onSubmit as any)}
+            className="space-y-4"
+          >
             <div className="px-4">
               <ProductCategoryForm />
             </div>

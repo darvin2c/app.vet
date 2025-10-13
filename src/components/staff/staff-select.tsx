@@ -160,10 +160,7 @@ export function StaffSelect({
         )}
       </InputGroup>
 
-      <StaffCreate
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-      />
+      <StaffCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedStaff && (
         <StaffEdit

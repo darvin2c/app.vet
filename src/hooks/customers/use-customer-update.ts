@@ -34,8 +34,12 @@ export default function useCustomerUpdate() {
     },
     onSuccess: (data) => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers'] })
-      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'customers', data.id] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'customers'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'customers', data.id],
+      })
 
       toast.success('Cliente actualizado exitosamente', {
         description: `${data.first_name} ${data.last_name} ha sido actualizado`,

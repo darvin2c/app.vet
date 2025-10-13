@@ -1,7 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, GraduationCap, X, Plus, Edit } from 'lucide-react'
+import {
+  Check,
+  ChevronsUpDown,
+  GraduationCap,
+  X,
+  Plus,
+  Edit,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
@@ -132,7 +139,9 @@ export function SpecialtySelect({
                 onValueChange={setSearchTerm}
               />
               <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron especialidades.'}
+                {isLoading
+                  ? 'Cargando...'
+                  : 'No se encontraron especialidades.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
                 {specialties.map((specialty: Specialty) => (
@@ -148,7 +157,9 @@ export function SpecialtySelect({
                     <Check
                       className={cn(
                         'h-4 w-4',
-                        value.includes(specialty.id) ? 'opacity-100' : 'opacity-0'
+                        value.includes(specialty.id)
+                          ? 'opacity-100'
+                          : 'opacity-0'
                       )}
                     />
                   </CommandItem>
