@@ -2,14 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import {
-  Stethoscope,
-  Calendar,
-  Package,
-  Ruler,
-  Settings,
-  LucideIcon,
-} from 'lucide-react'
+import { Settings } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
@@ -23,51 +16,11 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar-right'
 import { cn } from '@/lib/utils'
-
-interface NavItem {
-  title: string
-  href: string
-  icon: LucideIcon
-  tooltip: string
-}
-
-interface NavGroup {
-  label: string
-  items: NavItem[]
-}
-
-// Estructura de datos organizada para la navegación de referencias
-const navigationGroups: NavGroup[] = [
-  {
-    label: 'Referencias del Sistema',
-    items: [
-      {
-        title: 'Especialidades',
-        href: '/references/specialties',
-        icon: Stethoscope,
-        tooltip: 'Gestionar especialidades médicas',
-      },
-      {
-        title: 'Tipos de Cita',
-        href: '/references/appointment-types',
-        icon: Calendar,
-        tooltip: 'Configurar tipos de citas disponibles',
-      },
-      {
-        title: 'Categorías de Productos',
-        href: '/references/product-categories',
-        icon: Package,
-        tooltip: 'Organizar categorías de productos',
-      },
-      {
-        title: 'Unidades de Productos',
-        href: '/references/product-units',
-        icon: Ruler,
-        tooltip: 'Definir unidades de medida',
-      },
-    ],
-  },
-]
+import {
+  navigationGroups,
+  type NavItem,
+  type NavGroup,
+} from './reference-navigation'
 
 export function ReferenceSidebar({
   children,
