@@ -8,12 +8,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import {
   Select,
   SelectContent,
@@ -25,7 +24,8 @@ import { ProductSelect } from '@/components/products/product-select'
 import { format } from 'date-fns'
 
 export function ProductMovementForm() {
-  const { control, watch } = useFormContext<ProductMovementFormData>()
+  const form = useFormContext<ProductMovementFormData>()
+  const { formState: { errors }, watch, setValue } = form
 
   // Observar la cantidad para determinar si es entrada o salida
   const quantity = watch('quantity')
@@ -34,177 +34,115 @@ export function ProductMovementForm() {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="product_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Producto *</FormLabel>
-              <FormControl>
-                <ProductSelect
-                  value={field.value || ''}
-                  onValueChange={field.onChange}
-                  placeholder="Seleccionar producto..."
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="product_id">Producto *</FieldLabel>
+          <FieldContent>
+            <ProductSelect
+              value={form.watch('product_id') || ''}
+              onValueChange={(value) => setValue('product_id', value)}
+              placeholder="Seleccionar producto..."
+            />
+            <FieldError errors={[errors.product_id]} />
+          </FieldContent>
+        </Field>
 
-        <FormField
-          control={control}
-          name="source"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Tipo de Movimiento</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value || ''}
-                  onValueChange={field.onChange}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Seleccionar tipo..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={MovementReferenceType.ENTRY}>
-                      {MovementReferenceType.ENTRY}
-                    </SelectItem>
-                    <SelectItem value={MovementReferenceType.EXIT}>
-                      {MovementReferenceType.EXIT}
-                    </SelectItem>
-                    <SelectItem value={MovementReferenceType.ADJUSTMENT}>
-                      {MovementReferenceType.ADJUSTMENT}
-                    </SelectItem>
-                    <SelectItem value={MovementReferenceType.TRANSFER}>
-                      {MovementReferenceType.TRANSFER}
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="source">Tipo de Movimiento</FieldLabel>
+          <FieldContent>
+            <Select
+              value={form.watch('source') || ''}
+              onValueChange={(value) => setValue('source', value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Seleccionar tipo..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={MovementReferenceType.ENTRY}>
+                  {MovementReferenceType.ENTRY}
+                </SelectItem>
+                <SelectItem value={MovementReferenceType.EXIT}>
+                  {MovementReferenceType.EXIT}
+                </SelectItem>
+                <SelectItem value={MovementReferenceType.ADJUSTMENT}>
+                  {MovementReferenceType.ADJUSTMENT}
+                </SelectItem>
+                <SelectItem value={MovementReferenceType.TRANSFER}>
+                  {MovementReferenceType.TRANSFER}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+            <FieldError errors={[errors.source]} />
+          </FieldContent>
+        </Field>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="quantity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                Cantidad * {isEntry ? '(Entrada +)' : '(Salida -)'}
-              </FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    field.onChange(value === '' ? 0 : Number(value))
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="quantity">
+            Cantidad * {isEntry ? '(Entrada +)' : '(Salida -)'}
+          </FieldLabel>
+          <FieldContent>
+            <Input
+              id="quantity"
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              {...form.register('quantity', {
+                valueAsNumber: true,
+                setValueAs: (value) => value === '' ? 0 : Number(value)
+              })}
+            />
+            <FieldError errors={[errors.quantity]} />
+          </FieldContent>
+        </Field>
 
         {/* Campo movement_date removido - no existe en el schema */}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="unit_cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Costo Unitario</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    field.onChange(value === '' ? 0 : Number(value))
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={control}
-          name="unit_cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Costo Unitario</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  step="0.01"
-                  placeholder="0.00"
-                  {...field}
-                  value={field.value || ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    field.onChange(value === '' ? 0 : Number(value))
-                  }}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="unit_cost">Costo Unitario</FieldLabel>
+          <FieldContent>
+            <Input
+              id="unit_cost"
+              type="number"
+              step="0.01"
+              placeholder="0.00"
+              {...form.register('unit_cost', {
+                valueAsNumber: true,
+                setValueAs: (value) => value === '' ? 0 : Number(value)
+              })}
+            />
+            <FieldError errors={[errors.unit_cost]} />
+          </FieldContent>
+        </Field>
       </div>
 
-      <FormField
-        control={control}
-        name="reference"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Referencia</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Número de factura, orden, etc."
-                {...field}
-                value={field.value || ''}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="reference">Referencia</FieldLabel>
+        <FieldContent>
+          <Input
+            id="reference"
+            placeholder="Número de factura, orden, etc."
+            {...form.register('reference')}
+          />
+          <FieldError errors={[errors.reference]} />
+        </FieldContent>
+      </Field>
 
-      <FormField
-        control={control}
-        name="note"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Notas</FormLabel>
-            <FormControl>
-              <Textarea
-                placeholder="Observaciones adicionales..."
-                className="resize-none"
-                rows={3}
-                {...field}
-                value={field.value || ''}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="note">Notas</FieldLabel>
+        <FieldContent>
+          <Textarea
+            id="note"
+            placeholder="Observaciones adicionales..."
+            className="resize-none"
+            rows={3}
+            {...form.register('note')}
+          />
+          <FieldError errors={[errors.note]} />
+        </FieldContent>
+      </Field>
     </div>
   )
 }

@@ -2,12 +2,11 @@
 
 import { useFormContext } from 'react-hook-form'
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import type {
@@ -32,82 +31,74 @@ export function AppointmentTypeForm() {
   const form = useFormContext<
     CreateAppointmentTypeSchema | UpdateAppointmentTypeSchema
   >()
+  const { formState: { errors } } = form
 
   const selectedColor = form.watch('color')
 
   return (
     <div className="space-y-4">
-      <FormField
-        control={form.control}
-        name="name"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Nombre *</FormLabel>
-            <FormControl>
-              <Input placeholder="Ej: Consulta General" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="name">Nombre *</FieldLabel>
+        <FieldContent>
+          <Input
+            id="name"
+            placeholder="Ej: Consulta General"
+            {...form.register('name')}
+          />
+          <FieldError errors={[errors.name]} />
+        </FieldContent>
+      </Field>
 
-      <FormField
-        control={form.control}
-        name="description"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Descripción</FormLabel>
-            <FormControl>
-              <Textarea placeholder="Descripción del tipo de cita" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="description">Descripción</FieldLabel>
+        <FieldContent>
+          <Textarea
+            id="description"
+            placeholder="Descripción del tipo de cita"
+            {...form.register('description')}
+          />
+          <FieldError errors={[errors.description]} />
+        </FieldContent>
+      </Field>
 
-      <FormField
-        control={form.control}
-        name="color"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Color *</FormLabel>
-            <FormControl>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="color"
-                    className="w-12 h-10 p-1 border rounded cursor-pointer"
-                    {...field}
-                  />
-                  <Input
-                    type="text"
-                    placeholder="#3B82F6"
-                    className="flex-1"
-                    {...field}
-                  />
-                </div>
-                <div className="grid grid-cols-5 gap-2">
-                  {PRESET_COLORS.map((color) => (
-                    <button
-                      key={color}
-                      type="button"
-                      className={`w-8 h-8 rounded border-2 transition-all ${
-                        selectedColor === color
-                          ? 'border-foreground scale-110'
-                          : 'border-muted hover:border-muted-foreground'
-                      }`}
-                      style={{ backgroundColor: color }}
-                      onClick={() => field.onChange(color)}
-                      title={color}
-                    />
-                  ))}
-                </div>
-              </div>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="color">Color *</FieldLabel>
+        <FieldContent>
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <Input
+                id="color"
+                type="color"
+                className="w-12 h-10 p-1 border rounded cursor-pointer"
+                {...form.register('color')}
+              />
+              <Input
+                type="text"
+                placeholder="#3B82F6"
+                className="flex-1"
+                {...form.register('color')}
+              />
+            </div>
+            <div className="grid grid-cols-5 gap-2">
+              {PRESET_COLORS.map((color) => (
+                <button
+                  key={color}
+                  type="button"
+                  className={`w-8 h-8 rounded border-2 transition-all ${
+                    selectedColor === color
+                      ? 'border-foreground scale-110'
+                      : 'border-muted hover:border-muted-foreground'
+                  }`}
+                  style={{ backgroundColor: color }}
+                  onClick={() => form.setValue('color', color)}
+                  title={color}
+                />
+              ))}
+            </div>
+          </div>
+          <FieldError errors={[errors.color]} />
+        </FieldContent>
+      </Field>
     </div>
   )
 }

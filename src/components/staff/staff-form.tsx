@@ -11,93 +11,73 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { SpecialtySelect } from '@/components/specialties/specialty-select'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function StaffForm() {
-  const { control } = useFormContext<CreateStaffSchema>()
+  const form = useFormContext<CreateStaffSchema>()
+  const { formState: { errors } } = form
 
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="full_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nombre Completo *</FormLabel>
-              <FormControl>
-                <Input placeholder="Ingresa el nombre completo" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="full_name">Nombre Completo *</FieldLabel>
+          <FieldContent>
+            <Input
+              id="full_name"
+              placeholder="Ingresa el nombre completo"
+              {...form.register('full_name')}
+            />
+            <FieldError errors={[errors.full_name]} />
+          </FieldContent>
+        </Field>
 
-        <FormField
-          control={control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="ejemplo@correo.com"
-                  {...field}
-                  value={field.value || ''}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldContent>
+            <Input
+              id="email"
+              type="email"
+              placeholder="ejemplo@correo.com"
+              {...form.register('email')}
+            />
+            <FieldError errors={[errors.email]} />
+          </FieldContent>
+        </Field>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="phone"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Teléfono</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="+51 999 999 999"
-                  {...field}
-                  value={field.value || ''}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="phone">Teléfono</FieldLabel>
+          <FieldContent>
+            <Input
+              id="phone"
+              placeholder="+51 999 999 999"
+              {...form.register('phone')}
+            />
+            <FieldError errors={[errors.phone]} />
+          </FieldContent>
+        </Field>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <FormField
-          control={control}
-          name="license_number"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Número de Licencia</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ingresa el número de licencia"
-                  {...field}
-                  value={field.value || ''}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <Field>
+          <FieldLabel htmlFor="license_number">Número de Licencia</FieldLabel>
+          <FieldContent>
+            <Input
+              id="license_number"
+              placeholder="Ingresa el número de licencia"
+              {...form.register('license_number')}
+            />
+            <FieldError errors={[errors.license_number]} />
+          </FieldContent>
+        </Field>
       </div>
 
       <IsActiveFormField />
