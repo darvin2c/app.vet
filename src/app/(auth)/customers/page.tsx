@@ -181,10 +181,13 @@ export default function CustomersPage() {
 
       {/* Lista de Clientes */}
       <CustomerList
-        customers={customers}
-        isLoading={isLoading}
-        onCustomerSelect={setSelectedCustomer}
-        view={viewMode}
+        filterConfig={[]}
+        orderByConfig={{
+          columns: [
+            { field: 'first_name', label: 'Nombre' },
+            { field: 'created_at', label: 'Fecha de Registro' },
+          ],
+        }}
       />
     </PageBase>
   )

@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useState, useCallback } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,6 +9,11 @@ import {
   getPaginationRowModel,
   ColumnDef,
   flexRender,
+  SortingState,
+  HeaderGroup,
+  Header,
+  Row,
+  Cell,
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -25,133 +30,180 @@ import {
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { CustomerActions } from './customer-actions'
+import { CustomerCreateButton } from './customer-create-button'
 import { Tables } from '@/types/supabase.types'
-import { ArrowUpDown, Phone, Mail, MapPin } from 'lucide-react'
+import { ArrowUpDown, Phone, Mail, MapPin, ChevronLeft, ChevronRight, Users } from 'lucide-react'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/hooks/use-order-by'
+import { OrderByConfig } from '@/types/order-by.types'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import useCustomerList from '@/hooks/customers/use-customer-list'
+import { useFilters } from '@/hooks/use-filters'
+import { FilterConfig } from '@/types/filters.types'
+import { useSearch } from '@/hooks/use-search'
+import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+  ItemGroup,
+} from '@/components/ui/item'
 
 type Customer = Tables<'customers'>
 
-interface CustomerListProps {
-  customers: Customer[]
-  isLoading?: boolean
-  onCustomerSelect?: (customer: Customer) => void
-  view?: 'table' | 'card' | 'list'
-}
-
 export function CustomerList({
-  customers,
-  isLoading = false,
-  onCustomerSelect,
-  view = 'table',
-}: CustomerListProps) {
-  const columns = useMemo<ColumnDef<Customer>[]>(
-    () => [
-      {
-        accessorKey: 'first_name',
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Cliente
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        ),
-        cell: ({ row }) => {
-          const customer = row.original
-          const fullName = `${customer.first_name} ${customer.last_name}`
-          const initials = fullName
-            .split(' ')
-            .map((name) => name[0])
-            .join('')
-            .toUpperCase()
-            .slice(0, 2)
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-          return (
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-8 w-8">
-                <AvatarFallback className="text-xs">{initials}</AvatarFallback>
-              </Avatar>
-              <div>
-                <div className="font-medium">{fullName}</div>
-                {customer.email && (
-                  <div className="text-sm text-muted-foreground">
-                    {customer.email}
-                  </div>
-                )}
-              </div>
-            </div>
-          )
-        },
-      },
-      {
-        accessorKey: 'phone',
-        header: 'Teléfono',
-        cell: ({ row }) => {
-          const phone = row.getValue('phone') as string
-          return phone ? (
-            <div className="flex items-center space-x-2">
-              <Phone className="h-4 w-4 text-muted-foreground" />
-              <span>{phone}</span>
-            </div>
-          ) : (
-            <span className="text-muted-foreground">-</span>
-          )
-        },
-      },
-      {
-        accessorKey: 'address',
-        header: 'Dirección',
-        cell: ({ row }) => {
-          const address = row.getValue('address') as string
-          return address ? (
-            <div className="flex items-center space-x-2 max-w-xs">
-              <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              <span className="truncate">{address}</span>
-            </div>
-          ) : (
-            <span className="text-muted-foreground">-</span>
-          )
-        },
-      },
-      {
-        accessorKey: 'is_active',
-        header: 'Estado',
-        cell: ({ row }) => {
-          const isActive = row.getValue('is_active') as boolean
-          return (
-            <Badge variant={isActive ? 'default' : 'secondary'}>
-              {isActive ? 'Activo' : 'Inactivo'}
-            </Badge>
-          )
-        },
-      },
-      {
-        accessorKey: 'created_at',
-        header: ({ column }) => (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          >
-            Fecha de Registro
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        ),
-        cell: ({ row }) => {
-          const date = row.getValue('created_at') as string
-          return format(new Date(date), 'dd/MM/yyyy', { locale: es })
-        },
-      },
-      {
-        id: 'actions',
-        header: 'Acciones',
-        cell: ({ row }) => (
-          <CustomerActions customer={row.original} onView={onCustomerSelect} />
-        ),
-      },
-    ],
-    [onCustomerSelect]
-  )
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
 
+  // Convertir filtros aplicados al formato esperado por useCustomerList
+  const customerFilters = {
+    search: appliedSearch,
+    is_active: appliedFilters.find(f => f.field === 'is_active')?.value as boolean | undefined,
+    created_from: appliedFilters.find(f => f.field === 'created_from')?.value as string | undefined,
+    created_to: appliedFilters.find(f => f.field === 'created_to')?.value as string | undefined,
+  }
+
+  // Usar el hook useCustomerList con los filtros aplicados
+  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
+  const {
+    data: customers = [],
+    isPending,
+    error,
+  } = useCustomerList({
+    filters: {
+      search: appliedSearch,
+      // Agregar otros filtros según sea necesario
+    },
+  })
+  // Callback para manejar la selección de clientes
+  const handleCustomerSelect = useCallback((customer: Customer) => {
+    // Aquí se puede implementar la lógica de selección si es necesaria
+    console.log('Customer selected:', customer)
+  }, [])
+
+  // Configuración de columnas para la tabla
+  const columns: ColumnDef<Customer>[] = [
+    {
+      accessorKey: 'first_name',
+      header: () => (
+        <OrderByTableHeader
+          field="first_name"
+          orderByHook={orderByHook}
+        >
+          Cliente
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }) => {
+        const customer = row.original
+        const fullName = `${customer.first_name} ${customer.last_name}`
+        const initials = fullName
+          .split(' ')
+          .map((name) => name[0])
+          .join('')
+          .toUpperCase()
+          .slice(0, 2)
+
+        return (
+          <div className="flex items-center space-x-3">
+            <Avatar className="h-8 w-8">
+              <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+            </Avatar>
+            <div>
+              <div className="font-medium">{fullName}</div>
+              {customer.email && (
+                <div className="text-sm text-muted-foreground">
+                  {customer.email}
+                </div>
+              )}
+            </div>
+          </div>
+        )
+      },
+    },
+    {
+      accessorKey: 'phone',
+      header: 'Teléfono',
+      cell: ({ row }) => {
+        const phone = row.getValue('phone') as string
+        return phone ? (
+          <div className="flex items-center space-x-2">
+            <Phone className="h-4 w-4 text-muted-foreground" />
+            <span>{phone}</span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )
+      },
+    },
+    {
+      accessorKey: 'address',
+      header: 'Dirección',
+      cell: ({ row }) => {
+        const address = row.getValue('address') as string
+        return address ? (
+          <div className="flex items-center space-x-2 max-w-xs">
+            <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <span className="truncate">{address}</span>
+          </div>
+        ) : (
+          <span className="text-muted-foreground">-</span>
+        )
+      },
+    },
+    {
+      accessorKey: 'is_active',
+      header: 'Estado',
+      cell: ({ row }) => {
+        const isActive = row.getValue('is_active') as boolean
+        return <IsActiveDisplay value={true} />
+      },
+    },
+    {
+      accessorKey: 'created_at',
+      header: () => (
+        <OrderByTableHeader
+          field="created_at"
+          orderByHook={orderByHook}
+        >
+          Fecha de Registro
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }) => {
+        const date = row.getValue('created_at') as string
+        return format(new Date(date), 'dd/MM/yyyy', { locale: es })
+      },
+    },
+    {
+      id: 'actions',
+      header: 'Acciones',
+      cell: ({ row }) => (
+        <CustomerActions customer={row.original} onView={handleCustomerSelect} />
+      ),
+    },
+  ]
+
+  // Configuración de la tabla con React Table
   const table = useReactTable({
     data: customers,
     columns,
@@ -166,78 +218,105 @@ export function CustomerList({
     },
   })
 
-  if (isLoading) {
-    return <CustomerListSkeleton view={view} />
+  // Estados de carga y error
+  if (isPending) {
+    return <TableSkeleton />
   }
 
-  if (customers.length === 0) {
+  if (error) {
     return (
       <div className="text-center py-12">
-        <div className="text-muted-foreground">No se encontraron clientes</div>
+        <div className="text-destructive">Error al cargar los clientes</div>
       </div>
     )
   }
 
-  if (view === 'card') {
-    return <CustomerCardView customers={customers} onCustomerSelect={onCustomerSelect} />
-  }
-
-  if (view === 'list') {
-    return <CustomerListView customers={customers} onCustomerSelect={onCustomerSelect} />
+  // Estado vacío
+  if (customers.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia>
+            <Users className="h-12 w-12" />
+          </EmptyMedia>
+          <EmptyTitle>No hay clientes</EmptyTitle>
+          <EmptyDescription>
+            Comienza agregando tu primer cliente al sistema.
+          </EmptyDescription>
+        </EmptyHeader>
+        <CustomerCreateButton />
+      </Empty>
+    )
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className="cursor-pointer hover:bg-muted/50"
-                  onClick={() => onCustomerSelect?.(row.original)}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
+      {/* Toggle de modo de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="customers" />
+      </div>
+
+      {/* Renderizado condicional basado en el modo de vista */}
+      {viewMode === 'table' && (
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
                   ))}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No se encontraron resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              ))}
+            </TableHeader>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={() => handleCustomerSelect(row.original)}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No se encontraron resultados.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      {viewMode === 'cards' && (
+        <CustomerCardView customers={customers} onCustomerSelect={handleCustomerSelect} />
+      )}
+
+      {viewMode === 'list' && (
+        <CustomerListView customers={customers} onCustomerSelect={handleCustomerSelect} />
+      )}
 
       {/* Paginación */}
       <div className="flex items-center justify-between space-x-2 py-4">
@@ -254,13 +333,14 @@ export function CustomerList({
           )}{' '}
           de {customers.length} clientes
         </div>
-        <div className="space-x-2">
+        <div className="flex items-center space-x-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
+            <ChevronLeft className="h-4 w-4" />
             Anterior
           </Button>
           <Button
@@ -270,6 +350,7 @@ export function CustomerList({
             disabled={!table.getCanNextPage()}
           >
             Siguiente
+            <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
@@ -350,7 +431,7 @@ function CustomerListView({
   onCustomerSelect?: (customer: Customer) => void
 }) {
   return (
-    <div className="space-y-2">
+    <ItemGroup>
       {customers.map((customer) => {
         const fullName = `${customer.first_name} ${customer.last_name}`
         const initials = fullName
@@ -361,44 +442,45 @@ function CustomerListView({
           .slice(0, 2)
 
         return (
-          <Card
+          <Item
             key={customer.id}
-            className="cursor-pointer hover:shadow-sm transition-shadow"
+            className="cursor-pointer"
             onClick={() => onCustomerSelect?.(customer)}
           >
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback>{initials}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <h3 className="font-medium">{fullName}</h3>
-                    <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                      {customer.email && (
-                        <span className="flex items-center space-x-1">
-                          <Mail className="h-3 w-3" />
-                          <span>{customer.email}</span>
-                        </span>
-                      )}
-                      {customer.phone && (
-                        <span className="flex items-center space-x-1">
-                          <Phone className="h-3 w-3" />
-                          <span>{customer.phone}</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
+            <ItemContent>
+              <div className="flex items-center space-x-3">
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+                <div className="flex-1">
+                  <ItemTitle>{fullName}</ItemTitle>
+                  <ItemDescription>
+                    {customer.email && (
+                      <div className="flex items-center space-x-1">
+                        <Mail className="h-3 w-3" />
+                        <span>{customer.email}</span>
+                      </div>
+                    )}
+                    {customer.phone && (
+                      <div className="flex items-center space-x-1 mt-1">
+                        <Phone className="h-3 w-3" />
+                        <span>{customer.phone}</span>
+                      </div>
+                    )}
+                  </ItemDescription>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <CustomerActions customer={customer} onView={onCustomerSelect} />
+                  <IsActiveDisplay value={true} />
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </ItemContent>
+            <ItemActions>
+              <CustomerActions customer={customer} onView={onCustomerSelect} />
+            </ItemActions>
+          </Item>
         )
       })}
-    </div>
+    </ItemGroup>
   )
 }
 

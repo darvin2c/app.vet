@@ -2,13 +2,12 @@
 
 import {
   User,
-  Stethoscope,
   Box,
   Calendar,
   Boxes,
   ListCollapse,
   LucideIcon,
-  FileText,
+  PawPrint,
 } from 'lucide-react'
 
 import {
@@ -55,7 +54,7 @@ const navigationGroups: NavGroup[] = [
       {
         title: 'Mascotas',
         href: '/pets',
-        icon: Stethoscope,
+        icon: PawPrint,
         tooltip: 'Mascotas',
       },
     ],
