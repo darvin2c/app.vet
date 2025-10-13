@@ -11,8 +11,17 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
 import { CreateSupplierSchema } from '@/schemas/suppliers.schema'
+import { Tables } from '@/types/supabase.types'
 
-export function SupplierForm() {
+type Supplier = Tables<'suppliers'>
+
+export function SupplierForm({
+  mode,
+  supplier,
+}: {
+  mode: 'create' | 'edit'
+  supplier?: Supplier
+}) {
   const {
     register,
     formState: { errors },

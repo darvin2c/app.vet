@@ -1,20 +1,27 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Drawer } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+} from '@/components/ui/drawer-form'
 import { SupplierForm } from './supplier-form'
 import {
   UpdateSupplierSchema,
   updateSupplierSchema,
 } from '@/schemas/suppliers.schema'
 import useSupplierUpdate from '@/hooks/suppliers/use-supplier-update'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
+import { Form } from '../ui/form'
+import { Button } from '../ui/button'
 
-type Supplier = Database['public']['Tables']['suppliers']['Row']
+type Supplier = Tables<'suppliers'>
 
 interface SupplierEditProps {
   supplier: Supplier
@@ -27,7 +34,7 @@ export function SupplierEdit({
   open,
   onOpenChange,
 }: SupplierEditProps) {
-  const { mutate: updateSupplier, isPending } = useSupplierUpdate()
+  const updateSupplier = useSupplierUpdate()
 
   const form = useForm<UpdateSupplierSchema>({
     resolver: zodResolver(updateSupplierSchema),
@@ -58,41 +65,54 @@ export function SupplierEdit({
     }
   }, [supplier, form])
 
-  const onSubmit = (data: UpdateSupplierSchema) => {
-    updateSupplier(
-      { id: supplier.id, data },
-      {
-        onSuccess: () => {
-          onOpenChange(false)
-        },
-      }
-    )
+  const onSubmit = async (data: UpdateSupplierSchema) => {
+    await updateSupplier.mutateAsync({
+      id: supplier.id,
+      data,
+    })
+    onOpenChange(false)
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <SupplierForm />
+      <DrawerContent className="!w-full !max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Editar Proveedor</DrawerTitle>
+          <DrawerDescription>
+            Modifica la información del proveedor.
+          </DrawerDescription>
+        </DrawerHeader>
 
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isPending}
-              disabled={isPending}
+        <div className="px-4 overflow-y-auto">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit as any)}
+              className="space-y-4"
             >
-              Actualizar Proveedor
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </form>
-      </FormProvider>
+              <SupplierForm mode="edit" supplier={supplier} />
+            </form>
+          </Form>
+        </div>
+
+        <DrawerFooter>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit as any)}
+            disabled={updateSupplier.isPending}
+          >
+            {updateSupplier.isPending
+              ? 'Actualizando...'
+              : 'Actualizar Proveedor'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={updateSupplier.isPending}
+          >
+            Cancelar
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
     </Drawer>
   )
 }

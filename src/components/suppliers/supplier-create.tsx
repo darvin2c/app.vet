@@ -1,17 +1,23 @@
 'use client'
 
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Drawer } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerFooter,
+} from '@/components/ui/drawer-form'
 import { SupplierForm } from './supplier-form'
 import {
   CreateSupplierSchema,
   createSupplierSchema,
 } from '@/schemas/suppliers.schema'
 import useSupplierCreate from '@/hooks/suppliers/use-supplier-create'
-import { Plus } from 'lucide-react'
+import { Form } from '../ui/form'
+import { Button } from '../ui/button'
 
 interface SupplierCreateProps {
   open: boolean
@@ -19,7 +25,7 @@ interface SupplierCreateProps {
 }
 
 export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
-  const { mutate: createSupplier, isPending } = useSupplierCreate()
+  const createSupplier = useSupplierCreate()
 
   const form = useForm<CreateSupplierSchema>({
     resolver: zodResolver(createSupplierSchema),
@@ -35,40 +41,50 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
     },
   })
 
-  const onSubmit = (data: CreateSupplierSchema) => {
-    createSupplier(data, {
-      onSuccess: () => {
-        form.reset()
-        onOpenChange(false)
-      },
-    })
+  const onSubmit = async (data: CreateSupplierSchema) => {
+    await createSupplier.mutateAsync(data)
+    form.reset()
+    onOpenChange(false)
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <SupplierForm />
+      <DrawerContent className="!max-w-4xl">
+        <DrawerHeader>
+          <DrawerTitle>Crear Proveedor</DrawerTitle>
+          <DrawerDescription>
+            Completa la información para agregar un nuevo proveedor.
+          </DrawerDescription>
+        </DrawerHeader>
 
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isPending}
-              disabled={isPending}
-              icon={Plus}
+        <div className="px-4">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit as any)}
+              className="space-y-4"
             >
-              Crear Proveedor
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </form>
-      </FormProvider>
+              <SupplierForm mode="create" />
+            </form>
+          </Form>
+        </div>
+
+        <DrawerFooter>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit as any)}
+            disabled={createSupplier.isPending}
+          >
+            {createSupplier.isPending ? 'Creando...' : 'Crear Proveedor'}
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={createSupplier.isPending}
+          >
+            Cancelar
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
     </Drawer>
   )
 }
