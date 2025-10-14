@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
 import { Button } from '@/components/ui/button'
@@ -21,6 +22,11 @@ interface PetActionsProps {
 export function PetActions({ pet }: PetActionsProps) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
+  const router = useRouter()
+
+  const handleViewProfile = () => {
+    router.push(`/pets/${pet.id}`)
+  }
 
   return (
     <>
@@ -32,6 +38,11 @@ export function PetActions({ pet }: PetActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={handleViewProfile}>
+            <Eye className="mr-2 h-4 w-4" />
+            Ver Perfil
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => setShowEdit(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar

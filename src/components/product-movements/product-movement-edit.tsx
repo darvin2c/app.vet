@@ -59,7 +59,7 @@ export function ProductMovementEdit({
           onSubmit={form.handleSubmit(onSubmit as any)}
           className="space-y-4"
         >
-          <ProductMovementForm />
+          <ProductMovementForm mode="update" productMovement={movement} />
 
           <DrawerFooter>
             <Button type="submit" disabled={updateProductMovement.isPending}>

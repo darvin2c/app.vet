@@ -4,7 +4,12 @@ import { Tables } from '@/types/supabase.types'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
-  breeds: Tables<'breeds'> | null
+  breeds:
+    | (Tables<'breeds'> & {
+        species: Tables<'species'> | null
+      })
+    | null
+  species: Tables<'species'> | null
 }
 
 export function usePetDetail(id: string) {
@@ -22,12 +27,21 @@ export function usePetDetail(id: string) {
             last_name,
             email,
             phone,
-            address
+            address,
+            doc_id
           ),
           breeds (
             id,
             name,
-            species_id
+            species_id,
+            species (
+              id,
+              name
+            )
+          ),
+          species (
+            id,
+            name
           )
         `
         )

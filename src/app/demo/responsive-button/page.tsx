@@ -80,7 +80,9 @@ export default function ResponsiveButtonDemo() {
                 <tr className="border-b">
                   <td className="p-2 font-mono">children</td>
                   <td className="p-2">ReactNode</td>
-                  <td className="p-2">Contenido del botón (texto, elementos)</td>
+                  <td className="p-2">
+                    Contenido del botón (texto, elementos)
+                  </td>
                   <td className="p-2">
                     <Badge variant="secondary">No</Badge>
                   </td>
@@ -104,7 +106,9 @@ export default function ResponsiveButtonDemo() {
                 <tr className="border-b">
                   <td className="p-2 font-mono">isResponsive</td>
                   <td className="p-2">boolean</td>
-                  <td className="p-2">Si el botón debe adaptarse al dispositivo (default: true)</td>
+                  <td className="p-2">
+                    Si el botón debe adaptarse al dispositivo (default: true)
+                  </td>
                   <td className="p-2">
                     <Badge variant="secondary">No</Badge>
                   </td>
@@ -428,7 +432,9 @@ export default function ResponsiveButtonDemo() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">isResponsive = true (por defecto)</h3>
+            <h3 className="text-lg font-semibold">
+              isResponsive = true (por defecto)
+            </h3>
             <p className="text-sm text-muted-foreground">
               En desktop muestra ícono + texto, en mobile solo ícono con tooltip
             </p>
