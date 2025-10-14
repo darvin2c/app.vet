@@ -141,6 +141,57 @@ export type Database = {
           },
         ]
       }
+      boardings: {
+        Row: {
+          check_in_at: string
+          check_out_at: string | null
+          daily_rate: number | null
+          feeding_notes: string | null
+          id: string
+          kennel_id: string | null
+          observations: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Insert: {
+          check_in_at: string
+          check_out_at?: string | null
+          daily_rate?: number | null
+          feeding_notes?: string | null
+          id?: string
+          kennel_id?: string | null
+          observations?: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Update: {
+          check_in_at?: string
+          check_out_at?: string | null
+          daily_rate?: number | null
+          feeding_notes?: string | null
+          id?: string
+          kennel_id?: string | null
+          observations?: string | null
+          tenant_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "boardings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boardings_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       breeds: {
         Row: {
           created_at: string
@@ -191,6 +242,48 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clinical_notes: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          tenant_id: string
+          treatment_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          tenant_id: string
+          treatment_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          tenant_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clinical_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clinical_notes_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
             referencedColumns: ["id"]
           },
         ]
@@ -301,6 +394,54 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hospitalizations: {
+        Row: {
+          admission_at: string
+          bed_id: string | null
+          daily_rate: number | null
+          discharge_at: string | null
+          id: string
+          notes: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Insert: {
+          admission_at: string
+          bed_id?: string | null
+          daily_rate?: number | null
+          discharge_at?: string | null
+          id?: string
+          notes?: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Update: {
+          admission_at?: string
+          bed_id?: string | null
+          daily_rate?: number | null
+          discharge_at?: string | null
+          id?: string
+          notes?: string | null
+          tenant_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hospitalizations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "hospitalizations_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
             referencedColumns: ["id"]
           },
         ]
@@ -1048,6 +1189,48 @@ export type Database = {
           },
         ]
       }
+      surgeries: {
+        Row: {
+          complications: string | null
+          duration_min: number | null
+          id: string
+          surgeon_notes: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Insert: {
+          complications?: string | null
+          duration_min?: number | null
+          id?: string
+          surgeon_notes?: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Update: {
+          complications?: string | null
+          duration_min?: number | null
+          id?: string
+          surgeon_notes?: string | null
+          tenant_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "surgeries_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "surgeries_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tenant_users: {
         Row: {
           created_at: string
@@ -1140,6 +1323,119 @@ export type Database = {
         }
         Relationships: []
       }
+      trainings: {
+        Row: {
+          goal: string | null
+          id: string
+          progress_notes: string | null
+          sessions_completed: number | null
+          sessions_planned: number | null
+          tenant_id: string
+          trainer_id: string | null
+          treatment_id: string
+        }
+        Insert: {
+          goal?: string | null
+          id?: string
+          progress_notes?: string | null
+          sessions_completed?: number | null
+          sessions_planned?: number | null
+          tenant_id: string
+          trainer_id?: string | null
+          treatment_id: string
+        }
+        Update: {
+          goal?: string | null
+          id?: string
+          progress_notes?: string | null
+          sessions_completed?: number | null
+          sessions_planned?: number | null
+          tenant_id?: string
+          trainer_id?: string | null
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trainings_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trainings_trainer_id_fkey"
+            columns: ["trainer_id"]
+            isOneToOne: false
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trainings_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treatment_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          product_id: string
+          qty: number
+          tenant_id: string
+          treatment_id: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          qty: number
+          tenant_id: string
+          treatment_id: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          qty?: number
+          tenant_id?: string
+          treatment_id?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treatment_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_items_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "treatment_items_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       treatments: {
         Row: {
           appointment_id: string | null
@@ -1219,6 +1515,60 @@ export type Database = {
             columns: ["vet_id"]
             isOneToOne: false
             referencedRelation: "staff"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vaccinations: {
+        Row: {
+          adverse_event: string | null
+          created_at: string
+          created_by: string | null
+          dose: string | null
+          id: string
+          next_due_at: string | null
+          route: string | null
+          site: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Insert: {
+          adverse_event?: string | null
+          created_at?: string
+          created_by?: string | null
+          dose?: string | null
+          id?: string
+          next_due_at?: string | null
+          route?: string | null
+          site?: string | null
+          tenant_id: string
+          treatment_id: string
+        }
+        Update: {
+          adverse_event?: string | null
+          created_at?: string
+          created_by?: string | null
+          dose?: string | null
+          id?: string
+          next_due_at?: string | null
+          route?: string | null
+          site?: string | null
+          tenant_id?: string
+          treatment_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vaccinations_tenant_id_fkey"
+            columns: ["tenant_id"]
+            isOneToOne: false
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vaccinations_treatment_id_fkey"
+            columns: ["treatment_id"]
+            isOneToOne: false
+            referencedRelation: "treatments"
             referencedColumns: ["id"]
           },
         ]
