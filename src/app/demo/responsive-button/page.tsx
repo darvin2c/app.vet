@@ -78,11 +78,11 @@ export default function ResponsiveButtonDemo() {
                   </td>
                 </tr>
                 <tr className="border-b">
-                  <td className="p-2 font-mono">text</td>
-                  <td className="p-2">string</td>
-                  <td className="p-2">Texto a mostrar en desktop</td>
+                  <td className="p-2 font-mono">children</td>
+                  <td className="p-2">ReactNode</td>
+                  <td className="p-2">Contenido del botón (texto, elementos)</td>
                   <td className="p-2">
-                    <Badge variant="destructive">Sí</Badge>
+                    <Badge variant="secondary">No</Badge>
                   </td>
                 </tr>
                 <tr className="border-b">
@@ -97,6 +97,14 @@ export default function ResponsiveButtonDemo() {
                   <td className="p-2 font-mono">isLoading</td>
                   <td className="p-2">boolean</td>
                   <td className="p-2">Estado de carga con spinner</td>
+                  <td className="p-2">
+                    <Badge variant="secondary">No</Badge>
+                  </td>
+                </tr>
+                <tr className="border-b">
+                  <td className="p-2 font-mono">isResponsive</td>
+                  <td className="p-2">boolean</td>
+                  <td className="p-2">Si el botón debe adaptarse al dispositivo (default: true)</td>
                   <td className="p-2">
                     <Badge variant="secondary">No</Badge>
                   </td>
@@ -410,6 +418,101 @@ export default function ResponsiveButtonDemo() {
         </CardContent>
       </Card>
 
+      {/* Propiedad isResponsive */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Propiedad isResponsive</CardTitle>
+          <CardDescription>
+            Controla si el botón se adapta automáticamente al dispositivo
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">isResponsive = true (por defecto)</h3>
+            <p className="text-sm text-muted-foreground">
+              En desktop muestra ícono + texto, en mobile solo ícono con tooltip
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <ResponsiveButton
+                icon={Plus}
+                tooltip="Crear nuevo elemento"
+                isResponsive={true}
+                onClick={() => console.log('Responsive: true')}
+              >
+                Crear
+              </ResponsiveButton>
+              <ResponsiveButton
+                icon={Download}
+                tooltip="Descargar archivo"
+                variant="secondary"
+                isResponsive={true}
+                onClick={() => console.log('Responsive: true')}
+              >
+                Descargar
+              </ResponsiveButton>
+              <ResponsiveButton
+                icon={Settings}
+                tooltip="Abrir configuración"
+                variant="outline"
+                isResponsive={true}
+                onClick={() => console.log('Responsive: true')}
+              >
+                Configurar
+              </ResponsiveButton>
+            </div>
+          </div>
+
+          <Separator />
+
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">isResponsive = false</h3>
+            <p className="text-sm text-muted-foreground">
+              Siempre muestra ícono + texto, independientemente del dispositivo
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <ResponsiveButton
+                icon={Plus}
+                tooltip="Crear nuevo elemento"
+                isResponsive={false}
+                onClick={() => console.log('Responsive: false')}
+              >
+                Crear
+              </ResponsiveButton>
+              <ResponsiveButton
+                icon={Download}
+                tooltip="Descargar archivo"
+                variant="secondary"
+                isResponsive={false}
+                onClick={() => console.log('Responsive: false')}
+              >
+                Descargar
+              </ResponsiveButton>
+              <ResponsiveButton
+                icon={Settings}
+                tooltip="Abrir configuración"
+                variant="outline"
+                isResponsive={false}
+                onClick={() => console.log('Responsive: false')}
+              >
+                Configurar
+              </ResponsiveButton>
+            </div>
+          </div>
+
+          <div className="bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
+            <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+              💡 Cuándo usar isResponsive=false
+            </h4>
+            <ul className="text-sm text-blue-800 dark:text-blue-200 space-y-1">
+              <li>• Cuando el texto es crítico para la comprensión</li>
+              <li>• En formularios donde la claridad es importante</li>
+              <li>• Botones principales de acción (CTA)</li>
+              <li>• Cuando hay suficiente espacio en mobile</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Código de Ejemplo */}
       <Card>
         <CardHeader>
@@ -421,7 +524,7 @@ export default function ResponsiveButtonDemo() {
             <code>{`import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Plus, Download, Settings } from 'lucide-react'
 
-// Uso básico
+// Uso básico (responsive por defecto)
 <ResponsiveButton
   icon={Plus}
   tooltip="Nuevo"
@@ -430,24 +533,36 @@ import { Plus, Download, Settings } from 'lucide-react'
   Nuevo
 </ResponsiveButton>
 
-// Con estado de carga
+// Responsive explícito
 <ResponsiveButton
   icon={Download}
   tooltip="Descargar"
-  isLoading={isDownloading}
+  isResponsive={true}
   onClick={handleDownload}
 >
   Descargar
 </ResponsiveButton>
 
-// Con tooltip personalizado
+// No responsive (siempre muestra texto)
 <ResponsiveButton
   icon={Settings}
-  tooltip="Abrir configuración avanzada"
+  tooltip="Configurar"
+  isResponsive={false}
   variant="outline"
   onClick={openSettings}
 >
   Configurar
+</ResponsiveButton>
+
+// Con estado de carga
+<ResponsiveButton
+  icon={Upload}
+  tooltip="Subir archivo"
+  isLoading={isUploading}
+  isResponsive={false}
+  onClick={handleUpload}
+>
+  Subir
 </ResponsiveButton>
 
 // Deshabilitado

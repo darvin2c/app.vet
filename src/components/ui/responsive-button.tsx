@@ -86,7 +86,7 @@ export const ResponsiveButton = forwardRef<
       return (
         <>
           {Icon && <Icon className="h-4 w-4" />}
-          {!isMobile && !isResponsive && children}
+          {(!isMobile || !isResponsive) && children}
         </>
       )
     }
@@ -105,7 +105,22 @@ export const ResponsiveButton = forwardRef<
       )
     }
 
-    // En mobile, solo ícono con tooltip (si existe)
+    // En mobile, comportamiento depende de isResponsive
+    if (!isResponsive) {
+      // Si no es responsive, mostrar como botón normal con texto
+      return (
+        <Button
+          ref={ref}
+          disabled={isDisabled}
+          className={cn('gap-2', className)}
+          {...props}
+        >
+          {buttonContent()}
+        </Button>
+      )
+    }
+
+    // En mobile responsive, solo ícono con tooltip
     return (
       <TooltipProvider>
         <Tooltip>
