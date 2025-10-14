@@ -98,8 +98,6 @@ export function SpeciesList({
     return result
   }, [species, allBreeds, appliedSearch])
 
-
-
   if (isPending) {
     return <TableSkeleton />
   }

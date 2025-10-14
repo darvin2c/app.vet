@@ -28,7 +28,10 @@ interface SpeciesListViewProps {
   appliedSearch?: string
 }
 
-export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps) {
+export function SpeciesListView({
+  species,
+  appliedSearch,
+}: SpeciesListViewProps) {
   // Estado para filas expandidas
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
 
@@ -57,9 +60,9 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
   }, [appliedSearch, species])
 
   const toggleExpanded = (speciesId: string) => {
-    setExpanded(prev => ({
+    setExpanded((prev) => ({
       ...prev,
-      [speciesId]: !prev[speciesId]
+      [speciesId]: !prev[speciesId],
     }))
   }
 
@@ -67,7 +70,8 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
     () => (
       <ItemGroup>
         {species.map((speciesItem) => {
-          const hasActiveBreeds = speciesItem.subRows && speciesItem.subRows.length > 0
+          const hasActiveBreeds =
+            speciesItem.subRows && speciesItem.subRows.length > 0
           const isExpanded = expanded[speciesItem.id]
 
           return (
@@ -96,7 +100,7 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
                     ) : (
                       <div className="w-6" />
                     )}
-                    
+
                     <div className="flex-1">
                       <ItemTitle>
                         {speciesItem.name}
@@ -107,7 +111,9 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
                         )}
                       </ItemTitle>
                       {speciesItem.description && (
-                        <ItemDescription>{speciesItem.description}</ItemDescription>
+                        <ItemDescription>
+                          {speciesItem.description}
+                        </ItemDescription>
                       )}
                       <div className="flex items-center justify-between text-sm mt-2">
                         <div className="flex items-center gap-2">
@@ -115,7 +121,9 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
                           <IsActiveDisplay value={speciesItem.is_active} />
                         </div>
                         <span className="text-muted-foreground">
-                          {new Date(speciesItem.created_at).toLocaleDateString('es-ES')}
+                          {new Date(speciesItem.created_at).toLocaleDateString(
+                            'es-ES'
+                          )}
                         </span>
                       </div>
                     </div>
@@ -146,7 +154,9 @@ export function SpeciesListView({ species, appliedSearch }: SpeciesListViewProps
                             <IsActiveDisplay value={breed.is_active} />
                           </div>
                           <span className="text-muted-foreground">
-                            {new Date(breed.created_at).toLocaleDateString('es-ES')}
+                            {new Date(breed.created_at).toLocaleDateString(
+                              'es-ES'
+                            )}
                           </span>
                         </div>
                       </ItemContent>

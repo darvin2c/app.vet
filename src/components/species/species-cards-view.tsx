@@ -7,12 +7,7 @@ import { BreedActions } from '../breeds/breed-actions'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { Button } from '@/components/ui/button'
 import { ChevronRight, ChevronDown } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
 type Species = Tables<'species'>
 type Breed = Tables<'breeds'>
@@ -26,7 +21,10 @@ interface SpeciesCardsViewProps {
   appliedSearch?: string
 }
 
-export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewProps) {
+export function SpeciesCardsView({
+  species,
+  appliedSearch,
+}: SpeciesCardsViewProps) {
   // Estado para controlar qué especies están expandidas
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set())
 
@@ -34,7 +32,7 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
   useEffect(() => {
     if (appliedSearch && appliedSearch.trim() !== '') {
       const newExpandedRows = new Set<string>()
-      
+
       species.forEach((speciesItem) => {
         if (speciesItem.subRows && speciesItem.subRows.length > 0) {
           const hasMatchingBreed = speciesItem.subRows.some((breed) =>
@@ -45,7 +43,7 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
           }
         }
       })
-      
+
       setExpandedRows(newExpandedRows)
     }
   }, [appliedSearch, species])
@@ -67,10 +65,14 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {species.map((speciesItem) => {
           const isExpanded = expandedRows.has(speciesItem.id)
-          const hasActiveBreeds = speciesItem.subRows && speciesItem.subRows.length > 0
+          const hasActiveBreeds =
+            speciesItem.subRows && speciesItem.subRows.length > 0
 
           return (
-            <Card key={speciesItem.id} className="hover:shadow-md transition-shadow">
+            <Card
+              key={speciesItem.id}
+              className="hover:shadow-md transition-shadow"
+            >
               <CardHeader className="pb-3">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-2">
@@ -88,7 +90,9 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
                         )}
                       </Button>
                     )}
-                    <CardTitle className="text-lg">{speciesItem.name}</CardTitle>
+                    <CardTitle className="text-lg">
+                      {speciesItem.name}
+                    </CardTitle>
                   </div>
                   <SpeciesActions species={speciesItem} />
                 </div>
@@ -105,14 +109,18 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
                     <IsActiveDisplay value={speciesItem.is_active} />
                   </div>
                   <span className="text-muted-foreground">
-                    {new Date(speciesItem.created_at).toLocaleDateString('es-ES')}
+                    {new Date(speciesItem.created_at).toLocaleDateString(
+                      'es-ES'
+                    )}
                   </span>
                 </div>
 
                 {/* Razas expandidas como mini-cards */}
                 {isExpanded && hasActiveBreeds && (
                   <div className="mt-4 space-y-2 border-t pt-3">
-                    <h4 className="text-sm font-medium text-muted-foreground">Razas:</h4>
+                    <h4 className="text-sm font-medium text-muted-foreground">
+                      Razas:
+                    </h4>
                     <div className="space-y-2">
                       {speciesItem.subRows!.map((breed) => (
                         <div
@@ -121,7 +129,9 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
                         >
                           <div className="flex items-start justify-between">
                             <div className="flex-1 min-w-0">
-                              <h5 className="font-medium text-sm truncate">{breed.name}</h5>
+                              <h5 className="font-medium text-sm truncate">
+                                {breed.name}
+                              </h5>
                               {breed.description && (
                                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                   {breed.description}
@@ -133,7 +143,9 @@ export function SpeciesCardsView({ species, appliedSearch }: SpeciesCardsViewPro
                                   <IsActiveDisplay value={breed.is_active} />
                                 </div>
                                 <span className="text-muted-foreground">
-                                  {new Date(breed.created_at).toLocaleDateString('es-ES')}
+                                  {new Date(
+                                    breed.created_at
+                                  ).toLocaleDateString('es-ES')}
                                 </span>
                               </div>
                             </div>

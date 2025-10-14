@@ -1,18 +1,30 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
+import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
 import {
-  ColumnDef,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+} from 'lucide-react'
+import {
+  type ColumnDef,
+  type Row,
+  type Header,
+  type HeaderGroup,
+  type Cell,
+  type SortingState,
   flexRender,
   getCoreRowModel,
-  useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
-  HeaderGroup,
-  Header,
-  Row,
+  useReactTable,
 } from '@tanstack/react-table'
+
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import {
   Table,
   TableBody,
@@ -21,71 +33,66 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import {
-  ChevronLeft,
-  ChevronRight,
-  Grid3X3,
-  List,
-  Table as TableIcon,
-} from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { ViewModeToggle, type ViewMode } from '@/components/ui/view-mode-toggle'
+import { OrderByTableHeader } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { Database } from '@/types/supabase.types'
-import useProductMovements from '@/hooks/product-movements/use-product-movement-list'
+import {
+  ItemGroup,
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+} from '@/components/ui/item'
+
+import useProductMovementList, { type ProductMovementWithProduct } from '@/hooks/product-movements/use-product-movement-list'
 import { ProductMovementActions } from './product-movement-actions'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { ProductMovementCreateButton } from './product-movement-create-button'
+import { useFilters } from '@/hooks/use-filters'
+import { useSearch } from '@/hooks/use-search'
+import { useOrderBy } from '@/hooks/use-order-by'
+import type { FilterConfig } from '@/types/filters.types'
+import type { OrderByConfig } from '@/types/order-by.types'
 
-type ProductMovementWithProduct =
-  Database['public']['Tables']['product_movements']['Row'] & {
-    products?: {
-      id: string
-      name: string
-      sku: string | null
-      stock: number | null
-      product_categories?: {
-        id: string
-        name: string
-        code: string
-      } | null
-      product_units?: {
-        id: string
-        name: string | null
-        abbreviation: string | null
-      } | null
-    } | null
-  }
-
-type ViewMode = 'table' | 'card' | 'list'
-
-interface ProductMovementListProps {
-  filters?: any
-}
-
-export function ProductMovementList({ filters }: ProductMovementListProps) {
-  // Estado para controlar la vista actual
+export function ProductMovementList({
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  // Usar el hook useProductMovements con los filtros aplicados
-  const {
-    data: movements = [],
-    isLoading,
-    error,
-  } = useProductMovements(filters)
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
+
+  // Obtener datos usando los hooks
+  const { data: movements = [], isLoading, error } = useProductMovementList({
+    search: appliedSearch,
+    ...appliedFilters.reduce((acc, filter) => {
+      acc[filter.field] = filter.value
+      return acc
+    }, {} as any),
+  })
 
   const columns: ColumnDef<ProductMovementWithProduct>[] = [
     {
       accessorKey: 'created_at',
-      header: 'Fecha',
+      header: ({ header }) => (
+        <OrderByTableHeader field="created_at" orderByHook={orderByHook}>
+          Fecha
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const date = new Date(row.getValue('created_at'))
         return format(date, 'dd/MM/yyyy HH:mm', { locale: es })
@@ -93,7 +100,11 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       accessorKey: 'products.name',
-      header: 'Producto',
+      header: ({ header }) => (
+        <OrderByTableHeader field="products.name" orderByHook={orderByHook}>
+          Producto
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const movement = row.original
         return (
@@ -110,7 +121,11 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       accessorKey: 'source',
-      header: 'Tipo',
+      header: ({ header }) => (
+        <OrderByTableHeader field="source" orderByHook={orderByHook}>
+          Tipo
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const type = row.getValue('source') as string
         const quantity = row.original.quantity
@@ -135,7 +150,11 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       accessorKey: 'quantity',
-      header: 'Cantidad',
+      header: ({ header }) => (
+        <OrderByTableHeader field="quantity" orderByHook={orderByHook}>
+          Cantidad
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const quantity = row.getValue('quantity') as number
         const unit = row.original.products?.product_units
@@ -152,7 +171,11 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       accessorKey: 'unit_cost',
-      header: 'Costo Unit.',
+      header: ({ header }) => (
+        <OrderByTableHeader field="unit_cost" orderByHook={orderByHook}>
+          Costo Unit.
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const cost = row.getValue('unit_cost') as number | null
         return cost ? `$${cost.toFixed(2)}` : '-'
@@ -172,7 +195,11 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       accessorKey: 'reference',
-      header: 'Referencia',
+      header: ({ header }) => (
+        <OrderByTableHeader field="reference" orderByHook={orderByHook}>
+          Referencia
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
         const ref = row.getValue('reference') as string | null
         return ref || '-'
@@ -180,7 +207,6 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => (
         <ProductMovementActions movement={row.original} />
       ),
@@ -192,10 +218,10 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
   const table = useReactTable({
     data: movements,
     columns,
-    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     state: {
       sorting,
     },
@@ -206,38 +232,63 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
     },
   })
 
+  // Función para renderizar el encabezado de la tabla
+  const renderTableHeader = useCallback(
+    (headerGroup: HeaderGroup<ProductMovementWithProduct>) => (
+      <TableRow key={headerGroup.id}>
+        {headerGroup.headers.map((header: Header<ProductMovementWithProduct, unknown>) => (
+          <TableHead key={header.id}>
+            {header.isPlaceholder
+              ? null
+              : flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
+
+  // Función para renderizar las filas de la tabla
+  const renderTableRow = useCallback(
+    (row: Row<ProductMovementWithProduct>) => (
+      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+        {row.getVisibleCells().map((cell: Cell<ProductMovementWithProduct, unknown>) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
+
   // Función para renderizar vista de tarjetas
-  const renderCardView = useCallback(() => {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {movements.map((movement: ProductMovementWithProduct) => (
-          <Card key={movement.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex flex-col">
-                  <span className="font-medium text-sm">
-                    {movement.products?.name || 'N/A'}
-                  </span>
-                  {movement.products?.sku && (
-                    <span className="text-xs text-muted-foreground">
-                      SKU: {movement.products.sku}
-                    </span>
-                  )}
-                </div>
-                <ProductMovementActions movement={movement} />
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {movements.map((movement: ProductMovementWithProduct) => (
+        <Card key={movement.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{movement.products?.name || 'N/A'}</h3>
+                {movement.products?.sku && (
+                  <p className="text-sm text-muted-foreground">
+                    SKU: {movement.products.sku}
+                  </p>
+                )}
               </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Fecha:</span>
-                <span className="text-sm">
-                  {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', {
-                    locale: es,
-                  })}
-                </span>
+              <ProductMovementActions movement={movement} />
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-sm">
+                <span className="text-muted-foreground">Fecha:</span>{' '}
+                {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', {
+                  locale: es,
+                })}
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Tipo:</span>
+              <div className="text-sm">
+                <span className="text-muted-foreground">Tipo:</span>{' '}
                 <Badge
                   variant={movement.quantity >= 0 ? 'default' : 'destructive'}
                 >
@@ -245,111 +296,76 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
                     (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}
                 </Badge>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Cantidad:</span>
+              <div className="text-sm">
+                <span className="text-muted-foreground">Cantidad:</span>{' '}
                 <span
-                  className={`text-sm font-medium ${movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                  className={`font-medium ${movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
                 >
                   {movement.quantity >= 0 ? '+' : ''}
                   {movement.quantity.toFixed(0)}{' '}
                   {movement.products?.product_units?.abbreviation || ''}
                 </span>
               </div>
-              {movement.unit_cost && movement.quantity && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Costo Total:
-                  </span>
-                  <span className="text-sm font-medium">
-                    ${(movement.unit_cost * movement.quantity).toFixed(2)}
-                  </span>
+              {movement.unit_cost && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Costo Unit.:</span>{' '}
+                  ${movement.unit_cost.toFixed(2)}
                 </div>
               )}
               {movement.reference && (
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">
-                    Referencia:
-                  </span>
-                  <span className="text-sm">{movement.reference}</span>
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Referencia:</span>{' '}
+                  {movement.reference}
                 </div>
               )}
-              {movement.note && (
-                <div className="pt-2 border-t">
-                  <span className="text-xs text-muted-foreground">Nota:</span>
-                  <p className="text-sm mt-1">{movement.note}</p>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    )
-  }, [movements])
+            </div>
+
+            {movement.note && (
+              <div className="pt-2 border-t">
+                <p className="text-sm text-muted-foreground">{movement.note}</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
 
   // Función para renderizar vista de lista
-  const renderListView = useCallback(() => {
-    return (
-      <div className="space-y-2">
-        {movements.map((movement: ProductMovementWithProduct) => (
-          <Card key={movement.id} className="hover:shadow-sm transition-shadow">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <div className="flex flex-col">
-                    <span className="font-medium">
-                      {movement.products?.name || 'N/A'}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {format(
-                        new Date(movement.created_at),
-                        'dd/MM/yyyy HH:mm',
-                        { locale: es }
-                      )}
-                    </span>
-                  </div>
-                  <Badge
-                    variant={movement.quantity >= 0 ? 'default' : 'destructive'}
-                  >
-                    {movement.source ||
-                      (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}
-                  </Badge>
-                  <span
-                    className={`font-medium ${movement.quantity >= 0 ? 'text-green-600' : 'text-red-600'}`}
-                  >
-                    {movement.quantity >= 0 ? '+' : ''}
-                    {movement.quantity.toFixed(0)}{' '}
-                    {movement.products?.product_units?.abbreviation || ''}
-                  </span>
-                  {movement.unit_cost && movement.quantity && (
-                    <span className="text-sm font-medium">
-                      ${(movement.unit_cost * movement.quantity).toFixed(2)}
-                    </span>
-                  )}
-                </div>
-                <ProductMovementActions movement={movement} />
-              </div>
-              {movement.note && (
-                <p className="text-sm text-muted-foreground mt-2">
-                  {movement.note}
-                </p>
-              )}
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    )
-  }, [movements])
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {movements.map((movement: ProductMovementWithProduct) => (
+        <Item key={movement.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{movement.products?.name || 'Producto no encontrado'}</ItemTitle>
+            <ItemDescription>
+              {movement.source || (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')} - Cantidad: {movement.quantity}
+            </ItemDescription>
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <span>Fecha: {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}</span>
+              {movement.note && <span>Nota: {movement.note}</span>}
+              {movement.reference && <span>Referencia: {movement.reference}</span>}
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <ProductMovementActions movement={movement} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
+  )
 
-  // Estado de carga
+  // Estados de carga y error
   if (isLoading) {
-    return <TableSkeleton />
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
+    return <TableSkeleton variant={viewMode} />
   }
 
-  // Estado de error
   if (error) {
     return (
-      <div className="flex items-center justify-center h-32">
-        <p className="text-destructive">
+      <div className="text-center py-8">
+        <p className="text-red-500">
           Error al cargar movimientos: {error.message}
         </p>
       </div>
@@ -358,101 +374,48 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
 
   if (movements.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>No hay movimientos de productos</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron movimientos de productos. Crea el primer
-            movimiento para comenzar.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia>
+              <Package className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay movimientos</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron movimientos que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
       {/* Controles de vista */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-muted-foreground">
-            {movements.length} movimiento{movements.length !== 1 ? 's' : ''}
-          </span>
-        </div>
-        <ToggleGroup
-          type="single"
-          value={viewMode}
-          onValueChange={(value: string) =>
-            value && setViewMode(value as ViewMode)
-          }
-        >
-          <ToggleGroupItem value="table" aria-label="Vista de tabla">
-            <TableIcon className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="card" aria-label="Vista de tarjetas">
-            <Grid3X3 className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="list" aria-label="Vista de lista">
-            <List className="h-4 w-4" />
-          </ToggleGroupItem>
-        </ToggleGroup>
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="product-movements" />
       </div>
 
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
-        <div className="space-y-4">
+        <>
           <div className="rounded-md border">
             <Table>
               <TableHeader>
-                {table
-                  .getHeaderGroups()
-                  .map(
-                    (headerGroup: HeaderGroup<ProductMovementWithProduct>) => (
-                      <TableRow key={headerGroup.id}>
-                        {headerGroup.headers.map(
-                          (
-                            header: Header<ProductMovementWithProduct, unknown>
-                          ) => (
-                            <TableHead key={header.id}>
-                              {header.isPlaceholder
-                                ? null
-                                : flexRender(
-                                    header.column.columnDef.header,
-                                    header.getContext()
-                                  )}
-                            </TableHead>
-                          )
-                        )}
-                      </TableRow>
-                    )
-                  )}
+                {table.getHeaderGroups().map(renderTableHeader)}
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table
-                    .getRowModel()
-                    .rows.map((row: Row<ProductMovementWithProduct>) => (
-                      <TableRow
-                        key={row.id}
-                        data-state={row.getIsSelected() && 'selected'}
-                      >
-                        {row.getVisibleCells().map((cell) => (
-                          <TableCell key={cell.id}>
-                            {flexRender(
-                              cell.column.columnDef.cell,
-                              cell.getContext()
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    ))
+                  table.getRowModel().rows.map(renderTableRow)
                 ) : (
                   <TableRow>
                     <TableCell
                       colSpan={columns.length}
                       className="h-24 text-center"
                     >
-                      No hay movimientos.
+                      No hay resultados.
                     </TableCell>
                   </TableRow>
                 )}
@@ -463,10 +426,19 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
           {/* Paginación */}
           <div className="flex items-center justify-between space-x-2 py-4">
             <div className="text-sm text-muted-foreground">
-              Página {table.getState().pagination.pageIndex + 1} de{' '}
-              {table.getPageCount()}
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                movements.length
+              )}{' '}
+              de {movements.length} movimientos
             </div>
-            <div className="space-x-2">
+            <div className="flex items-center space-x-2">
               <Button
                 variant="outline"
                 size="sm"
@@ -487,10 +459,10 @@ export function ProductMovementList({ filters }: ProductMovementListProps) {
               </Button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
-      {viewMode === 'card' && renderCardView()}
+      {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
     </div>
   )

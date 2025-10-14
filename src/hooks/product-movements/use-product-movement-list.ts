@@ -5,6 +5,25 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type ProductMovement = Database['public']['Tables']['product_movements']['Row']
 
+export type ProductMovementWithProduct = ProductMovement & {
+  products?: {
+    id: string
+    name: string
+    sku: string | null
+    stock: number | null
+    product_categories?: {
+      id: string
+      name: string
+      description: string | null
+    } | null
+    product_units?: {
+      id: string
+      name: string | null
+      abbreviation: string | null
+    } | null
+  } | null
+}
+
 interface ProductMovementFilters {
   search?: string
   product_id?: string
@@ -20,7 +39,7 @@ export default function useProductMovementList(
 
   return useQuery({
     queryKey: ['product-movements', currentTenant?.id, filters],
-    queryFn: async (): Promise<ProductMovement[]> => {
+    queryFn: async (): Promise<ProductMovementWithProduct[]> => {
       if (!currentTenant?.id) {
         return []
       }
@@ -31,9 +50,19 @@ export default function useProductMovementList(
           `
           *,
           products (
-            *,
+            id,
+            name,
+            sku,
+            stock,
             product_categories (
-             *
+              id,
+              name,
+              description
+            ),
+            product_units (
+              id,
+              name,
+              abbreviation
             )
           )
         `
