@@ -37,9 +37,15 @@ import {
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ChevronLeft, ChevronRight, Package } from 'lucide-react'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Package,
+} from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
@@ -290,7 +296,7 @@ export function ProductList({
       <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
         <Empty>
           <EmptyHeader>
-            <EmptyMedia>
+            <EmptyMedia variant="icon">
               <Package className="h-16 w-16" />
             </EmptyMedia>
             <EmptyTitle>No hay productos</EmptyTitle>
@@ -298,10 +304,23 @@ export function ProductList({
               No se encontraron productos que coincidan con los filtros
               aplicados.
             </EmptyDescription>
-            <div className="mt-4">
-              <ProductCreateButton children="Nuevo Producto" />
-            </div>
           </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <ProductCreateButton>Crear Producto</ProductCreateButton>
+              <Button variant="outline">Importar Producto</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
         </Empty>
       </div>
     )

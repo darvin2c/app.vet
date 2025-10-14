@@ -4,6 +4,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
+  ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
   Package,
@@ -42,6 +43,7 @@ import {
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import {
   ItemGroup,
@@ -52,7 +54,9 @@ import {
   ItemActions,
 } from '@/components/ui/item'
 
-import useProductMovementList, { type ProductMovementWithProduct } from '@/hooks/product-movements/use-product-movement-list'
+import useProductMovementList, {
+  type ProductMovementWithProduct,
+} from '@/hooks/product-movements/use-product-movement-list'
 import { ProductMovementActions } from './product-movement-actions'
 import { ProductMovementCreateButton } from './product-movement-create-button'
 import { useFilters } from '@/hooks/use-filters'
@@ -60,6 +64,7 @@ import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/hooks/use-order-by'
 import type { FilterConfig } from '@/types/filters.types'
 import type { OrderByConfig } from '@/types/order-by.types'
+import { ProductCreateButton } from '../products/product-create-button'
 
 export function ProductMovementList({
   filterConfig,
@@ -77,7 +82,11 @@ export function ProductMovementList({
   const { appliedSearch } = useSearch()
 
   // Obtener datos usando los hooks
-  const { data: movements = [], isLoading, error } = useProductMovementList({
+  const {
+    data: movements = [],
+    isLoading,
+    error,
+  } = useProductMovementList({
     search: appliedSearch,
     ...appliedFilters.reduce((acc, filter) => {
       acc[filter.field] = filter.value
@@ -236,13 +245,18 @@ export function ProductMovementList({
   const renderTableHeader = useCallback(
     (headerGroup: HeaderGroup<ProductMovementWithProduct>) => (
       <TableRow key={headerGroup.id}>
-        {headerGroup.headers.map((header: Header<ProductMovementWithProduct, unknown>) => (
-          <TableHead key={header.id}>
-            {header.isPlaceholder
-              ? null
-              : flexRender(header.column.columnDef.header, header.getContext())}
-          </TableHead>
-        ))}
+        {headerGroup.headers.map(
+          (header: Header<ProductMovementWithProduct, unknown>) => (
+            <TableHead key={header.id}>
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+            </TableHead>
+          )
+        )}
       </TableRow>
     ),
     []
@@ -252,11 +266,13 @@ export function ProductMovementList({
   const renderTableRow = useCallback(
     (row: Row<ProductMovementWithProduct>) => (
       <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-        {row.getVisibleCells().map((cell: Cell<ProductMovementWithProduct, unknown>) => (
-          <TableCell key={cell.id}>
-            {flexRender(cell.column.columnDef.cell, cell.getContext())}
-          </TableCell>
-        ))}
+        {row
+          .getVisibleCells()
+          .map((cell: Cell<ProductMovementWithProduct, unknown>) => (
+            <TableCell key={cell.id}>
+              {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            </TableCell>
+          ))}
       </TableRow>
     ),
     []
@@ -270,7 +286,9 @@ export function ProductMovementList({
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-medium">{movement.products?.name || 'N/A'}</h3>
+                <h3 className="font-medium">
+                  {movement.products?.name || 'N/A'}
+                </h3>
                 {movement.products?.sku && (
                   <p className="text-sm text-muted-foreground">
                     SKU: {movement.products.sku}
@@ -308,8 +326,8 @@ export function ProductMovementList({
               </div>
               {movement.unit_cost && (
                 <div className="text-sm">
-                  <span className="text-muted-foreground">Costo Unit.:</span>{' '}
-                  ${movement.unit_cost.toFixed(2)}
+                  <span className="text-muted-foreground">Costo Unit.:</span> $
+                  {movement.unit_cost.toFixed(2)}
                 </div>
               )}
               {movement.reference && (
@@ -337,14 +355,25 @@ export function ProductMovementList({
       {movements.map((movement: ProductMovementWithProduct) => (
         <Item key={movement.id} variant="outline">
           <ItemContent>
-            <ItemTitle>{movement.products?.name || 'Producto no encontrado'}</ItemTitle>
+            <ItemTitle>
+              {movement.products?.name || 'Producto no encontrado'}
+            </ItemTitle>
             <ItemDescription>
-              {movement.source || (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')} - Cantidad: {movement.quantity}
+              {movement.source ||
+                (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}{' '}
+              - Cantidad: {movement.quantity}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              <span>Fecha: {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', { locale: es })}</span>
+              <span>
+                Fecha:{' '}
+                {format(new Date(movement.created_at), 'dd/MM/yyyy HH:mm', {
+                  locale: es,
+                })}
+              </span>
               {movement.note && <span>Nota: {movement.note}</span>}
-              {movement.reference && <span>Referencia: {movement.reference}</span>}
+              {movement.reference && (
+                <span>Referencia: {movement.reference}</span>
+              )}
             </div>
           </ItemContent>
           <ItemActions>
@@ -377,7 +406,7 @@ export function ProductMovementList({
       <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
         <Empty>
           <EmptyHeader>
-            <EmptyMedia>
+            <EmptyMedia variant="icon">
               <Package className="h-16 w-16" />
             </EmptyMedia>
             <EmptyTitle>No hay movimientos</EmptyTitle>
@@ -386,6 +415,24 @@ export function ProductMovementList({
               aplicados.
             </EmptyDescription>
           </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <ProductMovementCreateButton isResponsive={false}>
+                Crear Movimiento
+              </ProductMovementCreateButton>
+              <Button variant="outline">Importar Movimiento</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
         </Empty>
       </div>
     )
@@ -395,7 +442,10 @@ export function ProductMovementList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="product-movements" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="product-movements"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

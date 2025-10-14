@@ -35,6 +35,10 @@ export interface ResponsiveButtonProps
    * Si está en estado de carga
    */
   isLoading?: boolean
+  /**
+   * Si el botón debe adaptarse al dispositivo
+   */
+  isResponsive?: boolean
 }
 
 /**
@@ -63,13 +67,13 @@ export const ResponsiveButton = forwardRef<
       isLoading = false,
       className,
       disabled,
+      isResponsive = true,
       ...props
     },
     ref
   ) => {
     const isMobile = useIsMobile()
     const isDisabled = disabled || isLoading
-    const hasChildren = children !== undefined
 
     // Contenido del botón
     const buttonContent = () => {
@@ -82,7 +86,7 @@ export const ResponsiveButton = forwardRef<
       return (
         <>
           {Icon && <Icon className="h-4 w-4" />}
-          {!isMobile && hasChildren && children}
+          {!isMobile && !isResponsive && children}
         </>
       )
     }
@@ -93,7 +97,7 @@ export const ResponsiveButton = forwardRef<
         <Button
           ref={ref}
           disabled={isDisabled}
-          className={cn(hasChildren ? 'gap-2' : '', className)}
+          className={cn('gap-2', className)}
           {...props}
         >
           {buttonContent()}

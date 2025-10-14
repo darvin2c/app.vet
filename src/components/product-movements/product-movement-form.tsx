@@ -21,9 +21,17 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ProductSelect } from '@/components/products/product-select'
-import { format } from 'date-fns'
+import { Tables } from '@/types/supabase.types'
 
-export function ProductMovementForm() {
+type ProductMovement = Tables<'product_movements'>
+
+export function ProductMovementForm({
+  mode,
+  productMovement,
+}: {
+  mode: 'create' | 'update'
+  productMovement?: ProductMovement
+}) {
   const form = useFormContext<ProductMovementFormData>()
   const {
     formState: { errors },

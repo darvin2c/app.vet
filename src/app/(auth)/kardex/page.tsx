@@ -150,92 +150,10 @@ export default function KardexPage() {
         />
       }
     >
-      <div className="space-y-6">
-        {/* Métricas Dashboard */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Movimientos
-              </CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{metrics.totalMovements}</div>
-              <p className="text-xs text-muted-foreground">
-                {metrics.uniqueProducts} productos únicos
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Entradas</CardTitle>
-              <TrendingUp className="h-4 w-4 text-green-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-600">
-                +{metrics.totalEntries.toFixed(0)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {metrics.entriesCount} movimientos
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Salidas</CardTitle>
-              <TrendingDown className="h-4 w-4 text-red-600" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-red-600">
-                -{metrics.totalExits.toFixed(0)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {metrics.exitsCount} movimientos
-              </p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Valor Total</CardTitle>
-              <Package className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                ${metrics.totalValue.toFixed(2)}
-              </div>
-              <p className="text-xs text-muted-foreground">
-                {metrics.totalAdjustments} ajustes
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Indicadores adicionales */}
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="text-green-600 border-green-200">
-            <TrendingUp className="h-3 w-3 mr-1" />
-            Entradas: {metrics.entriesCount}
-          </Badge>
-          <Badge variant="outline" className="text-red-600 border-red-200">
-            <TrendingDown className="h-3 w-3 mr-1" />
-            Salidas: {metrics.exitsCount}
-          </Badge>
-          <Badge variant="outline" className="text-blue-600 border-blue-200">
-            <Activity className="h-3 w-3 mr-1" />
-            Balance: {(metrics.totalEntries - metrics.totalExits).toFixed(0)}
-          </Badge>
-        </div>
-
-        {/* Lista de movimientos */}
-        <ProductMovementList
-          filterConfig={filters}
-          orderByConfig={orderByConfig}
-        />
-      </div>
+      <ProductMovementList
+        filterConfig={filters}
+        orderByConfig={orderByConfig}
+      />
     </PageBase>
   )
 }
