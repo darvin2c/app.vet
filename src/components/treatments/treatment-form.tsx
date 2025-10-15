@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { TreatmentFormData } from '@/schemas/treatment.schema'
+import { TreatmentTypeGrid } from './treatment-type-grid'
 
 export function TreatmentForm() {
   const {
@@ -43,24 +44,10 @@ export function TreatmentForm() {
       <Field>
         <FieldLabel htmlFor="treatment_type">Tipo de Tratamiento</FieldLabel>
         <FieldContent>
-          <Select
+          <TreatmentTypeGrid
             value={watchedType}
             onValueChange={(value) => setValue('treatment_type', value as any)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona el tipo de tratamiento" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="consultation">Consulta</SelectItem>
-              <SelectItem value="vaccination">Vacunación</SelectItem>
-              <SelectItem value="surgery">Cirugía</SelectItem>
-              <SelectItem value="grooming">Peluquería</SelectItem>
-              <SelectItem value="hospitalization">Hospitalización</SelectItem>
-              <SelectItem value="deworming">Desparasitación</SelectItem>
-              <SelectItem value="boarding">Hospedaje</SelectItem>
-              <SelectItem value="training">Entrenamiento</SelectItem>
-            </SelectContent>
-          </Select>
+          />
           <FieldError errors={[errors.treatment_type]} />
         </FieldContent>
       </Field>

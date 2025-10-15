@@ -14,12 +14,7 @@ import { PetProfileHeader } from '@/components/pets/pet-profile-header'
 import { PetProfileSidebar } from '@/components/pets/pet-profile-sidebar'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { PetAppointmentsList } from '@/components/pets/pet-appointments-list'
-import { PetTreatmentsList } from '@/components/pets/pet-treatments-list'
-import { PetClinicalParameters } from '@/components/pets/pet-clinical-parameters'
-import { PetSurgeries } from '@/components/pets/pet-surgeries'
-import { PetTrainings } from '@/components/pets/pet-trainings'
-import { PetTreatmentItems } from '@/components/pets/pet-treatment-items'
-import { PetVaccinations } from '@/components/pets/pet-vaccinations'
+import { PetAllTreatments } from '@/components/pets/pet-all-treatments'
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -94,16 +89,10 @@ export default function PetProfilePage() {
             onValueChange={setActiveTab}
             className="space-y-6"
           >
-            <TabsList className="grid w-full grid-cols-9 text-xs">
+            <TabsList className="grid w-full grid-cols-3 text-xs">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="appointments">Citas</TabsTrigger>
               <TabsTrigger value="treatments">Tratamientos</TabsTrigger>
-              <TabsTrigger value="clinical">Clínico</TabsTrigger>
-              <TabsTrigger value="surgeries">Cirugías</TabsTrigger>
-              <TabsTrigger value="trainings">Entrenamientos</TabsTrigger>
-              <TabsTrigger value="items">Medicamentos</TabsTrigger>
-              <TabsTrigger value="vaccinations">Vacunas</TabsTrigger>
-              <TabsTrigger value="hospitalization">Hospitalización</TabsTrigger>
             </TabsList>
 
             {/* General Information */}
@@ -120,49 +109,9 @@ export default function PetProfilePage() {
               />
             </TabsContent>
 
-            {/* Treatments */}
+            {/* All Treatments - Now the main treatments view */}
             <TabsContent value="treatments" className="space-y-6">
-              <PetTreatmentsList
-                petId={petId}
-                treatments={[]}
-                isLoading={false}
-              />
-            </TabsContent>
-
-            {/* Clinical Parameters */}
-            <TabsContent value="clinical" className="space-y-6">
-              <PetClinicalParameters
-                parameters={[]}
-                isLoading={false}
-                petId={petId}
-              />
-            </TabsContent>
-
-            {/* Surgeries */}
-            <TabsContent value="surgeries" className="space-y-6">
-              <PetSurgeries petId={petId} />
-            </TabsContent>
-
-            {/* Trainings */}
-            <TabsContent value="trainings" className="space-y-6">
-              <PetTrainings petId={petId} />
-            </TabsContent>
-
-            {/* Treatment Items */}
-            <TabsContent value="items" className="space-y-6">
-              <PetTreatmentItems petId={petId} />
-            </TabsContent>
-
-            {/* Vaccinations */}
-            <TabsContent value="vaccinations" className="space-y-6">
-              <PetVaccinations petId={petId} />
-            </TabsContent>
-
-            {/* Hospitalization - Keep existing boarding content for now */}
-            <TabsContent value="hospitalization" className="space-y-6">
-              <div className="text-center py-8 text-muted-foreground">
-                <p>Funcionalidad de hospitalización y pensión en desarrollo</p>
-              </div>
+              <PetAllTreatments petId={petId} />
             </TabsContent>
           </Tabs>
         </div>

@@ -10,7 +10,7 @@ import {
   DrawerTitle,
   DrawerDescription,
   DrawerFooter,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { TreatmentForm } from './treatment-form'
 import { useTreatmentCreate } from '@/hooks/treatments/use-treatment-create'
@@ -59,7 +59,7 @@ export function TreatmentCreate({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
           <DrawerTitle>Nuevo Tratamiento</DrawerTitle>
           <DrawerDescription>
