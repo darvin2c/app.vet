@@ -35,13 +35,10 @@ export function TreatmentEdit({
     resolver: zodResolver(TreatmentSchema),
     defaultValues: {
       pet_id: treatment.pet_id,
-      reason: treatment.reason || '',
       treatment_type: treatment.treatment_type,
       status: treatment.status,
       treatment_date: treatment.treatment_date?.split('T')[0] || '',
       vet_id: treatment.vet_id || '',
-      diagnosis: treatment.diagnosis || '',
-      notes: treatment.notes || '',
     },
   })
 
@@ -49,13 +46,10 @@ export function TreatmentEdit({
     if (treatment) {
       form.reset({
         pet_id: treatment.pet_id,
-        reason: treatment.reason || '',
         treatment_type: treatment.treatment_type,
         status: treatment.status,
         treatment_date: treatment.treatment_date?.split('T')[0] || '',
         vet_id: treatment.vet_id || '',
-        diagnosis: treatment.diagnosis || '',
-        notes: treatment.notes || '',
       })
     }
   }, [treatment, form])

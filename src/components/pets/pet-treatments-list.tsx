@@ -136,7 +136,7 @@ export function PetTreatmentsList({
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <h4 className="font-semibold">{treatment.reason}</h4>
+                    <h4 className="font-semibold">{getTypeLabel(treatment.treatment_type)}</h4>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
@@ -169,29 +169,7 @@ export function PetTreatmentsList({
                     <span>{getTypeLabel(treatment.treatment_type)}</span>
                   </div>
 
-                  {treatment.diagnosis && (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm font-medium">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        Diagnóstico:
-                      </div>
-                      <p className="text-sm text-muted-foreground pl-6">
-                        {treatment.diagnosis}
-                      </p>
-                    </div>
-                  )}
 
-                  {treatment.notes && (
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-sm font-medium">
-                        <FileText className="h-4 w-4 text-muted-foreground" />
-                        Notas:
-                      </div>
-                      <p className="text-sm text-muted-foreground pl-6">
-                        {treatment.notes}
-                      </p>
-                    </div>
-                  )}
 
                   {/* Archivos adjuntos */}
                   <div className="space-y-2 border-t pt-3">

@@ -94,7 +94,7 @@ export function TreatmentDetail({
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-xl">{treatment.reason}</CardTitle>
+                <CardTitle className="text-xl">{getTreatmentTypeText(treatment.treatment_type)}</CardTitle>
                 <Badge className={getStatusColor(treatment.status)}>
                   {getStatusText(treatment.status)}
                 </Badge>
@@ -147,32 +147,6 @@ export function TreatmentDetail({
           </div>
 
           <Separator />
-
-          {/* Diagnóstico */}
-          {treatment.diagnosis && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-medium text-sm">Diagnóstico</h4>
-              </div>
-              <p className="text-sm text-muted-foreground pl-6">
-                {treatment.diagnosis}
-              </p>
-            </div>
-          )}
-
-          {/* Notas */}
-          {treatment.notes && (
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Activity className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-medium text-sm">Notas</h4>
-              </div>
-              <p className="text-sm text-muted-foreground pl-6">
-                {treatment.notes}
-              </p>
-            </div>
-          )}
 
           {/* Timestamps */}
           <div className="flex items-center gap-4 text-xs text-muted-foreground pt-2 border-t">

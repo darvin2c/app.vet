@@ -1,32 +1,28 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
+import { GraduationCap } from 'lucide-react'
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { GraduationCap, Target, Hash, User, FileText } from 'lucide-react'
 
 export function TrainingForm() {
   const { register, formState: { errors } } = useFormContext()
 
   return (
-    <div className="space-y-6 border-t pt-6">
-      <div className="flex items-center gap-2 mb-4">
-        <GraduationCap className="h-5 w-5 text-blue-600" />
-        <h3 className="text-lg font-semibold">Información de Entrenamiento</h3>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <GraduationCap className="h-4 w-4" />
+        Detalles de Entrenamiento
       </div>
 
       <Field>
-        <FieldLabel htmlFor="goal">
-          <div className="flex items-center gap-2">
-            <Target className="h-4 w-4" />
-            Objetivo del Entrenamiento
-          </div>
-        </FieldLabel>
+        <FieldLabel htmlFor="goal">Objetivo del Entrenamiento</FieldLabel>
         <FieldContent>
-          <Input
+          <Textarea
             id="goal"
-            placeholder="Ej: Obediencia básica, Control de ladridos"
+            placeholder="Describe el objetivo principal del entrenamiento..."
+            rows={2}
             {...register('goal')}
           />
           <FieldError errors={[errors.goal]} />
@@ -35,17 +31,11 @@ export function TrainingForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Field>
-          <FieldLabel htmlFor="sessions_planned">
-            <div className="flex items-center gap-2">
-              <Hash className="h-4 w-4" />
-              Sesiones Planeadas
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="sessions_planned">Sesiones Planificadas</FieldLabel>
           <FieldContent>
             <Input
               id="sessions_planned"
               type="number"
-              min="1"
               placeholder="Ej: 10"
               {...register('sessions_planned', { valueAsNumber: true })}
             />
@@ -54,17 +44,11 @@ export function TrainingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="sessions_completed">
-            <div className="flex items-center gap-2">
-              <Hash className="h-4 w-4" />
-              Sesiones Completadas
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="sessions_completed">Sesiones Completadas</FieldLabel>
           <FieldContent>
             <Input
               id="sessions_completed"
               type="number"
-              min="0"
               placeholder="Ej: 3"
               {...register('sessions_completed', { valueAsNumber: true })}
             />
@@ -73,16 +57,11 @@ export function TrainingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="trainer_id">
-            <div className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              ID del Entrenador
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="trainer_id">ID del Entrenador</FieldLabel>
           <FieldContent>
             <Input
               id="trainer_id"
-              placeholder="ID del entrenador"
+              placeholder="ID del entrenador asignado"
               {...register('trainer_id')}
             />
             <FieldError errors={[errors.trainer_id]} />
@@ -91,16 +70,11 @@ export function TrainingForm() {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="progress_notes">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Notas de Progreso
-          </div>
-        </FieldLabel>
+        <FieldLabel htmlFor="progress_notes">Notas de Progreso</FieldLabel>
         <FieldContent>
           <Textarea
             id="progress_notes"
-            placeholder="Registre el progreso del entrenamiento, comportamientos observados, recomendaciones..."
+            placeholder="Describe el progreso del entrenamiento, comportamientos observados, etc..."
             rows={4}
             {...register('progress_notes')}
           />

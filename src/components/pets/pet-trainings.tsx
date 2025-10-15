@@ -82,7 +82,7 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
             <div className="flex items-start justify-between">
               <div>
                 <CardTitle className="text-lg">
-                  {training.treatments?.reason || 'Entrenamiento'}
+                  Entrenamiento
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
@@ -188,17 +188,7 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
               </>
             )}
 
-            {training.treatments?.notes && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2">Notas del Tratamiento</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {training.treatments.notes}
-                  </p>
-                </div>
-              </>
-            )}
+
           </CardContent>
         </Card>
       ))}

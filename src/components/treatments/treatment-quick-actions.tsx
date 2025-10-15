@@ -34,57 +34,51 @@ export function TreatmentQuickActions({
   onViewDetails,
   compact = false,
 }: TreatmentQuickActionsProps) {
-  const [showEdit, setShowEdit] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
   const getStatusVariant = (status: string) => {
     switch (status) {
-      case 'Completado':
+      case 'completed':
         return 'default'
-      case 'En Progreso':
+      case 'draft':
         return 'secondary'
-      case 'Programado':
-        return 'outline'
-      case 'Cancelado':
+      case 'cancelled':
         return 'destructive'
-      case 'Borrador':
-        return 'secondary'
       default:
-        return 'outline'
+        return 'secondary'
     }
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'Completado':
-        return <CheckCircle className="h-4 w-4" />
-      case 'En Progreso':
-        return <Clock className="h-4 w-4" />
-      case 'Programado':
-        return <Calendar className="h-4 w-4" />
-      case 'Cancelado':
-        return <XCircle className="h-4 w-4" />
+      case 'completed':
+        return <CheckCircle className="h-3 w-3" />
+      case 'draft':
+        return <Clock className="h-3 w-3" />
+      case 'cancelled':
+        return <XCircle className="h-3 w-3" />
       default:
-        return <Clock className="h-4 w-4" />
+        return <Clock className="h-3 w-3" />
     }
   }
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'Consulta':
-        return 'Consulta General'
-      case 'Vacunación':
+      case 'consultation':
+        return 'Consulta'
+      case 'vaccination':
         return 'Vacunación'
-      case 'Cirugía':
+      case 'surgery':
         return 'Cirugía'
-      case 'Peluquería':
+      case 'grooming':
         return 'Peluquería'
-      case 'Hospitalización':
+      case 'hospitalization':
         return 'Hospitalización'
-      case 'Desparasitación':
+      case 'deworming':
         return 'Desparasitación'
-      case 'Hospedaje':
+      case 'boarding':
         return 'Hospedaje'
-      case 'Entrenamiento':
+      case 'training':
         return 'Entrenamiento'
       default:
         return type || 'Sin tipo'
@@ -99,7 +93,7 @@ export function TreatmentQuickActions({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-medium truncate">{treatment.reason}</h4>
+                <h4 className="font-medium truncate">{getTypeLabel(treatment.treatment_type)}</h4>
                 <Badge
                   variant={getStatusVariant(treatment.status)}
                   className="ml-auto"
@@ -123,147 +117,127 @@ export function TreatmentQuickActions({
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={onViewDetails}
-                  className="flex items-center gap-1"
+                  onClick={() => setIsEditOpen(true)}
+                  className="h-7 px-2"
                 >
-                  <Eye className="h-3 w-3" />
-                  Ver
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowEdit(true)}
-                  className="flex items-center gap-1"
-                >
-                  <Edit className="h-3 w-3" />
+                  <Edit className="h-3 w-3 mr-1" />
                   Editar
                 </Button>
+
+                {onViewDetails && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={onViewDetails}
+                    className="h-7 px-2"
+                  >
+                    <Eye className="h-3 w-3 mr-1" />
+                    Ver
+                  </Button>
+                )}
+
                 <AttachmentCreateButton
                   treatmentId={treatment.id}
-                  size="sm"
                   variant="outline"
+                  size="sm"
+                  showIcon={false}
                 >
-                  <Paperclip className="h-3 w-3" />
+                  <Paperclip className="h-3 w-3 mr-1" />
+                  Adjuntar
                 </AttachmentCreateButton>
               </div>
             </div>
           </div>
         </CardContent>
-
-        {showEdit && (
-          <TreatmentEdit
-            treatment={treatment}
-            open={showEdit}
-            onOpenChange={setShowEdit}
-          />
-        )}
       </Card>
     )
   }
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="space-y-1">
-            <CardTitle className="flex items-center gap-2">
-              <Stethoscope className="h-5 w-5" />
-              {treatment.reason}
+          <div className="flex-1">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Stethoscope className="h-5 w-5 text-muted-foreground" />
+              {getTypeLabel(treatment.treatment_type)}
             </CardTitle>
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
+            <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+              <span className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {format(new Date(treatment.treatment_date), 'PPP', {
+                {format(new Date(treatment.treatment_date), 'dd MMM yyyy', {
                   locale: es,
                 })}
-              </div>
-              <span>{getTypeLabel(treatment.treatment_type)}</span>
+              </span>
+              <Badge variant={getStatusVariant(treatment.status)}>
+                {getStatusIcon(treatment.status)}
+                <span className="ml-1">{treatment.status}</span>
+              </Badge>
             </div>
           </div>
-          <Badge
-            variant={getStatusVariant(treatment.status)}
-            className="flex items-center gap-1"
-          >
-            {getStatusIcon(treatment.status)}
-            {treatment.status}
-          </Badge>
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4">
-        {/* Información básica */}
-        {treatment.diagnosis && (
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">
-              Diagnóstico
-            </label>
-            <p className="text-sm mt-1 p-2 bg-muted rounded">
-              {treatment.diagnosis}
-            </p>
+      <CardContent className="pt-0">
+        <div className="space-y-4">
+          <div className="text-sm">
+            <p className="text-muted-foreground mb-2">Información del tratamiento:</p>
+            <div className="space-y-1">
+              <p>
+                <span className="font-medium">Tipo:</span> {getTypeLabel(treatment.treatment_type)}
+              </p>
+              <p>
+                <span className="font-medium">Estado:</span> {treatment.status}
+              </p>
+              <p>
+                <span className="font-medium">Fecha:</span>{' '}
+                {format(new Date(treatment.treatment_date), 'dd/MM/yyyy', {
+                  locale: es,
+                })}
+              </p>
+            </div>
           </div>
-        )}
 
-        {treatment.notes && (
-          <div>
-            <label className="text-sm font-medium text-muted-foreground">
-              Notas
-            </label>
-            <p className="text-sm mt-1 p-2 bg-muted rounded line-clamp-3">
-              {treatment.notes}
-            </p>
+          <div className="flex items-center gap-2 pt-2 border-t">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsEditOpen(true)}
+            >
+              <Edit className="h-4 w-4 mr-2" />
+              Editar Tratamiento
+            </Button>
+
+            {onViewDetails && (
+              <Button variant="outline" size="sm" onClick={onViewDetails}>
+                <Eye className="h-4 w-4 mr-2" />
+                Ver Detalles
+              </Button>
+            )}
+
+            <AttachmentCreateButton
+              treatmentId={treatment.id}
+              variant="outline"
+              size="sm"
+              showIcon={false}
+            >
+              <Paperclip className="h-4 w-4 mr-2" />
+              Adjuntar Archivo
+            </AttachmentCreateButton>
+
+            <Button variant="outline" size="sm">
+              <Package className="h-4 w-4 mr-2" />
+              Agregar Producto
+            </Button>
           </div>
-        )}
-
-        {/* Acciones rápidas */}
-        <div className="flex flex-wrap gap-2 pt-2 border-t">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onViewDetails}
-            className="flex items-center gap-2"
-          >
-            <Eye className="h-4 w-4" />
-            Ver Detalles
-          </Button>
-
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowEdit(true)}
-            className="flex items-center gap-2"
-          >
-            <Edit className="h-4 w-4" />
-            Editar
-          </Button>
-
-          <AttachmentCreateButton
-            treatmentId={treatment.id}
-            size="sm"
-            variant="outline"
-          >
-            <Paperclip className="h-4 w-4" />
-            Adjuntar
-          </AttachmentCreateButton>
-
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex items-center gap-2"
-            disabled
-          >
-            <Package className="h-4 w-4" />
-            Items
-          </Button>
         </div>
       </CardContent>
 
-      {showEdit && (
-        <TreatmentEdit
-          treatment={treatment}
-          open={showEdit}
-          onOpenChange={setShowEdit}
-        />
-      )}
+      <TreatmentEdit
+        treatment={treatment}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+      />
     </Card>
   )
 }

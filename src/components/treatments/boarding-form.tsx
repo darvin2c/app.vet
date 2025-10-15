@@ -1,29 +1,24 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
+import { Home } from 'lucide-react'
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Home, Calendar, DollarSign, Utensils, FileText } from 'lucide-react'
 
 export function BoardingForm() {
   const { register, formState: { errors } } = useFormContext()
 
   return (
-    <div className="space-y-6 border-t pt-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Home className="h-5 w-5 text-orange-600" />
-        <h3 className="text-lg font-semibold">Información de Hospedaje</h3>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <Home className="h-4 w-4" />
+        Detalles de Hospedaje
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="check_in_at">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Fecha de Ingreso *
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="check_in_at">Fecha de Ingreso</FieldLabel>
           <FieldContent>
             <Input
               id="check_in_at"
@@ -35,12 +30,7 @@ export function BoardingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="check_out_at">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Fecha de Salida
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="check_out_at">Fecha de Salida</FieldLabel>
           <FieldContent>
             <Input
               id="check_out_at"
@@ -52,16 +42,11 @@ export function BoardingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="kennel_id">
-            <div className="flex items-center gap-2">
-              <Home className="h-4 w-4" />
-              Kennel/Habitación
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="kennel_id">ID de Kennel</FieldLabel>
           <FieldContent>
             <Input
               id="kennel_id"
-              placeholder="Ej: Kennel 5, Habitación B"
+              placeholder="Identificador del kennel asignado"
               {...register('kennel_id')}
             />
             <FieldError errors={[errors.kennel_id]} />
@@ -69,19 +54,13 @@ export function BoardingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="daily_rate">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Tarifa Diaria
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="daily_rate">Tarifa Diaria</FieldLabel>
           <FieldContent>
             <Input
               id="daily_rate"
               type="number"
-              min="0"
               step="0.01"
-              placeholder="0.00"
+              placeholder="Ej: 80.00"
               {...register('daily_rate', { valueAsNumber: true })}
             />
             <FieldError errors={[errors.daily_rate]} />
@@ -90,16 +69,11 @@ export function BoardingForm() {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="feeding_notes">
-          <div className="flex items-center gap-2">
-            <Utensils className="h-4 w-4" />
-            Notas de Alimentación
-          </div>
-        </FieldLabel>
+        <FieldLabel htmlFor="feeding_notes">Notas de Alimentación</FieldLabel>
         <FieldContent>
           <Textarea
             id="feeding_notes"
-            placeholder="Horarios de comida, tipo de alimento, restricciones dietéticas..."
+            placeholder="Instrucciones especiales de alimentación, horarios, dieta, etc..."
             rows={3}
             {...register('feeding_notes')}
           />
@@ -108,16 +82,11 @@ export function BoardingForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="observations">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Observaciones Generales
-          </div>
-        </FieldLabel>
+        <FieldLabel htmlFor="observations">Observaciones</FieldLabel>
         <FieldContent>
           <Textarea
             id="observations"
-            placeholder="Comportamiento, necesidades especiales, medicamentos..."
+            placeholder="Comportamiento, necesidades especiales, medicamentos, etc..."
             rows={3}
             {...register('observations')}
           />

@@ -82,7 +82,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
             <div className="flex items-start justify-between">
               <div>
                 <CardTitle className="text-lg">
-                  {surgery.treatments?.reason || 'Cirugía'}
+                  Cirugía
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
@@ -159,17 +159,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
               </>
             )}
 
-            {surgery.treatments?.notes && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2">Notas del Tratamiento</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {surgery.treatments.notes}
-                  </p>
-                </div>
-              </>
-            )}
+
           </CardContent>
         </Card>
       ))}

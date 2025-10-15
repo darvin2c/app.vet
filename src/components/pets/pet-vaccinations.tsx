@@ -82,7 +82,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
             <div className="flex items-start justify-between">
               <div>
                 <CardTitle className="text-lg">
-                  {vaccination.treatments?.reason || 'Vacuna'}
+                  Vacuna
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
@@ -182,17 +182,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
               </>
             )}
 
-            {vaccination.treatments?.notes && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2">Notas del Tratamiento</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {vaccination.treatments.notes}
-                  </p>
-                </div>
-              </>
-            )}
+
           </CardContent>
         </Card>
       ))}

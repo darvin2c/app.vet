@@ -97,7 +97,7 @@ export function TreatmentNavigation({
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Stethoscope className="h-5 w-5" />
-                    {treatment.reason}
+                    {getTypeLabel(treatment.treatment_type)}
                   </CardTitle>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <div className="flex items-center gap-1">
@@ -189,16 +189,7 @@ export function TreatmentNavigation({
                 </div>
               </div>
 
-              {treatment.diagnosis && (
-                <div>
-                  <label className="text-sm font-medium text-muted-foreground">
-                    Diagnóstico
-                  </label>
-                  <p className="text-sm mt-1 p-3 bg-muted rounded-md">
-                    {treatment.diagnosis}
-                  </p>
-                </div>
-              )}
+
             </CardContent>
           </Card>
         </TabsContent>
@@ -249,18 +240,11 @@ export function TreatmentNavigation({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {treatment.notes ? (
-                <div className="p-4 bg-muted rounded-md">
-                  <p className="text-sm whitespace-pre-wrap">
-                    {treatment.notes}
-                  </p>
-                </div>
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <FileText className="h-12 w-12 mx-auto mb-4" />
-                  <p>No hay notas para este tratamiento</p>
-                </div>
-              )}
+              <div className="text-center py-8 text-muted-foreground">
+                <FileText className="h-12 w-12 mx-auto mb-4" />
+                <p>Las notas del tratamiento aparecerán aquí</p>
+                <p className="text-sm mt-2">Esta funcionalidad se integrará próximamente.</p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>

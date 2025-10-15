@@ -6,7 +6,6 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import {
   Select,
   SelectContent,
@@ -22,8 +21,6 @@ import { SurgeryForm } from './surgery-form'
 import { TrainingForm } from './training-form'
 import { HospitalizationForm } from './hospitalization-form'
 import { BoardingForm } from './boarding-form'
-import { GroomingForm } from './grooming-form'
-import { DewormingForm } from './deworming-form'
 
 export function TreatmentForm() {
   const {
@@ -37,18 +34,6 @@ export function TreatmentForm() {
 
   return (
     <div className="space-y-4">
-      <Field>
-        <FieldLabel htmlFor="reason">Motivo</FieldLabel>
-        <FieldContent>
-          <Input
-            id="reason"
-            {...register('reason')}
-            placeholder="Motivo del tratamiento"
-          />
-          <FieldError errors={[errors.reason]} />
-        </FieldContent>
-      </Field>
-
       <Field>
         <FieldLabel htmlFor="treatment_type">Tipo de Tratamiento</FieldLabel>
         <FieldContent>
@@ -104,63 +89,29 @@ export function TreatmentForm() {
         </FieldContent>
       </Field>
 
-      <Field>
-        <FieldLabel htmlFor="diagnosis">Diagnóstico</FieldLabel>
-        <FieldContent>
-          <Textarea
-            id="diagnosis"
-            {...register('diagnosis')}
-            placeholder="Diagnóstico del tratamiento"
-            rows={3}
-          />
-          <FieldError errors={[errors.diagnosis]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="notes">Notas</FieldLabel>
-        <FieldContent>
-          <Textarea
-            id="notes"
-            {...register('notes')}
-            placeholder="Notas adicionales"
-            rows={3}
-          />
-          <FieldError errors={[errors.notes]} />
-        </FieldContent>
-      </Field>
-
-      {/* Formularios dinámicos basados en el tipo de tratamiento */}
+      {/* Formularios dinámicos basados en el tipo de tratamiento - Solo tipos con respaldo en Supabase */}
       {watchedType === 'consultation' && (
-        <ConsultationForm className="mt-6" />
+        <ConsultationForm />
       )}
       
       {watchedType === 'vaccination' && (
-        <VaccinationForm className="mt-6" />
+        <VaccinationForm />
       )}
       
       {watchedType === 'surgery' && (
-        <SurgeryForm className="mt-6" />
+        <SurgeryForm />
       )}
       
       {watchedType === 'training' && (
-        <TrainingForm className="mt-6" />
+        <TrainingForm />
       )}
       
       {watchedType === 'hospitalization' && (
-        <HospitalizationForm className="mt-6" />
+        <HospitalizationForm />
       )}
       
       {watchedType === 'boarding' && (
-        <BoardingForm className="mt-6" />
-      )}
-      
-      {watchedType === 'grooming' && (
-        <GroomingForm className="mt-6" />
-      )}
-      
-      {watchedType === 'deworming' && (
-        <DewormingForm className="mt-6" />
+        <BoardingForm />
       )}
     </div>
   )

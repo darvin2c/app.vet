@@ -33,13 +33,10 @@ export function TreatmentCreate({
     resolver: zodResolver(TreatmentSchema),
     defaultValues: {
       pet_id: petId || '',
-      reason: '',
       treatment_type: 'consultation',
       status: 'draft',
       treatment_date: new Date().toISOString().split('T')[0],
       vet_id: '',
-      diagnosis: '',
-      notes: '',
     },
   })
 

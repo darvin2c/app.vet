@@ -1,29 +1,24 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
+import { Building2 } from 'lucide-react'
 import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Building, Calendar, Bed, DollarSign, FileText } from 'lucide-react'
 
 export function HospitalizationForm() {
   const { register, formState: { errors } } = useFormContext()
 
   return (
-    <div className="space-y-6 border-t pt-6">
-      <div className="flex items-center gap-2 mb-4">
-        <Building className="h-5 w-5 text-purple-600" />
-        <h3 className="text-lg font-semibold">Información de Hospitalización</h3>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+        <Building2 className="h-4 w-4" />
+        Detalles de Hospitalización
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="admission_at">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Fecha de Admisión *
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="admission_at">Fecha de Ingreso</FieldLabel>
           <FieldContent>
             <Input
               id="admission_at"
@@ -35,12 +30,7 @@ export function HospitalizationForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="discharge_at">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Fecha de Alta
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="discharge_at">Fecha de Alta</FieldLabel>
           <FieldContent>
             <Input
               id="discharge_at"
@@ -52,16 +42,11 @@ export function HospitalizationForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="bed_id">
-            <div className="flex items-center gap-2">
-              <Bed className="h-4 w-4" />
-              Cama/Habitación
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="bed_id">ID de Cama</FieldLabel>
           <FieldContent>
             <Input
               id="bed_id"
-              placeholder="Ej: Cama 1, Habitación A"
+              placeholder="Identificador de la cama asignada"
               {...register('bed_id')}
             />
             <FieldError errors={[errors.bed_id]} />
@@ -69,19 +54,13 @@ export function HospitalizationForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="daily_rate">
-            <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
-              Tarifa Diaria
-            </div>
-          </FieldLabel>
+          <FieldLabel htmlFor="daily_rate">Tarifa Diaria</FieldLabel>
           <FieldContent>
             <Input
               id="daily_rate"
               type="number"
-              min="0"
               step="0.01"
-              placeholder="0.00"
+              placeholder="Ej: 150.00"
               {...register('daily_rate', { valueAsNumber: true })}
             />
             <FieldError errors={[errors.daily_rate]} />
@@ -90,16 +69,11 @@ export function HospitalizationForm() {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="notes">
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4" />
-            Notas de Hospitalización
-          </div>
-        </FieldLabel>
+        <FieldLabel htmlFor="notes">Notas de Hospitalización</FieldLabel>
         <FieldContent>
           <Textarea
             id="notes"
-            placeholder="Motivo de hospitalización, cuidados especiales, observaciones..."
+            placeholder="Observaciones durante la hospitalización, cuidados especiales, etc..."
             rows={4}
             {...register('notes')}
           />

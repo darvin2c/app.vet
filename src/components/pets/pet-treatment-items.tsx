@@ -8,6 +8,7 @@ import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { TreatmentItemActions } from '@/components/treatment-items/treatment-item-actions'
+import { getTypeLabel } from '@/lib/treatment-utils'
 
 type TreatmentItem = Tables<'treatment_items'> & {
   treatments: Tables<'treatments'> | null
@@ -123,7 +124,7 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
                 <div>
                   <h4 className="font-medium mb-2">Tratamiento Asociado</h4>
                   <p className="text-sm text-muted-foreground">
-                    {item.treatments.reason || 'Tratamiento sin descripción'}
+                    {item.treatments.treatment_type ? getTypeLabel(item.treatments.treatment_type) : 'Tratamiento sin descripción'}
                   </p>
                   {item.treatments.treatment_date && (
                     <p className="text-xs text-muted-foreground mt-1">
