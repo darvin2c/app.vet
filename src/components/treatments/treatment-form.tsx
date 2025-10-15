@@ -16,6 +16,14 @@ import {
 } from '@/components/ui/select'
 import { TreatmentFormData } from '@/schemas/treatment.schema'
 import { TreatmentTypeGrid } from './treatment-type-grid'
+import { ConsultationForm } from './consultation-form'
+import { VaccinationForm } from './vaccination-form'
+import { SurgeryForm } from './surgery-form'
+import { TrainingForm } from './training-form'
+import { HospitalizationForm } from './hospitalization-form'
+import { BoardingForm } from './boarding-form'
+import { GroomingForm } from './grooming-form'
+import { DewormingForm } from './deworming-form'
 
 export function TreatmentForm() {
   const {
@@ -121,6 +129,39 @@ export function TreatmentForm() {
           <FieldError errors={[errors.notes]} />
         </FieldContent>
       </Field>
+
+      {/* Formularios dinámicos basados en el tipo de tratamiento */}
+      {watchedType === 'consultation' && (
+        <ConsultationForm className="mt-6" />
+      )}
+      
+      {watchedType === 'vaccination' && (
+        <VaccinationForm className="mt-6" />
+      )}
+      
+      {watchedType === 'surgery' && (
+        <SurgeryForm className="mt-6" />
+      )}
+      
+      {watchedType === 'training' && (
+        <TrainingForm className="mt-6" />
+      )}
+      
+      {watchedType === 'hospitalization' && (
+        <HospitalizationForm className="mt-6" />
+      )}
+      
+      {watchedType === 'boarding' && (
+        <BoardingForm className="mt-6" />
+      )}
+      
+      {watchedType === 'grooming' && (
+        <GroomingForm className="mt-6" />
+      )}
+      
+      {watchedType === 'deworming' && (
+        <DewormingForm className="mt-6" />
+      )}
     </div>
   )
 }
