@@ -1,124 +1,224 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Separator } from '@/components/ui/separator'
-import { Skeleton } from '@/components/ui/skeleton'
-import { CalendarDays, Stethoscope, User, FileText } from 'lucide-react'
-import { usePetTreatments } from '@/hooks/pets/use-pet-treatments'
-import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { Stethoscope, Calendar, User, FileText, Paperclip } from 'lucide-react'
+import { Tables } from '@/types/supabase.types'
+import { TreatmentCreateButton } from '@/components/treatments/treatment-create-button'
+import { TreatmentActions } from '@/components/treatments/treatment-actions'
+import { AttachmentList } from '@/components/attachments/attachment-list'
+import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
-type PetTreatment = Tables<'treatments'> & {
-  staff: Tables<'staff'> | null
+interface PetTreatment extends Tables<'treatments'> {
+  veterinarian?: {
+    first_name: string
+    last_name: string
+  }
 }
 
 interface PetTreatmentsListProps {
+  treatments: PetTreatment[]
+  isLoading: boolean
   petId: string
 }
 
-export function PetTreatmentsList({ petId }: PetTreatmentsListProps) {
-  const { data: treatments = [], isLoading } = usePetTreatments(petId)
+const getStatusVariant = (status: string) => {
+  switch (status) {
+    case 'Completado':
+      return 'default'
+    case 'En Progreso':
+      return 'secondary'
+    case 'Programado':
+      return 'outline'
+    case 'Cancelado':
+      return 'destructive'
+    case 'Borrador':
+      return 'secondary'
+    default:
+      return 'outline'
+  }
+}
 
+const getStatusLabel = (status: string) => {
+  return status || 'Sin estado'
+}
+
+const getTypeLabel = (type: string) => {
+  switch (type) {
+    case 'Consulta':
+      return 'Consulta General'
+    case 'Vacunación':
+      return 'Vacunación'
+    case 'Cirugía':
+      return 'Cirugía'
+    case 'Peluquería':
+      return 'Peluquería'
+    case 'Hospitalización':
+      return 'Hospitalización'
+    case 'Desparasitación':
+      return 'Desparasitación'
+    case 'Hospedaje':
+      return 'Hospedaje'
+    case 'Entrenamiento':
+      return 'Entrenamiento'
+    default:
+      return type || 'Sin tipo'
+  }
+}
+
+export function PetTreatmentsList({
+  treatments,
+  isLoading,
+  petId,
+}: PetTreatmentsListProps) {
   if (isLoading) {
     return (
-      <div className="space-y-4">
-        {[...Array(3)].map((_, i) => (
-          <Card key={i}>
-            <CardHeader>
-              <Skeleton className="h-6 w-48" />
-              <Skeleton className="h-4 w-32" />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Skeleton className="h-4 w-full" />
-                <Skeleton className="h-4 w-3/4" />
-                <Skeleton className="h-4 w-1/2" />
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Stethoscope className="h-5 w-5" />
+            Historial de Tratamientos
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-4 bg-muted animate-pulse rounded" />
+                <div className="h-3 bg-muted animate-pulse rounded w-1/2" />
+                <div className="h-3 bg-muted animate-pulse rounded w-2/3" />
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     )
   }
 
   if (treatments.length === 0) {
     return (
       <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Stethoscope className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-            No hay tratamientos registrados
-          </h3>
-          <p className="text-sm text-muted-foreground text-center">
-            Este paciente no tiene tratamientos en su historial médico.
-          </p>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="flex items-center gap-2">
+            <Stethoscope className="h-5 w-5" />
+            Historial de Tratamientos
+          </CardTitle>
+          <TreatmentCreateButton />
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8">
+            <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground" />
+            <h3 className="mt-4 text-lg font-semibold">
+              No hay tratamientos registrados
+            </h3>
+            <p className="text-muted-foreground">
+              Los tratamientos aparecerán aquí una vez que sean registrados.
+            </p>
+          </div>
         </CardContent>
       </Card>
     )
   }
 
   return (
-    <div className="space-y-4">
-      {treatments.map((treatment) => (
-        <Card key={treatment.id}>
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div>
-                <CardTitle className="text-lg">
-                  {treatment.reason || 'Tratamiento'}
-                </CardTitle>
-                <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">
-                    {treatment.status === 'completed' ? 'Completado' : 
-                     treatment.status === 'draft' ? 'Borrador' : 'Cancelado'}
-                  </Badge>
-                  {treatment.treatment_type && (
-                    <Badge variant="secondary">
-                      {treatment.treatment_type}
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="flex items-center gap-2">
+          <Stethoscope className="h-5 w-5" />
+          Historial de Tratamientos
+        </CardTitle>
+        <TreatmentCreateButton />
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-4">
+          {treatments.map((treatment) => (
+            <Card key={treatment.id} className="relative">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <h4 className="font-semibold">{treatment.reason}</h4>
+                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <Calendar className="h-4 w-4" />
+                        {format(new Date(treatment.treatment_date), 'PPP', {
+                          locale: es,
+                        })}
+                      </div>
+                      {treatment.veterinarian && (
+                        <div className="flex items-center gap-1">
+                          <User className="h-4 w-4" />
+                          {treatment.veterinarian.first_name}{' '}
+                          {treatment.veterinarian.last_name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge variant={getStatusVariant(treatment.status)}>
+                      {getStatusLabel(treatment.status)}
                     </Badge>
+                    <TreatmentActions treatment={treatment} />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm">
+                    <Stethoscope className="h-4 w-4 text-muted-foreground" />
+                    <span className="font-medium">Tipo:</span>
+                    <span>{getTypeLabel(treatment.treatment_type)}</span>
+                  </div>
+
+                  {treatment.diagnosis && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        Diagnóstico:
+                      </div>
+                      <p className="text-sm text-muted-foreground pl-6">
+                        {treatment.diagnosis}
+                      </p>
+                    </div>
                   )}
-                </div>
-              </div>
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="flex items-center gap-2">
-                <CalendarDays className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  <strong>Fecha:</strong>{' '}
-                  {treatment.treatment_date
-                    ? format(new Date(treatment.treatment_date), 'PPP', { locale: es })
-                    : 'No especificada'}
-                </span>
-              </div>
-            </div>
 
-            {treatment.diagnosis && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2">Diagnóstico</h4>
-                  <p className="text-sm text-muted-foreground">{treatment.diagnosis}</p>
-                </div>
-              </>
-            )}
+                  {treatment.notes && (
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <FileText className="h-4 w-4 text-muted-foreground" />
+                        Notas:
+                      </div>
+                      <p className="text-sm text-muted-foreground pl-6">
+                        {treatment.notes}
+                      </p>
+                    </div>
+                  )}
 
-            {treatment.notes && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2 flex items-center gap-2">
-                    <FileText className="h-4 w-4" />
-                    Notas del Tratamiento
-                  </h4>
-                  <p className="text-sm text-muted-foreground">{treatment.notes}</p>
+                  {/* Archivos adjuntos */}
+                  <div className="space-y-2 border-t pt-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-sm font-medium">
+                        <Paperclip className="h-4 w-4 text-muted-foreground" />
+                        Archivos Médicos
+                      </div>
+                      <AttachmentCreateButton
+                        treatmentId={treatment.id}
+                        size="sm"
+                      />
+                    </div>
+                    <AttachmentList
+                      treatmentId={treatment.id}
+                      showFilters={false}
+                      compact={true}
+                      showCreateButton={false}
+                      maxHeight="200px"
+                    />
+                  </div>
                 </div>
-              </>
-            )}
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </CardContent>
+    </Card>
   )
 }

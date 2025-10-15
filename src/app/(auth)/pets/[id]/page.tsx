@@ -55,7 +55,8 @@ export default function PetProfilePage() {
       <div className="container mx-auto p-6">
         <div className="text-center py-8">
           <p className="text-muted-foreground">
-            Error al cargar la información de la mascota. Por favor, intenta de nuevo.
+            Error al cargar la información de la mascota. Por favor, intenta de
+            nuevo.
           </p>
         </div>
       </div>
@@ -88,7 +89,11 @@ export default function PetProfilePage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="space-y-6"
+          >
             <TabsList className="grid w-full grid-cols-9 text-xs">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="appointments">Citas</TabsTrigger>
@@ -108,17 +113,29 @@ export default function PetProfilePage() {
 
             {/* Appointments */}
             <TabsContent value="appointments" className="space-y-6">
-              <PetAppointmentsList appointments={[]} isLoading={false} />
+              <PetAppointmentsList
+                appointments={[]}
+                isLoading={false}
+                petId={petId}
+              />
             </TabsContent>
 
             {/* Treatments */}
             <TabsContent value="treatments" className="space-y-6">
-              <PetTreatmentsList petId={petId} />
+              <PetTreatmentsList
+                petId={petId}
+                treatments={[]}
+                isLoading={false}
+              />
             </TabsContent>
 
             {/* Clinical Parameters */}
             <TabsContent value="clinical" className="space-y-6">
-              <PetClinicalParameters parameters={[]} isLoading={false} />
+              <PetClinicalParameters
+                parameters={[]}
+                isLoading={false}
+                petId={petId}
+              />
             </TabsContent>
 
             {/* Surgeries */}

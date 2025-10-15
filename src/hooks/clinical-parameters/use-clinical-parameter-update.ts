@@ -1,0 +1,41 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { createClient } from '@/lib/supabase/client'
+import { TablesUpdate } from '@/types/supabase.types'
+import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+
+export function useClinicalParameterUpdate() {
+  const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenant()
+  const supabase = createClient()
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: Omit<TablesUpdate<'clinical_parameters'>, 'tenant_id'>
+    }) => {
+      const { data: clinicalParameter, error } = await supabase
+        .from('clinical_parameters')
+        .update(data)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        throw error
+      }
+
+      return clinicalParameter
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'clinical-parameters'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'pet-clinical-parameters'],
+      })
+    },
+  })
+}

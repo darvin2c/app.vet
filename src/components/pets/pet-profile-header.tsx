@@ -28,12 +28,12 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
 
   const getAgeText = (birthDate: string | null) => {
     if (!birthDate) return 'Edad desconocida'
-    
+
     const birth = new Date(birthDate)
     const now = new Date()
     const diffTime = Math.abs(now.getTime() - birth.getTime())
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
+
     if (diffDays < 30) {
       return `${diffDays} días`
     } else if (diffDays < 365) {
@@ -96,7 +96,11 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
                 </span>
               </div>
               <div className="flex items-center gap-2 text-muted-foreground">
-                <span>{pet.breeds?.name || pet.species?.name || 'Raza no especificada'}</span>
+                <span>
+                  {pet.breeds?.name ||
+                    pet.species?.name ||
+                    'Raza no especificada'}
+                </span>
                 {pet.breeds?.name && pet.species?.name && (
                   <>
                     <span>•</span>
@@ -113,7 +117,10 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
               </div>
               {pet.birth_date && (
                 <div className="text-muted-foreground">
-                  Nacido el {format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es })}
+                  Nacido el{' '}
+                  {format(new Date(pet.birth_date), 'dd/MM/yyyy', {
+                    locale: es,
+                  })}
                 </div>
               )}
             </div>
@@ -121,15 +128,9 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
             <div className="flex items-center gap-3">
               <PetStatusBadge status="active" />
               {pet.microchip && (
-                <Badge variant="outline">
-                  Microchip: {pet.microchip}
-                </Badge>
+                <Badge variant="outline">Microchip: {pet.microchip}</Badge>
               )}
-              {pet.weight && (
-                <Badge variant="outline">
-                  {pet.weight} kg
-                </Badge>
-              )}
+              {pet.weight && <Badge variant="outline">{pet.weight} kg</Badge>}
             </div>
 
             {pet.notes && (

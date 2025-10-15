@@ -6,18 +6,30 @@ import { Tables } from '@/types/supabase.types'
 import { PetEmptyState } from './pet-empty-state'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
+import { AppointmentActions } from '@/components/appointments/appointment-actions'
 
 type PetAppointment = Tables<'appointments'> & {
   appointment_types: Tables<'appointment_types'> | null
   staff: Tables<'staff'> | null
+  pets:
+    | (Tables<'pets'> & {
+        customers: Tables<'customers'> | null
+      })
+    | null
 }
 
 interface PetAppointmentsListProps {
   appointments: PetAppointment[]
   isLoading?: boolean
+  petId: string
 }
 
-export function PetAppointmentsList({ appointments, isLoading }: PetAppointmentsListProps) {
+export function PetAppointmentsList({
+  appointments,
+  isLoading,
+  petId,
+}: PetAppointmentsListProps) {
   const getStatusVariant = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'scheduled':
@@ -89,22 +101,19 @@ export function PetAppointmentsList({ appointments, isLoading }: PetAppointments
     return (
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="h-5 w-5" />
-            Historial de Citas
-          </CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5" />
+              Historial de Citas
+            </CardTitle>
+            <AppointmentCreateButton />
+          </div>
         </CardHeader>
         <CardContent>
           <PetEmptyState
             icon={<Calendar className="h-12 w-12" />}
             title="No hay citas registradas"
             description="Esta mascota aún no tiene citas programadas o completadas."
-            action={
-              <Button>
-                <Calendar className="h-4 w-4 mr-2" />
-                Programar Cita
-              </Button>
-            }
           />
         </CardContent>
       </Card>
@@ -114,19 +123,26 @@ export function PetAppointmentsList({ appointments, isLoading }: PetAppointments
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="h-5 w-5" />
-          Historial de Citas ({appointments.length})
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2">
+            <Calendar className="h-5 w-5" />
+            Historial de Citas ({appointments.length})
+          </CardTitle>
+          <AppointmentCreateButton />
+        </div>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           {appointments.map((appointment) => (
             <div
               key={appointment.id}
-              className="border rounded-lg p-4 hover:bg-muted/50 transition-colors"
+              className="border rounded-lg p-4 hover:bg-muted/50 transition-colors relative"
             >
-              <div className="flex items-start justify-between mb-3">
+              <div className="absolute top-2 right-2">
+                <AppointmentActions appointment={appointment} />
+              </div>
+
+              <div className="flex items-start justify-between mb-3 pr-8">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-medium">
@@ -136,48 +152,50 @@ export function PetAppointmentsList({ appointments, isLoading }: PetAppointments
                       {getStatusText(appointment.status || '')}
                     </Badge>
                   </div>
-                  
+
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
                       <span>
                         {appointment.scheduled_start
-                          ? format(new Date(appointment.scheduled_start), 'dd/MM/yyyy', { locale: es })
+                          ? format(
+                              new Date(appointment.scheduled_start),
+                              'dd/MM/yyyy',
+                              { locale: es }
+                            )
                           : 'Fecha no especificada'}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
                       <span>
                         {appointment.scheduled_start
-                          ? format(new Date(appointment.scheduled_start), 'HH:mm', { locale: es })
+                          ? format(
+                              new Date(appointment.scheduled_start),
+                              'HH:mm',
+                              { locale: es }
+                            )
                           : 'Hora no especificada'}
                       </span>
                     </div>
-                    
+
                     {appointment.staff && (
                       <div className="flex items-center gap-1">
                         <User className="h-4 w-4" />
-                        <span>
-                          {appointment.staff.full_name}
-                        </span>
+                        <span>{appointment.staff.full_name}</span>
                       </div>
                     )}
                   </div>
                 </div>
-                
-                <Button variant="ghost" size="sm">
-                  <FileText className="h-4 w-4" />
-                </Button>
               </div>
-              
+
               {appointment.notes && (
                 <div className="text-sm text-muted-foreground bg-muted/30 p-2 rounded">
                   <strong>Notas:</strong> {appointment.notes}
                 </div>
               )}
-              
+
               {appointment.appointment_types?.description && (
                 <div className="text-sm text-muted-foreground mt-2">
                   {appointment.appointment_types.description}

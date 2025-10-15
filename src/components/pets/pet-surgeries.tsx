@@ -7,6 +7,8 @@ import { usePetSurgeries } from '@/hooks/pets/use-pet-surgeries'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { SurgeryCreateButton } from '@/components/surgeries/surgery-create-button'
+import { SurgeryActions } from '@/components/surgeries/surgery-actions'
 
 type Surgery = Tables<'surgeries'> & {
   treatments: Tables<'treatments'> | null
@@ -23,6 +25,10 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Cirugías</h3>
+          <Skeleton className="h-9 w-32" />
+        </div>
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
             <CardHeader>
@@ -44,22 +50,32 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
 
   if (surgeries.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-            No hay cirugías registradas
-          </h3>
-          <p className="text-sm text-muted-foreground text-center">
-            Este paciente no tiene cirugías en su historial médico.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Cirugías</h3>
+          <SurgeryCreateButton petId={petId} />
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              No hay cirugías registradas
+            </h3>
+            <p className="text-sm text-muted-foreground text-center">
+              Este paciente no tiene cirugías en su historial médico.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Cirugías</h3>
+        <SurgeryCreateButton petId={petId} />
+      </div>
       {surgeries.map((surgery) => (
         <Card key={surgery.id}>
           <CardHeader>
@@ -70,14 +86,18 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {surgery.treatments?.status === 'completed' ? 'Completada' : 
-                     surgery.treatments?.status === 'cancelled' ? 'Cancelada' : 'Programada'}
+                    {surgery.treatments?.status === 'completed'
+                      ? 'Completada'
+                      : surgery.treatments?.status === 'cancelled'
+                        ? 'Cancelada'
+                        : 'Programada'}
                   </Badge>
                 </div>
                 <Badge variant="secondary">
                   {surgery.treatments?.treatment_type || 'Cirugía'}
                 </Badge>
               </div>
+              <SurgeryActions surgery={surgery} />
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -87,7 +107,11 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <span className="text-sm">
                   <strong>Fecha:</strong>{' '}
                   {surgery.treatments?.treatment_date
-                    ? format(new Date(surgery.treatments.treatment_date), 'PPP', { locale: es })
+                    ? format(
+                        new Date(surgery.treatments.treatment_date),
+                        'PPP',
+                        { locale: es }
+                      )
                     : 'No especificada'}
                 </span>
               </div>
@@ -114,7 +138,9 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Notas del Cirujano</h4>
-                  <p className="text-sm text-muted-foreground">{surgery.surgeon_notes}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {surgery.surgeon_notes}
+                  </p>
                 </div>
               </>
             )}
@@ -123,8 +149,12 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
               <>
                 <Separator />
                 <div>
-                  <h4 className="font-medium mb-2 text-destructive">Complicaciones</h4>
-                  <p className="text-sm text-muted-foreground">{surgery.complications}</p>
+                  <h4 className="font-medium mb-2 text-destructive">
+                    Complicaciones
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    {surgery.complications}
+                  </p>
                 </div>
               </>
             )}
@@ -134,7 +164,9 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Notas del Tratamiento</h4>
-                  <p className="text-sm text-muted-foreground">{surgery.treatments.notes}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {surgery.treatments.notes}
+                  </p>
                 </div>
               </>
             )}

@@ -23,10 +23,10 @@ interface PetProfileSidebarProps {
   treatmentsCount?: number
 }
 
-export function PetProfileSidebar({ 
-  pet, 
-  appointmentsCount = 0, 
-  treatmentsCount = 0 
+export function PetProfileSidebar({
+  pet,
+  appointmentsCount = 0,
+  treatmentsCount = 0,
 }: PetProfileSidebarProps) {
   const customer = pet.customers
 
@@ -69,14 +69,14 @@ export function PetProfileSidebar({
                     <span className="text-sm">{customer.phone}</span>
                   </div>
                 )}
-                
+
                 {customer.email && (
                   <div className="flex items-center gap-2">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm">{customer.email}</span>
                   </div>
                 )}
-                
+
                 {customer.address && (
                   <div className="flex items-start gap-2">
                     <MapPin className="h-4 w-4 text-muted-foreground mt-0.5" />
@@ -115,11 +115,15 @@ export function PetProfileSidebar({
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <div className="text-2xl font-bold text-primary">{appointmentsCount}</div>
+              <div className="text-2xl font-bold text-primary">
+                {appointmentsCount}
+              </div>
               <div className="text-xs text-muted-foreground">Citas</div>
             </div>
             <div className="text-center p-3 bg-muted/50 rounded-lg">
-              <div className="text-2xl font-bold text-primary">{treatmentsCount}</div>
+              <div className="text-2xl font-bold text-primary">
+                {treatmentsCount}
+              </div>
               <div className="text-xs text-muted-foreground">Tratamientos</div>
             </div>
           </div>
@@ -127,12 +131,24 @@ export function PetProfileSidebar({
           <div className="space-y-2">
             <PetInfoField
               label="Registrado"
-              value={pet.created_at ? format(new Date(pet.created_at), 'dd/MM/yyyy', { locale: es }) : undefined}
+              value={
+                pet.created_at
+                  ? format(new Date(pet.created_at), 'dd/MM/yyyy', {
+                      locale: es,
+                    })
+                  : undefined
+              }
             />
-            
+
             <PetInfoField
               label="Última actualización"
-              value={pet.updated_at ? format(new Date(pet.updated_at), 'dd/MM/yyyy', { locale: es }) : undefined}
+              value={
+                pet.updated_at
+                  ? format(new Date(pet.updated_at), 'dd/MM/yyyy', {
+                      locale: es,
+                    })
+                  : undefined
+              }
             />
           </div>
         </CardContent>
@@ -144,26 +160,15 @@ export function PetProfileSidebar({
           <CardTitle>Información Adicional</CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
-          <PetInfoField
-            label="Color"
-            value={pet.color}
-          />
-          
+          <PetInfoField label="Color" value={pet.color} />
+
           <PetInfoField
             label="Peso"
             value={pet.weight ? `${pet.weight} kg` : undefined}
           />
-          
-          <PetInfoField
-            label="Microchip"
-            value={pet.microchip}
-          />
-          {pet.notes && (
-            <PetInfoField
-              label="Notas"
-              value={pet.notes}
-            />
-          )}
+
+          <PetInfoField label="Microchip" value={pet.microchip} />
+          {pet.notes && <PetInfoField label="Notas" value={pet.notes} />}
         </CardContent>
       </Card>
     </div>

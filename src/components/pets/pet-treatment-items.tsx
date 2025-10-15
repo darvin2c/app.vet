@@ -7,6 +7,7 @@ import { usePetTreatmentItems } from '@/hooks/pets/use-pet-treatment-items'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { TreatmentItemActions } from '@/components/treatment-items/treatment-item-actions'
 
 type TreatmentItem = Tables<'treatment_items'> & {
   treatments: Tables<'treatments'> | null
@@ -23,6 +24,10 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Medicamentos</h3>
+          <Skeleton className="h-9 w-36" />
+        </div>
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
             <CardHeader>
@@ -44,22 +49,31 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
 
   if (treatmentItems.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Package className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-            No hay productos de tratamiento registrados
-          </h3>
-          <p className="text-sm text-muted-foreground text-center">
-            Este paciente no tiene productos de tratamiento en su historial médico.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Medicamentos</h3>
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Package className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              No hay productos de tratamiento registrados
+            </h3>
+            <p className="text-sm text-muted-foreground text-center">
+              Este paciente no tiene productos de tratamiento en su historial
+              médico.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Medicamentos</h3>
+      </div>
       {treatmentItems.map((item) => (
         <Card key={item.id}>
           <CardHeader>
@@ -77,6 +91,7 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
                   )}
                 </div>
               </div>
+              <TreatmentItemActions treatmentItem={item} />
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -96,7 +111,8 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
               <div className="flex items-center gap-2">
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  <strong>Total:</strong> ${(item.qty * item.unit_price).toFixed(2)}
+                  <strong>Total:</strong> $
+                  {(item.qty * item.unit_price).toFixed(2)}
                 </span>
               </div>
             </div>
@@ -111,7 +127,9 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
                   </p>
                   {item.treatments.treatment_date && (
                     <p className="text-xs text-muted-foreground mt-1">
-                      {format(new Date(item.treatments.treatment_date), 'PPP', { locale: es })}
+                      {format(new Date(item.treatments.treatment_date), 'PPP', {
+                        locale: es,
+                      })}
                     </p>
                   )}
                 </div>
@@ -125,24 +143,42 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
                   <h4 className="font-medium mb-2">Información del Producto</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground">
                     {item.products.sku && (
-                      <div><strong>SKU:</strong> {item.products.sku}</div>
+                      <div>
+                        <strong>SKU:</strong> {item.products.sku}
+                      </div>
                     )}
                     {item.products.barcode && (
-                      <div><strong>Código de barras:</strong> {item.products.barcode}</div>
+                      <div>
+                        <strong>Código de barras:</strong>{' '}
+                        {item.products.barcode}
+                      </div>
                     )}
                     {item.products.batch_number && (
-                      <div><strong>Lote:</strong> {item.products.batch_number}</div>
+                      <div>
+                        <strong>Lote:</strong> {item.products.batch_number}
+                      </div>
                     )}
                     {item.products.expiry_date && (
-                      <div><strong>Fecha de vencimiento:</strong> {format(new Date(item.products.expiry_date), 'PPP', { locale: es })}</div>
+                      <div>
+                        <strong>Fecha de vencimiento:</strong>{' '}
+                        {format(new Date(item.products.expiry_date), 'PPP', {
+                          locale: es,
+                        })}
+                      </div>
                     )}
-                    <div><strong>Stock:</strong> {item.products.stock}</div>
-                    <div><strong>Precio:</strong> ${item.products.price}</div>
+                    <div>
+                      <strong>Stock:</strong> {item.products.stock}
+                    </div>
+                    <div>
+                      <strong>Precio:</strong> ${item.products.price}
+                    </div>
                   </div>
                   {item.products.notes && (
                     <div className="mt-2">
                       <strong>Notas:</strong>
-                      <p className="text-sm text-muted-foreground mt-1">{item.products.notes}</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        {item.products.notes}
+                      </p>
                     </div>
                   )}
                 </div>

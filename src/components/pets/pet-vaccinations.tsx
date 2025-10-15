@@ -7,6 +7,8 @@ import { usePetVaccinations } from '@/hooks/pets/use-pet-vaccinations'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { VaccinationCreateButton } from '@/components/vaccinations/vaccination-create-button'
+import { VaccinationActions } from '@/components/vaccinations/vaccination-actions'
 
 type Vaccination = Tables<'vaccinations'> & {
   treatments: Tables<'treatments'> | null
@@ -23,6 +25,10 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
   if (isLoading) {
     return (
       <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Vacunas</h3>
+          <VaccinationCreateButton treatmentId="" />
+        </div>
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
             <CardHeader>
@@ -44,22 +50,32 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
 
   if (vaccinations.length === 0) {
     return (
-      <Card>
-        <CardContent className="flex flex-col items-center justify-center py-12">
-          <Syringe className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-            No hay vacunas registradas
-          </h3>
-          <p className="text-sm text-muted-foreground text-center">
-            Este paciente no tiene vacunas en su historial médico.
-          </p>
-        </CardContent>
-      </Card>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Vacunas</h3>
+          <VaccinationCreateButton treatmentId="" />
+        </div>
+        <Card>
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Syringe className="h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-lg font-semibold text-muted-foreground mb-2">
+              No hay vacunas registradas
+            </h3>
+            <p className="text-sm text-muted-foreground text-center">
+              Este paciente no tiene vacunas en su historial médico.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-semibold">Vacunas</h3>
+        <VaccinationCreateButton treatmentId="" />
+      </div>
       {vaccinations.map((vaccination) => (
         <Card key={vaccination.id}>
           <CardHeader>
@@ -70,11 +86,15 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {vaccination.treatments?.status === 'completed' ? 'Aplicada' : 
-                     vaccination.treatments?.status === 'draft' ? 'Borrador' : 'Cancelada'}
+                    {vaccination.treatments?.status === 'completed'
+                      ? 'Aplicada'
+                      : vaccination.treatments?.status === 'draft'
+                        ? 'Borrador'
+                        : 'Cancelada'}
                   </Badge>
                 </div>
               </div>
+              <VaccinationActions vaccination={vaccination} />
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -84,7 +104,11 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <span className="text-sm">
                   <strong>Fecha de aplicación:</strong>{' '}
                   {vaccination.treatments?.treatment_date
-                    ? format(new Date(vaccination.treatments.treatment_date), 'PPP', { locale: es })
+                    ? format(
+                        new Date(vaccination.treatments.treatment_date),
+                        'PPP',
+                        { locale: es }
+                      )
                     : 'No especificada'}
                 </span>
               </div>
@@ -93,7 +117,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                   <CalendarDays className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
                     <strong>Próxima dosis:</strong>{' '}
-                    {format(new Date(vaccination.next_due_at), 'PPP', { locale: es })}
+                    {format(new Date(vaccination.next_due_at), 'PPP', {
+                      locale: es,
+                    })}
                   </span>
                 </div>
               )}
@@ -113,7 +139,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Dosis</h4>
-                  <p className="text-sm text-muted-foreground">{vaccination.dose}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {vaccination.dose}
+                  </p>
                 </div>
               </>
             )}
@@ -123,7 +151,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Vía de administración</h4>
-                  <p className="text-sm text-muted-foreground">{vaccination.route}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {vaccination.route}
+                  </p>
                 </div>
               </>
             )}
@@ -133,7 +163,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Sitio de aplicación</h4>
-                  <p className="text-sm text-muted-foreground">{vaccination.site}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {vaccination.site}
+                  </p>
                 </div>
               </>
             )}
@@ -143,7 +175,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Eventos adversos</h4>
-                  <p className="text-sm text-muted-foreground">{vaccination.adverse_event}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {vaccination.adverse_event}
+                  </p>
                 </div>
               </>
             )}
@@ -153,7 +187,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <Separator />
                 <div>
                   <h4 className="font-medium mb-2">Notas del Tratamiento</h4>
-                  <p className="text-sm text-muted-foreground">{vaccination.treatments.notes}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {vaccination.treatments.notes}
+                  </p>
                 </div>
               </>
             )}

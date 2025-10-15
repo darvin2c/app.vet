@@ -57,7 +57,7 @@ export function AppointmentTypeCreate({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
+      <DrawerContent className="!max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Nuevo Tipo de Cita</DrawerTitle>
           <DrawerDescription>

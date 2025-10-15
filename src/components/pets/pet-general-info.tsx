@@ -42,45 +42,34 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <PetInfoField
-              label="Nombre"
-              value={pet.name}
-            />
-            
-            <PetInfoField
-              label="Estado"
-            >
+            <PetInfoField label="Nombre" value={pet.name} />
+
+            <PetInfoField label="Estado">
               <PetStatusBadge status="active" />
             </PetInfoField>
-            
-            <PetInfoField
-              label="Especie"
-              value={pet.species?.name}
-            />
-            
-            <PetInfoField
-              label="Raza"
-              value={pet.breeds?.name}
-            />
-            
-            <PetInfoField
-              label="Sexo"
-              value={getSexText(pet.sex)}
-            />
-            
-            <PetInfoField
-              label="Color"
-              value={pet.color}
-            />
-            
+
+            <PetInfoField label="Especie" value={pet.species?.name} />
+
+            <PetInfoField label="Raza" value={pet.breeds?.name} />
+
+            <PetInfoField label="Sexo" value={getSexText(pet.sex)} />
+
+            <PetInfoField label="Color" value={pet.color} />
+
             <PetInfoField
               label="Peso"
               value={pet.weight ? `${pet.weight} kg` : undefined}
             />
-            
+
             <PetInfoField
               label="Fecha de nacimiento"
-              value={pet.birth_date ? format(new Date(pet.birth_date), 'dd/MM/yyyy', { locale: es }) : undefined}
+              value={
+                pet.birth_date
+                  ? format(new Date(pet.birth_date), 'dd/MM/yyyy', {
+                      locale: es,
+                    })
+                  : undefined
+              }
             />
           </dl>
         </CardContent>
@@ -93,15 +82,9 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <PetInfoField
-              label="Microchip"
-              value={pet.microchip}
-            />
-            
-            <PetInfoField
-              label="Número de registro"
-              value={pet.id}
-            />
+            <PetInfoField label="Microchip" value={pet.microchip} />
+
+            <PetInfoField label="Número de registro" value={pet.id} />
           </dl>
         </CardContent>
       </Card>
@@ -113,12 +96,7 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
         </CardHeader>
         <CardContent>
           <dl className="space-y-4">
-            {pet.notes && (
-              <PetInfoField
-                label="Notas"
-                value={pet.notes}
-              />
-            )}
+            {pet.notes && <PetInfoField label="Notas" value={pet.notes} />}
           </dl>
         </CardContent>
       </Card>
@@ -132,12 +110,24 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <PetInfoField
               label="Fecha de registro"
-              value={pet.created_at ? format(new Date(pet.created_at), 'dd/MM/yyyy HH:mm', { locale: es }) : undefined}
+              value={
+                pet.created_at
+                  ? format(new Date(pet.created_at), 'dd/MM/yyyy HH:mm', {
+                      locale: es,
+                    })
+                  : undefined
+              }
             />
-            
+
             <PetInfoField
               label="Última actualización"
-              value={pet.updated_at ? format(new Date(pet.updated_at), 'dd/MM/yyyy HH:mm', { locale: es }) : undefined}
+              value={
+                pet.updated_at
+                  ? format(new Date(pet.updated_at), 'dd/MM/yyyy HH:mm', {
+                      locale: es,
+                    })
+                  : undefined
+              }
             />
           </dl>
         </CardContent>

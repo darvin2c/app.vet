@@ -23,7 +23,9 @@ export function PetEmptyState({
         {icon && <div className="mb-4 text-muted-foreground">{icon}</div>}
         <h3 className="text-lg font-semibold">{title}</h3>
         {description && (
-          <p className="mt-2 text-sm text-muted-foreground max-w-sm">{description}</p>
+          <p className="mt-2 text-sm text-muted-foreground max-w-sm">
+            {description}
+          </p>
         )}
         {action && <div className="mt-4">{action}</div>}
       </CardContent>

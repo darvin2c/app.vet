@@ -21,7 +21,9 @@ export function PetInfoField({
       <dt className="text-sm font-medium text-muted-foreground">{label}</dt>
       <dd className="text-sm">
         {children || (
-          <span className={cn(value ? 'text-foreground' : 'text-muted-foreground')}>
+          <span
+            className={cn(value ? 'text-foreground' : 'text-muted-foreground')}
+          >
             {value || placeholder}
           </span>
         )}
