@@ -33,8 +33,6 @@ export function getStatusLabel(status: TreatmentStatus): string {
 
 export function getTypeLabel(type: TreatmentType): string {
   switch (type) {
-    case 'consultation':
-      return 'Consulta'
     case 'vaccination':
       return 'Vacunación'
     case 'surgery':

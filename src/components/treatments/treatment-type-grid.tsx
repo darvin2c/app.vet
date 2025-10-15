@@ -36,12 +36,6 @@ interface TreatmentTypeGridProps {
 
 const treatmentTypes = [
   {
-    value: 'consultation',
-    label: 'Consulta',
-    icon: Stethoscope,
-    description: 'Consulta médica general',
-  },
-  {
     value: 'vaccination',
     label: 'Vacunación',
     icon: Syringe,

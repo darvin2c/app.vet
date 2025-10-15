@@ -64,8 +64,6 @@ export function TreatmentQuickActions({
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'consultation':
-        return 'Consulta'
       case 'vaccination':
         return 'Vacunación'
       case 'surgery':

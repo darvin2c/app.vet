@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/select'
 import { TreatmentFormData } from '@/schemas/treatment.schema'
 import { TreatmentTypeGrid } from './treatment-type-grid'
-import { ConsultationForm } from './consultation-form'
+
 import { VaccinationForm } from './vaccination-form'
 import { SurgeryForm } from './surgery-form'
 import { TrainingForm } from './training-form'
@@ -90,10 +90,6 @@ export function TreatmentForm() {
       </Field>
 
       {/* Formularios dinámicos basados en el tipo de tratamiento - Solo tipos con respaldo en Supabase */}
-      {watchedType === 'consultation' && (
-        <ConsultationForm />
-      )}
-      
       {watchedType === 'vaccination' && (
         <VaccinationForm />
       )}

@@ -36,7 +36,6 @@ interface PetAllTreatmentsProps {
 }
 
 const treatmentTypeIcons = {
-  consultation: Stethoscope,
   vaccination: Syringe,
   surgery: Scissors,
   training: GraduationCap,
@@ -46,7 +45,6 @@ const treatmentTypeIcons = {
 }
 
 const treatmentTypeLabels = {
-  consultation: 'Consulta',
   vaccination: 'Vacunación',
   surgery: 'Cirugía',
   training: 'Entrenamiento',
