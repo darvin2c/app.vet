@@ -9,6 +9,8 @@ pnpm run typecheck
 pnpm run format
 ```
 
+- Antes de terminar de implementar una nueva funcion siempre debes de ejecutar `pnpm run typecheck`, y corregir los errores de tipado.
+
 ## Estructura de carpetas
 
 ```
