@@ -122,12 +122,26 @@ export function PetClinicalParameters({
     )
   }
 
+  // Función auxiliar para validar y formatear fechas
+  const formatSafeDate = (dateString: string | null | undefined): string => {
+    if (!dateString) return 'Sin fecha'
+
+    try {
+      const date = new Date(dateString)
+      // Verificar si la fecha es válida
+      if (isNaN(date.getTime())) {
+        return 'Sin fecha'
+      }
+      return format(date, 'yyyy-MM-dd', { locale: es })
+    } catch (error) {
+      return 'Sin fecha'
+    }
+  }
+
   // Agrupar parámetros por fecha para mostrar el historial
   const parametersByDate = parameters.reduce(
     (acc, param) => {
-      const date = param.measured_at
-        ? format(new Date(param.measured_at), 'yyyy-MM-dd', { locale: es })
-        : 'Sin fecha'
+      const date = formatSafeDate(param.measured_at)
       if (!acc[date]) acc[date] = []
       acc[date].push(param)
       return acc
@@ -135,9 +149,27 @@ export function PetClinicalParameters({
     {} as Record<string, Tables<'clinical_parameters'>[]>
   )
 
-  const sortedDates = Object.keys(parametersByDate).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  )
+  const sortedDates = Object.keys(parametersByDate).sort((a, b) => {
+    // Manejar el caso especial de "Sin fecha"
+    if (a === 'Sin fecha' && b === 'Sin fecha') return 0
+    if (a === 'Sin fecha') return 1 // "Sin fecha" va al final
+    if (b === 'Sin fecha') return -1 // "Sin fecha" va al final
+
+    // Para fechas válidas, ordenar de más reciente a más antigua
+    try {
+      const dateA = new Date(a)
+      const dateB = new Date(b)
+
+      // Verificar si las fechas son válidas
+      if (isNaN(dateA.getTime()) && isNaN(dateB.getTime())) return 0
+      if (isNaN(dateA.getTime())) return 1
+      if (isNaN(dateB.getTime())) return -1
+
+      return dateB.getTime() - dateA.getTime()
+    } catch (error) {
+      return 0
+    }
+  })
 
   return (
     <Card>
@@ -158,7 +190,19 @@ export function PetClinicalParameters({
                 <h4 className="font-medium">
                   {date === 'Sin fecha'
                     ? 'Sin fecha'
-                    : format(new Date(date), 'dd/MM/yyyy', { locale: es })}
+                    : (() => {
+                        try {
+                          const displayDate = new Date(date)
+                          if (isNaN(displayDate.getTime())) {
+                            return 'Fecha no válida'
+                          }
+                          return format(displayDate, 'dd/MM/yyyy', {
+                            locale: es,
+                          })
+                        } catch (error) {
+                          return 'Fecha no válida'
+                        }
+                      })()}
                 </h4>
                 <Badge variant="outline" className="text-xs">
                   {parametersByDate[date].length} mediciones
@@ -255,11 +299,19 @@ export function PetClinicalParameters({
 
                               {param.measured_at && (
                                 <div className="text-xs text-muted-foreground mt-2">
-                                  {format(
-                                    new Date(param.measured_at),
-                                    'HH:mm',
-                                    { locale: es }
-                                  )}
+                                  {(() => {
+                                    try {
+                                      const date = new Date(param.measured_at)
+                                      if (isNaN(date.getTime())) {
+                                        return 'Hora no válida'
+                                      }
+                                      return format(date, 'HH:mm', {
+                                        locale: es,
+                                      })
+                                    } catch (error) {
+                                      return 'Hora no válida'
+                                    }
+                                  })()}
                                 </div>
                               )}
                             </div>
