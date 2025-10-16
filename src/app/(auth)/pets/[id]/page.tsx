@@ -15,6 +15,8 @@ import { PetProfileSidebar } from '@/components/pets/pet-profile-sidebar'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { PetAppointmentsList } from '@/components/pets/pet-appointments-list'
 import { PetAllTreatments } from '@/components/pets/pet-all-treatments'
+import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
+import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -89,10 +91,11 @@ export default function PetProfilePage() {
             onValueChange={setActiveTab}
             className="space-y-6"
           >
-            <TabsList className="grid w-full grid-cols-3 text-xs">
+            <TabsList className="grid w-full grid-cols-4 text-xs">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="appointments">Citas</TabsTrigger>
               <TabsTrigger value="treatments">Tratamientos</TabsTrigger>
+              <TabsTrigger value="hospitalizations">Hospitalizaciones</TabsTrigger>
             </TabsList>
 
             {/* General Information */}
@@ -112,6 +115,20 @@ export default function PetProfilePage() {
             {/* All Treatments - Now the main treatments view */}
             <TabsContent value="treatments" className="space-y-6">
               <PetAllTreatments petId={petId} />
+            </TabsContent>
+
+            {/* Hospitalizations */}
+            <TabsContent value="hospitalizations" className="space-y-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Hospitalizaciones</h2>
+                  <p className="text-muted-foreground">
+                    Historial de hospitalizaciones de la mascota
+                  </p>
+                </div>
+                <HospitalizationCreateButton petId={petId} />
+              </div>
+              <HospitalizationList petId={petId} />
             </TabsContent>
           </Tabs>
         </div>
