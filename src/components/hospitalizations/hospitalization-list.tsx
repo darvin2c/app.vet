@@ -151,7 +151,9 @@ export function HospitalizationList({
     {
       id: 'actions',
       header: 'Acciones',
-      cell: ({ row }) => <HospitalizationActions hospitalization={row.original} />,
+      cell: ({ row }) => (
+        <HospitalizationActions hospitalization={row.original} />
+      ),
     },
   ]
 
@@ -168,7 +170,9 @@ export function HospitalizationList({
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-destructive">Error al cargar las hospitalizaciones</p>
+        <p className="text-destructive">
+          Error al cargar las hospitalizaciones
+        </p>
       </div>
     )
   }
@@ -199,7 +203,11 @@ export function HospitalizationList({
                 <HospitalizationActions hospitalization={hospitalization} />
               </div>
               <CardDescription>
-                <Badge variant={hospitalization.discharge_at ? 'secondary' : 'default'}>
+                <Badge
+                  variant={
+                    hospitalization.discharge_at ? 'secondary' : 'default'
+                  }
+                >
                   {hospitalization.discharge_at ? 'Finalizada' : 'En curso'}
                 </Badge>
               </CardDescription>
@@ -209,17 +217,25 @@ export function HospitalizationList({
                 <Calendar className="h-4 w-4 text-muted-foreground" />
                 <span className="font-medium">Ingreso:</span>
                 {hospitalization.admission_at ? (
-                  format(new Date(hospitalization.admission_at), 'dd/MM/yyyy HH:mm', { locale: es })
+                  format(
+                    new Date(hospitalization.admission_at),
+                    'dd/MM/yyyy HH:mm',
+                    { locale: es }
+                  )
                 ) : (
                   <span className="text-muted-foreground">Sin fecha</span>
                 )}
               </div>
-              
+
               {hospitalization.discharge_at && (
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <span className="font-medium">Alta:</span>
-                  {format(new Date(hospitalization.discharge_at), 'dd/MM/yyyy HH:mm', { locale: es })}
+                  {format(
+                    new Date(hospitalization.discharge_at),
+                    'dd/MM/yyyy HH:mm',
+                    { locale: es }
+                  )}
                 </div>
               )}
 

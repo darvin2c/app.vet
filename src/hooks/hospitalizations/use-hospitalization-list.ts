@@ -20,7 +20,14 @@ export function useHospitalizations(params?: UseHospitalizationsParams) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'hospitalizations', filters, search, orders, petId],
+    queryKey: [
+      currentTenant?.id,
+      'hospitalizations',
+      filters,
+      search,
+      orders,
+      petId,
+    ],
     queryFn: async () => {
       if (!currentTenant?.id) {
         return []

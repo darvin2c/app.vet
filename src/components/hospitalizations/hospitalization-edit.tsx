@@ -15,9 +15,9 @@ import {
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { HospitalizationForm } from './hospitalization-form'
 import { useUpdateHospitalization } from '@/hooks/hospitalizations/use-hospitalization-update'
-import { 
-  hospitalizationUpdateSchema, 
-  HospitalizationUpdateSchema 
+import {
+  hospitalizationUpdateSchema,
+  HospitalizationUpdateSchema,
 } from '@/schemas/hospitalization.schema'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
@@ -55,10 +55,10 @@ export function HospitalizationEdit({
     if (hospitalization) {
       form.reset({
         pet_id: '', // TODO: Agregar pet_id cuando esté disponible en la tabla
-        admission_at: hospitalization.admission_at 
+        admission_at: hospitalization.admission_at
           ? format(new Date(hospitalization.admission_at), "yyyy-MM-dd'T'HH:mm")
           : '',
-        discharge_at: hospitalization.discharge_at 
+        discharge_at: hospitalization.discharge_at
           ? format(new Date(hospitalization.discharge_at), "yyyy-MM-dd'T'HH:mm")
           : '',
         bed_id: hospitalization.bed_id || '',

@@ -6,7 +6,10 @@ export const hospitalizationSchema = z.object({
   admission_at: z.string().nonempty('La fecha de ingreso es requerida'),
   discharge_at: z.string().optional().or(z.literal('')),
   bed_id: z.string().optional().or(z.literal('')),
-  daily_rate: z.number().min(0, 'La tarifa diaria debe ser mayor o igual a 0').optional(),
+  daily_rate: z
+    .number()
+    .min(0, 'La tarifa diaria debe ser mayor o igual a 0')
+    .optional(),
   notes: z.string().optional().or(z.literal('')),
 })
 
@@ -16,9 +19,15 @@ export type HospitalizationSchema = z.infer<typeof hospitalizationSchema>
 export const hospitalizationCreateSchema = hospitalizationSchema
 
 // Schema para actualizar hospitalization (todos los campos opcionales excepto pet_id)
-export const hospitalizationUpdateSchema = hospitalizationSchema.partial().extend({
-  pet_id: z.string().nonempty('El ID de la mascota es requerido'),
-})
+export const hospitalizationUpdateSchema = hospitalizationSchema
+  .partial()
+  .extend({
+    pet_id: z.string().nonempty('El ID de la mascota es requerido'),
+  })
 
-export type HospitalizationCreateSchema = z.infer<typeof hospitalizationCreateSchema>
-export type HospitalizationUpdateSchema = z.infer<typeof hospitalizationUpdateSchema>
+export type HospitalizationCreateSchema = z.infer<
+  typeof hospitalizationCreateSchema
+>
+export type HospitalizationUpdateSchema = z.infer<
+  typeof hospitalizationUpdateSchema
+>

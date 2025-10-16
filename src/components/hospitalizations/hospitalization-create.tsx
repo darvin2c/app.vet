@@ -14,9 +14,9 @@ import {
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { HospitalizationForm } from './hospitalization-form'
 import { useCreateHospitalization } from '@/hooks/hospitalizations/use-hospitalization-create'
-import { 
-  hospitalizationCreateSchema, 
-  HospitalizationCreateSchema 
+import {
+  hospitalizationCreateSchema,
+  HospitalizationCreateSchema,
 } from '@/schemas/hospitalization.schema'
 
 interface HospitalizationCreateProps {

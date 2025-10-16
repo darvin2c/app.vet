@@ -5,7 +5,10 @@ import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 // Tipo extendido para actualizar hospitalization con pet_id
-type HospitalizationUpdate = Omit<TablesUpdate<'hospitalizations'>, 'tenant_id'> & {
+type HospitalizationUpdate = Omit<
+  TablesUpdate<'hospitalizations'>,
+  'tenant_id'
+> & {
   pet_id?: string
 }
 
@@ -28,8 +31,12 @@ export function useUpdateHospitalization() {
       // Convertir fechas a UTC antes de guardar
       const hospitalizationData = {
         ...data,
-        admission_at: data.admission_at ? new Date(data.admission_at).toISOString() : undefined,
-        discharge_at: data.discharge_at ? new Date(data.discharge_at).toISOString() : undefined,
+        admission_at: data.admission_at
+          ? new Date(data.admission_at).toISOString()
+          : undefined,
+        discharge_at: data.discharge_at
+          ? new Date(data.discharge_at).toISOString()
+          : undefined,
       }
 
       const { data: hospitalization, error } = await supabase
@@ -47,9 +54,20 @@ export function useUpdateHospitalization() {
       return hospitalization
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'hospitalizations'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'hospitalizations'],
+      })
       if (variables.data.pet_id) {
-        queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'hospitalizations', undefined, undefined, undefined, variables.data.pet_id] })
+        queryClient.invalidateQueries({
+          queryKey: [
+            currentTenant?.id,
+            'hospitalizations',
+            undefined,
+            undefined,
+            undefined,
+            variables.data.pet_id,
+          ],
+        })
       }
       toast.success('Hospitalización actualizada exitosamente')
     },

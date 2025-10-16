@@ -18,7 +18,9 @@ interface HospitalizationActionsProps {
   hospitalization: Hospitalization
 }
 
-export function HospitalizationActions({ hospitalization }: HospitalizationActionsProps) {
+export function HospitalizationActions({
+  hospitalization,
+}: HospitalizationActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 

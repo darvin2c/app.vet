@@ -26,7 +26,9 @@ export function useDeleteHospitalization() {
       return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'hospitalizations'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'hospitalizations'],
+      })
       toast.success('Hospitalización eliminada exitosamente')
     },
     onError: (error) => {

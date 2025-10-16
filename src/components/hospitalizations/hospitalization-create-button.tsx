@@ -9,7 +9,9 @@ interface HospitalizationCreateButtonProps {
   petId: string
 }
 
-export function HospitalizationCreateButton({ petId }: HospitalizationCreateButtonProps) {
+export function HospitalizationCreateButton({
+  petId,
+}: HospitalizationCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
