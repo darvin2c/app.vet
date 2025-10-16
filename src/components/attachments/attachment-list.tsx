@@ -150,11 +150,12 @@ export function AttachmentList({
           {showFilters && (
             <div className="flex gap-2">
               <Select
-                value={filters.attachment_type || ''}
+                value={filters.attachment_type || 'all'}
                 onValueChange={(value) =>
                   setFilters((prev) => ({
                     ...prev,
-                    attachment_type: (value as any) || undefined,
+                    attachment_type:
+                      value === 'all' ? undefined : (value as any),
                   }))
                 }
               >
@@ -162,7 +163,7 @@ export function AttachmentList({
                   <SelectValue placeholder="Tipo" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todos los tipos</SelectItem>
+                  <SelectItem value="all">Todos los tipos</SelectItem>
                   <SelectItem value="image">Imágenes</SelectItem>
                   <SelectItem value="document">Documentos</SelectItem>
                   <SelectItem value="video">Videos</SelectItem>
@@ -172,11 +173,11 @@ export function AttachmentList({
               </Select>
 
               <Select
-                value={filters.category || ''}
+                value={filters.category || 'all'}
                 onValueChange={(value) =>
                   setFilters((prev) => ({
                     ...prev,
-                    category: (value as any) || undefined,
+                    category: value === 'all' ? undefined : (value as any),
                   }))
                 }
               >
@@ -184,7 +185,7 @@ export function AttachmentList({
                   <SelectValue placeholder="Categoría" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Todas las categorías</SelectItem>
+                  <SelectItem value="all">Todas las categorías</SelectItem>
                   <SelectItem value="xray">Radiografía</SelectItem>
                   <SelectItem value="ultrasound">Ecografía</SelectItem>
                   <SelectItem value="blood_test">Análisis de sangre</SelectItem>

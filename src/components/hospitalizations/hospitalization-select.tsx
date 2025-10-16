@@ -32,16 +32,16 @@ export function HospitalizationSelect({
 
   return (
     <Select
-      value={value || ''}
-      onValueChange={(val) => onValueChange?.(val === '' ? null : val)}
+      value={value || 'none'}
+      onValueChange={(val) => onValueChange?.(val === 'none' ? null : val)}
     >
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">Sin hospitalización</SelectItem>
+        <SelectItem value="none">Sin hospitalización</SelectItem>
         {isLoading ? (
-          <SelectItem value="" disabled>
+          <SelectItem value="loading" disabled>
             Cargando...
           </SelectItem>
         ) : (

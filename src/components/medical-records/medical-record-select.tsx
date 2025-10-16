@@ -27,18 +27,23 @@ export function MedicalRecordSelect({
     petId || ''
   )
 
+  const handleValueChange = (val: string) => {
+    if (val === 'none') {
+      onValueChange?.('')
+    } else {
+      onValueChange?.(val)
+    }
+  }
+
   return (
-    <Select
-      value={value || ''}
-      onValueChange={(val) => onValueChange?.(val === '' ? '' : val)}
-    >
+    <Select value={value || 'none'} onValueChange={handleValueChange}>
       <SelectTrigger>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="">Sin registro médico</SelectItem>
+        <SelectItem value="none">Sin registro médico</SelectItem>
         {isLoading ? (
-          <SelectItem value="" disabled>
+          <SelectItem value="loading" disabled>
             Cargando...
           </SelectItem>
         ) : (
