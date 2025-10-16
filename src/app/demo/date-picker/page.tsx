@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { DatePicker } from '@/components/ui/date-picker'
+import { DatePicker, DateDisplay } from '@/components/ui/date-picker'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -203,6 +203,167 @@ export default function DatePickerDemo() {
         </Card>
       </div>
 
+      {/* DateDisplay Component Examples */}
+      <div className="space-y-4">
+        <div className="space-y-2">
+          <h2 className="text-2xl font-bold">DateDisplay Component Examples</h2>
+          <p className="text-muted-foreground">
+            Componente para mostrar fechas de forma elegante y legible.
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Basic DateDisplay - No date */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                DateDisplay Básico
+                <Badge variant="outline">Sin fecha</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <DateDisplay placeholder="No hay fecha seleccionada" />
+              </div>
+              <div className="text-xs text-muted-foreground">
+                <strong>Código:</strong>
+                <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
+                  {`<DateDisplay placeholder="No hay fecha seleccionada" />`}
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* DateDisplay with date only */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                DateDisplay con Fecha
+                <Badge variant="secondary">Solo fecha</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <DateDisplay date={new Date('2024-12-20T10:30:00')} />
+              </div>
+              <div className="text-xs text-muted-foreground">
+                <strong>Código:</strong>
+                <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
+                  {`<DateDisplay date={new Date('2024-12-20T10:30:00')} />`}
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* DateDisplay with date and time */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                DateDisplay con Fecha y Hora
+                <Badge variant="secondary">hasTime=true</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="p-4 border rounded-lg bg-muted/50">
+                <DateDisplay
+                  date={new Date('2024-12-20T14:30:00')}
+                  hasTime={true}
+                />
+              </div>
+              <div className="text-xs text-muted-foreground">
+                <strong>Código:</strong>
+                <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
+                  {`<DateDisplay 
+  date={new Date('2024-12-20T14:30:00')} 
+  hasTime={true} 
+/>`}
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* DateDisplay with custom styling */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                DateDisplay con Estilos
+                <Badge variant="outline">className</Badge>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-3">
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <DateDisplay
+                    date={new Date('2024-12-25T09:00:00')}
+                    hasTime={true}
+                    className="text-lg font-bold text-primary"
+                  />
+                </div>
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <DateDisplay
+                    date={new Date('2024-12-25T09:00:00')}
+                    className="text-sm text-muted-foreground"
+                  />
+                </div>
+              </div>
+              <div className="text-xs text-muted-foreground">
+                <strong>Código:</strong>
+                <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-x-auto">
+                  {`<DateDisplay 
+  date={new Date('2024-12-25T09:00:00')} 
+  hasTime={true}
+  className="text-lg font-bold text-primary"
+/>
+
+<DateDisplay 
+  date={new Date('2024-12-25T09:00:00')} 
+  className="text-sm text-muted-foreground"
+/>`}
+                </pre>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Interactive DateDisplay Examples */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              DateDisplay Interactivo
+              <Badge variant="secondary">Actualización en tiempo real</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="space-y-2">
+                <h4 className="font-medium">Fecha básica seleccionada:</h4>
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <DateDisplay
+                    date={basicDate ? new Date(basicDate) : undefined}
+                    placeholder="Selecciona una fecha arriba"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-medium">Fecha con hora seleccionada:</h4>
+                <div className="p-4 border rounded-lg bg-muted/50">
+                  <DateDisplay
+                    date={dateWithTime ? new Date(dateWithTime) : undefined}
+                    hasTime={true}
+                    placeholder="Selecciona fecha y hora arriba"
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              <strong>Nota:</strong> Estos DateDisplay se actualizan
+              automáticamente cuando seleccionas fechas en los DatePickers de
+              arriba.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
       {/* API Documentation */}
       <Card>
         <CardHeader>
@@ -211,7 +372,7 @@ export default function DatePickerDemo() {
         <CardContent>
           <div className="space-y-4">
             <div>
-              <h4 className="font-semibold mb-2">Props Principales</h4>
+              <h4 className="font-semibold mb-2">DatePicker Props</h4>
               <div className="grid gap-2 text-sm">
                 <div>
                   <code className="bg-muted px-2 py-1 rounded">value</code>:{' '}
@@ -238,6 +399,29 @@ export default function DatePickerDemo() {
                     disabledDates
                   </code>
                   : Date[] - Array de fechas deshabilitadas
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-2">DateDisplay Props</h4>
+              <div className="grid gap-2 text-sm">
+                <div>
+                  <code className="bg-muted px-2 py-1 rounded">date</code>: Date
+                  | undefined - Fecha a mostrar
+                </div>
+                <div>
+                  <code className="bg-muted px-2 py-1 rounded">hasTime</code>:{' '}
+                  boolean - Mostrar hora además de fecha
+                </div>
+                <div>
+                  <code className="bg-muted px-2 py-1 rounded">
+                    placeholder
+                  </code>
+                  : string - Texto cuando no hay fecha
+                </div>
+                <div>
+                  <code className="bg-muted px-2 py-1 rounded">className</code>:{' '}
+                  string - Clases CSS adicionales
                 </div>
               </div>
             </div>

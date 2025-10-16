@@ -23,6 +23,51 @@ import {
 
 import { useIsMobile } from '@/hooks/use-mobile'
 
+export interface DateDisplayProps {
+  date?: Date
+  hasTime?: boolean
+  placeholder?: string
+  className?: string
+}
+
+export function DateDisplay({
+  date,
+  hasTime = false,
+  placeholder = 'No hay fecha seleccionada',
+  className,
+}: DateDisplayProps) {
+  if (!date) {
+    return (
+      <div
+        className={cn(
+          'flex items-center gap-2 text-muted-foreground text-sm',
+          className
+        )}
+      >
+        <Calendar className="h-4 w-4" />
+        <span>{placeholder}</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className={cn('flex items-center gap-2 text-sm', className)}>
+      <Calendar className="h-4 w-4 text-primary" />
+      <div className="flex flex-col">
+        <span className="font-medium">
+          {format(date, "EEEE, dd 'de' MMMM 'de' yyyy", { locale: es })}
+        </span>
+        {hasTime && (
+          <div className="flex items-center gap-1 text-muted-foreground text-xs">
+            <Clock className="h-3 w-3" />
+            <span>{format(date, 'HH:mm', { locale: es })}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export interface DatePickerProps {
   value?: string // ISO string format (YYYY-MM-DDTHH:mm:ss.sssZ)
   onChange?: (value: string | undefined) => void
@@ -88,10 +133,14 @@ export function DatePicker({
             const period = hour24 >= 12 ? 'PM' : 'AM'
             const timeValue = `${hour12.toString().padStart(2, '0')}:${minute}`
             setTimeInput(timeValue)
-            if (timeInputRef.current) {
-              timeInputRef.current.value = timeValue
-            }
             setAmPm(period)
+
+            // Ensure the time input ref is updated after state changes
+            setTimeout(() => {
+              if (timeInputRef.current) {
+                timeInputRef.current.value = timeValue
+              }
+            }, 0)
           }
         }
       } catch (error) {
@@ -109,6 +158,42 @@ export function DatePicker({
       setAmPm('AM')
     }
   }, [value, hasTime])
+
+  // Helper function to update time input display
+  const updateTimeInputDisplay = React.useCallback(() => {
+    if (hasTime && selectedHour && selectedMinute) {
+      const hour24 = parseInt(selectedHour)
+      const hour12 = hour24 === 0 ? 12 : hour24 > 12 ? hour24 - 12 : hour24
+      const period = hour24 >= 12 ? 'PM' : 'AM'
+      const timeValue = `${hour12.toString().padStart(2, '0')}:${selectedMinute}`
+
+      // Update the time input ref if available
+      if (timeInputRef.current) {
+        timeInputRef.current.value = timeValue
+      }
+
+      // Always update the state to maintain consistency
+      setTimeInput(timeValue)
+      setAmPm(period)
+    }
+  }, [hasTime, selectedHour, selectedMinute])
+
+  // Update time input display when time states change
+  React.useEffect(() => {
+    if (hasTime && selectedHour && selectedMinute) {
+      updateTimeInputDisplay()
+    }
+  }, [hasTime, selectedHour, selectedMinute, updateTimeInputDisplay])
+
+  // Update time input display when calendar reopens
+  React.useEffect(() => {
+    if (open && hasTime && selectedHour && selectedMinute) {
+      // Use setTimeout to ensure DOM is ready
+      setTimeout(() => {
+        updateTimeInputDisplay()
+      }, 0)
+    }
+  }, [open, hasTime, selectedHour, selectedMinute, updateTimeInputDisplay])
 
   // Process time input and validate
   const processTimeInput = (inputValue: string) => {
@@ -305,6 +390,13 @@ export function DatePicker({
     if (parsedDate && !isDateDisabled(parsedDate)) {
       setSelectedDate(parsedDate)
       updateValue(parsedDate, selectedHour, selectedMinute)
+
+      // Update time input display if we have time selected
+      if (hasTime && selectedHour && selectedMinute) {
+        setTimeout(() => {
+          updateTimeInputDisplay()
+        }, 0)
+      }
     } else if (maskedValue === '') {
       setSelectedDate(undefined)
       onChange?.(undefined)
@@ -317,6 +409,14 @@ export function DatePicker({
     if (date) {
       setInputValue(format(date, 'dd/MM/yyyy'))
       updateValue(date, selectedHour, selectedMinute)
+
+      // Update time input display if we have time selected
+      if (hasTime && selectedHour && selectedMinute) {
+        setTimeout(() => {
+          updateTimeInputDisplay()
+        }, 0)
+      }
+
       if (!hasTime) {
         setOpen(false)
       }
@@ -329,7 +429,17 @@ export function DatePicker({
   // Handle time input with mask HH:MM (uncontrolled approach)
   const handleTimeInputChange = React.useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const input = e.target.value.replace(/\D/g, '') // Remove non-digits
+      const rawValue = e.target.value
+
+      // If user is deleting (backspace), allow it without formatting
+      if (rawValue.length < (timeInputRef.current?.value.length || 0)) {
+        if (timeInputRef.current) {
+          timeInputRef.current.value = rawValue
+        }
+        return
+      }
+
+      const input = rawValue.replace(/\D/g, '') // Remove non-digits
       let masked = input
 
       if (input.length >= 2) {
@@ -475,6 +585,15 @@ export function DatePicker({
           locale={es}
           className="rounded-md !w-full !max-w-sm"
         />
+        {!hasTime && (
+          <div className="mt-4 pt-3 border-t">
+            <DateDisplay
+              date={selectedDate}
+              hasTime={hasTime}
+              placeholder="Selecciona una fecha"
+            />
+          </div>
+        )}
       </div>
       {hasTime && (
         <div className="flex flex-col justify-around border-l-2 border-border pl-4 ml-4 flex-shrink-0 w-48">
@@ -518,8 +637,16 @@ export function DatePicker({
               </div>
             </div>
           </div>
-          {selectedDate && selectedHour && selectedMinute && (
-            <div className="mt-10 pt-3 border-t">
+          <div className="mt-6 space-y-3">
+            <div className="pt-3 border-t">
+              <DateDisplay
+                date={selectedDate}
+                hasTime={hasTime}
+                placeholder="Selecciona una fecha"
+                className="mb-3"
+              />
+            </div>
+            {selectedDate && selectedHour && selectedMinute && (
               <Button
                 onClick={() => setOpen(false)}
                 className="w-full"
@@ -527,8 +654,8 @@ export function DatePicker({
               >
                 Confirmar
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
