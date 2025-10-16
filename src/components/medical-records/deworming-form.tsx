@@ -9,12 +9,15 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Bug, Pill, Calendar, Weight, FileText, Syringe } from 'lucide-react'
 
 export function DewormingForm() {
   const {
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext()
 
   return (
@@ -118,10 +121,14 @@ export function DewormingForm() {
             </div>
           </FieldLabel>
           <FieldContent>
-            <Input
+            <DatePicker
               id="next_dose_date"
-              type="date"
-              {...register('next_dose_date')}
+              name="next_dose_date"
+              value={watch('next_dose_date')}
+              onChange={(value) => setValue('next_dose_date', value)}
+              placeholder="Seleccionar fecha de próxima dosis"
+              hasTime={false}
+              error={errors.next_dose_date?.message as string}
             />
             <FieldError errors={[errors.next_dose_date]} />
           </FieldContent>

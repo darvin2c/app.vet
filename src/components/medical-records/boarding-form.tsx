@@ -10,11 +10,14 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 
 export function BoardingForm() {
   const {
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext()
 
   return (
@@ -28,10 +31,14 @@ export function BoardingForm() {
         <Field>
           <FieldLabel htmlFor="check_in_at">Fecha de Ingreso</FieldLabel>
           <FieldContent>
-            <Input
+            <DatePicker
               id="check_in_at"
-              type="datetime-local"
-              {...register('check_in_at')}
+              name="check_in_at"
+              value={watch('check_in_at')}
+              onChange={(value) => setValue('check_in_at', value)}
+              placeholder="Seleccionar fecha y hora de ingreso"
+              hasTime={true}
+              error={errors.check_in_at?.message as string}
             />
             <FieldError errors={[errors.check_in_at]} />
           </FieldContent>
@@ -40,10 +47,14 @@ export function BoardingForm() {
         <Field>
           <FieldLabel htmlFor="check_out_at">Fecha de Salida</FieldLabel>
           <FieldContent>
-            <Input
+            <DatePicker
               id="check_out_at"
-              type="datetime-local"
-              {...register('check_out_at')}
+              name="check_out_at"
+              value={watch('check_out_at')}
+              onChange={(value) => setValue('check_out_at', value)}
+              placeholder="Seleccionar fecha y hora de salida"
+              hasTime={true}
+              error={errors.check_out_at?.message as string}
             />
             <FieldError errors={[errors.check_out_at]} />
           </FieldContent>

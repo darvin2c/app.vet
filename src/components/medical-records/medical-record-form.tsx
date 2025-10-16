@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 import { MedicalRecordFormData } from '@/schemas/medical-record.schema'
 import { MedicalRecordTypeGrid } from './medical-record-type-grid'
 
@@ -67,7 +68,15 @@ export function MedicalRecordForm() {
       <Field>
         <FieldLabel htmlFor="date">Fecha del Registro</FieldLabel>
         <FieldContent>
-          <Input id="date" type="date" {...register('date')} />
+          <DatePicker
+            id="date"
+            name="date"
+            value={watch('date')}
+            onChange={(value) => setValue('date', value || '')}
+            placeholder="Seleccionar fecha del registro"
+            hasTime={false}
+            error={errors.date?.message as string}
+          />
           <FieldError errors={[errors.date]} />
         </FieldContent>
       </Field>

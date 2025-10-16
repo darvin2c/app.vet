@@ -21,6 +21,7 @@ import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { CustomerSelect } from '@/components/customers/customer-select'
 import { SpeciesSelect } from '@/components/species/species-select'
 import { BreedSelect } from '@/components/breeds/breed-select'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Tables } from '@/types/supabase.types'
 
 interface PetFormProps {
@@ -130,7 +131,15 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
           <Field>
             <FieldLabel htmlFor="birth_date">Fecha de nacimiento</FieldLabel>
             <FieldContent>
-              <Input id="birth_date" type="date" {...register('birth_date')} />
+              <DatePicker
+                id="birth_date"
+                name="birth_date"
+                value={watch('birth_date')}
+                onChange={(value) => setValue('birth_date', value)}
+                placeholder="Seleccionar fecha de nacimiento"
+                hasTime={false}
+                error={errors.birth_date?.message}
+              />
               <FieldError errors={[errors.birth_date]} />
             </FieldContent>
           </Field>

@@ -477,7 +477,7 @@ export function DatePicker({
         />
       </div>
       {hasTime && (
-        <div className="border-l-2 border-border pl-4 ml-4 flex-shrink-0 w-48">
+        <div className="flex flex-col justify-around border-l-2 border-border pl-4 ml-4 flex-shrink-0 w-48">
           <div className="space-y-3">
             <div>
               <label className="text-sm font-medium text-muted-foreground mb-2 block">
@@ -519,14 +519,13 @@ export function DatePicker({
             </div>
           </div>
           {selectedDate && selectedHour && selectedMinute && (
-            <div className="mt-3 pt-3 border-t">
+            <div className="mt-10 pt-3 border-t">
               <Button
                 onClick={() => setOpen(false)}
                 className="w-full"
                 size="sm"
               >
-                Confirmar: {format(selectedDate, 'dd/MM/yyyy')} {selectedHour}:
-                {selectedMinute}
+                Confirmar
               </Button>
             </div>
           )}

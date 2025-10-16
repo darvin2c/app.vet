@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 import { type ClinicalParameterFormData } from '@/schemas/clinical-parameters.schema'
 import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
 
@@ -59,10 +60,14 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
       <Field>
         <FieldLabel htmlFor="measured_at">Fecha y Hora de Medición</FieldLabel>
         <FieldContent>
-          <Input
+          <DatePicker
             id="measured_at"
-            type="datetime-local"
-            {...register('measured_at')}
+            name="measured_at"
+            value={watch('measured_at')}
+            onChange={(value) => setValue('measured_at', value || '')}
+            placeholder="Seleccionar fecha y hora de medición"
+            hasTime={true}
+            error={errors.measured_at?.message as string}
           />
           <FieldError errors={[errors.measured_at]} />
         </FieldContent>

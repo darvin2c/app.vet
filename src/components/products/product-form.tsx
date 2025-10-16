@@ -15,6 +15,7 @@ import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 import { ProductUnitSelect } from '@/components/product-units/product-unit-select'
 import { ProductBrandSelect } from '@/components/product-brands/product-brand-select'
+import { DatePicker } from '@/components/ui/date-picker'
 import { Tables } from '@/types/supabase.types'
 import { ProductStockInput } from './product-stock-input'
 
@@ -205,10 +206,14 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
           <Field>
             <FieldLabel htmlFor="expiry_date">Fecha de vencimiento</FieldLabel>
             <FieldContent>
-              <Input
+              <DatePicker
                 id="expiry_date"
-                type="date"
-                {...register('expiry_date')}
+                name="expiry_date"
+                value={watch('expiry_date')}
+                onChange={(value) => setValue('expiry_date', value)}
+                placeholder="Seleccionar fecha de vencimiento"
+                hasTime={false}
+                error={errors.expiry_date?.message}
               />
               <FieldError errors={[errors.expiry_date]} />
             </FieldContent>

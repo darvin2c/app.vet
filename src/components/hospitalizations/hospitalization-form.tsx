@@ -7,12 +7,15 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 import { HospitalizationSchema } from '@/schemas/hospitalization.schema'
 
 export function HospitalizationForm() {
   const {
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext<HospitalizationSchema>()
 
   return (
@@ -20,10 +23,14 @@ export function HospitalizationForm() {
       <Field>
         <FieldLabel htmlFor="admission_at">Fecha de Ingreso</FieldLabel>
         <FieldContent>
-          <Input
+          <DatePicker
             id="admission_at"
-            type="datetime-local"
-            {...register('admission_at')}
+            name="admission_at"
+            value={watch('admission_at')}
+            onChange={(value) => setValue('admission_at', value || '')}
+            placeholder="Seleccionar fecha y hora de ingreso"
+            hasTime={true}
+            error={errors.admission_at?.message as string}
           />
           <FieldError errors={[errors.admission_at]} />
         </FieldContent>
@@ -32,10 +39,14 @@ export function HospitalizationForm() {
       <Field>
         <FieldLabel htmlFor="discharge_at">Fecha de Alta</FieldLabel>
         <FieldContent>
-          <Input
+          <DatePicker
             id="discharge_at"
-            type="datetime-local"
-            {...register('discharge_at')}
+            name="discharge_at"
+            value={watch('discharge_at')}
+            onChange={(value) => setValue('discharge_at', value || '')}
+            placeholder="Seleccionar fecha y hora de alta"
+            hasTime={true}
+            error={errors.discharge_at?.message as string}
           />
           <FieldError errors={[errors.discharge_at]} />
         </FieldContent>

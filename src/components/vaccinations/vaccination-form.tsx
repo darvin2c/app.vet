@@ -9,12 +9,15 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { DatePicker } from '@/components/ui/date-picker'
 import { VaccinationFormData } from '@/schemas/vaccinations.schema'
 
 export function VaccinationForm() {
   const {
     register,
     formState: { errors },
+    setValue,
+    watch,
   } = useFormContext<VaccinationFormData>()
 
   return (
@@ -60,10 +63,14 @@ export function VaccinationForm() {
           Próxima Fecha de Vencimiento
         </FieldLabel>
         <FieldContent>
-          <Input
+          <DatePicker
             id="next_due_at"
-            type="datetime-local"
-            {...register('next_due_at')}
+            name="next_due_at"
+            value={watch('next_due_at')}
+            onChange={(value) => setValue('next_due_at', value)}
+            placeholder="Seleccionar fecha y hora de próxima vacuna"
+            hasTime={true}
+            error={errors.next_due_at?.message as string}
           />
           <FieldError errors={[errors.next_due_at]} />
         </FieldContent>
