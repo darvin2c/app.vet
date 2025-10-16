@@ -4,14 +4,20 @@ import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { 
-  Stethoscope, 
-  Calendar, 
-  User, 
-  FileText, 
+import {
+  Stethoscope,
+  Calendar,
+  User,
+  FileText,
   Syringe,
   Scissors,
   GraduationCap,
@@ -19,7 +25,7 @@ import {
   Activity,
   Building,
   Search,
-  Filter
+  Filter,
 } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
 
@@ -41,7 +47,6 @@ const treatmentTypeIcons = {
   training: GraduationCap,
   clinical: Activity,
   items: Package,
-  hospitalization: Building,
 }
 
 const treatmentTypeLabels = {
@@ -50,7 +55,6 @@ const treatmentTypeLabels = {
   training: 'Entrenamiento',
   clinical: 'Parámetros Clínicos',
   items: 'Medicamentos',
-  hospitalization: 'Hospitalización',
 }
 
 export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
@@ -97,13 +101,16 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
             <SelectItem value="training">Entrenamientos</SelectItem>
             <SelectItem value="clinical">Parámetros Clínicos</SelectItem>
             <SelectItem value="items">Medicamentos</SelectItem>
-            <SelectItem value="hospitalization">Hospitalización</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       {/* Treatment Views */}
-      <Tabs value={activeView} onValueChange={setActiveView} className="space-y-6">
+      <Tabs
+        value={activeView}
+        onValueChange={setActiveView}
+        className="space-y-6"
+      >
         <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="all" className="flex items-center gap-2">
             <Stethoscope className="h-4 w-4" />
@@ -129,10 +136,6 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
             <Syringe className="h-4 w-4" />
             <span className="hidden sm:inline">Vacunas</span>
           </TabsTrigger>
-          <TabsTrigger value="hospitalization" className="flex items-center gap-2">
-            <Building className="h-4 w-4" />
-            <span className="hidden sm:inline">Hospitalización</span>
-          </TabsTrigger>
         </TabsList>
 
         {/* All Treatments Overview */}
@@ -149,7 +152,9 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Activity className="h-8 w-8 mx-auto mb-2 text-blue-500" />
                   <div className="text-2xl font-bold">0</div>
-                  <div className="text-sm text-muted-foreground">Parámetros Clínicos</div>
+                  <div className="text-sm text-muted-foreground">
+                    Parámetros Clínicos
+                  </div>
                 </div>
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Syringe className="h-8 w-8 mx-auto mb-2 text-green-500" />
@@ -164,10 +169,12 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
                 <div className="text-center p-4 bg-muted/50 rounded-lg">
                   <Package className="h-8 w-8 mx-auto mb-2 text-purple-500" />
                   <div className="text-2xl font-bold">0</div>
-                  <div className="text-sm text-muted-foreground">Medicamentos</div>
+                  <div className="text-sm text-muted-foreground">
+                    Medicamentos
+                  </div>
                 </div>
               </div>
-              
+
               <div className="text-center py-8 text-muted-foreground">
                 <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">
@@ -209,29 +216,6 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
         {/* Vaccinations */}
         <TabsContent value="vaccinations" className="space-y-6">
           <PetVaccinations petId={petId} />
-        </TabsContent>
-
-        {/* Hospitalization */}
-        <TabsContent value="hospitalization" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="h-5 w-5" />
-                Hospitalización y Pensión
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <Building className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  Funcionalidad en desarrollo
-                </h3>
-                <p className="text-muted-foreground">
-                  La gestión de hospitalización y pensión estará disponible próximamente.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
       </Tabs>
     </div>

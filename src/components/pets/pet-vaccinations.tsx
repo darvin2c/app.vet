@@ -81,9 +81,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-lg">
-                  Vacuna
-                </CardTitle>
+                <CardTitle className="text-lg">Vacuna</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
                     {vaccination.treatments?.status === 'completed'
@@ -181,8 +179,6 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 </div>
               </>
             )}
-
-
           </CardContent>
         </Card>
       ))}

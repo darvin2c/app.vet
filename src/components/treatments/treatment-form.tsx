@@ -19,7 +19,6 @@ import { TreatmentTypeGrid } from './treatment-type-grid'
 import { VaccinationForm } from './vaccination-form'
 import { SurgeryForm } from './surgery-form'
 import { TrainingForm } from './training-form'
-import { HospitalizationForm } from './hospitalization-form'
 import { BoardingForm } from './boarding-form'
 
 export function TreatmentForm() {
@@ -90,25 +89,13 @@ export function TreatmentForm() {
       </Field>
 
       {/* Formularios dinámicos basados en el tipo de tratamiento - Solo tipos con respaldo en Supabase */}
-      {watchedType === 'vaccination' && (
-        <VaccinationForm />
-      )}
-      
-      {watchedType === 'surgery' && (
-        <SurgeryForm />
-      )}
-      
-      {watchedType === 'training' && (
-        <TrainingForm />
-      )}
-      
-      {watchedType === 'hospitalization' && (
-        <HospitalizationForm />
-      )}
-      
-      {watchedType === 'boarding' && (
-        <BoardingForm />
-      )}
+      {watchedType === 'vaccination' && <VaccinationForm />}
+
+      {watchedType === 'surgery' && <SurgeryForm />}
+
+      {watchedType === 'training' && <TrainingForm />}
+
+      {watchedType === 'boarding' && <BoardingForm />}
     </div>
   )
 }

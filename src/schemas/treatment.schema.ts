@@ -7,11 +7,10 @@ export const TreatmentSchema = z.object({
       'consultation',
       'vaccination',
       'surgery',
-      'hospitalization',
-      'boarding',
-      'training',
       'grooming',
       'deworming',
+      'boarding',
+      'training',
     ])
     .refine((val) => val !== undefined, {
       message: 'El tipo de tratamiento es requerido',

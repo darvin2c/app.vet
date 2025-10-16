@@ -81,9 +81,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-lg">
-                  Cirugía
-                </CardTitle>
+                <CardTitle className="text-lg">Cirugía</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
                     {surgery.treatments?.status === 'completed'
@@ -158,8 +156,6 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 </div>
               </>
             )}
-
-
           </CardContent>
         </Card>
       ))}

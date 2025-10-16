@@ -1,13 +1,21 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Scissors, Sparkles, Camera, FileText, AlertCircle } from 'lucide-react'
 
 export function GroomingForm() {
-  const { register, formState: { errors } } = useFormContext()
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <div className="space-y-6 border-t pt-6">
@@ -35,9 +43,7 @@ export function GroomingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="coat_condition">
-            Condición del Pelaje
-          </FieldLabel>
+          <FieldLabel htmlFor="coat_condition">Condición del Pelaje</FieldLabel>
           <FieldContent>
             <Input
               id="coat_condition"

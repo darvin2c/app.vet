@@ -39,8 +39,6 @@ export function getTypeLabel(type: TreatmentType): string {
       return 'Cirugía'
     case 'grooming':
       return 'Peluquería'
-    case 'hospitalization':
-      return 'Hospitalización'
     case 'deworming':
       return 'Desparasitación'
     case 'boarding':

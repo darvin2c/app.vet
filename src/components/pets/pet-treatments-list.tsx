@@ -136,7 +136,9 @@ export function PetTreatmentsList({
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
-                    <h4 className="font-semibold">{getTypeLabel(treatment.treatment_type)}</h4>
+                    <h4 className="font-semibold">
+                      {getTypeLabel(treatment.treatment_type)}
+                    </h4>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
@@ -168,8 +170,6 @@ export function PetTreatmentsList({
                     <span className="font-medium">Tipo:</span>
                     <span>{getTypeLabel(treatment.treatment_type)}</span>
                   </div>
-
-
 
                   {/* Archivos adjuntos */}
                   <div className="space-y-2 border-t pt-3">

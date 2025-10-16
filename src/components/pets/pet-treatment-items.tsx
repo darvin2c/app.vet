@@ -124,7 +124,9 @@ export function PetTreatmentItems({ petId }: PetTreatmentItemsProps) {
                 <div>
                   <h4 className="font-medium mb-2">Tratamiento Asociado</h4>
                   <p className="text-sm text-muted-foreground">
-                    {item.treatments.treatment_type ? getTypeLabel(item.treatments.treatment_type) : 'Tratamiento sin descripción'}
+                    {item.treatments.treatment_type
+                      ? getTypeLabel(item.treatments.treatment_type)
+                      : 'Tratamiento sin descripción'}
                   </p>
                   {item.treatments.treatment_date && (
                     <p className="text-xs text-muted-foreground mt-1">

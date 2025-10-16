@@ -70,8 +70,7 @@ export function TreatmentQuickActions({
         return 'Cirugía'
       case 'grooming':
         return 'Peluquería'
-      case 'hospitalization':
-        return 'Hospitalización'
+
       case 'deworming':
         return 'Desparasitación'
       case 'boarding':
@@ -91,7 +90,9 @@ export function TreatmentQuickActions({
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-2">
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
-                <h4 className="font-medium truncate">{getTypeLabel(treatment.treatment_type)}</h4>
+                <h4 className="font-medium truncate">
+                  {getTypeLabel(treatment.treatment_type)}
+                </h4>
                 <Badge
                   variant={getStatusVariant(treatment.status)}
                   className="ml-auto"
@@ -179,10 +180,13 @@ export function TreatmentQuickActions({
       <CardContent className="pt-0">
         <div className="space-y-4">
           <div className="text-sm">
-            <p className="text-muted-foreground mb-2">Información del tratamiento:</p>
+            <p className="text-muted-foreground mb-2">
+              Información del tratamiento:
+            </p>
             <div className="space-y-1">
               <p>
-                <span className="font-medium">Tipo:</span> {getTypeLabel(treatment.treatment_type)}
+                <span className="font-medium">Tipo:</span>{' '}
+                {getTypeLabel(treatment.treatment_type)}
               </p>
               <p>
                 <span className="font-medium">Estado:</span> {treatment.status}

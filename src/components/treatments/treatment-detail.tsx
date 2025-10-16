@@ -71,8 +71,7 @@ export function TreatmentDetail({
         return 'Cirugía'
       case 'grooming':
         return 'Peluquería'
-      case 'hospitalization':
-        return 'Hospitalización'
+
       case 'deworming':
         return 'Desparasitación'
       case 'boarding':
@@ -92,7 +91,9 @@ export function TreatmentDetail({
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <CardTitle className="text-xl">{getTreatmentTypeText(treatment.treatment_type)}</CardTitle>
+                <CardTitle className="text-xl">
+                  {getTreatmentTypeText(treatment.treatment_type)}
+                </CardTitle>
                 <Badge className={getStatusColor(treatment.status)}>
                   {getStatusText(treatment.status)}
                 </Badge>

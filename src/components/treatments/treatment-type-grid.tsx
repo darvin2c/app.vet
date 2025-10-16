@@ -54,12 +54,6 @@ const treatmentTypes = [
     description: 'Servicios de estética',
   },
   {
-    value: 'hospitalization',
-    label: 'Hospitalización',
-    icon: Building2,
-    description: 'Internación y cuidados',
-  },
-  {
     value: 'deworming',
     label: 'Desparasitación',
     icon: Bug,
@@ -132,9 +126,7 @@ export function TreatmentTypeGrid({
       {/* Contenido colapsable con el grid */}
       <CollapsibleContent>
         <ItemGroup
-          className={cn(
-            'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3'
-          )}
+          className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3')}
         >
           {treatmentTypes.map((type) => {
             const Icon = type.icon
@@ -164,7 +156,10 @@ export function TreatmentTypeGrid({
                     <Icon className="h-5 w-5" />
                   </ItemMedia>
                   <ItemTitle
-                    className={cn('justify-center', isSelected && 'text-primary')}
+                    className={cn(
+                      'justify-center',
+                      isSelected && 'text-primary'
+                    )}
                   >
                     {type.label}
                   </ItemTitle>

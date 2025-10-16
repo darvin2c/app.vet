@@ -188,8 +188,6 @@ export function TreatmentNavigation({
                   <p className="text-sm">{treatment.vet_id || 'No asignado'}</p>
                 </div>
               </div>
-
-
             </CardContent>
           </Card>
         </TabsContent>
@@ -243,7 +241,9 @@ export function TreatmentNavigation({
               <div className="text-center py-8 text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-4" />
                 <p>Las notas del tratamiento aparecerán aquí</p>
-                <p className="text-sm mt-2">Esta funcionalidad se integrará próximamente.</p>
+                <p className="text-sm mt-2">
+                  Esta funcionalidad se integrará próximamente.
+                </p>
               </div>
             </CardContent>
           </Card>

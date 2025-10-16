@@ -1,19 +1,29 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Bug, Pill, Calendar, Weight, FileText, Syringe } from 'lucide-react'
 
 export function DewormingForm() {
-  const { register, formState: { errors } } = useFormContext()
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <div className="space-y-6 border-t pt-6">
       <div className="flex items-center gap-2 mb-4">
         <Bug className="h-5 w-5 text-amber-600" />
-        <h3 className="text-lg font-semibold">Información de Desparasitación</h3>
+        <h3 className="text-lg font-semibold">
+          Información de Desparasitación
+        </h3>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -52,9 +62,7 @@ export function DewormingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="dosage">
-            Dosis
-          </FieldLabel>
+          <FieldLabel htmlFor="dosage">Dosis</FieldLabel>
           <FieldContent>
             <Input
               id="dosage"

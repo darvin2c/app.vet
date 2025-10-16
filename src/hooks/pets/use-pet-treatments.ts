@@ -11,7 +11,6 @@ type PetTreatment = Tables<'treatments'> & {
     | null
   clinical_notes: Tables<'clinical_notes'>[]
   clinical_parameters: Tables<'clinical_parameters'>[]
-  hospitalizations: Tables<'hospitalizations'>[]
   boardings: Tables<'boardings'>[]
 }
 
@@ -71,14 +70,7 @@ export function usePetTreatments(petId: string) {
             schema_version,
             created_at
           ),
-          hospitalizations (
-            id,
-            admission_at,
-            discharge_at,
-            daily_rate,
-            notes,
-            bed_id
-          ),
+
           boardings (
             id,
             check_in_at,

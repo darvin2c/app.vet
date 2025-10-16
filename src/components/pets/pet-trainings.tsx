@@ -81,9 +81,7 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
           <CardHeader>
             <div className="flex items-start justify-between">
               <div>
-                <CardTitle className="text-lg">
-                  Entrenamiento
-                </CardTitle>
+                <CardTitle className="text-lg">Entrenamiento</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
                     {training.treatments?.status === 'completed'
@@ -187,8 +185,6 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 </div>
               </>
             )}
-
-
           </CardContent>
         </Card>
       ))}

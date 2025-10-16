@@ -2,12 +2,20 @@
 
 import { useFormContext } from 'react-hook-form'
 import { GraduationCap } from 'lucide-react'
-import { Field, FieldContent, FieldError, FieldLabel } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 
 export function TrainingForm() {
-  const { register, formState: { errors } } = useFormContext()
+  const {
+    register,
+    formState: { errors },
+  } = useFormContext()
 
   return (
     <div className="space-y-4">
@@ -31,7 +39,9 @@ export function TrainingForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Field>
-          <FieldLabel htmlFor="sessions_planned">Sesiones Planificadas</FieldLabel>
+          <FieldLabel htmlFor="sessions_planned">
+            Sesiones Planificadas
+          </FieldLabel>
           <FieldContent>
             <Input
               id="sessions_planned"
@@ -44,7 +54,9 @@ export function TrainingForm() {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="sessions_completed">Sesiones Completadas</FieldLabel>
+          <FieldLabel htmlFor="sessions_completed">
+            Sesiones Completadas
+          </FieldLabel>
           <FieldContent>
             <Input
               id="sessions_completed"
