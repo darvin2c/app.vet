@@ -294,6 +294,7 @@ export type Database = {
           id: string
           measured_at: string
           params: Json
+          pet_id: string | null
           schema_version: number
           tenant_id: string
           treatment_id: string | null
@@ -306,6 +307,7 @@ export type Database = {
           id?: string
           measured_at?: string
           params: Json
+          pet_id?: string | null
           schema_version?: number
           tenant_id: string
           treatment_id?: string | null
@@ -318,6 +320,7 @@ export type Database = {
           id?: string
           measured_at?: string
           params?: Json
+          pet_id?: string | null
           schema_version?: number
           tenant_id?: string
           treatment_id?: string | null
@@ -325,6 +328,13 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: 'clinical_parameters_pet_id_fkey'
+            columns: ['pet_id']
+            isOneToOne: false
+            referencedRelation: 'pets'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'clinical_parameters_tenant_id_fkey'
             columns: ['tenant_id']
