@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useClinicalParameterUpdate() {
   const queryClient = useQueryClient()
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
   const supabase = createClient()
 
   return useMutation({

@@ -44,8 +44,8 @@ export function MedicalRecordSelect({
         ) : (
           medicalRecords.map((medicalRecord) => (
             <SelectItem key={medicalRecord.id} value={medicalRecord.id}>
-              {medicalRecord.type} -{' '}
-              {new Date(medicalRecord.date).toLocaleDateString()}
+              {medicalRecord.record_type} -{' '}
+              {new Date(medicalRecord.record_date).toLocaleDateString()}
             </SelectItem>
           ))
         )}

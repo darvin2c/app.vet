@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useVaccinationDelete() {
   const queryClient = useQueryClient()
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (id: string) => {

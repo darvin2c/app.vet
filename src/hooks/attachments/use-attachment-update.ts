@@ -21,7 +21,7 @@ const mockUpdateAttachment = async ({
   // Simular attachment actualizado
   const updatedAttachment = {
     id,
-    treatment_id: 'treatment_001', // Mock treatment_id
+    clinical_record_id: 'medical_record_001', // Mock clinical_record_id
     file_name: data.file_name || 'archivo_actualizado.pdf',
     file_size: 1024000, // Mock size
     file_type: 'application/pdf', // Mock type
@@ -57,7 +57,7 @@ export function useAttachmentUpdate() {
         queryKey: [
           'mock-tenant-id',
           'treatments',
-          data.treatment_id,
+          data.clinical_record_id,
           'attachments',
         ],
       })

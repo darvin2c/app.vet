@@ -11,7 +11,7 @@ import { VaccinationCreateButton } from '@/components/vaccinations/vaccination-c
 import { VaccinationActions } from '@/components/vaccinations/vaccination-actions'
 
 type Vaccination = Tables<'vaccinations'> & {
-  medical_records: Tables<'medical_records'> | null
+  clinical_records: Tables<'clinical_records'> | null
   staff: Tables<'staff'> | null
 }
 
@@ -84,9 +84,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CardTitle className="text-lg">Vacuna</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {vaccination.medical_records?.status === 'completed'
-                      ? 'Aplicada'
-                      : vaccination.medical_records?.status === 'draft'
+                    {vaccination.clinical_records?.status === 'completed'
+                      ? 'Completado'
+                      : vaccination.clinical_records?.status === 'draft'
                         ? 'Borrador'
                         : 'Cancelada'}
                   </Badge>
@@ -101,9 +101,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha de aplicación:</strong>{' '}
-                  {vaccination.medical_records?.date
+                  {vaccination.clinical_records?.record_date
                     ? format(
-                        new Date(vaccination.medical_records.date),
+                        new Date(vaccination.clinical_records.record_date),
                         'PPP',
                         { locale: es }
                       )

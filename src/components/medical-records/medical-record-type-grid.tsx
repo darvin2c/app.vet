@@ -58,7 +58,7 @@ const medicalRecordTypes = [
     value: 'deworming',
     label: 'Desparasitación',
     icon: Bug,
-    description: 'Tratamiento antiparasitario',
+    description: 'Registro antiparasitario',
   },
   {
     value: 'boarding',

@@ -1,17 +1,17 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useMedicalRecordItemDelete() {
   const queryClient = useQueryClient()
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (id: string) => {
       const supabase = createClient()
 
       const { error } = await supabase
-        .from('medical_record_items')
+        .from('record_items')
         .delete()
         .eq('id', id)
         .eq('tenant_id', currentTenant?.id!)

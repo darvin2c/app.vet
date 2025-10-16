@@ -34,7 +34,7 @@ export function MedicalRecordForm() {
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="type">Tipo de Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="type">Tipo de Registro Médico</FieldLabel>
         <FieldContent>
           <MedicalRecordTypeGrid
             value={watchedType}
@@ -65,13 +65,9 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="date">Fecha del Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="date">Fecha del Registro</FieldLabel>
         <FieldContent>
-          <Input
-            id="date"
-            type="date"
-            {...register('date')}
-          />
+          <Input id="date" type="date" {...register('date')} />
           <FieldError errors={[errors.date]} />
         </FieldContent>
       </Field>
@@ -100,7 +96,7 @@ export function MedicalRecordForm() {
         </FieldContent>
       </Field>
 
-      {/* Formularios dinámicos basados en el tipo de tratamiento - Solo tipos con respaldo en Supabase */}
+      {/* Formularios dinámicos basados en el tipo de registro médico - Solo tipos con respaldo en Supabase */}
       {watchedType === 'vaccination' && <VaccinationForm />}
 
       {watchedType === 'surgery' && <SurgeryForm />}

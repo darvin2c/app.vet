@@ -10,7 +10,7 @@ export const BoardingSchema = z.object({
   feeding_notes: z.string().optional().or(z.literal('')),
   kennel_id: z.string().optional().or(z.literal('')),
   observations: z.string().optional().or(z.literal('')),
-  treatment_id: z.string().nonempty('El tratamiento es requerido'),
+  treatment_id: z.string().nonempty('El registro médico es requerido'),
 })
 
 export type BoardingFormData = z.infer<typeof BoardingSchema>

@@ -14,14 +14,14 @@ export const MedicalRecordSchema = z.object({
       'training',
     ])
     .refine((val) => val !== undefined, {
-      message: 'El tipo de tratamiento es requerido',
+      message: 'El tipo de registro médico es requerido',
     }),
   status: z
     .enum(['draft', 'completed', 'cancelled'])
     .refine((val) => val !== undefined, {
       message: 'El estado es requerido',
     }),
-  date: z.string().nonempty('La fecha del tratamiento es requerida'),
+  date: z.string().nonempty('La fecha del registro es requerida'),
   vet_id: z.string().optional(),
   appointment_id: z.string().optional(),
   notes: z.string().optional(),

@@ -24,12 +24,14 @@ interface ClinicalNoteEditProps {
   clinicalNote: Tables<'clinical_notes'>
   open: boolean
   onOpenChange: (open: boolean) => void
+  petId?: string
 }
 
 export function ClinicalNoteEdit({
   clinicalNote,
   open,
   onOpenChange,
+  petId,
 }: ClinicalNoteEditProps) {
   const updateClinicalNote = useClinicalNoteUpdate()
 
@@ -37,8 +39,7 @@ export function ClinicalNoteEdit({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
       content: clinicalNote.content,
-      medical_record_id: clinicalNote.medical_record_id,
-      hospitalization_id: clinicalNote.hospitalization_id || undefined,
+      clinical_record_id: clinicalNote.clinical_record_id || '',
     },
   })
 
@@ -46,8 +47,7 @@ export function ClinicalNoteEdit({
     try {
       const data = {
         content: formData.content,
-        medical_record_id: formData.medical_record_id,
-        hospitalization_id: formData.hospitalization_id,
+        clinical_record_id: formData.clinical_record_id,
       }
       await updateClinicalNote.mutateAsync({
         id: clinicalNote.id,
@@ -74,7 +74,7 @@ export function ClinicalNoteEdit({
         <div className="px-4 pb-4">
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <ClinicalNoteForm />
+              <ClinicalNoteForm petId={petId} />
             </form>
           </FormProvider>
         </div>

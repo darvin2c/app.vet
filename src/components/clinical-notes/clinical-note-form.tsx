@@ -9,10 +9,13 @@ import {
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
 import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
-import { HospitalizationSelect } from '@/components/hospitalizations/hospitalization-select'
 import { type ClinicalNoteFormData } from '@/schemas/clinical-notes.schema'
 
-export function ClinicalNoteForm() {
+interface ClinicalNoteFormProps {
+  petId?: string
+}
+
+export function ClinicalNoteForm({ petId }: ClinicalNoteFormProps) {
   const {
     register,
     formState: { errors },
@@ -36,32 +39,17 @@ export function ClinicalNoteForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="medical_record_id">Registro Médico</FieldLabel>
+        <FieldLabel htmlFor="clinical_record_id">Registro Médico</FieldLabel>
         <FieldContent>
           <MedicalRecordSelect
-            value={watch('medical_record_id') || undefined}
+            value={watch('clinical_record_id') || undefined}
             onValueChange={(value: string | null) =>
-              setValue('medical_record_id', value || '')
+              setValue('clinical_record_id', value || '')
             }
+            petId={petId}
             placeholder="Seleccionar registro médico"
           />
-          <FieldError errors={[errors.medical_record_id]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="hospitalization_id">
-          Hospitalización (Opcional)
-        </FieldLabel>
-        <FieldContent>
-          <HospitalizationSelect
-            value={watch('hospitalization_id') || undefined}
-            onValueChange={(value: string | null) =>
-              setValue('hospitalization_id', value || undefined)
-            }
-            placeholder="Seleccionar hospitalización"
-          />
-          <FieldError errors={[errors.hospitalization_id]} />
+          <FieldError errors={[errors.clinical_record_id]} />
         </FieldContent>
       </Field>
     </div>

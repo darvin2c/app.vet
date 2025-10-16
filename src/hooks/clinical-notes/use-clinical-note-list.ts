@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
 
@@ -13,7 +13,7 @@ interface UseClinicalNotesParams {
 
 export function useClinicalNoteList(params?: UseClinicalNotesParams) {
   const { filters = [], search, orders = [] } = params || {}
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
     queryKey: [currentTenant?.id, 'clinical_notes', filters, search, orders],
@@ -28,7 +28,7 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
         .select(
           `
           *,
-          medical_records (
+          clinical_records (
             id,
             type,
             date,
@@ -53,8 +53,8 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
       // Aplicar filtros
       filters.forEach((filter) => {
         switch (filter.field) {
-          case 'medical_record_id':
-            query = query.eq('treatment_id', filter.value)
+          case 'clinical_record_id':
+            query = query.eq('clinical_record_id', filter.value)
             break
           case 'hospitalization_id':
             query = query.eq('hospitalization_id', filter.value)
@@ -79,7 +79,7 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
       }
 
       return (data || []) as unknown as (Tables<'clinical_notes'> & {
-        medical_records: Tables<'medical_records'> | null
+        clinical_records: Tables<'clinical_records'> | null
         hospitalizations: Tables<'hospitalizations'> | null
       })[]
     },

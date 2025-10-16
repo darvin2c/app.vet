@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type PetMedicalRecord = Tables<'medical_records'> & {
+type PetMedicalRecord = Tables<'clinical_records'> & {
   appointments:
     | (Tables<'appointments'> & {
         appointment_types: Tables<'appointment_types'> | null
@@ -43,7 +43,7 @@ export function usePetMedicalRecords(petId: string) {
 
       // Luego obtenemos los registros médicos relacionados con esas citas
       const { data, error } = await supabase
-        .from('medical_records')
+        .from('clinical_records')
         .select(
           `
           *,

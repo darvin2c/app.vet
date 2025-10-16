@@ -7,7 +7,7 @@ import { useMedicalRecordItemDelete } from '@/hooks/medical-record-items/use-med
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordItemDeleteProps {
-  medicalRecordItem: Tables<'medical_record_items'>
+  medicalRecordItem: Tables<'record_items'>
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -55,7 +55,8 @@ export function MedicalRecordItemDelete({
         description={
           <div className="space-y-2">
             <p>
-              Esta acción eliminará permanentemente el artículo del registro médico.
+              Esta acción eliminará permanentemente el artículo del registro
+              médico.
             </p>
             <p className="text-sm text-muted-foreground">
               Esta acción no se puede deshacer.

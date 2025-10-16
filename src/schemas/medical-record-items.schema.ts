@@ -4,7 +4,7 @@ export const MedicalRecordItemSchema = z.object({
   notes: z.string().optional().or(z.literal('')),
   product_id: z.string().nonempty('El producto es requerido'),
   qty: z.number().min(1, 'La cantidad debe ser mayor a 0'),
-  medical_record_id: z.string().nonempty('El registro médico es requerido'),
+  record_id: z.string().nonempty('El registro médico es requerido'),
   unit_price: z
     .number()
     .min(0, 'El precio unitario debe ser mayor o igual a 0'),

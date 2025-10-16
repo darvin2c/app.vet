@@ -19,6 +19,8 @@ import { HospitalizationList } from '@/components/hospitalizations/hospitalizati
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 import { ClinicalNoteList } from '@/components/clinical-notes/clinical-note-list'
 import { ClinicalNoteCreateButton } from '@/components/clinical-notes/clinical-note-create-button'
+import { PetClinicalParameters } from '@/components/pets/pet-clinical-parameters'
+import { useClinicalParameterList } from '@/hooks/clinical-parameters/use-clinical-parameter-list'
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -31,6 +33,11 @@ export default function PetProfilePage() {
     isLoading: petLoading,
     error: petError,
   } = usePetDetail(petId)
+
+  const {
+    data: clinicalParameters = [],
+    isLoading: clinicalParametersLoading,
+  } = useClinicalParameterList({ petId })
 
   if (petLoading || !pet) {
     return (
@@ -93,10 +100,13 @@ export default function PetProfilePage() {
             onValueChange={setActiveTab}
             className="space-y-6"
           >
-            <TabsList className="grid w-full grid-cols-5 text-xs">
+            <TabsList className="grid w-full grid-cols-6 text-xs">
               <TabsTrigger value="general">General</TabsTrigger>
+              <TabsTrigger value="clinical-parameters">
+                Parámetros Clínicos
+              </TabsTrigger>
+              <TabsTrigger value="treatments">Registros Médicos</TabsTrigger>
               <TabsTrigger value="appointments">Citas</TabsTrigger>
-              <TabsTrigger value="treatments">Tratamientos</TabsTrigger>
               <TabsTrigger value="hospitalizations">
                 Hospitalizaciones
               </TabsTrigger>
@@ -117,9 +127,26 @@ export default function PetProfilePage() {
               />
             </TabsContent>
 
-            {/* All Treatments - Now the main treatments view */}
+            {/* All Medical Records - Now the main medical records view */}
             <TabsContent value="treatments" className="space-y-6">
               <PetAllTreatments petId={petId} />
+            </TabsContent>
+
+            {/* Clinical Parameters */}
+            <TabsContent value="clinical-parameters" className="space-y-6">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Parámetros Clínicos</h2>
+                  <p className="text-muted-foreground">
+                    Mediciones y parámetros vitales de la mascota
+                  </p>
+                </div>
+              </div>
+              <PetClinicalParameters
+                parameters={clinicalParameters}
+                isLoading={clinicalParametersLoading}
+                petId={petId}
+              />
             </TabsContent>
 
             {/* Hospitalizations */}

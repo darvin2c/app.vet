@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useMedicalRecordUpdate() {
   const queryClient = useQueryClient()
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
   const supabase = createClient()
 
   return useMutation({
@@ -14,10 +14,10 @@ export function useMedicalRecordUpdate() {
       data,
     }: {
       id: string
-      data: Omit<TablesUpdate<'medical_records'>, 'tenant_id'>
+      data: Omit<TablesUpdate<'clinical_records'>, 'tenant_id'>
     }) => {
       const { data: medicalRecord, error } = await supabase
-        .from('medical_records')
+        .from('clinical_records')
         .update(data)
         .eq('id', id)
         .select()
@@ -31,7 +31,7 @@ export function useMedicalRecordUpdate() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'medical_records'],
+        queryKey: [currentTenant?.id, 'clinical_records'],
       })
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'pet-medical-records'],

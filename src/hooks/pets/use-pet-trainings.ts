@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Tables } from '@/types/supabase.types'
 
 type Training = Tables<'trainings'> & {
-  medical_records: Tables<'medical_records'> | null
+  clinical_records: Tables<'clinical_records'> | null
   staff: Tables<'staff'> | null
 }
 

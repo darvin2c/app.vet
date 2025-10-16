@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const DewormingSchema = z.object({
-  treatment_id: z.string().nonempty('El tratamiento es requerido'),
+  treatment_id: z.string().nonempty('El registro médico es requerido'),
   parasite_type: z.string().optional(),
   medication: z.string().optional(),
   dosage: z.string().optional(),

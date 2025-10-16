@@ -52,7 +52,7 @@ export function AttachmentList({
   maxHeight = '600px',
 }: AttachmentListProps) {
   const [filters, setFilters] = useState<AttachmentFilters>({
-    medical_record_id: medicalRecordId,
+    clinical_record_id: medicalRecordId,
   })
   const [searchTerm, setSearchTerm] = useState('')
 

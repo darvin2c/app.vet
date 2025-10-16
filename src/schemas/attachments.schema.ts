@@ -26,7 +26,7 @@ export const attachmentCategoryEnum = z.enum([
 
 // Schema base para attachment
 export const attachmentBaseSchema = z.object({
-  medical_record_id: z.string().nonempty('El registro médico es requerido'),
+  clinical_record_id: z.string().nonempty('El registro médico es requerido'),
   file_name: z
     .string()
     .nonempty('El nombre del archivo es requerido')
@@ -66,7 +66,7 @@ export const createAttachmentSchema = attachmentBaseSchema.omit({
 // Schema para actualizar attachment
 export const updateAttachmentSchema = attachmentBaseSchema
   .omit({
-    medical_record_id: true,
+    clinical_record_id: true,
     file_url: true,
     file_size: true,
     file_type: true,
@@ -75,7 +75,7 @@ export const updateAttachmentSchema = attachmentBaseSchema
 
 // Schema para filtros de attachments
 export const attachmentFiltersSchema = z.object({
-  medical_record_id: z.string().uuid().optional(),
+  clinical_record_id: z.string().uuid().optional(),
   attachment_type: attachmentTypeEnum.optional(),
   category: attachmentCategoryEnum.optional(),
   is_sensitive: z.boolean().optional(),
@@ -88,7 +88,7 @@ export const attachmentFiltersSchema = z.object({
 
 // Schema para upload de archivo
 export const attachmentUploadSchema = z.object({
-  medical_record_id: z.string().nonempty('El registro médico es requerido'),
+  clinical_record_id: z.string().nonempty('El registro médico es requerido'),
   file: z.any().refine((file) => file instanceof File, {
     message: 'Debe seleccionar un archivo válido',
   }),
@@ -107,7 +107,7 @@ export const attachmentUploadSchema = z.object({
 
 // Schema para validar múltiples uploads
 export const multipleAttachmentUploadSchema = z.object({
-  medical_record_id: z.string().nonempty('El registro médico es requerido'),
+  clinical_record_id: z.string().nonempty('El registro médico es requerido'),
   files: z
     .array(
       z.any().refine((file) => file instanceof File, {

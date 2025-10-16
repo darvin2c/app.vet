@@ -12,7 +12,7 @@ import { MedicalRecordDelete } from './medical-record-delete'
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordActionsProps {
-  medicalRecord: Tables<'medical_records'>
+  medicalRecord: Tables<'clinical_records'>
 }
 
 export function MedicalRecordActions({

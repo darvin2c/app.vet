@@ -94,7 +94,7 @@ export function DewormingForm() {
           <FieldLabel htmlFor="weight_at_treatment">
             <div className="flex items-center gap-2">
               <Weight className="h-4 w-4" />
-              Peso al Tratamiento (kg)
+              Peso al Registro (kg)
             </div>
           </FieldLabel>
           <FieldContent>
@@ -132,7 +132,7 @@ export function DewormingForm() {
         <FieldLabel htmlFor="treatment_notes">
           <div className="flex items-center gap-2">
             <FileText className="h-4 w-4" />
-            Notas del Tratamiento
+            Notas del Registro
           </div>
         </FieldLabel>
         <FieldContent>

@@ -23,7 +23,7 @@ import { useMedicalRecordItemUpdate } from '@/hooks/medical-record-items/use-med
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordItemEditProps {
-  medicalRecordItem: Tables<'medical_record_items'>
+  medicalRecordItem: Tables<'record_items'>
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -44,7 +44,7 @@ export function MedicalRecordItemEdit({
   const form = useForm<MedicalRecordItemFormData>({
     resolver: zodResolver(MedicalRecordItemSchema),
     defaultValues: {
-      medical_record_id: medicalRecordItem.medical_record_id,
+      record_id: medicalRecordItem.record_id,
       product_id: medicalRecordItem.product_id,
       qty: medicalRecordItem.qty,
       unit_price: medicalRecordItem.unit_price,
@@ -56,7 +56,7 @@ export function MedicalRecordItemEdit({
     setOpen(newOpen)
     if (!newOpen) {
       form.reset({
-        medical_record_id: medicalRecordItem.medical_record_id,
+        record_id: medicalRecordItem.record_id,
         product_id: medicalRecordItem.product_id,
         qty: medicalRecordItem.qty,
         unit_price: medicalRecordItem.unit_price,
@@ -81,7 +81,7 @@ export function MedicalRecordItemEdit({
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        medical_record_id: medicalRecordItem.medical_record_id,
+        record_id: medicalRecordItem.record_id,
         product_id: medicalRecordItem.product_id,
         qty: medicalRecordItem.qty,
         unit_price: medicalRecordItem.unit_price,

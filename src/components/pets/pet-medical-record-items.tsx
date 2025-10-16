@@ -57,11 +57,11 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
           <CardContent className="flex flex-col items-center justify-center py-12">
             <Package className="h-12 w-12 text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold text-muted-foreground mb-2">
-              No hay productos de tratamiento registrados
+              No hay productos de registro médico registrados
             </h3>
-            <p className="text-sm text-muted-foreground text-center">
-              Este paciente no tiene productos de tratamiento en su historial
-              médico.
+            <p className="text-sm text-muted-foreground">
+              Este paciente no tiene productos de registro médico en su
+              historial médico.
             </p>
           </CardContent>
         </Card>
@@ -117,20 +117,20 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
               </div>
             </div>
 
-            {item.medical_records && (
+            {item.clinical_records && (
               <>
                 <Separator />
                 <div>
-                  <h4 className="font-medium mb-2">Tratamiento Asociado</h4>
+                  <h4 className="font-medium mb-2">Registro Médico Asociado</h4>
                   <p className="text-sm text-muted-foreground">
-                    {item.medical_records.type
-                      ? getTypeLabel(item.medical_records.type)
-                      : 'Tratamiento sin descripción'}
+                    {item.clinical_records.record_type
+                      ? getTypeLabel(item.clinical_records.record_type)
+                      : 'Registro médico sin descripción'}
                   </p>
-                  {item.medical_records.date && (
+                  {item.clinical_records.record_date && (
                     <p className="text-xs text-muted-foreground mt-1">
                       {format(
-                        new Date(item.medical_records.date),
+                        new Date(item.clinical_records.record_date),
                         'PPP',
                         {
                           locale: es,

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
-import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function usePetClinicalNotes(petId: string) {
-  const { currentTenant } = useCurrentTenant()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
     queryKey: [currentTenant?.id, 'pet-clinical-notes', petId],
@@ -19,7 +19,7 @@ export function usePetClinicalNotes(petId: string) {
         .select(
           `
           *,
-          medical_records (
+          clinical_records (
             id,
             type,
             date,
@@ -45,7 +45,7 @@ export function usePetClinicalNotes(petId: string) {
       }
 
       return (data || []) as unknown as (Tables<'clinical_notes'> & {
-        medical_records: Tables<'medical_records'> | null
+        clinical_records: Tables<'clinical_records'> | null
         hospitalizations: Tables<'hospitalizations'> | null
       })[]
     },

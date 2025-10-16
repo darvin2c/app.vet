@@ -23,6 +23,7 @@ interface ClinicalNoteCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   medicalRecordId?: string
+  petId?: string
   hospitalizationId?: string
 }
 
@@ -30,6 +31,7 @@ export function ClinicalNoteCreate({
   open,
   onOpenChange,
   medicalRecordId,
+  petId,
   hospitalizationId,
 }: ClinicalNoteCreateProps) {
   const createClinicalNote = useClinicalNoteCreate()
@@ -38,8 +40,7 @@ export function ClinicalNoteCreate({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
       content: '',
-      medical_record_id: medicalRecordId || '',
-      hospitalization_id: hospitalizationId || undefined,
+      clinical_record_id: medicalRecordId || '',
     },
   })
 
@@ -47,8 +48,7 @@ export function ClinicalNoteCreate({
     try {
       const data = {
         content: formData.content,
-        medical_record_id: formData.medical_record_id,
-        hospitalization_id: formData.hospitalization_id,
+        clinical_record_id: formData.clinical_record_id,
       }
       await createClinicalNote.mutateAsync(data)
       toast.success('Nota clínica creada exitosamente')
@@ -73,7 +73,7 @@ export function ClinicalNoteCreate({
         <div className="px-4 pb-4">
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <ClinicalNoteForm />
+              <ClinicalNoteForm petId={petId} />
             </form>
           </FormProvider>
         </div>

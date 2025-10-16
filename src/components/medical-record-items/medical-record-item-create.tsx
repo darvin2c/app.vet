@@ -35,7 +35,7 @@ export function MedicalRecordItemCreate({
   const form = useForm<MedicalRecordItemFormData>({
     resolver: zodResolver(MedicalRecordItemSchema),
     defaultValues: {
-      medical_record_id: medicalRecordId,
+      record_id: medicalRecordId,
       product_id: '',
       qty: 1,
       unit_price: 0,
@@ -47,7 +47,6 @@ export function MedicalRecordItemCreate({
     try {
       await createMedicalRecordItem.mutateAsync({
         ...data,
-        medical_record_id: medicalRecordId,
       })
       toast.success('Item de registro médico agregado exitosamente')
       onOpenChange(false)

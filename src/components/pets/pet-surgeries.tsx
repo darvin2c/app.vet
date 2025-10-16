@@ -11,7 +11,7 @@ import { SurgeryCreateButton } from '@/components/surgeries/surgery-create-butto
 import { SurgeryActions } from '@/components/surgeries/surgery-actions'
 
 type Surgery = Tables<'surgeries'> & {
-  medical_records: Tables<'medical_records'> | null
+  clinical_records: Tables<'clinical_records'> | null
   staff: Tables<'staff'> | null
 }
 
@@ -84,15 +84,15 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <CardTitle className="text-lg">Cirugía</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {surgery.medical_records?.status === 'completed'
+                    {surgery.clinical_records?.status === 'completed'
                       ? 'Completada'
-                      : surgery.medical_records?.status === 'cancelled'
+                      : surgery.clinical_records?.status === 'cancelled'
                         ? 'Cancelada'
                         : 'Programada'}
                   </Badge>
                 </div>
                 <Badge variant="secondary">
-                  {surgery.medical_records?.type || 'Cirugía'}
+                  {surgery.clinical_records?.record_type || 'Cirugía'}
                 </Badge>
               </div>
               <SurgeryActions surgery={surgery} />
@@ -104,9 +104,9 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha:</strong>{' '}
-                  {surgery.medical_records?.date
+                  {surgery.clinical_records?.record_date
                     ? format(
-                        new Date(surgery.medical_records.date),
+                        new Date(surgery.clinical_records.record_date),
                         'PPP',
                         { locale: es }
                       )

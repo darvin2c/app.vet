@@ -25,7 +25,7 @@ import {
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordDetailProps {
-  medicalRecord: Tables<'medical_records'>
+  medicalRecord: Tables<'clinical_records'>
   petName?: string
   vetName?: string
 }
@@ -85,14 +85,14 @@ export function MedicalRecordDetail({
 
   return (
     <div className="space-y-6">
-      {/* Header del tratamiento */}
+      {/* Header del registro médico */}
       <Card>
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-xl">
-                  {getMedicalRecordTypeText(medicalRecord.type)}
+                  {getMedicalRecordTypeText(medicalRecord.record_type)}
                 </CardTitle>
                 <Badge className={getStatusColor(medicalRecord.status)}>
                   {getStatusText(medicalRecord.status)}
@@ -101,11 +101,11 @@ export function MedicalRecordDetail({
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Stethoscope className="h-4 w-4" />
-                  {getMedicalRecordTypeText(medicalRecord.type)}
+                  {getMedicalRecordTypeText(medicalRecord.record_type)}
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  {format(new Date(medicalRecord.date), 'PPP', {
+                  {format(new Date(medicalRecord.record_date), 'PPP', {
                     locale: es,
                   })}
                 </div>
@@ -227,7 +227,9 @@ export function MedicalRecordDetail({
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
-                <p>El historial de cambios del tratamiento aparecerá aquí.</p>
+                <p>
+                  El historial de cambios del registro médico aparecerá aquí.
+                </p>
                 <p className="text-sm mt-2">
                   Esta funcionalidad se integrará próximamente.
                 </p>

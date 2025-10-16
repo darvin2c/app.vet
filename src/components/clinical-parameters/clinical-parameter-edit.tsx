@@ -36,7 +36,7 @@ export function ClinicalParameterEdit({
   const form = useForm({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      medical_record_id: clinicalParameter.medical_record_id,
+      treatment_id: clinicalParameter.treatment_id || undefined,
       measured_at: clinicalParameter.measured_at
         ? clinicalParameter.measured_at.split('T')[0]
         : new Date().toISOString().split('T')[0],
@@ -65,14 +65,14 @@ export function ClinicalParameterEdit({
         <DrawerHeader>
           <DrawerTitle>Editar Parámetros Clínicos</DrawerTitle>
           <DrawerDescription>
-            Modifica los parámetros clínicos del tratamiento
+            Modifica los parámetros clínicos del registro médico
           </DrawerDescription>
         </DrawerHeader>
 
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
+          <div className="px-4">
             <ClinicalParameterForm />
-          </form>
+          </div>
         </FormProvider>
 
         <DrawerFooter>

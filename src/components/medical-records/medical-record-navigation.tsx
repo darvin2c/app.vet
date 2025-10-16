@@ -24,7 +24,7 @@ import { AttachmentList } from '@/components/attachments/attachment-list'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
 interface MedicalRecordNavigationProps {
-  medicalRecord: Tables<'medical_records'>
+  medicalRecord: Tables<'clinical_records'>
   petName?: string
   vetName?: string
 }
@@ -78,7 +78,7 @@ export function MedicalRecordNavigation({
 
   return (
     <div className="space-y-6">
-      {/* Header del tratamiento */}
+      {/* Header del registro médico */}
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between">
@@ -87,18 +87,18 @@ export function MedicalRecordNavigation({
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Stethoscope className="h-5 w-5" />
-                    {getTypeLabel(medicalRecord.type)}
+                    {getTypeLabel(medicalRecord.record_type)}
                   </CardTitle>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {format(new Date(medicalRecord.date), 'PPP', {
+                      {format(new Date(medicalRecord.record_date), 'PPP', {
                         locale: es,
                       })}
                     </div>
                     <div className="flex items-center gap-1">
                       <Activity className="h-4 w-4" />
-                      {getTypeLabel(medicalRecord.type)}
+                      {getTypeLabel(medicalRecord.record_type)}
                     </div>
                   </div>
                 </div>
@@ -145,20 +145,20 @@ export function MedicalRecordNavigation({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">
-                    Fecha del Tratamiento
+                    Fecha del Registro
                   </label>
                   <p className="text-sm">
-                    {format(new Date(medicalRecord.date), 'PPP', {
+                    {format(new Date(medicalRecord.record_date), 'PPP', {
                       locale: es,
                     })}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-muted-foreground">
-                    Tipo de Tratamiento
+                    Tipo de Registro Médico
                   </label>
                   <p className="text-sm">
-                    {getTypeLabel(medicalRecord.type)}
+                    {getTypeLabel(medicalRecord.record_type)}
                   </p>
                 </div>
                 <div>
@@ -209,13 +209,13 @@ export function MedicalRecordNavigation({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Package className="h-5 w-5" />
-                Items del Tratamiento
+                Items del Registro Médico
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
                 <Package className="h-12 w-12 mx-auto mb-4" />
-                <p>Los items del tratamiento aparecerán aquí</p>
+                <p>Los items del registro médico aparecerán aquí</p>
               </div>
             </CardContent>
           </Card>
@@ -226,13 +226,13 @@ export function MedicalRecordNavigation({
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <FileText className="h-5 w-5" />
-                Notas del Tratamiento
+                Notas del Registro Médico
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
                 <FileText className="h-12 w-12 mx-auto mb-4" />
-                <p>Las notas del tratamiento aparecerán aquí</p>
+                <p>Las notas del registro médico aparecerán aquí</p>
                 <p className="text-sm mt-2">
                   Esta funcionalidad se integrará próximamente.
                 </p>

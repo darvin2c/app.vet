@@ -24,7 +24,7 @@ interface AttachmentEditProps {
   attachment: {
     id: string
     file_name: string
-    medical_record_id: string
+    clinical_record_id: string
     attachment_type: AttachmentType
     category?: AttachmentCategory
     description?: string

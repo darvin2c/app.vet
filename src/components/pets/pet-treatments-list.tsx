@@ -9,7 +9,7 @@ import { MedicalRecordActions } from '@/components/medical-records/medical-recor
 import { AttachmentList } from '@/components/attachments/attachment-list'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
-interface PetMedicalRecord extends Tables<'medical_records'> {
+interface PetMedicalRecord extends Tables<'clinical_records'> {
   veterinarian?: {
     first_name: string
     last_name: string
@@ -77,7 +77,7 @@ export function PetMedicalRecordsList({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Stethoscope className="h-5 w-5" />
-            Historial de Tratamientos
+            Historial de Registros Médicos
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -101,7 +101,7 @@ export function PetMedicalRecordsList({
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="flex items-center gap-2">
             <Stethoscope className="h-5 w-5" />
-            Historial de Tratamientos
+            Historial de Registros Médicos
           </CardTitle>
           <MedicalRecordCreateButton petId={petId} />
         </CardHeader>
@@ -109,10 +109,11 @@ export function PetMedicalRecordsList({
           <div className="text-center py-8">
             <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground" />
             <h3 className="mt-4 text-lg font-semibold">
-              No hay tratamientos registrados
+              No hay registros médicos registrados
             </h3>
             <p className="text-muted-foreground">
-              Los tratamientos aparecerán aquí una vez que sean registrados.
+              Los registros médicos aparecerán aquí una vez que sean
+              registrados.
             </p>
           </div>
         </CardContent>
@@ -125,7 +126,7 @@ export function PetMedicalRecordsList({
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="flex items-center gap-2">
           <Stethoscope className="h-5 w-5" />
-          Historial de Tratamientos
+          Historial de Registros Médicos
         </CardTitle>
         <MedicalRecordCreateButton petId={petId} />
       </CardHeader>
@@ -137,12 +138,12 @@ export function PetMedicalRecordsList({
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <h4 className="font-semibold">
-                      {getTypeLabel(medicalRecord.type)}
+                      {getTypeLabel(medicalRecord.record_type)}
                     </h4>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        {format(new Date(medicalRecord.date), 'PPP', {
+                        {format(new Date(medicalRecord.record_date), 'PPP', {
                           locale: es,
                         })}
                       </div>
@@ -168,7 +169,7 @@ export function PetMedicalRecordsList({
                   <div className="flex items-center gap-2 text-sm">
                     <Stethoscope className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Tipo:</span>
-                    <span>{getTypeLabel(medicalRecord.type)}</span>
+                    <span>{getTypeLabel(medicalRecord.record_type)}</span>
                   </div>
 
                   {/* Archivos adjuntos */}

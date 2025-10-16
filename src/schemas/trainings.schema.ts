@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 export const TrainingSchema = z.object({
-  medical_record_id: z.string().nonempty('El registro médico es requerido'),
+  treatment_id: z.string().nonempty('El tratamiento es requerido'),
   goal: z.string().optional(),
   sessions_planned: z.number().min(1, 'Debe ser mayor a 0').optional(),
   sessions_completed: z

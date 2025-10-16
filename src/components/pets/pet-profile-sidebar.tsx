@@ -124,7 +124,9 @@ export function PetProfileSidebar({
               <div className="text-2xl font-bold text-primary">
                 {medicalRecordsCount}
               </div>
-              <div className="text-xs text-muted-foreground">Tratamientos</div>
+              <div className="text-xs text-muted-foreground">
+                Registros Médicos
+              </div>
             </div>
           </div>
 

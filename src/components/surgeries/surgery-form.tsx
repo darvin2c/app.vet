@@ -18,12 +18,12 @@ export function SurgeryForm() {
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="treatment_id">ID del Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="treatment_id">ID del Registro Médico</FieldLabel>
         <FieldContent>
           <Input
             id="treatment_id"
             {...form.register('treatment_id')}
-            placeholder="ID del tratamiento asociado"
+            placeholder="ID del registro médico asociado"
           />
           <FieldError errors={[form.formState.errors.treatment_id]} />
         </FieldContent>

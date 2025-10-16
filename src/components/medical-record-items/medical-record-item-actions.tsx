@@ -14,9 +14,9 @@ import { MedicalRecordItemDelete } from './medical-record-item-delete'
 import type { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordItemActionsProps {
-  medicalRecordItem: Tables<'medical_record_items'>
-  onEdit?: (medicalRecordItem: Tables<'medical_record_items'>) => void
-  onDelete?: (medicalRecordItem: Tables<'medical_record_items'>) => void
+  medicalRecordItem: Tables<'record_items'>
+  onEdit?: (medicalRecordItem: Tables<'record_items'>) => void
+  onDelete?: (medicalRecordItem: Tables<'record_items'>) => void
 }
 
 export function MedicalRecordItemActions({

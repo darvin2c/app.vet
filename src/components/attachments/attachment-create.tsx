@@ -40,7 +40,7 @@ export function AttachmentCreate({
   const form = useForm<AttachmentUploadSchema>({
     resolver: zodResolver(attachmentUploadSchema),
     defaultValues: {
-      medical_record_id: medicalRecordId,
+      clinical_record_id: medicalRecordId,
       file: null,
       attachment_type: 'image',
       category: 'other',
@@ -72,7 +72,7 @@ export function AttachmentCreate({
 
   const handleCancel = () => {
     form.reset({
-      medical_record_id: medicalRecordId,
+      clinical_record_id: medicalRecordId,
       file: null,
       attachment_type: 'image',
       category: 'other',
@@ -96,8 +96,8 @@ export function AttachmentCreate({
           </DrawerTitle>
           <DrawerDescription>
             {allowMultiple
-              ? 'Selecciona múltiples archivos para subir al tratamiento'
-              : 'Selecciona un archivo para subir al tratamiento'}
+              ? 'Selecciona múltiples archivos para subir al registro médico'
+              : 'Selecciona un archivo para subir al registro médico'}
           </DrawerDescription>
         </DrawerHeader>
 

@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { Tables } from '@/types/supabase.types'
 
-export type MedicalRecordItem = Tables<'medical_record_items'> & {
-  medical_records: Tables<'medical_records'> | null
+export type MedicalRecordItem = Tables<'record_items'> & {
+  clinical_records: Tables<'clinical_records'> | null
   products: Tables<'products'> | null
 }
 

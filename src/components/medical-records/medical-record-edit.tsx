@@ -22,7 +22,7 @@ import {
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordEditProps {
-  medicalRecord: Tables<'medical_records'>
+  medicalRecord: Tables<'clinical_records'>
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -38,10 +38,9 @@ export function MedicalRecordEdit({
     resolver: zodResolver(MedicalRecordSchema),
     defaultValues: {
       pet_id: medicalRecord.pet_id,
-      type:
-        medicalRecord.type as MedicalRecordFormData['type'],
+      type: medicalRecord.record_type as MedicalRecordFormData['type'],
       status: medicalRecord.status,
-      date: medicalRecord.date?.split('T')[0] || '',
+      date: medicalRecord.record_date?.split('T')[0] || '',
       vet_id: medicalRecord.vet_id || '',
       notes: medicalRecord.notes || '',
     },
@@ -51,10 +50,9 @@ export function MedicalRecordEdit({
     if (medicalRecord) {
       form.reset({
         pet_id: medicalRecord.pet_id,
-        type:
-          medicalRecord.type as MedicalRecordFormData['type'],
+        type: medicalRecord.record_type as MedicalRecordFormData['type'],
         status: medicalRecord.status,
-        date: medicalRecord.date?.split('T')[0] || '',
+        date: medicalRecord.record_date?.split('T')[0] || '',
         vet_id: medicalRecord.vet_id || '',
         notes: medicalRecord.notes || '',
       })

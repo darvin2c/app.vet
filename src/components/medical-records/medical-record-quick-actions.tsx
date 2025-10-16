@@ -24,7 +24,7 @@ import { MedicalRecordEdit } from './medical-record-edit'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
 interface MedicalRecordQuickActionsProps {
-  medicalRecord: Tables<'medical_records'>
+  medicalRecord: Tables<'clinical_records'>
   onEdit?: () => void
   onDelete?: () => void
   compact?: boolean
@@ -98,7 +98,7 @@ export function MedicalRecordQuickActions({
               <div className="flex items-center gap-2 mb-2">
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
                 <h4 className="font-medium truncate">
-                  {getTypeLabel(medicalRecord.type)}
+                  {getTypeLabel(medicalRecord.record_type)}
                 </h4>
                 <Badge
                   variant={getStatusVariant(medicalRecord.status)}
@@ -112,15 +112,11 @@ export function MedicalRecordQuickActions({
               <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {format(
-                    new Date(medicalRecord.date),
-                    'dd MMM yyyy',
-                    {
-                      locale: es,
-                    }
-                  )}
+                  {format(new Date(medicalRecord.record_date), 'dd MMM yyyy', {
+                    locale: es,
+                  })}
                 </span>
-                <span>{getTypeLabel(medicalRecord.type)}</span>
+                <span>{getTypeLabel(medicalRecord.record_type)}</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -170,12 +166,12 @@ export function MedicalRecordQuickActions({
           <div className="flex-1">
             <CardTitle className="text-lg flex items-center gap-2">
               <Stethoscope className="h-5 w-5 text-muted-foreground" />
-              {getTypeLabel(medicalRecord.type)}
+              {getTypeLabel(medicalRecord.record_type)}
             </CardTitle>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {format(new Date(medicalRecord.date), 'dd MMM yyyy', {
+                {format(new Date(medicalRecord.record_date), 'dd MMM yyyy', {
                   locale: es,
                 })}
               </span>
@@ -192,12 +188,12 @@ export function MedicalRecordQuickActions({
         <div className="space-y-4">
           <div className="text-sm">
             <p className="text-muted-foreground mb-2">
-              Información del tratamiento:
+              Información del registro médico:
             </p>
             <div className="space-y-1">
               <p>
                 <span className="font-medium">Tipo:</span>{' '}
-                {getTypeLabel(medicalRecord.type)}
+                {getTypeLabel(medicalRecord.record_type)}
               </p>
               <p>
                 <span className="font-medium">Estado:</span>{' '}
@@ -205,7 +201,7 @@ export function MedicalRecordQuickActions({
               </p>
               <p>
                 <span className="font-medium">Fecha:</span>{' '}
-                {format(new Date(medicalRecord.date), 'dd/MM/yyyy', {
+                {format(new Date(medicalRecord.record_date), 'dd/MM/yyyy', {
                   locale: es,
                 })}
               </p>
@@ -219,7 +215,7 @@ export function MedicalRecordQuickActions({
               onClick={() => setIsEditOpen(true)}
             >
               <Edit className="h-4 w-4 mr-2" />
-              Editar Tratamiento
+              Editar Registro Médico
             </Button>
 
             {onViewDetails && (

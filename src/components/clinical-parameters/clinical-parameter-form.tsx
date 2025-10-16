@@ -8,9 +8,21 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { type ClinicalParameterFormData } from '@/schemas/clinical-parameters.schema'
+import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
 
-export function ClinicalParameterForm() {
+interface ClinicalParameterFormProps {
+  petId?: string
+}
+
+export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
   const {
     register,
     formState: { errors },
@@ -30,6 +42,20 @@ export function ClinicalParameterForm() {
 
   return (
     <div className="space-y-4">
+      <Field>
+        <FieldLabel htmlFor="treatment_id">Tratamiento (Opcional)</FieldLabel>
+        <FieldContent>
+          <MedicalRecordSelect
+            value={watch('treatment_id') || ''}
+            onValueChange={(value) =>
+              setValue('treatment_id', value || undefined)
+            }
+            petId={petId}
+          />
+          <FieldError errors={[errors.treatment_id]} />
+        </FieldContent>
+      </Field>
+
       <Field>
         <FieldLabel htmlFor="measured_at">Fecha y Hora de Medición</FieldLabel>
         <FieldContent>

@@ -69,13 +69,13 @@ export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
   const filteredMedicalRecords = medicalRecords.filter((medicalRecord) => {
     const matchesSearch =
       searchTerm === '' ||
-      medicalRecord.type
+      medicalRecord.record_type
         .toLowerCase()
         .includes(searchTerm.toLowerCase()) ||
       medicalRecord.notes?.toLowerCase().includes(searchTerm.toLowerCase())
 
     const matchesType =
-      filterType === 'all' || medicalRecord.type === filterType
+      filterType === 'all' || medicalRecord.record_type === filterType
 
     return matchesSearch && matchesType
   })
@@ -85,9 +85,9 @@ export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
       {/* Header with filters */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Historial de Tratamientos</h2>
+          <h2 className="text-2xl font-bold">Historial de Registros Médicos</h2>
           <p className="text-muted-foreground">
-            Todos los tratamientos y procedimientos realizados
+            Todos los registros médicos y procedimientos realizados
           </p>
         </div>
         <div className="flex gap-2">
@@ -100,7 +100,7 @@ export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Buscar tratamientos..."
+            placeholder="Buscar registros médicos..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -161,8 +161,8 @@ export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Stethoscope className="h-5 w-5" />
-                Resumen de Tratamientos
+                <Activity className="h-5 w-5" />
+                Resumen de Registros Médicos
               </CardTitle>
             </CardHeader>
             <CardContent>

@@ -35,7 +35,7 @@ export function VaccinationCreate({
   const form = useForm<VaccinationFormData>({
     resolver: zodResolver(VaccinationSchema),
     defaultValues: {
-      medical_record_id: medicalRecordId,
+      treatment_id: medicalRecordId,
       adverse_event: '',
       dose: '',
       next_due_at: '',
@@ -61,7 +61,7 @@ export function VaccinationCreate({
         <DrawerHeader>
           <DrawerTitle>Nueva Vacunación</DrawerTitle>
           <DrawerDescription>
-            Registra una nueva vacunación para el tratamiento
+            Registra una nueva vacunación para el registro médico
           </DrawerDescription>
         </DrawerHeader>
 
