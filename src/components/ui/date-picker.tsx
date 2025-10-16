@@ -609,7 +609,13 @@ export function DatePicker({
                     type="text"
                     onChange={handleTimeInputChange}
                     onBlur={handleTimeInputBlur}
-                    placeholder="HH:MM"
+                    onFocus={(e) => {
+                      // Clear the input when focused to show placeholder
+                      if (e.target.value && timeInput) {
+                        e.target.value = ''
+                      }
+                    }}
+                    placeholder={timeInput || 'HH:MM'}
                     className="w-full px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
                     maxLength={5}
                   />
