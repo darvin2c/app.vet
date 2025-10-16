@@ -6,7 +6,7 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Plus, Upload } from 'lucide-react'
 
 interface AttachmentCreateButtonProps {
-  treatmentId: string
+  medicalRecordId: string
   variant?: 'default' | 'outline' | 'secondary' | 'ghost'
   size?: 'sm' | 'default' | 'lg'
   showIcon?: boolean
@@ -14,7 +14,7 @@ interface AttachmentCreateButtonProps {
 }
 
 export function AttachmentCreateButton({
-  treatmentId,
+  medicalRecordId,
   variant = 'default',
   size = 'default',
   showIcon = true,
@@ -34,7 +34,7 @@ export function AttachmentCreateButton({
       </ResponsiveButton>
 
       <AttachmentCreate
-        treatmentId={treatmentId}
+        medicalRecordId={medicalRecordId}
         open={open}
         onOpenChange={setOpen}
         onSuccess={() => setOpen(false)}
@@ -45,7 +45,7 @@ export function AttachmentCreateButton({
 
 // Variante específica para agregar múltiples archivos
 export function AttachmentCreateMultipleButton({
-  treatmentId,
+  medicalRecordId,
   variant = 'outline',
   size = 'default',
 }: Omit<AttachmentCreateButtonProps, 'children'>) {
@@ -63,7 +63,7 @@ export function AttachmentCreateMultipleButton({
       </ResponsiveButton>
 
       <AttachmentCreate
-        treatmentId={treatmentId}
+        medicalRecordId={medicalRecordId}
         open={open}
         onOpenChange={setOpen}
         onSuccess={() => setOpen(false)}

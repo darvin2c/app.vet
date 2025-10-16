@@ -25,14 +25,14 @@ export function TrainingForm() {
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="treatment_id">ID del Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="medical_record_id">ID del Registro Médico</FieldLabel>
         <FieldContent>
           <Input
-            id="treatment_id"
-            {...form.register('treatment_id')}
-            placeholder="ID del tratamiento asociado"
+            id="medical_record_id"
+            {...form.register('medical_record_id')}
+            placeholder="ID del registro médico asociado"
           />
-          <FieldError errors={[form.formState.errors.treatment_id]} />
+          <FieldError errors={[form.formState.errors.medical_record_id]} />
         </FieldContent>
       </Field>
 

@@ -11,7 +11,7 @@ import { VaccinationCreateButton } from '@/components/vaccinations/vaccination-c
 import { VaccinationActions } from '@/components/vaccinations/vaccination-actions'
 
 type Vaccination = Tables<'vaccinations'> & {
-  treatments: Tables<'treatments'> | null
+  medical_records: Tables<'medical_records'> | null
   staff: Tables<'staff'> | null
 }
 
@@ -27,7 +27,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">Vacunas</h3>
-          <VaccinationCreateButton treatmentId="" />
+          <VaccinationCreateButton medicalRecordId="" />
         </div>
         {[...Array(3)].map((_, i) => (
           <Card key={i}>
@@ -53,7 +53,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
       <div className="space-y-4">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">Vacunas</h3>
-          <VaccinationCreateButton treatmentId="" />
+          <VaccinationCreateButton medicalRecordId="" />
         </div>
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">
@@ -74,7 +74,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold">Vacunas</h3>
-        <VaccinationCreateButton treatmentId="" />
+        <VaccinationCreateButton medicalRecordId="" />
       </div>
       {vaccinations.map((vaccination) => (
         <Card key={vaccination.id}>
@@ -84,9 +84,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CardTitle className="text-lg">Vacuna</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {vaccination.treatments?.status === 'completed'
+                    {vaccination.medical_records?.status === 'completed'
                       ? 'Aplicada'
-                      : vaccination.treatments?.status === 'draft'
+                      : vaccination.medical_records?.status === 'draft'
                         ? 'Borrador'
                         : 'Cancelada'}
                   </Badge>
@@ -101,9 +101,9 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha de aplicación:</strong>{' '}
-                  {vaccination.treatments?.treatment_date
+                  {vaccination.medical_records?.date
                     ? format(
-                        new Date(vaccination.treatments.treatment_date),
+                        new Date(vaccination.medical_records.date),
                         'PPP',
                         { locale: es }
                       )

@@ -21,7 +21,7 @@ import {
 } from '@/schemas/attachments.schema'
 
 interface AttachmentCreateProps {
-  treatmentId: string
+  medicalRecordId: string
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
@@ -29,7 +29,7 @@ interface AttachmentCreateProps {
 }
 
 export function AttachmentCreate({
-  treatmentId,
+  medicalRecordId,
   open,
   onOpenChange,
   onSuccess,
@@ -40,7 +40,7 @@ export function AttachmentCreate({
   const form = useForm<AttachmentUploadSchema>({
     resolver: zodResolver(attachmentUploadSchema),
     defaultValues: {
-      treatment_id: treatmentId,
+      medical_record_id: medicalRecordId,
       file: null,
       attachment_type: 'image',
       category: 'other',
@@ -72,7 +72,7 @@ export function AttachmentCreate({
 
   const handleCancel = () => {
     form.reset({
-      treatment_id: treatmentId,
+      medical_record_id: medicalRecordId,
       file: null,
       attachment_type: 'image',
       category: 'other',

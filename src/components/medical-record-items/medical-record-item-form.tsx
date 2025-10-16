@@ -9,13 +9,13 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { TreatmentItemFormData } from '@/schemas/treatment-items.schema'
+import { MedicalRecordItemFormData } from '@/schemas/medical-record-items.schema'
 
-export function TreatmentItemForm() {
+export function MedicalRecordItemForm() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<TreatmentItemFormData>()
+  } = useFormContext<MedicalRecordItemFormData>()
 
   return (
     <div className="space-y-4">

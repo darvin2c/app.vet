@@ -12,30 +12,30 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { TreatmentItemForm } from './treatment-item-form'
+import { MedicalRecordItemForm } from './medical-record-item-form'
 import {
-  TreatmentItemSchema,
-  TreatmentItemFormData,
-} from '@/schemas/treatment-items.schema'
-import { useTreatmentItemCreate } from '@/hooks/treatment-items/use-treatment-item-create'
+  MedicalRecordItemSchema,
+  MedicalRecordItemFormData,
+} from '@/schemas/medical-record-items.schema'
+import { useMedicalRecordItemCreate } from '@/hooks/medical-record-items/use-medical-record-item-create'
 
-interface TreatmentItemCreateProps {
+interface MedicalRecordItemCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  treatmentId: string
+  medicalRecordId: string
 }
 
-export function TreatmentItemCreate({
+export function MedicalRecordItemCreate({
   open,
   onOpenChange,
-  treatmentId,
-}: TreatmentItemCreateProps) {
-  const createTreatmentItem = useTreatmentItemCreate()
+  medicalRecordId,
+}: MedicalRecordItemCreateProps) {
+  const createMedicalRecordItem = useMedicalRecordItemCreate()
 
-  const form = useForm<TreatmentItemFormData>({
-    resolver: zodResolver(TreatmentItemSchema),
+  const form = useForm<MedicalRecordItemFormData>({
+    resolver: zodResolver(MedicalRecordItemSchema),
     defaultValues: {
-      treatment_id: treatmentId,
+      medical_record_id: medicalRecordId,
       product_id: '',
       qty: 1,
       unit_price: 0,
@@ -43,17 +43,17 @@ export function TreatmentItemCreate({
     },
   })
 
-  const onSubmit = async (data: TreatmentItemFormData) => {
+  const onSubmit = async (data: MedicalRecordItemFormData) => {
     try {
-      await createTreatmentItem.mutateAsync({
+      await createMedicalRecordItem.mutateAsync({
         ...data,
-        treatment_id: treatmentId,
+        medical_record_id: medicalRecordId,
       })
-      toast.success('Item de tratamiento agregado exitosamente')
+      toast.success('Item de registro médico agregado exitosamente')
       onOpenChange(false)
       form.reset()
     } catch (error) {
-      toast.error('Error al agregar el item de tratamiento')
+      toast.error('Error al agregar el item de registro médico')
     }
   }
 
@@ -61,16 +61,16 @@ export function TreatmentItemCreate({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <DrawerHeader>
-          <DrawerTitle>Agregar Item de Tratamiento</DrawerTitle>
+          <DrawerTitle>Agregar Item de Registro Médico</DrawerTitle>
           <DrawerDescription>
-            Agrega un nuevo item al tratamiento
+            Agrega un nuevo item al registro médico
           </DrawerDescription>
         </DrawerHeader>
 
         <div className="px-4">
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <TreatmentItemForm />
+              <MedicalRecordItemForm />
             </form>
           </FormProvider>
         </div>
@@ -78,7 +78,7 @@ export function TreatmentItemCreate({
         <DrawerFooter>
           <ResponsiveButton
             type="button"
-            isLoading={createTreatmentItem.isPending}
+            isLoading={createMedicalRecordItem.isPending}
             onClick={form.handleSubmit(onSubmit)}
           >
             Agregar Item

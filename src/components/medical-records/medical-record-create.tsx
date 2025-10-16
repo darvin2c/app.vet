@@ -12,45 +12,49 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { TreatmentForm } from './treatment-form'
-import { useTreatmentCreate } from '@/hooks/treatments/use-treatment-create'
-import { TreatmentSchema, TreatmentFormData } from '@/schemas/treatment.schema'
+import { MedicalRecordForm } from './medical-record-form'
+import { useMedicalRecordCreate } from '@/hooks/medical-records/use-medical-record-create'
+import {
+  MedicalRecordSchema,
+  MedicalRecordFormData,
+} from '@/schemas/medical-record.schema'
 
-interface TreatmentCreateProps {
+interface MedicalRecordCreateProps {
+  petId: string
   open: boolean
   onOpenChange: (open: boolean) => void
-  petId?: string
 }
 
-export function TreatmentCreate({
+export function MedicalRecordCreate({
+  petId,
   open,
   onOpenChange,
-  petId,
-}: TreatmentCreateProps) {
-  const createTreatment = useTreatmentCreate()
+}: MedicalRecordCreateProps) {
+  const createMedicalRecord = useMedicalRecordCreate()
 
-  const form = useForm<TreatmentFormData>({
-    resolver: zodResolver(TreatmentSchema),
+  const form = useForm<MedicalRecordFormData>({
+    resolver: zodResolver(MedicalRecordSchema),
     defaultValues: {
-      pet_id: petId || '',
-      treatment_type: 'vaccination',
+      pet_id: petId,
+      type: 'vaccination',
       status: 'draft',
-      treatment_date: new Date().toISOString().split('T')[0],
+      date: new Date().toISOString().split('T')[0],
       vet_id: '',
+      notes: '',
     },
   })
 
-  const onSubmit = async (data: TreatmentFormData) => {
+  const onSubmit = async (data: MedicalRecordFormData) => {
     try {
-      await createTreatment.mutateAsync({
+      await createMedicalRecord.mutateAsync({
         ...data,
         pet_id: petId || data.pet_id,
       })
-      toast.success('Tratamiento registrado exitosamente')
+      toast.success('Registro médico creado exitosamente')
       form.reset()
       onOpenChange(false)
     } catch (error) {
-      toast.error('Error al registrar el tratamiento')
+      toast.error('Error al crear el registro médico')
     }
   }
 
@@ -58,16 +62,16 @@ export function TreatmentCreate({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
-          <DrawerTitle>Nuevo Tratamiento</DrawerTitle>
+          <DrawerTitle>Nuevo Registro Médico</DrawerTitle>
           <DrawerDescription>
-            Registra un nuevo tratamiento para la mascota
+            Registra un nuevo registro médico para la mascota
           </DrawerDescription>
         </DrawerHeader>
 
         <div className="px-4">
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <TreatmentForm />
+              <MedicalRecordForm />
             </form>
           </FormProvider>
         </div>
@@ -75,10 +79,10 @@ export function TreatmentCreate({
         <DrawerFooter>
           <ResponsiveButton
             type="submit"
-            isLoading={createTreatment.isPending}
-            onClick={form.handleSubmit(onSubmit)}
+            form="medical-record-create-form"
+            isLoading={createMedicalRecord.isPending}
           >
-            Registrar Tratamiento
+            Registrar Registro Médico
           </ResponsiveButton>
           <ResponsiveButton
             variant="outline"

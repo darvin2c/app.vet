@@ -11,7 +11,7 @@ import { TrainingCreateButton } from '@/components/trainings/training-create-but
 import { TrainingActions } from '@/components/trainings/training-actions'
 
 type Training = Tables<'trainings'> & {
-  treatments: Tables<'treatments'> | null
+  medical_records: Tables<'medical_records'> | null
   staff: Tables<'staff'> | null
 }
 
@@ -84,9 +84,9 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 <CardTitle className="text-lg">Entrenamiento</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {training.treatments?.status === 'completed'
+                    {training.medical_records?.status === 'completed'
                       ? 'Completado'
-                      : training.treatments?.status === 'cancelled'
+                      : training.medical_records?.status === 'cancelled'
                         ? 'Cancelado'
                         : 'En progreso'}
                   </Badge>
@@ -101,9 +101,9 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha:</strong>{' '}
-                  {training.treatments?.treatment_date
+                  {training.medical_records?.date
                     ? format(
-                        new Date(training.treatments.treatment_date),
+                        new Date(training.medical_records.date),
                         'PPP',
                         { locale: es }
                       )

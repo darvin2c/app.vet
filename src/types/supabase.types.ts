@@ -149,9 +149,9 @@ export type Database = {
           feeding_notes: string | null
           id: string
           kennel_id: string | null
+          medical_record_id: string
           observations: string | null
           tenant_id: string
-          treatment_id: string
         }
         Insert: {
           check_in_at: string
@@ -160,9 +160,9 @@ export type Database = {
           feeding_notes?: string | null
           id?: string
           kennel_id?: string | null
+          medical_record_id: string
           observations?: string | null
           tenant_id: string
-          treatment_id: string
         }
         Update: {
           check_in_at?: string
@@ -171,9 +171,9 @@ export type Database = {
           feeding_notes?: string | null
           id?: string
           kennel_id?: string | null
+          medical_record_id?: string
           observations?: string | null
           tenant_id?: string
-          treatment_id?: string
         }
         Relationships: [
           {
@@ -181,13 +181,6 @@ export type Database = {
             columns: ['tenant_id']
             isOneToOne: false
             referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'boardings_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
             referencedColumns: ['id']
           },
         ]
@@ -253,8 +246,8 @@ export type Database = {
           created_by: string | null
           hospitalization_id: string | null
           id: string
+          medical_record_id: string
           tenant_id: string
-          treatment_id: string
         }
         Insert: {
           content: string
@@ -262,8 +255,8 @@ export type Database = {
           created_by?: string | null
           hospitalization_id?: string | null
           id?: string
+          medical_record_id: string
           tenant_id: string
-          treatment_id: string
         }
         Update: {
           content?: string
@@ -271,8 +264,8 @@ export type Database = {
           created_by?: string | null
           hospitalization_id?: string | null
           id?: string
+          medical_record_id?: string
           tenant_id?: string
-          treatment_id?: string
         }
         Relationships: [
           {
@@ -289,13 +282,6 @@ export type Database = {
             referencedRelation: 'tenants'
             referencedColumns: ['id']
           },
-          {
-            foreignKeyName: 'clinical_notes_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
-            referencedColumns: ['id']
-          },
         ]
       }
       clinical_parameters: {
@@ -304,10 +290,10 @@ export type Database = {
           created_by: string | null
           id: string
           measured_at: string
+          medical_record_id: string
           params: Json
           schema_version: number
           tenant_id: string
-          treatment_id: string
           updated_at: string
           updated_by: string | null
         }
@@ -316,10 +302,10 @@ export type Database = {
           created_by?: string | null
           id?: string
           measured_at?: string
+          medical_record_id: string
           params: Json
           schema_version?: number
           tenant_id: string
-          treatment_id: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -328,10 +314,10 @@ export type Database = {
           created_by?: string | null
           id?: string
           measured_at?: string
+          medical_record_id?: string
           params?: Json
           schema_version?: number
           tenant_id?: string
-          treatment_id?: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -343,11 +329,87 @@ export type Database = {
             referencedRelation: 'tenants'
             referencedColumns: ['id']
           },
+        ]
+      }
+      clinical_records: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          created_by: string | null
+          diagnosis: string | null
+          id: string
+          notes: string | null
+          pet_id: string
+          reason: string | null
+          record_date: string
+          record_type: Database['public']['Enums']['record_type']
+          status: Database['public']['Enums']['record_status']
+          tenant_id: string
+          updated_at: string
+          updated_by: string | null
+          vet_id: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis?: string | null
+          id?: string
+          notes?: string | null
+          pet_id: string
+          reason?: string | null
+          record_date?: string
+          record_type?: Database['public']['Enums']['record_type']
+          status?: Database['public']['Enums']['record_status']
+          tenant_id: string
+          updated_at?: string
+          updated_by?: string | null
+          vet_id?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          diagnosis?: string | null
+          id?: string
+          notes?: string | null
+          pet_id?: string
+          reason?: string | null
+          record_date?: string
+          record_type?: Database['public']['Enums']['record_type']
+          status?: Database['public']['Enums']['record_status']
+          tenant_id?: string
+          updated_at?: string
+          updated_by?: string | null
+          vet_id?: string | null
+        }
+        Relationships: [
           {
-            foreignKeyName: 'clinical_parameters_treatment_id_fkey'
-            columns: ['treatment_id']
+            foreignKeyName: 'clinical_records_appointment_id_fkey'
+            columns: ['appointment_id']
             isOneToOne: false
-            referencedRelation: 'treatments'
+            referencedRelation: 'appointments'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'clinical_records_pet_id_fkey'
+            columns: ['pet_id']
+            isOneToOne: false
+            referencedRelation: 'pets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'clinical_records_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'clinical_records_vet_id_fkey'
+            columns: ['vet_id']
+            isOneToOne: false
+            referencedRelation: 'staff'
             referencedColumns: ['id']
           },
         ]
@@ -880,6 +942,67 @@ export type Database = {
         }
         Relationships: []
       }
+      record_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          discount: number | null
+          id: string
+          notes: string | null
+          product_id: string
+          qty: number
+          record_id: string
+          tenant_id: string
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          discount?: number | null
+          id?: string
+          notes?: string | null
+          product_id: string
+          qty: number
+          record_id: string
+          tenant_id: string
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          discount?: number | null
+          id?: string
+          notes?: string | null
+          product_id?: string
+          qty?: number
+          record_id?: string
+          tenant_id?: string
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'record_items_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'record_items_record_id_fkey'
+            columns: ['record_id']
+            isOneToOne: false
+            referencedRelation: 'clinical_records'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'record_items_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       specialties: {
         Row: {
           code: string
@@ -1232,13 +1355,6 @@ export type Database = {
             referencedRelation: 'tenants'
             referencedColumns: ['id']
           },
-          {
-            foreignKeyName: 'surgeries_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
-            referencedColumns: ['id']
-          },
         ]
       }
       tenant_users: {
@@ -1275,6 +1391,147 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: 'tenant_users_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      medical_records: {
+        Row: {
+          appointment_id: string | null
+          created_at: string
+          created_by: string | null
+          date: string
+          id: string
+          notes: string | null
+          pet_id: string
+          status: Database['public']['Enums']['treatment_status']
+          tenant_id: string
+          type: Database['public']['Enums']['treatment_type']
+          updated_at: string
+          updated_by: string | null
+          vet_id: string | null
+        }
+        Insert: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          date: string
+          id?: string
+          notes?: string | null
+          pet_id: string
+          status?: Database['public']['Enums']['treatment_status']
+          tenant_id: string
+          type: Database['public']['Enums']['treatment_type']
+          updated_at?: string
+          updated_by?: string | null
+          vet_id?: string | null
+        }
+        Update: {
+          appointment_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          date?: string
+          id?: string
+          notes?: string | null
+          pet_id?: string
+          status?: Database['public']['Enums']['treatment_status']
+          tenant_id?: string
+          type?: Database['public']['Enums']['treatment_type']
+          updated_at?: string
+          updated_by?: string | null
+          vet_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'medical_records_appointment_id_fkey'
+            columns: ['appointment_id']
+            isOneToOne: false
+            referencedRelation: 'appointments'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'medical_records_pet_id_fkey'
+            columns: ['pet_id']
+            isOneToOne: false
+            referencedRelation: 'pets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'medical_records_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'medical_records_vet_id_fkey'
+            columns: ['vet_id']
+            isOneToOne: false
+            referencedRelation: 'staff'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      medical_record_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          medical_record_id: string
+          notes: string | null
+          product_id: string
+          qty: number
+          tenant_id: string
+          unit_price: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          medical_record_id: string
+          notes?: string | null
+          product_id: string
+          qty: number
+          tenant_id: string
+          unit_price: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          medical_record_id?: string
+          notes?: string | null
+          product_id?: string
+          qty?: number
+          tenant_id?: string
+          unit_price?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'medical_record_items_medical_record_id_fkey'
+            columns: ['medical_record_id']
+            isOneToOne: false
+            referencedRelation: 'medical_records'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'medical_record_items_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'medical_record_items_tenant_id_fkey'
             columns: ['tenant_id']
             isOneToOne: false
             referencedRelation: 'tenants'
@@ -1337,32 +1594,32 @@ export type Database = {
         Row: {
           goal: string | null
           id: string
+          medical_record_id: string
           progress_notes: string | null
           sessions_completed: number | null
           sessions_planned: number | null
           tenant_id: string
           trainer_id: string | null
-          treatment_id: string
         }
         Insert: {
           goal?: string | null
           id?: string
+          medical_record_id: string
           progress_notes?: string | null
           sessions_completed?: number | null
           sessions_planned?: number | null
           tenant_id: string
           trainer_id?: string | null
-          treatment_id: string
         }
         Update: {
           goal?: string | null
           id?: string
+          medical_record_id?: string
           progress_notes?: string | null
           sessions_completed?: number | null
           sessions_planned?: number | null
           tenant_id?: string
           trainer_id?: string | null
-          treatment_id?: string
         }
         Relationships: [
           {
@@ -1379,145 +1636,6 @@ export type Database = {
             referencedRelation: 'staff'
             referencedColumns: ['id']
           },
-          {
-            foreignKeyName: 'trainings_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      treatment_items: {
-        Row: {
-          created_at: string
-          created_by: string | null
-          id: string
-          notes: string | null
-          product_id: string
-          qty: number
-          tenant_id: string
-          treatment_id: string
-          unit_price: number
-        }
-        Insert: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          notes?: string | null
-          product_id: string
-          qty: number
-          tenant_id: string
-          treatment_id: string
-          unit_price: number
-        }
-        Update: {
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          notes?: string | null
-          product_id?: string
-          qty?: number
-          tenant_id?: string
-          treatment_id?: string
-          unit_price?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'treatment_items_product_id_fkey'
-            columns: ['product_id']
-            isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'treatment_items_tenant_id_fkey'
-            columns: ['tenant_id']
-            isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'treatment_items_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
-            referencedColumns: ['id']
-          },
-        ]
-      }
-      treatments: {
-        Row: {
-          appointment_id: string | null
-          created_at: string
-          created_by: string | null
-          id: string
-          pet_id: string
-          status: Database['public']['Enums']['treatment_status']
-          tenant_id: string
-          treatment_date: string
-          treatment_type: Database['public']['Enums']['treatment_type']
-          updated_at: string
-          updated_by: string | null
-          vet_id: string | null
-        }
-        Insert: {
-          appointment_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          pet_id: string
-          status?: Database['public']['Enums']['treatment_status']
-          tenant_id: string
-          treatment_date?: string
-          treatment_type?: Database['public']['Enums']['treatment_type']
-          updated_at?: string
-          updated_by?: string | null
-          vet_id?: string | null
-        }
-        Update: {
-          appointment_id?: string | null
-          created_at?: string
-          created_by?: string | null
-          id?: string
-          pet_id?: string
-          status?: Database['public']['Enums']['treatment_status']
-          tenant_id?: string
-          treatment_date?: string
-          treatment_type?: Database['public']['Enums']['treatment_type']
-          updated_at?: string
-          updated_by?: string | null
-          vet_id?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'treatments_appointment_id_fkey'
-            columns: ['appointment_id']
-            isOneToOne: false
-            referencedRelation: 'appointments'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'treatments_pet_id_fkey'
-            columns: ['pet_id']
-            isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'treatments_tenant_id_fkey'
-            columns: ['tenant_id']
-            isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'treatments_vet_id_fkey'
-            columns: ['vet_id']
-            isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
-          },
         ]
       }
       vaccinations: {
@@ -1527,11 +1645,11 @@ export type Database = {
           created_by: string | null
           dose: string | null
           id: string
+          medical_record_id: string
           next_due_at: string | null
           route: string | null
           site: string | null
           tenant_id: string
-          treatment_id: string
         }
         Insert: {
           adverse_event?: string | null
@@ -1539,11 +1657,11 @@ export type Database = {
           created_by?: string | null
           dose?: string | null
           id?: string
+          medical_record_id: string
           next_due_at?: string | null
           route?: string | null
           site?: string | null
           tenant_id: string
-          treatment_id: string
         }
         Update: {
           adverse_event?: string | null
@@ -1551,11 +1669,11 @@ export type Database = {
           created_by?: string | null
           dose?: string | null
           id?: string
+          medical_record_id?: string
           next_due_at?: string | null
           route?: string | null
           site?: string | null
           tenant_id?: string
-          treatment_id?: string
         }
         Relationships: [
           {
@@ -1563,13 +1681,6 @@ export type Database = {
             columns: ['tenant_id']
             isOneToOne: false
             referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'vaccinations_treatment_id_fkey'
-            columns: ['treatment_id']
-            isOneToOne: false
-            referencedRelation: 'treatments'
             referencedColumns: ['id']
           },
         ]
@@ -1593,6 +1704,13 @@ export type Database = {
         | 'cancelled'
         | 'no_show'
       pet_sex: 'M' | 'F'
+      record_status: 'draft' | 'completed' | 'cancelled'
+      record_type:
+        | 'consultation'
+        | 'vaccination'
+        | 'surgery'
+        | 'hospitalization'
+        | 'deworming'
       treatment_status: 'draft' | 'completed' | 'cancelled'
       treatment_type:
         | 'consultation'
@@ -1739,6 +1857,14 @@ export const Constants = {
         'no_show',
       ],
       pet_sex: ['M', 'F'],
+      record_status: ['draft', 'completed', 'cancelled'],
+      record_type: [
+        'consultation',
+        'vaccination',
+        'surgery',
+        'hospitalization',
+        'deworming',
+      ],
       treatment_status: ['draft', 'completed', 'cancelled'],
       treatment_type: [
         'consultation',

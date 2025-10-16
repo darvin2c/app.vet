@@ -38,7 +38,7 @@ export function TrainingCreate({
   const form = useForm<TrainingFormData>({
     resolver: zodResolver(TrainingSchema),
     defaultValues: {
-      treatment_id: '',
+      medical_record_id: '',
       goal: '',
       sessions_planned: undefined,
       sessions_completed: undefined,

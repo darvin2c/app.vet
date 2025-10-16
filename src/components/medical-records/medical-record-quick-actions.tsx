@@ -20,20 +20,24 @@ import {
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Tables } from '@/types/supabase.types'
-import { TreatmentEdit } from './treatment-edit'
+import { MedicalRecordEdit } from './medical-record-edit'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
-interface TreatmentQuickActionsProps {
-  treatment: Tables<'treatments'>
-  onViewDetails?: () => void
+interface MedicalRecordQuickActionsProps {
+  medicalRecord: Tables<'medical_records'>
+  onEdit?: () => void
+  onDelete?: () => void
   compact?: boolean
+  onViewDetails?: () => void
 }
 
-export function TreatmentQuickActions({
-  treatment,
+export function MedicalRecordQuickActions({
+  medicalRecord,
+  onEdit,
+  onDelete,
+  compact,
   onViewDetails,
-  compact = false,
-}: TreatmentQuickActionsProps) {
+}: MedicalRecordQuickActionsProps) {
   const [isEditOpen, setIsEditOpen] = useState(false)
 
   const getStatusVariant = (status: string) => {
@@ -70,13 +74,16 @@ export function TreatmentQuickActions({
         return 'Cirugía'
       case 'grooming':
         return 'Peluquería'
-
       case 'deworming':
         return 'Desparasitación'
       case 'boarding':
         return 'Hospedaje'
       case 'training':
         return 'Entrenamiento'
+      case 'consultation':
+        return 'Consulta'
+      case 'hospitalization':
+        return 'Hospitalización'
       default:
         return type || 'Sin tipo'
     }
@@ -91,25 +98,29 @@ export function TreatmentQuickActions({
               <div className="flex items-center gap-2 mb-2">
                 <Stethoscope className="h-4 w-4 text-muted-foreground" />
                 <h4 className="font-medium truncate">
-                  {getTypeLabel(treatment.treatment_type)}
+                  {getTypeLabel(medicalRecord.type)}
                 </h4>
                 <Badge
-                  variant={getStatusVariant(treatment.status)}
+                  variant={getStatusVariant(medicalRecord.status)}
                   className="ml-auto"
                 >
-                  {getStatusIcon(treatment.status)}
-                  <span className="ml-1">{treatment.status}</span>
+                  {getStatusIcon(medicalRecord.status)}
+                  <span className="ml-1">{medicalRecord.status}</span>
                 </Badge>
               </div>
 
               <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {format(new Date(treatment.treatment_date), 'dd MMM yyyy', {
-                    locale: es,
-                  })}
+                  {format(
+                    new Date(medicalRecord.date),
+                    'dd MMM yyyy',
+                    {
+                      locale: es,
+                    }
+                  )}
                 </span>
-                <span>{getTypeLabel(treatment.treatment_type)}</span>
+                <span>{getTypeLabel(medicalRecord.type)}</span>
               </div>
 
               <div className="flex items-center gap-2">
@@ -136,7 +147,7 @@ export function TreatmentQuickActions({
                 )}
 
                 <AttachmentCreateButton
-                  treatmentId={treatment.id}
+                  medicalRecordId={medicalRecord.id}
                   variant="outline"
                   size="sm"
                   showIcon={false}
@@ -159,18 +170,18 @@ export function TreatmentQuickActions({
           <div className="flex-1">
             <CardTitle className="text-lg flex items-center gap-2">
               <Stethoscope className="h-5 w-5 text-muted-foreground" />
-              {getTypeLabel(treatment.treatment_type)}
+              {getTypeLabel(medicalRecord.type)}
             </CardTitle>
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {format(new Date(treatment.treatment_date), 'dd MMM yyyy', {
+                {format(new Date(medicalRecord.date), 'dd MMM yyyy', {
                   locale: es,
                 })}
               </span>
-              <Badge variant={getStatusVariant(treatment.status)}>
-                {getStatusIcon(treatment.status)}
-                <span className="ml-1">{treatment.status}</span>
+              <Badge variant={getStatusVariant(medicalRecord.status)}>
+                {getStatusIcon(medicalRecord.status)}
+                <span className="ml-1">{medicalRecord.status}</span>
               </Badge>
             </div>
           </div>
@@ -186,14 +197,15 @@ export function TreatmentQuickActions({
             <div className="space-y-1">
               <p>
                 <span className="font-medium">Tipo:</span>{' '}
-                {getTypeLabel(treatment.treatment_type)}
+                {getTypeLabel(medicalRecord.type)}
               </p>
               <p>
-                <span className="font-medium">Estado:</span> {treatment.status}
+                <span className="font-medium">Estado:</span>{' '}
+                {medicalRecord.status}
               </p>
               <p>
                 <span className="font-medium">Fecha:</span>{' '}
-                {format(new Date(treatment.treatment_date), 'dd/MM/yyyy', {
+                {format(new Date(medicalRecord.date), 'dd/MM/yyyy', {
                   locale: es,
                 })}
               </p>
@@ -218,7 +230,7 @@ export function TreatmentQuickActions({
             )}
 
             <AttachmentCreateButton
-              treatmentId={treatment.id}
+              medicalRecordId={medicalRecord.id}
               variant="outline"
               size="sm"
               showIcon={false}
@@ -235,8 +247,8 @@ export function TreatmentQuickActions({
         </div>
       </CardContent>
 
-      <TreatmentEdit
-        treatment={treatment}
+      <MedicalRecordEdit
+        medicalRecord={medicalRecord}
         open={isEditOpen}
         onOpenChange={setIsEditOpen}
       />

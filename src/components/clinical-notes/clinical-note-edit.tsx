@@ -37,7 +37,7 @@ export function ClinicalNoteEdit({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
       content: clinicalNote.content,
-      treatment_id: clinicalNote.treatment_id,
+      medical_record_id: clinicalNote.medical_record_id,
       hospitalization_id: clinicalNote.hospitalization_id || undefined,
     },
   })
@@ -46,7 +46,7 @@ export function ClinicalNoteEdit({
     try {
       const data = {
         content: formData.content,
-        treatment_id: formData.treatment_id,
+        medical_record_id: formData.medical_record_id,
         hospitalization_id: formData.hospitalization_id,
       }
       await updateClinicalNote.mutateAsync({

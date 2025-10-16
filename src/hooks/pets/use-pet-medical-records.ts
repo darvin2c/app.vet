@@ -3,7 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type PetTreatment = Tables<'treatments'> & {
+type PetMedicalRecord = Tables<'medical_records'> & {
   appointments:
     | (Tables<'appointments'> & {
         appointment_types: Tables<'appointment_types'> | null
@@ -14,11 +14,11 @@ type PetTreatment = Tables<'treatments'> & {
   boardings: Tables<'boardings'>[]
 }
 
-export function usePetTreatments(petId: string) {
+export function usePetMedicalRecords(petId: string) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'pet-treatments', petId],
+    queryKey: [currentTenant?.id, 'pet-medical-records', petId],
     queryFn: async () => {
       if (!currentTenant?.id || !petId) {
         return []
@@ -41,9 +41,9 @@ export function usePetTreatments(petId: string) {
 
       const appointmentIds = appointments.map((a) => a.id)
 
-      // Luego obtenemos los tratamientos relacionados con esas citas
+      // Luego obtenemos los registros médicos relacionados con esas citas
       const { data, error } = await supabase
-        .from('treatments')
+        .from('medical_records')
         .select(
           `
           *,
@@ -87,10 +87,10 @@ export function usePetTreatments(petId: string) {
         .order('created_at', { ascending: false })
 
       if (error) {
-        throw new Error(`Error al obtener tratamientos: ${error.message}`)
+        throw new Error(`Error al obtener registros médicos: ${error.message}`)
       }
 
-      return data as PetTreatment[]
+      return (data || []) as unknown as PetMedicalRecord[]
     },
     enabled: !!currentTenant?.id && !!petId,
   })

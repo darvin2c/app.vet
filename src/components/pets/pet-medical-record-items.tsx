@@ -123,14 +123,14 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
                 <div>
                   <h4 className="font-medium mb-2">Tratamiento Asociado</h4>
                   <p className="text-sm text-muted-foreground">
-                    {item.medical_records.treatment_type
-                      ? getTypeLabel(item.medical_records.treatment_type)
+                    {item.medical_records.type
+                      ? getTypeLabel(item.medical_records.type)
                       : 'Tratamiento sin descripción'}
                   </p>
-                  {item.medical_records.treatment_date && (
+                  {item.medical_records.date && (
                     <p className="text-xs text-muted-foreground mt-1">
                       {format(
-                        new Date(item.medical_records.treatment_date),
+                        new Date(item.medical_records.date),
                         'PPP',
                         {
                           locale: es,

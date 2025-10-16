@@ -1,5 +1,3 @@
-'use client'
-
 import { useState } from 'react'
 import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -9,21 +7,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { TreatmentItemEdit } from './treatment-item-edit'
-import { TreatmentItemDelete } from './treatment-item-delete'
-import type { Tables } from '@/types/supabase.types'
+import { MedicalRecordEdit } from './medical-record-edit'
+import { MedicalRecordDelete } from './medical-record-delete'
+import { Tables } from '@/types/supabase.types'
 
-interface TreatmentItemActionsProps {
-  treatmentItem: Tables<'treatment_items'>
-  onEdit?: (treatmentItem: Tables<'treatment_items'>) => void
-  onDelete?: (treatmentItem: Tables<'treatment_items'>) => void
+interface MedicalRecordActionsProps {
+  medicalRecord: Tables<'medical_records'>
 }
 
-export function TreatmentItemActions({
-  treatmentItem,
-  onEdit,
-  onDelete,
-}: TreatmentItemActionsProps) {
+export function MedicalRecordActions({
+  medicalRecord,
+}: MedicalRecordActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
 
@@ -31,8 +25,7 @@ export function TreatmentItemActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menú</span>
+          <Button variant="ghost" size="sm">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -48,16 +41,17 @@ export function TreatmentItemActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <TreatmentItemEdit
-        treatmentItem={treatmentItem}
+      <MedicalRecordEdit
+        medicalRecord={medicalRecord}
         open={editOpen}
         onOpenChange={setEditOpen}
       />
 
-      <TreatmentItemDelete
-        treatmentItem={treatmentItem}
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
+      <MedicalRecordDelete
+        medicalRecordId={medicalRecord.id}
+        isOpen={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={() => setDeleteOpen(false)}
       />
     </>
   )

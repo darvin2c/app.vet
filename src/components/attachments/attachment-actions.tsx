@@ -31,7 +31,7 @@ interface AttachmentActionsProps {
     file_name: string
     file_url: string
     file_type: string
-    treatment_id: string
+    medical_record_id: string
     attachment_type: AttachmentType
     category?: AttachmentCategory
     description?: string

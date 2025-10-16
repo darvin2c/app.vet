@@ -35,7 +35,7 @@ export function ClinicalParameterCreate({
   const form = useForm({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      treatment_id: '', // This will be set when creating a treatment
+      medical_record_id: '', // This will be set when creating a medical record
       measured_at: new Date().toISOString().split('T')[0],
       params: {} as Record<string, string | number>,
       schema_version: 1,

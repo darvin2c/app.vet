@@ -1,13 +1,14 @@
 import { z } from 'zod'
 
-export const TreatmentSchema = z.object({
+export const MedicalRecordSchema = z.object({
   pet_id: z.string().nonempty('La mascota es requerida'),
-  treatment_type: z
+  type: z
     .enum([
       'consultation',
       'vaccination',
       'surgery',
       'grooming',
+      'hospitalization',
       'deworming',
       'boarding',
       'training',
@@ -20,9 +21,10 @@ export const TreatmentSchema = z.object({
     .refine((val) => val !== undefined, {
       message: 'El estado es requerido',
     }),
-  treatment_date: z.string().nonempty('La fecha de tratamiento es requerida'),
+  date: z.string().nonempty('La fecha del tratamiento es requerida'),
   vet_id: z.string().optional(),
   appointment_id: z.string().optional(),
+  notes: z.string().optional(),
 })
 
-export type TreatmentFormData = z.infer<typeof TreatmentSchema>
+export type MedicalRecordFormData = z.infer<typeof MedicalRecordSchema>

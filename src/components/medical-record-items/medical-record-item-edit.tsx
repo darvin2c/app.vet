@@ -14,41 +14,41 @@ import {
   DrawerClose,
 } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { TreatmentItemForm } from './treatment-item-form'
+import { MedicalRecordItemForm } from './medical-record-item-form'
 import {
-  TreatmentItemSchema,
-  TreatmentItemFormData,
-} from '@/schemas/treatment-items.schema'
-import { useTreatmentItemUpdate } from '@/hooks/treatment-items/use-treatment-item-update'
+  MedicalRecordItemSchema,
+  MedicalRecordItemFormData,
+} from '@/schemas/medical-record-items.schema'
+import { useMedicalRecordItemUpdate } from '@/hooks/medical-record-items/use-medical-record-item-update'
 import { Tables } from '@/types/supabase.types'
 
-interface TreatmentItemEditProps {
-  treatmentItem: Tables<'treatment_items'>
+interface MedicalRecordItemEditProps {
+  medicalRecordItem: Tables<'medical_record_items'>
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
 }
 
-export function TreatmentItemEdit({
-  treatmentItem,
+export function MedicalRecordItemEdit({
+  medicalRecordItem,
   trigger,
   open,
   onOpenChange,
-}: TreatmentItemEditProps) {
+}: MedicalRecordItemEditProps) {
   const [internalOpen, setInternalOpen] = useState(false)
-  const updateTreatmentItem = useTreatmentItemUpdate()
+  const updateMedicalRecordItem = useMedicalRecordItemUpdate()
 
   const isOpen = open ?? internalOpen
   const setOpen = onOpenChange ?? setInternalOpen
 
-  const form = useForm<TreatmentItemFormData>({
-    resolver: zodResolver(TreatmentItemSchema),
+  const form = useForm<MedicalRecordItemFormData>({
+    resolver: zodResolver(MedicalRecordItemSchema),
     defaultValues: {
-      treatment_id: treatmentItem.treatment_id,
-      product_id: treatmentItem.product_id,
-      qty: treatmentItem.qty,
-      unit_price: treatmentItem.unit_price,
-      notes: treatmentItem.notes || '',
+      medical_record_id: medicalRecordItem.medical_record_id,
+      product_id: medicalRecordItem.product_id,
+      qty: medicalRecordItem.qty,
+      unit_price: medicalRecordItem.unit_price,
+      notes: medicalRecordItem.notes || '',
     },
   })
 
@@ -56,39 +56,39 @@ export function TreatmentItemEdit({
     setOpen(newOpen)
     if (!newOpen) {
       form.reset({
-        treatment_id: treatmentItem.treatment_id,
-        product_id: treatmentItem.product_id,
-        qty: treatmentItem.qty,
-        unit_price: treatmentItem.unit_price,
-        notes: treatmentItem.notes || '',
+        medical_record_id: medicalRecordItem.medical_record_id,
+        product_id: medicalRecordItem.product_id,
+        qty: medicalRecordItem.qty,
+        unit_price: medicalRecordItem.unit_price,
+        notes: medicalRecordItem.notes || '',
       })
     }
   }
 
-  const onSubmit = async (data: TreatmentItemFormData) => {
+  const onSubmit = async (data: MedicalRecordItemFormData) => {
     try {
-      await updateTreatmentItem.mutateAsync({
-        id: treatmentItem.id,
+      await updateMedicalRecordItem.mutateAsync({
+        id: medicalRecordItem.id,
         data,
       })
-      toast.success('Item de tratamiento actualizado exitosamente')
+      toast.success('Item de registro médico actualizado exitosamente')
       handleOpenChange(false)
     } catch (error) {
-      toast.error('Error al actualizar el item de tratamiento')
+      toast.error('Error al actualizar el item de registro médico')
     }
   }
 
   useEffect(() => {
     if (isOpen) {
       form.reset({
-        treatment_id: treatmentItem.treatment_id,
-        product_id: treatmentItem.product_id,
-        qty: treatmentItem.qty,
-        unit_price: treatmentItem.unit_price,
-        notes: treatmentItem.notes || '',
+        medical_record_id: medicalRecordItem.medical_record_id,
+        product_id: medicalRecordItem.product_id,
+        qty: medicalRecordItem.qty,
+        unit_price: medicalRecordItem.unit_price,
+        notes: medicalRecordItem.notes || '',
       })
     }
-  }, [isOpen, treatmentItem, form])
+  }, [isOpen, medicalRecordItem, form])
 
   return (
     <>
@@ -97,9 +97,9 @@ export function TreatmentItemEdit({
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
         <DrawerContent>
           <DrawerHeader>
-            <DrawerTitle>Editar Item de Tratamiento</DrawerTitle>
+            <DrawerTitle>Editar Item de Registro Médico</DrawerTitle>
             <DrawerDescription>
-              Modifica los detalles del item de tratamiento
+              Modifica los detalles del item de registro médico
             </DrawerDescription>
           </DrawerHeader>
 
@@ -109,7 +109,7 @@ export function TreatmentItemEdit({
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
-                <TreatmentItemForm />
+                <MedicalRecordItemForm />
               </form>
             </FormProvider>
           </div>
@@ -117,7 +117,7 @@ export function TreatmentItemEdit({
           <DrawerFooter>
             <ResponsiveButton
               type="button"
-              isLoading={updateTreatmentItem.isPending}
+              isLoading={updateMedicalRecordItem.isPending}
               onClick={form.handleSubmit(onSubmit)}
             >
               Actualizar Item

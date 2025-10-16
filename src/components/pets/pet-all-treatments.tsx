@@ -33,11 +33,13 @@ import { Tables } from '@/types/supabase.types'
 import { PetClinicalParameters } from './pet-clinical-parameters'
 import { PetSurgeries } from './pet-surgeries'
 import { PetTrainings } from './pet-trainings'
-import { PetTreatmentItems } from './pet-treatment-items'
+import { PetMedicalRecordItems } from './pet-medical-record-items'
 import { PetVaccinations } from './pet-vaccinations'
-import { TreatmentCreateButton } from '@/components/treatments/treatment-create-button'
+import { usePetMedicalRecords } from '@/hooks/pets/use-pet-medical-records'
+import { MedicalRecordCreateButton } from '@/components/medical-records/medical-record-create-button'
+import { PetMedicalRecordsList } from '@/components/pets/pet-treatments-list'
 
-interface PetAllTreatmentsProps {
+interface PetAllMedicalRecordsProps {
   petId: string
 }
 
@@ -57,10 +59,26 @@ const treatmentTypeLabels = {
   items: 'Medicamentos',
 }
 
-export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
+export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
+  const { data: medicalRecords = [], isLoading } = usePetMedicalRecords(petId)
   const [activeView, setActiveView] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
+
+  // Filter medical records based on search term and type
+  const filteredMedicalRecords = medicalRecords.filter((medicalRecord) => {
+    const matchesSearch =
+      searchTerm === '' ||
+      medicalRecord.type
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      medicalRecord.notes?.toLowerCase().includes(searchTerm.toLowerCase())
+
+    const matchesType =
+      filterType === 'all' || medicalRecord.type === filterType
+
+    return matchesSearch && matchesType
+  })
 
   return (
     <div className="space-y-6">
@@ -73,7 +91,7 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
           </p>
         </div>
         <div className="flex gap-2">
-          <TreatmentCreateButton />
+          <MedicalRecordCreateButton petId={petId} />
         </div>
       </div>
 
@@ -175,16 +193,11 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
                 </div>
               </div>
 
-              <div className="text-center py-8 text-muted-foreground">
-                <Stethoscope className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">
-                  No hay tratamientos registrados
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  Los tratamientos aparecerán aquí una vez que sean registrados.
-                </p>
-                <TreatmentCreateButton />
-              </div>
+              <PetMedicalRecordsList
+                medicalRecords={filteredMedicalRecords}
+                isLoading={isLoading}
+                petId={petId}
+              />
             </CardContent>
           </Card>
         </TabsContent>
@@ -210,7 +223,7 @@ export function PetAllTreatments({ petId }: PetAllTreatmentsProps) {
 
         {/* Treatment Items */}
         <TabsContent value="items" className="space-y-6">
-          <PetTreatmentItems petId={petId} />
+          <PetMedicalRecordItems petId={petId} />
         </TabsContent>
 
         {/* Vaccinations */}

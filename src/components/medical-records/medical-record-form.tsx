@@ -13,34 +13,34 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { TreatmentFormData } from '@/schemas/treatment.schema'
-import { TreatmentTypeGrid } from './treatment-type-grid'
+import { MedicalRecordFormData } from '@/schemas/medical-record.schema'
+import { MedicalRecordTypeGrid } from './medical-record-type-grid'
 
 import { VaccinationForm } from './vaccination-form'
 import { SurgeryForm } from './surgery-form'
 import { TrainingForm } from './training-form'
 import { BoardingForm } from './boarding-form'
 
-export function TreatmentForm() {
+export function MedicalRecordForm() {
   const {
     register,
     formState: { errors },
-    setValue,
     watch,
-  } = useFormContext<TreatmentFormData>()
-  const watchedType = watch('treatment_type')
+    setValue,
+  } = useFormContext<MedicalRecordFormData>()
+  const watchedType = watch('type')
   const watchedStatus = watch('status')
 
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="treatment_type">Tipo de Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="type">Tipo de Tratamiento</FieldLabel>
         <FieldContent>
-          <TreatmentTypeGrid
+          <MedicalRecordTypeGrid
             value={watchedType}
-            onValueChange={(value) => setValue('treatment_type', value as any)}
+            onValueChange={(value) => setValue('type', value as any)}
           />
-          <FieldError errors={[errors.treatment_type]} />
+          <FieldError errors={[errors.type]} />
         </FieldContent>
       </Field>
 
@@ -65,14 +65,14 @@ export function TreatmentForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="treatment_date">Fecha del Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="date">Fecha del Tratamiento</FieldLabel>
         <FieldContent>
           <Input
-            id="treatment_date"
+            id="date"
             type="date"
-            {...register('treatment_date')}
+            {...register('date')}
           />
-          <FieldError errors={[errors.treatment_date]} />
+          <FieldError errors={[errors.date]} />
         </FieldContent>
       </Field>
 
@@ -85,6 +85,18 @@ export function TreatmentForm() {
             placeholder="ID del veterinario"
           />
           <FieldError errors={[errors.vet_id]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="notes">Notas</FieldLabel>
+        <FieldContent>
+          <Input
+            id="notes"
+            {...register('notes')}
+            placeholder="Notas adicionales"
+          />
+          <FieldError errors={[errors.notes]} />
         </FieldContent>
       </Field>
 

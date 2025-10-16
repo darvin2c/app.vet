@@ -8,7 +8,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import { TreatmentSelect } from '@/components/treatments/treatment-select'
+import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
 import { HospitalizationSelect } from '@/components/hospitalizations/hospitalization-select'
 import { type ClinicalNoteFormData } from '@/schemas/clinical-notes.schema'
 
@@ -36,16 +36,16 @@ export function ClinicalNoteForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="treatment_id">Tratamiento</FieldLabel>
+        <FieldLabel htmlFor="medical_record_id">Registro Médico</FieldLabel>
         <FieldContent>
-          <TreatmentSelect
-            value={watch('treatment_id') || undefined}
+          <MedicalRecordSelect
+            value={watch('medical_record_id') || undefined}
             onValueChange={(value: string | null) =>
-              setValue('treatment_id', value || '')
+              setValue('medical_record_id', value || '')
             }
-            placeholder="Seleccionar tratamiento"
+            placeholder="Seleccionar registro médico"
           />
-          <FieldError errors={[errors.treatment_id]} />
+          <FieldError errors={[errors.medical_record_id]} />
         </FieldContent>
       </Field>
 

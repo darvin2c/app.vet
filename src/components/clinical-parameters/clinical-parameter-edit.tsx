@@ -36,7 +36,7 @@ export function ClinicalParameterEdit({
   const form = useForm({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      treatment_id: clinicalParameter.treatment_id,
+      medical_record_id: clinicalParameter.medical_record_id,
       measured_at: clinicalParameter.measured_at
         ? clinicalParameter.measured_at.split('T')[0]
         : new Date().toISOString().split('T')[0],

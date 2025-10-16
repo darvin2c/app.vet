@@ -22,20 +22,20 @@ import { useVaccinationCreate } from '@/hooks/vaccinations/use-vaccination-creat
 interface VaccinationCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  treatmentId: string
+  medicalRecordId: string
 }
 
 export function VaccinationCreate({
   open,
   onOpenChange,
-  treatmentId,
+  medicalRecordId,
 }: VaccinationCreateProps) {
   const createVaccination = useVaccinationCreate()
 
   const form = useForm<VaccinationFormData>({
     resolver: zodResolver(VaccinationSchema),
     defaultValues: {
-      treatment_id: treatmentId,
+      medical_record_id: medicalRecordId,
       adverse_event: '',
       dose: '',
       next_due_at: '',

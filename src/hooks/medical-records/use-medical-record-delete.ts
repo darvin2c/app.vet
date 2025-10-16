@@ -1,40 +1,31 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
 
-export function useTreatmentUpdate() {
+export function useMedicalRecordDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenant()
   const supabase = createClient()
 
   return useMutation({
-    mutationFn: async ({
-      id,
-      data,
-    }: {
-      id: string
-      data: Omit<TablesUpdate<'treatments'>, 'tenant_id'>
-    }) => {
-      const { data: treatment, error } = await supabase
-        .from('treatments')
-        .update(data)
+    mutationFn: async (id: string) => {
+      const { error } = await supabase
+        .from('medical_records')
+        .delete()
         .eq('id', id)
-        .select()
-        .single()
 
       if (error) {
         throw error
       }
 
-      return treatment
+      return id
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'treatments'],
+        queryKey: [currentTenant?.id, 'medical_records'],
       })
       queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'pet-treatments'],
+        queryKey: [currentTenant?.id, 'pet-medical-records'],
       })
     },
   })

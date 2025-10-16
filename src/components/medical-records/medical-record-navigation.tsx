@@ -19,21 +19,21 @@ import {
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Tables } from '@/types/supabase.types'
-import { TreatmentActions } from './treatment-actions'
+import { MedicalRecordActions } from './medical-record-actions'
 import { AttachmentList } from '@/components/attachments/attachment-list'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
-interface TreatmentNavigationProps {
-  treatment: Tables<'treatments'>
-  onBack?: () => void
-  showBackButton?: boolean
+interface MedicalRecordNavigationProps {
+  medicalRecord: Tables<'medical_records'>
+  petName?: string
+  vetName?: string
 }
 
-export function TreatmentNavigation({
-  treatment,
-  onBack,
-  showBackButton = false,
-}: TreatmentNavigationProps) {
+export function MedicalRecordNavigation({
+  medicalRecord,
+  petName,
+  vetName,
+}: MedicalRecordNavigationProps) {
   const [activeTab, setActiveTab] = useState('overview')
 
   const getStatusVariant = (status: string) => {
@@ -84,41 +84,31 @@ export function TreatmentNavigation({
           <div className="flex items-start justify-between">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                {showBackButton && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onBack}
-                    className="p-2"
-                  >
-                    <ArrowLeft className="h-4 w-4" />
-                  </Button>
-                )}
                 <div>
                   <CardTitle className="flex items-center gap-2">
                     <Stethoscope className="h-5 w-5" />
-                    {getTypeLabel(treatment.treatment_type)}
+                    {getTypeLabel(medicalRecord.type)}
                   </CardTitle>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {format(new Date(treatment.treatment_date), 'PPP', {
+                      {format(new Date(medicalRecord.date), 'PPP', {
                         locale: es,
                       })}
                     </div>
                     <div className="flex items-center gap-1">
                       <Activity className="h-4 w-4" />
-                      {getTypeLabel(treatment.treatment_type)}
+                      {getTypeLabel(medicalRecord.type)}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant={getStatusVariant(treatment.status)}>
-                {treatment.status}
+              <Badge variant={getStatusVariant(medicalRecord.status)}>
+                {medicalRecord.status}
               </Badge>
-              <TreatmentActions treatment={treatment} />
+              <MedicalRecordActions medicalRecord={medicalRecord} />
             </div>
           </div>
         </CardHeader>
@@ -158,7 +148,7 @@ export function TreatmentNavigation({
                     Fecha del Tratamiento
                   </label>
                   <p className="text-sm">
-                    {format(new Date(treatment.treatment_date), 'PPP', {
+                    {format(new Date(medicalRecord.date), 'PPP', {
                       locale: es,
                     })}
                   </p>
@@ -168,7 +158,7 @@ export function TreatmentNavigation({
                     Tipo de Tratamiento
                   </label>
                   <p className="text-sm">
-                    {getTypeLabel(treatment.treatment_type)}
+                    {getTypeLabel(medicalRecord.type)}
                   </p>
                 </div>
                 <div>
@@ -176,8 +166,8 @@ export function TreatmentNavigation({
                     Estado
                   </label>
                   <div className="mt-1">
-                    <Badge variant={getStatusVariant(treatment.status)}>
-                      {treatment.status}
+                    <Badge variant={getStatusVariant(medicalRecord.status)}>
+                      {medicalRecord.status}
                     </Badge>
                   </div>
                 </div>
@@ -185,7 +175,9 @@ export function TreatmentNavigation({
                   <label className="text-sm font-medium text-muted-foreground">
                     Veterinario
                   </label>
-                  <p className="text-sm">{treatment.vet_id || 'No asignado'}</p>
+                  <p className="text-sm">
+                    {medicalRecord.vet_id || 'No asignado'}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -199,11 +191,11 @@ export function TreatmentNavigation({
                 <Paperclip className="h-5 w-5" />
                 Archivos Médicos
               </CardTitle>
-              <AttachmentCreateButton treatmentId={treatment.id} />
+              <AttachmentCreateButton medicalRecordId={medicalRecord.id} />
             </CardHeader>
             <CardContent>
               <AttachmentList
-                treatmentId={treatment.id}
+                medicalRecordId={medicalRecord.id}
                 showFilters={true}
                 compact={false}
                 showCreateButton={false}

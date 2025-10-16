@@ -22,14 +22,14 @@ import { useClinicalNoteCreate } from '@/hooks/clinical-notes/use-clinical-note-
 interface ClinicalNoteCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
-  treatmentId?: string
+  medicalRecordId?: string
   hospitalizationId?: string
 }
 
 export function ClinicalNoteCreate({
   open,
   onOpenChange,
-  treatmentId,
+  medicalRecordId,
   hospitalizationId,
 }: ClinicalNoteCreateProps) {
   const createClinicalNote = useClinicalNoteCreate()
@@ -38,7 +38,7 @@ export function ClinicalNoteCreate({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
       content: '',
-      treatment_id: treatmentId || '',
+      medical_record_id: medicalRecordId || '',
       hospitalization_id: hospitalizationId || undefined,
     },
   })
@@ -47,7 +47,7 @@ export function ClinicalNoteCreate({
     try {
       const data = {
         content: formData.content,
-        treatment_id: formData.treatment_id,
+        medical_record_id: formData.medical_record_id,
         hospitalization_id: formData.hospitalization_id,
       }
       await createClinicalNote.mutateAsync(data)

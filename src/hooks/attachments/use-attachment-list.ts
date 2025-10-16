@@ -5,7 +5,7 @@ import { AttachmentFilters } from '@/schemas/attachments.schema'
 const mockAttachments = [
   {
     id: 'att_001',
-    treatment_id: 'treatment_001',
+    medical_record_id: 'medical_record_001',
     file_name: 'radiografia_torax.jpg',
     file_size: 2048576, // 2MB
     file_type: 'image/jpeg',
@@ -25,7 +25,7 @@ const mockAttachments = [
   },
   {
     id: 'att_002',
-    treatment_id: 'treatment_001',
+    medical_record_id: 'medical_record_001',
     file_name: 'analisis_sangre.pdf',
     file_size: 512000, // 500KB
     file_type: 'application/pdf',
@@ -45,7 +45,7 @@ const mockAttachments = [
   },
   {
     id: 'att_003',
-    treatment_id: 'treatment_002',
+    medical_record_id: 'medical_record_002',
     file_name: 'ecografia_abdominal.mp4',
     file_size: 15728640, // 15MB
     file_type: 'video/mp4',
@@ -65,7 +65,7 @@ const mockAttachments = [
   },
   {
     id: 'att_004',
-    treatment_id: 'treatment_001',
+    medical_record_id: 'medical_record_001',
     file_name: 'consentimiento_cirugia.pdf',
     file_size: 256000, // 250KB
     file_type: 'application/pdf',
@@ -93,9 +93,9 @@ const mockFetchAttachments = async (filters: AttachmentFilters = {}) => {
   let filteredAttachments = [...mockAttachments]
 
   // Aplicar filtros
-  if (filters.treatment_id) {
+  if (filters.medical_record_id) {
     filteredAttachments = filteredAttachments.filter(
-      (att) => att.treatment_id === filters.treatment_id
+      (att) => att.medical_record_id === filters.medical_record_id
     )
   }
 

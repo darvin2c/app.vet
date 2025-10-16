@@ -4,20 +4,20 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { Stethoscope, Calendar, User, FileText, Paperclip } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
-import { TreatmentCreateButton } from '@/components/treatments/treatment-create-button'
-import { TreatmentActions } from '@/components/treatments/treatment-actions'
+import { MedicalRecordCreateButton } from '@/components/medical-records/medical-record-create-button'
+import { MedicalRecordActions } from '@/components/medical-records/medical-record-actions'
 import { AttachmentList } from '@/components/attachments/attachment-list'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
 
-interface PetTreatment extends Tables<'treatments'> {
+interface PetMedicalRecord extends Tables<'medical_records'> {
   veterinarian?: {
     first_name: string
     last_name: string
   }
 }
 
-interface PetTreatmentsListProps {
-  treatments: PetTreatment[]
+interface PetMedicalRecordsListProps {
+  medicalRecords: PetMedicalRecord[]
   isLoading: boolean
   petId: string
 }
@@ -66,11 +66,11 @@ const getTypeLabel = (type: string) => {
   }
 }
 
-export function PetTreatmentsList({
-  treatments,
+export function PetMedicalRecordsList({
+  medicalRecords,
   isLoading,
   petId,
-}: PetTreatmentsListProps) {
+}: PetMedicalRecordsListProps) {
   if (isLoading) {
     return (
       <Card>
@@ -95,7 +95,7 @@ export function PetTreatmentsList({
     )
   }
 
-  if (treatments.length === 0) {
+  if (medicalRecords.length === 0) {
     return (
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -103,7 +103,7 @@ export function PetTreatmentsList({
             <Stethoscope className="h-5 w-5" />
             Historial de Tratamientos
           </CardTitle>
-          <TreatmentCreateButton />
+          <MedicalRecordCreateButton petId={petId} />
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
@@ -127,39 +127,39 @@ export function PetTreatmentsList({
           <Stethoscope className="h-5 w-5" />
           Historial de Tratamientos
         </CardTitle>
-        <TreatmentCreateButton />
+        <MedicalRecordCreateButton petId={petId} />
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          {treatments.map((treatment) => (
-            <Card key={treatment.id} className="relative">
+          {medicalRecords.map((medicalRecord) => (
+            <Card key={medicalRecord.id} className="relative">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="space-y-1">
                     <h4 className="font-semibold">
-                      {getTypeLabel(treatment.treatment_type)}
+                      {getTypeLabel(medicalRecord.type)}
                     </h4>
                     <div className="flex items-center gap-4 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="h-4 w-4" />
-                        {format(new Date(treatment.treatment_date), 'PPP', {
+                        {format(new Date(medicalRecord.date), 'PPP', {
                           locale: es,
                         })}
                       </div>
-                      {treatment.veterinarian && (
+                      {medicalRecord.veterinarian && (
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
-                          {treatment.veterinarian.first_name}{' '}
-                          {treatment.veterinarian.last_name}
+                          {medicalRecord.veterinarian.first_name}{' '}
+                          {medicalRecord.veterinarian.last_name}
                         </div>
                       )}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Badge variant={getStatusVariant(treatment.status)}>
-                      {getStatusLabel(treatment.status)}
+                    <Badge variant={getStatusVariant(medicalRecord.status)}>
+                      {getStatusLabel(medicalRecord.status)}
                     </Badge>
-                    <TreatmentActions treatment={treatment} />
+                    <MedicalRecordActions medicalRecord={medicalRecord} />
                   </div>
                 </div>
               </CardHeader>
@@ -168,7 +168,7 @@ export function PetTreatmentsList({
                   <div className="flex items-center gap-2 text-sm">
                     <Stethoscope className="h-4 w-4 text-muted-foreground" />
                     <span className="font-medium">Tipo:</span>
-                    <span>{getTypeLabel(treatment.treatment_type)}</span>
+                    <span>{getTypeLabel(medicalRecord.type)}</span>
                   </div>
 
                   {/* Archivos adjuntos */}
@@ -179,12 +179,12 @@ export function PetTreatmentsList({
                         Archivos Médicos
                       </div>
                       <AttachmentCreateButton
-                        treatmentId={treatment.id}
+                        medicalRecordId={medicalRecord.id}
                         size="sm"
                       />
                     </div>
                     <AttachmentList
-                      treatmentId={treatment.id}
+                      medicalRecordId={medicalRecord.id}
                       showFilters={false}
                       compact={true}
                       showCreateButton={false}

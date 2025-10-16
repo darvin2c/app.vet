@@ -28,13 +28,14 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useState } from 'react'
 
-interface TreatmentTypeGridProps {
+interface MedicalRecordTypeGridProps {
   value?: string
   onValueChange?: (value: string) => void
+  disabled?: boolean
   className?: string
 }
 
-const treatmentTypes = [
+const medicalRecordTypes = [
   {
     value: 'vaccination',
     label: 'Vacunación',
@@ -73,16 +74,16 @@ const treatmentTypes = [
   },
 ]
 
-export function TreatmentTypeGrid({
+export function MedicalRecordTypeGrid({
   value,
   onValueChange,
   className,
-}: TreatmentTypeGridProps) {
+}: MedicalRecordTypeGridProps) {
   const isMobile = useIsMobile()
   const [isOpen, setIsOpen] = useState(true)
 
   // Encontrar el tipo seleccionado
-  const selectedType = treatmentTypes.find((type) => type.value === value)
+  const selectedType = medicalRecordTypes.find((type) => type.value === value)
 
   const handleSelection = (selectedValue: string) => {
     onValueChange?.(selectedValue)
@@ -128,7 +129,7 @@ export function TreatmentTypeGrid({
         <ItemGroup
           className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3')}
         >
-          {treatmentTypes.map((type) => {
+          {medicalRecordTypes.map((type) => {
             const Icon = type.icon
             const isSelected = value === type.value
 

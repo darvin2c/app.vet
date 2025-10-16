@@ -37,7 +37,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 interface AttachmentListProps {
-  treatmentId?: string
+  medicalRecordId?: string
   showFilters?: boolean
   compact?: boolean
   showCreateButton?: boolean
@@ -45,14 +45,14 @@ interface AttachmentListProps {
 }
 
 export function AttachmentList({
-  treatmentId,
+  medicalRecordId,
   showFilters = true,
   compact = false,
   showCreateButton = true,
   maxHeight = '600px',
 }: AttachmentListProps) {
   const [filters, setFilters] = useState<AttachmentFilters>({
-    treatment_id: treatmentId,
+    medical_record_id: medicalRecordId,
   })
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -198,8 +198,8 @@ export function AttachmentList({
         </div>
 
         {/* Botón crear */}
-        {showCreateButton && treatmentId && (
-          <AttachmentCreateButton treatmentId={treatmentId} />
+        {showCreateButton && medicalRecordId && (
+          <AttachmentCreateButton medicalRecordId={medicalRecordId} />
         )}
       </div>
 
@@ -234,12 +234,12 @@ export function AttachmentList({
                 No hay archivos adjuntos
               </h3>
               <p className="text-muted-foreground mb-4">
-                {treatmentId
-                  ? 'Este tratamiento no tiene archivos adjuntos aún.'
+                {medicalRecordId
+                  ? 'Este registro médico no tiene archivos adjuntos aún.'
                   : 'No se encontraron archivos con los filtros aplicados.'}
               </p>
-              {showCreateButton && treatmentId && (
-                <AttachmentCreateButton treatmentId={treatmentId} />
+              {showCreateButton && medicalRecordId && (
+                <AttachmentCreateButton medicalRecordId={medicalRecordId} />
               )}
             </CardContent>
           </Card>

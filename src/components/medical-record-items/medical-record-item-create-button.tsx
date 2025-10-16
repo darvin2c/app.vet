@@ -3,15 +3,15 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { TreatmentItemCreate } from './treatment-item-create'
+import { MedicalRecordItemCreate } from './medical-record-item-create'
 
-interface TreatmentItemCreateButtonProps {
-  treatmentId: string
+interface MedicalRecordItemCreateButtonProps {
+  medicalRecordId: string
 }
 
-export function TreatmentItemCreateButton({
-  treatmentId,
-}: TreatmentItemCreateButtonProps) {
+export function MedicalRecordItemCreateButton({
+  medicalRecordId,
+}: MedicalRecordItemCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -25,10 +25,10 @@ export function TreatmentItemCreateButton({
         Nuevo Item
       </ResponsiveButton>
 
-      <TreatmentItemCreate
+      <MedicalRecordItemCreate
         open={open}
         onOpenChange={setOpen}
-        treatmentId={treatmentId}
+        medicalRecordId={medicalRecordId}
       />
     </>
   )

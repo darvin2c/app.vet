@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AttachmentList } from '@/components/attachments/attachment-list'
 import { AttachmentCreateButton } from '@/components/attachments/attachment-create-button'
-import { TreatmentEdit } from './treatment-edit'
+import { MedicalRecordEdit } from './medical-record-edit'
 import {
   Calendar,
   User,
@@ -24,17 +24,17 @@ import {
 
 import { Tables } from '@/types/supabase.types'
 
-interface TreatmentDetailProps {
-  treatment: Tables<'treatments'>
+interface MedicalRecordDetailProps {
+  medicalRecord: Tables<'medical_records'>
   petName?: string
   vetName?: string
 }
 
-export function TreatmentDetail({
-  treatment,
+export function MedicalRecordDetail({
+  medicalRecord,
   petName,
   vetName,
-}: TreatmentDetailProps) {
+}: MedicalRecordDetailProps) {
   const [showEditDialog, setShowEditDialog] = useState(false)
 
   const getStatusColor = (status: string) => {
@@ -63,7 +63,7 @@ export function TreatmentDetail({
     }
   }
 
-  const getTreatmentTypeText = (type: string) => {
+  const getMedicalRecordTypeText = (type: string) => {
     switch (type) {
       case 'vaccination':
         return 'Vacunación'
@@ -92,20 +92,20 @@ export function TreatmentDetail({
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <CardTitle className="text-xl">
-                  {getTreatmentTypeText(treatment.treatment_type)}
+                  {getMedicalRecordTypeText(medicalRecord.type)}
                 </CardTitle>
-                <Badge className={getStatusColor(treatment.status)}>
-                  {getStatusText(treatment.status)}
+                <Badge className={getStatusColor(medicalRecord.status)}>
+                  {getStatusText(medicalRecord.status)}
                 </Badge>
               </div>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Stethoscope className="h-4 w-4" />
-                  {getTreatmentTypeText(treatment.treatment_type)}
+                  {getMedicalRecordTypeText(medicalRecord.type)}
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  {format(new Date(treatment.treatment_date), 'PPP', {
+                  {format(new Date(medicalRecord.date), 'PPP', {
                     locale: es,
                   })}
                 </div>
@@ -135,13 +135,13 @@ export function TreatmentDetail({
               <h4 className="font-medium text-sm text-muted-foreground">
                 Mascota
               </h4>
-              <p className="text-sm">{petName || treatment.pet_id}</p>
+              <p className="text-sm">{petName || medicalRecord.pet_id}</p>
             </div>
             <div className="space-y-2">
               <h4 className="font-medium text-sm text-muted-foreground">
                 Veterinario
               </h4>
-              <p className="text-sm">{vetName || treatment.vet_id}</p>
+              <p className="text-sm">{vetName || medicalRecord.vet_id}</p>
             </div>
           </div>
 
@@ -152,13 +152,17 @@ export function TreatmentDetail({
             <div className="flex items-center gap-1">
               <Clock className="h-3 w-3" />
               Creado:{' '}
-              {format(new Date(treatment.created_at), 'PPp', { locale: es })}
+              {format(new Date(medicalRecord.created_at), 'PPp', {
+                locale: es,
+              })}
             </div>
-            {treatment.updated_at !== treatment.created_at && (
+            {medicalRecord.updated_at !== medicalRecord.created_at && (
               <div className="flex items-center gap-1">
                 <Clock className="h-3 w-3" />
                 Actualizado:{' '}
-                {format(new Date(treatment.updated_at), 'PPp', { locale: es })}
+                {format(new Date(medicalRecord.updated_at), 'PPp', {
+                  locale: es,
+                })}
               </div>
             )}
           </div>
@@ -182,7 +186,7 @@ export function TreatmentDetail({
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">Archivos médicos</CardTitle>
                 <AttachmentCreateButton
-                  treatmentId={treatment.id}
+                  medicalRecordId={medicalRecord.id}
                   variant="outline"
                   size="sm"
                 />
@@ -190,7 +194,7 @@ export function TreatmentDetail({
             </CardHeader>
             <CardContent>
               <AttachmentList
-                treatmentId={treatment.id}
+                medicalRecordId={medicalRecord.id}
                 showFilters={false}
                 compact
               />
@@ -206,7 +210,7 @@ export function TreatmentDetail({
             <CardContent>
               <div className="text-center py-8 text-muted-foreground">
                 <p>
-                  Los productos y servicios del tratamiento aparecerán aquí.
+                  Los productos y servicios del registro médico aparecerán aquí.
                 </p>
                 <p className="text-sm mt-2">
                   Esta funcionalidad se integrará próximamente.
@@ -234,8 +238,8 @@ export function TreatmentDetail({
       </Tabs>
 
       {/* Dialog de edición */}
-      <TreatmentEdit
-        treatment={treatment}
+      <MedicalRecordEdit
+        medicalRecord={medicalRecord}
         open={showEditDialog}
         onOpenChange={setShowEditDialog}
       />

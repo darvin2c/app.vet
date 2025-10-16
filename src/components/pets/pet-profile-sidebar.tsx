@@ -20,13 +20,13 @@ type PetDetail = Tables<'pets'> & {
 interface PetProfileSidebarProps {
   pet: PetDetail
   appointmentsCount?: number
-  treatmentsCount?: number
+  medicalRecordsCount?: number
 }
 
 export function PetProfileSidebar({
   pet,
   appointmentsCount = 0,
-  treatmentsCount = 0,
+  medicalRecordsCount = 0,
 }: PetProfileSidebarProps) {
   const customer = pet.customers
 
@@ -122,7 +122,7 @@ export function PetProfileSidebar({
             </div>
             <div className="text-center p-3 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold text-primary">
-                {treatmentsCount}
+                {medicalRecordsCount}
               </div>
               <div className="text-xs text-muted-foreground">Tratamientos</div>
             </div>

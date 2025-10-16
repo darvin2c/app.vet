@@ -6,11 +6,11 @@ import { VaccinationCreate } from './vaccination-create'
 import { Plus } from 'lucide-react'
 
 interface VaccinationCreateButtonProps {
-  treatmentId: string
+  medicalRecordId: string
 }
 
 export function VaccinationCreateButton({
-  treatmentId,
+  medicalRecordId,
 }: VaccinationCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
@@ -27,7 +27,7 @@ export function VaccinationCreateButton({
       <VaccinationCreate
         open={open}
         onOpenChange={setOpen}
-        treatmentId={treatmentId}
+        medicalRecordId={medicalRecordId}
       />
     </>
   )

@@ -46,7 +46,7 @@ import { FilterConfig } from '@/types/filters.types'
 import { OrderByConfig } from '@/types/order-by.types'
 
 type ClinicalNote = Tables<'clinical_notes'> & {
-  treatments: Tables<'treatments'> | null
+  medical_records: Tables<'medical_records'> | null
   hospitalizations: Tables<'hospitalizations'> | null
 }
 
@@ -100,14 +100,14 @@ export function ClinicalNoteList({
       },
     },
     {
-      accessorKey: 'treatments.treatment_type',
-      header: 'Tratamiento',
+      accessorKey: 'medical_records.type',
+      header: 'Registro Médico',
       cell: ({ row }) => {
-        const treatment = row.original.treatments
-        return treatment ? (
+        const medicalRecord = row.original.medical_records
+        return medicalRecord ? (
           <Badge variant="secondary" className="text-xs">
             <Stethoscope className="h-3 w-3 mr-1" />
-            {treatment.treatment_type}
+            {medicalRecord.type}
           </Badge>
         ) : (
           <span className="text-muted-foreground text-sm">-</span>
@@ -246,10 +246,10 @@ export function ClinicalNoteList({
                 </p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
-                  {clinicalNote.treatments && (
+                  {clinicalNote.medical_records && (
                     <Badge variant="secondary" className="text-xs">
                       <Stethoscope className="h-3 w-3 mr-1" />
-                      {clinicalNote.treatments.treatment_type}
+                      {clinicalNote.medical_records.type}
                     </Badge>
                   )}
                   {clinicalNote.hospitalizations && (

@@ -38,7 +38,7 @@ export function TrainingEdit({
   const form = useForm<TrainingFormData>({
     resolver: zodResolver(TrainingSchema),
     defaultValues: {
-      treatment_id: training?.treatment_id || '',
+      medical_record_id: training?.medical_record_id || '',
       goal: training?.goal || '',
       sessions_planned: training?.sessions_planned || undefined,
       sessions_completed: training?.sessions_completed || undefined,
@@ -50,7 +50,7 @@ export function TrainingEdit({
   useEffect(() => {
     if (training) {
       form.reset({
-        treatment_id: training.treatment_id || '',
+        medical_record_id: training.medical_record_id || '',
         goal: training.goal || '',
         sessions_planned: training.sessions_planned || undefined,
         sessions_completed: training.sessions_completed || undefined,

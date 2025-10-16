@@ -28,15 +28,18 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
         .select(
           `
           *,
-          treatments (
+          medical_records (
             id,
-            treatment_type,
-            treatment_date
+            type,
+            date,
+            status,
+            pet_id
           ),
           hospitalizations (
             id,
             admission_at,
-            discharge_at
+            discharge_at,
+            pet_id
           )
         `
         )
@@ -50,7 +53,7 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
       // Aplicar filtros
       filters.forEach((filter) => {
         switch (filter.field) {
-          case 'treatment_id':
+          case 'medical_record_id':
             query = query.eq('treatment_id', filter.value)
             break
           case 'hospitalization_id':
@@ -75,8 +78,8 @@ export function useClinicalNoteList(params?: UseClinicalNotesParams) {
         throw new Error(`Error al obtener notas clínicas: ${error.message}`)
       }
 
-      return data as (Tables<'clinical_notes'> & {
-        treatments: Tables<'treatments'> | null
+      return (data || []) as unknown as (Tables<'clinical_notes'> & {
+        medical_records: Tables<'medical_records'> | null
         hospitalizations: Tables<'hospitalizations'> | null
       })[]
     },

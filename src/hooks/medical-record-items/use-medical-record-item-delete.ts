@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import useCurrentTenant from '@/hooks/tenants/use-current-tenant-store'
 
-export function useTreatmentItemDelete() {
+export function useMedicalRecordItemDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenant()
 
@@ -11,7 +11,7 @@ export function useTreatmentItemDelete() {
       const supabase = createClient()
 
       const { error } = await supabase
-        .from('treatment_items')
+        .from('medical_record_items')
         .delete()
         .eq('id', id)
         .eq('tenant_id', currentTenant?.id!)
@@ -20,10 +20,10 @@ export function useTreatmentItemDelete() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'treatment_items'],
+        queryKey: [currentTenant?.id, 'medical_record_items'],
       })
       queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'pet-treatment-items'],
+        queryKey: [currentTenant?.id, 'pet-medical-record-items'],
       })
     },
   })

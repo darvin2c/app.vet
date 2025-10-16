@@ -19,16 +19,18 @@ export function usePetClinicalNotes(petId: string) {
         .select(
           `
           *,
-          treatments (
+          medical_records (
             id,
-            treatment_type,
-            treatment_date,
-            status
+            type,
+            date,
+            status,
+            pet_id
           ),
           hospitalizations (
             id,
             admission_at,
-            discharge_at
+            discharge_at,
+            pet_id
           )
         `
         )
@@ -42,14 +44,9 @@ export function usePetClinicalNotes(petId: string) {
         )
       }
 
-      return data as (Tables<'clinical_notes'> & {
-        treatments: Tables<'treatments'> | null
+      return (data || []) as unknown as (Tables<'clinical_notes'> & {
+        medical_records: Tables<'medical_records'> | null
         hospitalizations: Tables<'hospitalizations'> | null
-        pets?:
-          | (Tables<'pets'> & {
-              customers: Tables<'customers'> | null
-            })
-          | null
       })[]
     },
     enabled: !!currentTenant?.id && !!petId,

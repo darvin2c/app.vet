@@ -15,7 +15,7 @@ const mockCreateAttachment = async (data: AttachmentUploadSchema) => {
   // Generar mock attachment
   const mockAttachment = {
     id: `att_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    treatment_id: data.treatment_id,
+    medical_record_id: data.medical_record_id,
     file_name: data.file.name,
     file_size: data.file.size,
     file_type: data.file.type,
@@ -44,13 +44,13 @@ export function useAttachmentCreate() {
     onSuccess: (data) => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({
-        queryKey: ['mock-tenant-id', 'attachments', data.treatment_id],
+        queryKey: ['mock-tenant-id', 'attachments', data.medical_record_id],
       })
       queryClient.invalidateQueries({
         queryKey: [
           'mock-tenant-id',
-          'treatments',
-          data.treatment_id,
+          'medical_records',
+          data.medical_record_id,
           'attachments',
         ],
       })
