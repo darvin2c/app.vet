@@ -27,10 +27,9 @@ export function HospitalizationForm() {
             id="admission_at"
             name="admission_at"
             value={watch('admission_at')}
-            onChange={(value) => setValue('admission_at', value || '')}
-            placeholder="Seleccionar fecha y hora de ingreso"
+            onChange={(value) => setValue('admission_at', value?.toISOString() || '')}
             hasTime={true}
-            error={errors.admission_at?.message as string}
+
           />
           <FieldError errors={[errors.admission_at]} />
         </FieldContent>
@@ -43,10 +42,9 @@ export function HospitalizationForm() {
             id="discharge_at"
             name="discharge_at"
             value={watch('discharge_at')}
-            onChange={(value) => setValue('discharge_at', value || '')}
-            placeholder="Seleccionar fecha y hora de alta"
+            onChange={(value) => setValue('discharge_at', value?.toISOString() || '')}
             hasTime={true}
-            error={errors.discharge_at?.message as string}
+
           />
           <FieldError errors={[errors.discharge_at]} />
         </FieldContent>

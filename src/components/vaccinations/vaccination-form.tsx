@@ -66,11 +66,12 @@ export function VaccinationForm() {
           <DatePicker
             id="next_due_at"
             name="next_due_at"
-            value={watch('next_due_at')}
-            onChange={(value) => setValue('next_due_at', value)}
-            placeholder="Seleccionar fecha y hora de próxima vacuna"
-            hasTime={true}
-            error={errors.next_due_at?.message as string}
+            value={
+              watch('next_due_at') ? new Date(watch('next_due_at')!) : undefined
+            }
+            onChange={(value) => setValue('next_due_at', value?.toISOString())}
+            error={!!errors.next_due_at}
+            errorMessage={errors.next_due_at?.message as string}
           />
           <FieldError errors={[errors.next_due_at]} />
         </FieldContent>

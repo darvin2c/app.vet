@@ -210,10 +210,10 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                 id="expiry_date"
                 name="expiry_date"
                 value={watch('expiry_date')}
-                onChange={(value) => setValue('expiry_date', value)}
-                placeholder="Seleccionar fecha de vencimiento"
+                onChange={(value) => setValue('expiry_date', value?.toISOString())}
                 hasTime={false}
-                error={errors.expiry_date?.message}
+                error={!!errors.expiry_date}
+                errorMessage={errors.expiry_date?.message as string}
               />
               <FieldError errors={[errors.expiry_date]} />
             </FieldContent>

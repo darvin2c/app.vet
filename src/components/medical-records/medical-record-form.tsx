@@ -72,10 +72,8 @@ export function MedicalRecordForm() {
             id="date"
             name="date"
             value={watch('date')}
-            onChange={(value) => setValue('date', value || '')}
-            placeholder="Seleccionar fecha del registro"
+            onChange={(value) => setValue('date', value?.toISOString() || '')}
             hasTime={false}
-            error={errors.date?.message as string}
           />
           <FieldError errors={[errors.date]} />
         </FieldContent>

@@ -702,7 +702,11 @@ interface TimePickerContentProps {
   onClose?: () => void
 }
 
-function TimePickerContent({ timePicker, format, onClose }: TimePickerContentProps) {
+function TimePickerContent({
+  timePicker,
+  format,
+  onClose,
+}: TimePickerContentProps) {
   const {
     currentTime,
     hoursArray,
@@ -721,7 +725,12 @@ function TimePickerContent({ timePicker, format, onClose }: TimePickerContentPro
     const currentMinute = now.getMinutes()
 
     if (format === '12h') {
-      const displayHour = currentHour === 0 ? 12 : currentHour > 12 ? currentHour - 12 : currentHour
+      const displayHour =
+        currentHour === 0
+          ? 12
+          : currentHour > 12
+            ? currentHour - 12
+            : currentHour
       const period = currentHour >= 12 ? 'PM' : 'AM'
       handleTimeSelect(displayHour, currentMinute, period)
     } else {
@@ -799,8 +808,6 @@ export function TimePicker({
   const displayPlaceholder =
     placeholder || (format === '12h' ? 'HH:MM AM/PM' : 'HH:MM')
 
-
-
   // Input con ícono de reloj
   const TimeInput = (
     <div className={className}>
@@ -844,9 +851,9 @@ export function TimePicker({
 
   // Contenido del selector
   const SelectorContent = (
-    <TimePickerContent 
-      timePicker={timePicker} 
-      format={format} 
+    <TimePickerContent
+      timePicker={timePicker}
+      format={format}
       onClose={() => setIsOpen(false)}
     />
   )

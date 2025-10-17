@@ -135,10 +135,10 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
                 id="birth_date"
                 name="birth_date"
                 value={watch('birth_date')}
-                onChange={(value) => setValue('birth_date', value)}
-                placeholder="Seleccionar fecha de nacimiento"
+                onChange={(value) => setValue('birth_date', value?.toISOString())}
                 hasTime={false}
-                error={errors.birth_date?.message}
+                error={!!errors.birth_date}
+                errorMessage={errors.birth_date?.message as string}
               />
               <FieldError errors={[errors.birth_date]} />
             </FieldContent>

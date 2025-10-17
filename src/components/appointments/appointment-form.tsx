@@ -131,7 +131,6 @@ export function AppointmentForm({
               onEndChange={(date) =>
                 setValue('scheduled_end', date?.toISOString() || '')
               }
-              placeholder="Seleccionar fecha y horario"
               minDate={new Date()}
               availableTimeSlots={availableTimeSlots}
             />

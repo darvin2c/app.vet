@@ -36,9 +36,8 @@ export function BoardingForm() {
               name="check_in_at"
               value={watch('check_in_at')}
               onChange={(value) => setValue('check_in_at', value)}
-              placeholder="Seleccionar fecha y hora de ingreso"
               hasTime={true}
-              error={errors.check_in_at?.message as string}
+
             />
             <FieldError errors={[errors.check_in_at]} />
           </FieldContent>
@@ -52,9 +51,8 @@ export function BoardingForm() {
               name="check_out_at"
               value={watch('check_out_at')}
               onChange={(value) => setValue('check_out_at', value)}
-              placeholder="Seleccionar fecha y hora de salida"
               hasTime={true}
-              error={errors.check_out_at?.message as string}
+
             />
             <FieldError errors={[errors.check_out_at]} />
           </FieldContent>

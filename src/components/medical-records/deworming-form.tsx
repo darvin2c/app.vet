@@ -126,9 +126,8 @@ export function DewormingForm() {
               name="next_dose_date"
               value={watch('next_dose_date')}
               onChange={(value) => setValue('next_dose_date', value)}
-              placeholder="Seleccionar fecha de próxima dosis"
               hasTime={false}
-              error={errors.next_dose_date?.message as string}
+
             />
             <FieldError errors={[errors.next_dose_date]} />
           </FieldContent>

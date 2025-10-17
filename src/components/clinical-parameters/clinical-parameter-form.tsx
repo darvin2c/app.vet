@@ -64,10 +64,9 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
             id="measured_at"
             name="measured_at"
             value={watch('measured_at')}
-            onChange={(value) => setValue('measured_at', value || '')}
-            placeholder="Seleccionar fecha y hora de medición"
+            onChange={(value) => setValue('measured_at', value?.toISOString() || '')}
             hasTime={true}
-            error={errors.measured_at?.message as string}
+
           />
           <FieldError errors={[errors.measured_at]} />
         </FieldContent>

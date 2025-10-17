@@ -72,9 +72,9 @@ export function VaccinationForm() {
               name="next_due_at"
               value={watch('next_due_at')}
               onChange={(value) => setValue('next_due_at', value)}
-              placeholder="Seleccionar fecha y hora de próxima dosis"
               hasTime={true}
-              error={errors.next_due_at?.message as string}
+              error={!!errors.next_due_at}
+              errorMessage={errors.next_due_at?.message as string}
             />
             <FieldError errors={[errors.next_due_at]} />
           </FieldContent>
