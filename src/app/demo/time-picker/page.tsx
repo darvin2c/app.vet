@@ -20,32 +20,33 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { TimePicker, getTimeSchema } from '@/components/ui/time-picker'
+import { TimePicker } from '@/components/ui/time-picker'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
 
-// Esquemas para formularios
+// Esquemas simplificados para formularios
 const appointmentSchema = z.object({
-  startTime: getTimeSchema('12h'),
-  endTime: getTimeSchema('12h'),
-  reminderTime: getTimeSchema('24h'),
+  startTime: z.string().optional(),
+  endTime: z.string().optional(),
+  reminderTime: z.string().optional(),
 })
 
 const scheduleSchema = z.object({
-  openTime: getTimeSchema('24h'),
-  closeTime: getTimeSchema('24h'),
-  lunchStart: getTimeSchema('12h'),
-  lunchEnd: getTimeSchema('12h'),
+  openTime: z.string().optional(),
+  closeTime: z.string().optional(),
+  lunchStart: z.string().optional(),
+  lunchEnd: z.string().optional(),
 })
 
 type AppointmentForm = z.infer<typeof appointmentSchema>
 type ScheduleForm = z.infer<typeof scheduleSchema>
 
 export default function TimePickerDemo() {
-  // Estados para demos básicos
+  // Estados para ejemplos básicos
   const [time12h, setTime12h] = useState('')
   const [time24h, setTime24h] = useState('')
+  const [timeDisabled, setTimeDisabled] = useState('14:30')
   const [timeWithError, setTimeWithError] = useState('')
   const [error, setError] = useState<string | null>(null)
 
@@ -70,14 +71,12 @@ export default function TimePickerDemo() {
     },
   })
 
-  // Manejar envío de formulario de citas
   const onAppointmentSubmit = (data: AppointmentForm) => {
     toast.success('Cita programada correctamente', {
-      description: `Inicio: ${data.startTime}, Fin: ${data.endTime}, Recordatorio: ${data.reminderTime}`,
+      description: `Inicio: ${data.startTime}, Fin: ${data.endTime}`,
     })
   }
 
-  // Manejar envío de formulario de horarios
   const onScheduleSubmit = (data: ScheduleForm) => {
     toast.success('Horario configurado correctamente', {
       description: `Apertura: ${data.openTime}, Cierre: ${data.closeTime}`,
@@ -85,156 +84,130 @@ export default function TimePickerDemo() {
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto p-6 space-y-8">
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold">TimePicker Component Demo</h1>
+        <h1 className="text-3xl font-bold">TimePicker Component</h1>
         <p className="text-muted-foreground">
-          Componente completamente autocontenido para selección de tiempo con
-          soporte para formatos 12h y 24h
+          Componente simplificado para selección de tiempo con soporte para formatos 12h y 24h
         </p>
       </div>
 
-      {/* Características del componente */}
+      {/* Funcionalidades */}
       <Card>
         <CardHeader>
-          <CardTitle>Características Principales</CardTitle>
+          <CardTitle>Funcionalidades</CardTitle>
           <CardDescription>
-            El componente TimePicker incluye las siguientes funcionalidades
+            Características principales del componente TimePicker
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <h4 className="font-medium">Funcionalidades</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>• Máscara de entrada adaptativa</li>
-                <li>• Selector activado por ícono de reloj</li>
-                <li>• Diseño completamente responsivo</li>
-                <li>• Validación en tiempo real</li>
-                <li>• Soporte para formatos 12h y 24h</li>
-              </ul>
+              <Badge variant="secondary">Formato 12h</Badge>
+              <p className="text-sm text-muted-foreground">
+                Soporte para formato de 12 horas con AM/PM
+              </p>
             </div>
             <div className="space-y-2">
-              <h4 className="font-medium">Props Principales</h4>
-              <div className="space-y-1">
-                <Badge variant="outline">
-                  format: &quot;12h&quot; | &quot;24h&quot;
-                </Badge>
-                <Badge variant="outline">value?: string</Badge>
-                <Badge variant="outline">
-                  onChange?: (value: string) =&gt; void
-                </Badge>
-                <Badge variant="outline">disabled?: boolean</Badge>
-                <Badge variant="outline">error?: string</Badge>
-              </div>
+              <Badge variant="secondary">Formato 24h</Badge>
+              <p className="text-sm text-muted-foreground">
+                Soporte para formato de 24 horas
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Badge variant="secondary">Responsivo</Badge>
+              <p className="text-sm text-muted-foreground">
+                Popover en desktop, Sheet en mobile
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Badge variant="secondary">Selectores visuales</Badge>
+              <p className="text-sm text-muted-foreground">
+                Selectores de hora, minuto y período
+              </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Separator />
-
-      {/* Demo básico - Formato 12h */}
+      {/* Ejemplos básicos */}
       <Card>
         <CardHeader>
-          <CardTitle>Formato 12 Horas (AM/PM)</CardTitle>
+          <CardTitle>Ejemplos Básicos</CardTitle>
           <CardDescription>
-            TimePicker con formato 12h que incluye selector AM/PM
+            Diferentes configuraciones del TimePicker
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Hora de Cita</label>
+              <label className="text-sm font-medium">Formato 12 horas</label>
               <TimePicker
                 format="12h"
                 value={time12h}
-                onChange={setTime12h}
-                placeholder="Seleccionar hora"
+                onChange={(value) => setTime12h(value || '')}
               />
               {time12h && (
                 <p className="text-sm text-muted-foreground">
-                  Valor seleccionado:{' '}
-                  <code className="bg-muted px-1 rounded">{time12h}</code>
+                  Valor seleccionado: {time12h}
                 </p>
               )}
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Hora Deshabilitada</label>
+              <label className="text-sm font-medium">Formato 24 horas</label>
               <TimePicker
-                format="12h"
-                value="02:30 PM"
+                format="24h"
+                value={time24h}
+                onChange={(value) => setTime24h(value || '')}
+              />
+              {time24h && (
+                <p className="text-sm text-muted-foreground">
+                  Valor seleccionado: {time24h}
+                </p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Deshabilitado</label>
+              <TimePicker
+                format="24h"
+                value={timeDisabled}
+                onChange={(value) => setTimeDisabled(value || '')}
                 disabled
-                placeholder="Campo deshabilitado"
               />
               <p className="text-sm text-muted-foreground">
                 Campo deshabilitado con valor predeterminado
               </p>
             </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Demo básico - Formato 24h */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Formato 24 Horas</CardTitle>
-          <CardDescription>
-            TimePicker con formato 24h sin selector AM/PM
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Hora Militar</label>
-              <TimePicker
-                format="24h"
-                value={time24h}
-                onChange={setTime24h}
-                placeholder="HH:MM"
-              />
-              {time24h && (
-                <p className="text-sm text-muted-foreground">
-                  Valor seleccionado:{' '}
-                  <code className="bg-muted px-1 rounded">{time24h}</code>
-                </p>
-              )}
-            </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">
-                Con Error Personalizado
+                Ejemplo Interactivo
               </label>
               <TimePicker
                 format="24h"
                 value={timeWithError}
-                onChange={setTimeWithError}
-                onError={setError}
-                error={error || undefined}
-                placeholder="Ingrese hora inválida"
+                onChange={(value) => setTimeWithError(value || '')}
               />
               <p className="text-sm text-muted-foreground">
-                Pruebe ingresar una hora inválida para ver la validación
+                Componente simplificado sin validación
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Separator />
-
-      {/* Demo con formularios - Citas */}
+      {/* Formulario de citas */}
       <Card>
         <CardHeader>
-          <CardTitle>Integración con Formularios - Citas</CardTitle>
+          <CardTitle>Formulario de Citas</CardTitle>
           <CardDescription>
-            Ejemplo de uso con react-hook-form y validación Zod
+            Ejemplo de uso en formularios con react-hook-form
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...appointmentForm}>
             <form
               onSubmit={appointmentForm.handleSubmit(onAppointmentSubmit)}
-              className="space-y-6"
+              className="space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -242,13 +215,12 @@ export default function TimePickerDemo() {
                   name="startTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Hora de Inicio</FormLabel>
+                      <FormLabel>Hora de inicio</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="12h"
-                          value={field.value}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM AM/PM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -260,13 +232,12 @@ export default function TimePickerDemo() {
                   name="endTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Hora de Fin</FormLabel>
+                      <FormLabel>Hora de fin</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="12h"
-                          value={field.value}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM AM/PM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -279,42 +250,37 @@ export default function TimePickerDemo() {
                 name="reminderTime"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hora de Recordatorio (24h)</FormLabel>
+                    <FormLabel>Recordatorio</FormLabel>
                     <FormControl>
                       <TimePicker
                         format="24h"
-                        value={field.value}
+                        value={field.value || ''}
                         onChange={field.onChange}
-                        placeholder="HH:MM"
                       />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full md:w-auto">
-                Programar Cita
-              </Button>
+              <Button type="submit">Programar Cita</Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
-      {/* Demo con formularios - Horarios */}
+      {/* Formulario de horarios */}
       <Card>
         <CardHeader>
-          <CardTitle>
-            Integración con Formularios - Horarios de Trabajo
-          </CardTitle>
+          <CardTitle>Configuración de Horarios</CardTitle>
           <CardDescription>
-            Configuración de horarios con diferentes formatos
+            Ejemplo de configuración de horarios de trabajo
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...scheduleForm}>
             <form
               onSubmit={scheduleForm.handleSubmit(onScheduleSubmit)}
-              className="space-y-6"
+              className="space-y-4"
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
@@ -322,13 +288,12 @@ export default function TimePickerDemo() {
                   name="openTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Hora de Apertura (24h)</FormLabel>
+                      <FormLabel>Hora de apertura</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="24h"
-                          value={field.value}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -340,13 +305,12 @@ export default function TimePickerDemo() {
                   name="closeTime"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Hora de Cierre (24h)</FormLabel>
+                      <FormLabel>Hora de cierre</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="24h"
-                          value={field.value}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -354,19 +318,19 @@ export default function TimePickerDemo() {
                   )}
                 />
               </div>
+              <Separator />
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={scheduleForm.control}
                   name="lunchStart"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Inicio de Almuerzo (12h)</FormLabel>
+                      <FormLabel>Inicio de almuerzo</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="12h"
-                          value={field.value}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM AM/PM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -378,13 +342,12 @@ export default function TimePickerDemo() {
                   name="lunchEnd"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Fin de Almuerzo (12h)</FormLabel>
+                      <FormLabel>Fin de almuerzo</FormLabel>
                       <FormControl>
                         <TimePicker
                           format="12h"
-                          value={field.value || undefined}
+                          value={field.value || ''}
                           onChange={field.onChange}
-                          placeholder="HH:MM AM/PM"
                         />
                       </FormControl>
                       <FormMessage />
@@ -392,63 +355,39 @@ export default function TimePickerDemo() {
                   )}
                 />
               </div>
-              <Button type="submit" className="w-full md:w-auto">
-                Guardar Horarios
-              </Button>
+              <Button type="submit">Guardar Horarios</Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
-      {/* Casos de validación */}
+      {/* Estados de validación */}
       <Card>
         <CardHeader>
-          <CardTitle>Casos de Validación</CardTitle>
+          <CardTitle>Estados Simplificados</CardTitle>
           <CardDescription>
-            Ejemplos de diferentes estados de validación y error
+            El componente ahora es de solo visualización sin validación interna
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Hora Válida (12h)</label>
+              <label className="text-sm font-medium">Formato 12h</label>
               <TimePicker
                 format="12h"
-                value="09:30 AM"
+                value="2:30 PM"
                 onChange={() => {}}
-                placeholder="HH:MM AM/PM"
               />
-              <p className="text-sm text-green-600">✓ Formato válido</p>
+              <p className="text-sm text-green-600">✓ Valor predeterminado</p>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Hora Válida (24h)</label>
+              <label className="text-sm font-medium">Formato 24h</label>
               <TimePicker
                 format="24h"
-                value="14:45"
+                value="14:30"
                 onChange={() => {}}
-                placeholder="HH:MM"
               />
-              <p className="text-sm text-green-600">✓ Formato válido</p>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Error Personalizado</label>
-              <TimePicker
-                format="12h"
-                value=""
-                onChange={() => {}}
-                error="Este campo es requerido"
-                placeholder="HH:MM AM/PM"
-              />
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Campo Requerido</label>
-              <TimePicker
-                format="24h"
-                value=""
-                onChange={() => {}}
-                error="Seleccione una hora válida"
-                placeholder="HH:MM"
-              />
+              <p className="text-sm text-green-600">✓ Valor predeterminado</p>
             </div>
           </div>
         </CardContent>
@@ -459,63 +398,41 @@ export default function TimePickerDemo() {
         <CardHeader>
           <CardTitle>Información Técnica</CardTitle>
           <CardDescription>
-            Detalles de implementación y comportamiento responsivo
+            Detalles de implementación del componente simplificado
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             <div>
-              <h4 className="font-medium mb-2">Comportamiento Responsivo</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
+              <h4 className="font-medium mb-2">Props principales:</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
                 <li>
-                  • <strong>Desktop:</strong> Usa Popover para el selector de
-                  tiempo
+                  <code>format</code>: '12h' | '24h' - Formato de tiempo
                 </li>
                 <li>
-                  • <strong>Mobile:</strong> Usa Sheet (drawer) desde la parte
-                  inferior
+                  <code>value</code>: string - Valor actual del tiempo
                 </li>
                 <li>
-                  • <strong>Detección automática:</strong> Basada en el hook
-                  useMobile
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Validación</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>
-                  • <strong>Tiempo real:</strong> Validación mientras el usuario
-                  escribe
+                  <code>onChange</code>: (value: string) =&gt; void - Callback de cambio
                 </li>
                 <li>
-                  • <strong>Esquemas Zod:</strong> Integración completa con
-                  react-hook-form
+                  <code>disabled</code>: boolean - Estado deshabilitado
                 </li>
+
                 <li>
-                  • <strong>Mensajes personalizados:</strong> Soporte para
-                  errores externos
+                  <code>className</code>: string - Clases CSS adicionales
                 </li>
               </ul>
             </div>
             <div>
-              <h4 className="font-medium mb-2">Interacción</h4>
-              <ul className="space-y-1 text-sm text-muted-foreground">
-                <li>
-                  • <strong>Máscara automática:</strong> Formato HH:MM aplicado
-                  automáticamente
-                </li>
-                <li>
-                  • <strong>Selector numérico:</strong> Botones para horas y
-                  minutos
-                </li>
-                <li>
-                  • <strong>Toggle AM/PM:</strong> Solo visible en formato 12h
-                </li>
-                <li>
-                  • <strong>Activación por ícono:</strong> Selector se abre solo
-                  al hacer clic en el reloj
-                </li>
+              <h4 className="font-medium mb-2">Características:</h4>
+              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                <li>Componente de solo visualización sin validación interna</li>
+                <li>Selectores visuales para hora, minuto y período (AM/PM)</li>
+                <li>Responsivo: Popover en desktop, Sheet en mobile</li>
+                <li>Botón "Ahora" para establecer la hora actual</li>
+                <li>Minutos en intervalos de 5 para mejor UX</li>
+                <li>Integración simple con react-hook-form</li>
               </ul>
             </div>
           </div>
