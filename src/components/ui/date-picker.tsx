@@ -574,7 +574,15 @@ export function DatePicker({
           )}
         </InputGroupAddon>
         {/* TimePicker dentro de un InputGroupAddon */}
-        <InputGroupAddon align="inline-end" className=" !pr-0">
+        <InputGroupAddon 
+          align="inline-end" 
+          className=" !pr-0"
+          onClick={(e) => {
+            // Prevenir el comportamiento de foco automático cuando se hace clic en el TimePicker
+            // El TimePicker debe manejar su propio foco
+            e.stopPropagation()
+          }}
+        >
           <TimePicker
             format={timeFormat}
             value={timeValue}
