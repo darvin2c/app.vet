@@ -19,8 +19,10 @@ import { HospitalizationList } from '@/components/hospitalizations/hospitalizati
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 import { ClinicalNoteList } from '@/components/clinical-notes/clinical-note-list'
 import { ClinicalNoteCreateButton } from '@/components/clinical-notes/clinical-note-create-button'
-import { PetClinicalParameters } from '@/components/pets/pet-clinical-parameters'
-import { useClinicalParameterList } from '@/hooks/clinical-parameters/use-clinical-parameter-list'
+import { ClinicalParameterList } from '@/components/clinical-parameters/clinical-parameter-list'
+import { ClinicalParameterCreateButton } from '@/components/clinical-parameters/clinical-parameter-create-button'
+import { FilterConfig } from '@/types/filters.types'
+import { OrderByConfig } from '@/types/order-by.types'
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -34,10 +36,37 @@ export default function PetProfilePage() {
     error: petError,
   } = usePetDetail(petId)
 
-  const {
-    data: clinicalParameters = [],
-    isLoading: clinicalParametersLoading,
-  } = useClinicalParameterList({ petId })
+  // Configuración de filtros para parámetros clínicos
+  const clinicalParameterFilters: FilterConfig[] = [
+    {
+      key: 'measured_at_range',
+      field: 'measured_at',
+      type: 'dateRange',
+      label: 'Fecha de medición',
+      placeholder: 'Selecciona rango de fechas',
+      operator: 'gte',
+    },
+    {
+      key: 'schema_version',
+      field: 'schema_version',
+      type: 'select',
+      label: 'Versión',
+      placeholder: 'Selecciona versión',
+      operator: 'eq',
+      options: [
+        { label: 'Versión 1', value: '1' },
+        { label: 'Versión 2', value: '2' },
+      ],
+    },
+  ]
+
+  const clinicalParameterOrderByConfig: OrderByConfig = {
+    columns: [
+      { field: 'measured_at', label: 'Fecha de medición' },
+      { field: 'schema_version', label: 'Versión' },
+      { field: 'created_at', label: 'Fecha de creación' },
+    ],
+  }
 
   if (petLoading || !pet) {
     return (
@@ -141,10 +170,11 @@ export default function PetProfilePage() {
                     Mediciones y parámetros vitales de la mascota
                   </p>
                 </div>
+                <ClinicalParameterCreateButton petId={petId} />
               </div>
-              <PetClinicalParameters
-                parameters={clinicalParameters}
-                isLoading={clinicalParametersLoading}
+              <ClinicalParameterList
+                filterConfig={clinicalParameterFilters}
+                orderByConfig={clinicalParameterOrderByConfig}
                 petId={petId}
               />
             </TabsContent>

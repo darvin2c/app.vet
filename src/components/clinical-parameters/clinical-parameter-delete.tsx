@@ -1,6 +1,5 @@
 'use client'
 
-import { toast } from 'sonner'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { useClinicalParameterDelete } from '@/hooks/clinical-parameters/use-clinical-parameter-delete'
 
@@ -20,14 +19,9 @@ export function ClinicalParameterDelete({
   const deleteClinicalParameter = useClinicalParameterDelete()
 
   const handleConfirm = async () => {
-    try {
-      await deleteClinicalParameter.mutateAsync(clinicalParameterId)
-      toast.success('Parámetros clínicos eliminados exitosamente')
-      onConfirm?.()
-      onClose()
-    } catch (error) {
-      toast.error('Error al eliminar los parámetros clínicos')
-    }
+    await deleteClinicalParameter.mutateAsync(clinicalParameterId)
+    onConfirm?.()
+    onClose()
   }
 
   return (

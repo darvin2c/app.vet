@@ -47,21 +47,15 @@ export function ClinicalParameterEdit({
   })
 
   const onSubmit = async (data: ClinicalParameterFormData) => {
-    try {
-      await updateClinicalParameter.mutateAsync({
-        id: clinicalParameter.id,
-        data,
-      })
-      toast.success('Parámetros clínicos actualizados exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      toast.error('Error al actualizar los parámetros clínicos')
-    }
+    await updateClinicalParameter.mutateAsync({
+      id: clinicalParameter.id,
+      data,
+    })
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-2xl">
         <DrawerHeader>
           <DrawerTitle>Editar Parámetros Clínicos</DrawerTitle>
           <DrawerDescription>
