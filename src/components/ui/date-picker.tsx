@@ -44,6 +44,60 @@ const dateSchema = z.string().refine(
   }
 )
 
+// Función para combinar fecha y hora
+function combineDateTime(date: Date, timeString: string): Date {
+  if (!timeString) {
+    // Si no hay hora, usar 00:00
+    const combined = new Date(date)
+    combined.setHours(0, 0, 0, 0)
+    return combined
+  }
+
+  // Parsear la hora del string
+  let hours = 0
+  let minutes = 0
+
+  // Formato 24h (HH:MM)
+  const time24hMatch = timeString.match(/^(\d{1,2}):(\d{2})$/)
+  if (time24hMatch) {
+    hours = parseInt(time24hMatch[1], 10)
+    minutes = parseInt(time24hMatch[2], 10)
+  } else {
+    // Formato 12h (H:MM AM/PM)
+    const time12hMatch = timeString.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
+    if (time12hMatch) {
+      hours = parseInt(time12hMatch[1], 10)
+      minutes = parseInt(time12hMatch[2], 10)
+      const period = time12hMatch[3].toUpperCase()
+      
+      if (period === 'PM' && hours !== 12) {
+        hours += 12
+      } else if (period === 'AM' && hours === 12) {
+        hours = 0
+      }
+    }
+  }
+
+  // Crear nueva fecha con la hora combinada
+  const combined = new Date(date)
+  combined.setHours(hours, minutes, 0, 0)
+  return combined
+}
+
+// Función para extraer hora de una fecha
+function extractTimeFromDate(date: Date, format: '12h' | '24h' = '24h'): string {
+  const hours = date.getHours()
+  const minutes = date.getMinutes()
+
+  if (format === '12h') {
+    const period = hours >= 12 ? 'PM' : 'AM'
+    const displayHours = hours % 12 || 12
+    return `${displayHours}:${minutes.toString().padStart(2, '0')} ${period}`
+  } else {
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+  }
+}
+
 export interface DatePickerProps {
   /**
    * Valor de la fecha en formato ISO string o Date
@@ -149,10 +203,17 @@ export function DatePicker({
   useEffect(() => {
     if (dateValue) {
       setInputValue(format(dateValue, dateFormat))
+      // Si hasTime está habilitado, extraer la hora del dateValue
+      if (hasTime) {
+        setTimeValue(extractTimeFromDate(dateValue, timeFormat))
+      }
     } else {
       setInputValue('')
+      if (hasTime) {
+        setTimeValue('')
+      }
     }
-  }, [dateValue, dateFormat])
+  }, [dateValue, dateFormat, hasTime, timeFormat])
 
   // Validar entrada manual
   const validateInput = useCallback(
@@ -262,7 +323,13 @@ export function DatePicker({
       if (maskedValue.length === dateFormat.length) {
         const validatedDate = validateInput(maskedValue)
         if (validatedDate) {
-          onChange?.(validatedDate)
+          // Si hasTime está habilitado, combinar con la hora actual
+          if (hasTime && timeValue) {
+            const combinedDateTime = combineDateTime(validatedDate, timeValue)
+            onChange?.(combinedDateTime)
+          } else {
+            onChange?.(validatedDate)
+          }
         }
       } else {
         // Limpiar error si está escribiendo
@@ -275,6 +342,8 @@ export function DatePicker({
       dateFormat.length,
       validateInput,
       onChange,
+      hasTime,
+      timeValue,
     ]
   )
 
@@ -283,10 +352,16 @@ export function DatePicker({
     if (inputValue.trim()) {
       const validatedDate = validateInput(inputValue)
       if (validatedDate) {
-        onChange?.(validatedDate)
+        // Si hasTime está habilitado, combinar con la hora actual
+        if (hasTime && timeValue) {
+          const combinedDateTime = combineDateTime(validatedDate, timeValue)
+          onChange?.(combinedDateTime)
+        } else {
+          onChange?.(validatedDate)
+        }
       }
     }
-  }, [inputValue, validateInput, onChange])
+  }, [inputValue, validateInput, onChange, hasTime, timeValue])
 
   // Manejar selección desde el calendario
   const handleCalendarSelect = useCallback(
@@ -297,12 +372,19 @@ export function DatePicker({
           // En desktop, aplicar inmediatamente
           setInputValue(format(selectedDate, dateFormat))
           setInputError(null)
-          onChange?.(selectedDate)
+          
+          // Si hasTime está habilitado, combinar con la hora actual
+          if (hasTime && timeValue) {
+            const combinedDateTime = combineDateTime(selectedDate, timeValue)
+            onChange?.(combinedDateTime)
+          } else {
+            onChange?.(selectedDate)
+          }
           setOpen(false)
         }
       }
     },
-    [dateFormat, onChange, isMobile]
+    [dateFormat, onChange, isMobile, hasTime, timeValue]
   )
 
   // Manejar botón "Hoy"
@@ -313,20 +395,34 @@ export function DatePicker({
       // En desktop, aplicar inmediatamente
       setInputValue(format(today, dateFormat))
       setInputError(null)
-      onChange?.(today)
+      
+      // Si hasTime está habilitado, combinar con la hora actual
+      if (hasTime && timeValue) {
+        const combinedDateTime = combineDateTime(today, timeValue)
+        onChange?.(combinedDateTime)
+      } else {
+        onChange?.(today)
+      }
       setOpen(false)
     }
-  }, [dateFormat, onChange, isMobile])
+  }, [dateFormat, onChange, isMobile, hasTime, timeValue])
 
   // Manejar confirmación en mobile
   const handleConfirm = useCallback(() => {
     if (selectedDate) {
       setInputValue(format(selectedDate, dateFormat))
       setInputError(null)
-      onChange?.(selectedDate)
+      
+      // Si hasTime está habilitado, combinar con la hora actual
+      if (hasTime && timeValue) {
+        const combinedDateTime = combineDateTime(selectedDate, timeValue)
+        onChange?.(combinedDateTime)
+      } else {
+        onChange?.(selectedDate)
+      }
     }
     setOpen(false)
-  }, [selectedDate, dateFormat, onChange])
+  }, [selectedDate, dateFormat, onChange, hasTime, timeValue])
 
   // Manejar cancelación en mobile
   const handleCancel = useCallback(() => {
@@ -387,7 +483,102 @@ export function DatePicker({
   // Máscara visual basada en dateFormat
   const maskFormat = dateFormat.toUpperCase()
 
-  const inputGroupContent = (
+  const inputGroupContent = hasTime ? (
+    // Cuando hasTime es true, renderizar como componentes separados en flex container
+    <div className="flex gap-2">
+      <InputGroup
+        className={cn(
+          'flex-1',
+          hasError && 'border-destructive ring-destructive/20',
+          disabled && 'opacity-50'
+        )}
+        data-disabled={disabled}
+      >
+        <InputGroupInput
+          ref={inputRef}
+          id={id}
+          name={name}
+          type="text"
+          placeholder={maskFormat}
+          value={inputValue}
+          onChange={handleInputChange}
+          onBlur={handleInputBlur}
+          disabled={disabled}
+          required={required}
+          aria-invalid={hasError}
+          aria-describedby={hasError ? `${id}-error` : undefined}
+          className={cn(
+            'font-mono relative z-10 bg-transparent',
+            hasError && 'text-destructive placeholder:text-destructive/50'
+          )}
+          {...props}
+        />
+        {/* Máscara visual por detrás */}
+        <div
+          className="absolute inset-0 flex items-center px-3 pointer-events-none text-muted-foreground/40 font-mono text-sm z-0"
+          aria-hidden="true"
+        >
+          {inputValue.length < maskFormat.length && (
+            <span>
+              {inputValue}
+              <span className="text-muted-foreground/30">
+                {maskFormat.slice(inputValue.length)}
+              </span>
+            </span>
+          )}
+        </div>
+
+        <InputGroupAddon align="inline-end">
+          {isMobile ? (
+            <InputGroupButton
+              type="button"
+              variant="ghost"
+              size="icon-xs"
+              disabled={disabled}
+              onClick={handleCalendarButtonClick}
+              title="Abrir calendario"
+              aria-label="Abrir calendario"
+            >
+              <CalendarIcon className="h-4 w-4" />
+            </InputGroupButton>
+          ) : (
+            <PopoverTrigger asChild>
+              <InputGroupButton
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={disabled}
+                onClick={handleCalendarButtonClick}
+                title="Abrir calendario"
+                aria-label="Abrir calendario"
+              >
+                <CalendarIcon className="h-4 w-4" />
+              </InputGroupButton>
+            </PopoverTrigger>
+          )}
+        </InputGroupAddon>
+      </InputGroup>
+      
+      {/* TimePicker como componente independiente */}
+      <TimePicker
+        format={timeFormat}
+        value={timeValue}
+        className="max-w-32"
+        disabled={disabled}
+        onChange={(value) => {
+          setTimeValue(value || '')
+          
+          // Combinar fecha actual con la nueva hora
+          if (hasTime && onChange) {
+            const currentDate = dateValue || new Date()
+            const combinedDateTime = combineDateTime(currentDate, value || '')
+            onChange(combinedDateTime)
+          }
+        }}
+      />
+    </div>
+  ) : (
+    // Cuando hasTime es false, renderizar como InputGroup normal
     <InputGroup
       className={cn(
         hasError && 'border-destructive ring-destructive/20',
@@ -458,18 +649,6 @@ export function DatePicker({
           </PopoverTrigger>
         )}
       </InputGroupAddon>
-      {hasTime && (
-        <InputGroupAddon align="inline-end" className="px-0">
-          <TimePicker
-            format={timeFormat}
-            value={timeValue}
-            className="border-0 px-2 max-w-40"
-            onChange={(value) => {
-              setTimeValue(value || '')
-            }}
-          />
-        </InputGroupAddon>
-      )}
     </InputGroup>
   )
 
