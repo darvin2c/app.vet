@@ -793,7 +793,32 @@ export function TimePicker({
               const cleanValue = value.replace(/[^\d\sAPMapm]/g, '')
               const expectedMask = getTimeMask(format)
               
-              // Si el valor limpio es muy corto, mostrar máscara completa
+              // Para formato 12h, detectar si ya hay AM/PM en el valor
+              if (format === '12h') {
+                const hasAmPm = /\s*(AM|PM)$/i.test(value)
+                
+                if (hasAmPm) {
+                  // Si ya tiene AM/PM, no mostrar máscara adicional
+                  return (
+                    <span className="invisible select-none">{value}</span>
+                  )
+                } else {
+                  // Si no tiene AM/PM, mostrar la parte restante de la máscara
+                  const remainingMask = expectedMask.slice(value.length)
+                  return (
+                    <>
+                      <span className="invisible select-none">{value}</span>
+                      {remainingMask && (
+                        <span className="text-muted-foreground/30">
+                          {remainingMask}
+                        </span>
+                      )}
+                    </>
+                  )
+                }
+              }
+              
+              // Para formato 24h o valores muy cortos
               if (cleanValue.length <= 1) {
                 return (
                   <>
@@ -805,7 +830,7 @@ export function TimePicker({
                 )
               }
               
-              // Para valores más largos, mostrar máscara restante
+              // Para valores más largos en formato 24h
               return (
                 <>
                   <span className="invisible select-none">{value}</span>
