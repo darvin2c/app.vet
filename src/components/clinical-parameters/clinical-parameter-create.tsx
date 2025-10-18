@@ -43,24 +43,18 @@ export function ClinicalParameterCreate({
   })
 
   const onSubmit = async (data: ClinicalParameterFormData) => {
-    try {
-      // Agregar pet_id al crear el registro
-      const dataWithPetId = {
-        ...data,
-        pet_id: petId,
-      }
-      await createClinicalParameter.mutateAsync(dataWithPetId)
-      toast.success('Parámetros clínicos creados exitosamente')
-      onOpenChange(false)
-      form.reset()
-    } catch (error) {
-      toast.error('Error al crear los parámetros clínicos')
+    const dataWithPetId = {
+      ...data,
+      pet_id: petId,
     }
+    await createClinicalParameter.mutateAsync(dataWithPetId)
+    onOpenChange(false)
+    form.reset()
   }
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-2xl">
         <DrawerHeader>
           <DrawerTitle>Nuevos Parámetros Clínicos</DrawerTitle>
           <DrawerDescription>

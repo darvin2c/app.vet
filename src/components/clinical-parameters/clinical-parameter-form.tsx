@@ -64,9 +64,10 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
             id="measured_at"
             name="measured_at"
             value={watch('measured_at')}
-            onChange={(value) => setValue('measured_at', value?.toISOString() || '')}
+            onChange={(value) =>
+              setValue('measured_at', value?.toISOString() || '')
+            }
             hasTime={true}
-
           />
           <FieldError errors={[errors.measured_at]} />
         </FieldContent>
