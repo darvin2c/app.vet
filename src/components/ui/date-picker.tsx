@@ -574,8 +574,8 @@ export function DatePicker({
           )}
         </InputGroupAddon>
         {/* TimePicker dentro de un InputGroupAddon */}
-        <InputGroupAddon 
-          align="inline-end" 
+        <InputGroupAddon
+          align="inline-end"
           className=" !pr-0"
           onClick={(e) => {
             // Prevenir el comportamiento de foco automático cuando se hace clic en el TimePicker
@@ -738,17 +738,6 @@ export function DatePicker({
             </SheetFooter>
           </SheetContent>
         </Sheet>
-      )}
-
-      {/* Mensaje de error */}
-      {hasError && (inputError || errorMessage) && (
-        <p
-          id={`${id}-error`}
-          className="mt-1 text-sm text-destructive"
-          role="alert"
-        >
-          {inputError || errorMessage}
-        </p>
       )}
     </div>
   )

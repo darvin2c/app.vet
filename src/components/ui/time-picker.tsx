@@ -4,6 +4,7 @@ import * as React from 'react'
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { Clock, ClockIcon } from 'lucide-react'
 import { z } from 'zod'
+import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
   InputGroup,
@@ -65,58 +66,61 @@ function getTimeMask(format: TimeFormat): string {
 }
 
 // Aplicar máscara inteligente durante la escritura con validación en tiempo real
-function applyTimeMask(input: string, format: TimeFormat): { 
-  value: string; 
-  cursorPosition: number;
-  isComplete: boolean;
-  isValid: boolean;
+function applyTimeMask(
+  input: string,
+  format: TimeFormat
+): {
+  value: string
+  cursorPosition: number
+  isComplete: boolean
+  isValid: boolean
 } {
   // Limpiar input de caracteres no válidos
   const cleanInput = input.replace(/[^\d\sAPMapm]/g, '').toUpperCase()
-  
+
   let maskedValue = ''
   let cursorPosition = 0
   let isComplete = false
   let isValid = true
-  
+
   // Procesar dígitos
   const digits = cleanInput.replace(/[^\d]/g, '')
   const hasAmPm = /[AP]M?/i.test(cleanInput)
-  
+
   if (digits.length === 0) {
     return { value: '', cursorPosition: 0, isComplete: false, isValid: true }
   }
-  
+
   // Validar y aplicar máscara según los dígitos ingresados
   if (digits.length >= 1) {
     const firstDigit = parseInt(digits[0])
-    
+
     // Validar primer dígito de hora
     if (format === '24h' && firstDigit > 2) {
       isValid = false
     } else if (format === '12h' && firstDigit > 1) {
       isValid = false
     }
-    
+
     // Para un solo dígito, agregarlo sin separadores
     maskedValue += digits[0]
     cursorPosition = 1
-    
+
     // Solo agregar dos puntos si hay al menos 2 dígitos
     if (digits.length >= 2) {
       const hour = parseInt(digits.slice(0, 2))
-      
+
       // Validar hora completa
       if (format === '24h' && hour > 23) {
         isValid = false
       } else if (format === '12h' && (hour === 0 || hour > 12)) {
         isValid = false
       }
-      
+
       // Formatear con 2 dígitos y agregar dos puntos solo si hay más dígitos
       maskedValue = digits.slice(0, 2).padStart(2, '0')
       cursorPosition = 2
-      
+
       // Solo agregar ":" si hay minutos o más caracteres
       if (digits.length > 2) {
         maskedValue += ':'
@@ -124,40 +128,41 @@ function applyTimeMask(input: string, format: TimeFormat): {
       }
     }
   }
-  
+
   if (digits.length >= 3) {
     const firstMinuteDigit = parseInt(digits[2])
-    
+
     // Validar primer dígito de minutos (máximo 5)
     if (firstMinuteDigit > 5) {
       isValid = false
     }
-    
+
     maskedValue += digits[2]
     cursorPosition = 4
   }
-  
+
   if (digits.length >= 4) {
     const minutes = parseInt(digits.slice(2, 4))
-    
+
     // Validar minutos completos (máximo 59)
     if (minutes > 59) {
       isValid = false
     }
-    
+
     maskedValue += digits[3]
     cursorPosition = 5
-    
+
     // Para formato 12h, agregar espacio antes de AM/PM
     if (format === '12h') {
       maskedValue += ' '
       cursorPosition = 6
-      
+
       // Detectar AM/PM del input original
       if (hasAmPm) {
         const amPmMatch = cleanInput.match(/[AP]M?/i)
         if (amPmMatch) {
-          const period = amPmMatch[0].length === 1 ? amPmMatch[0] + 'M' : amPmMatch[0]
+          const period =
+            amPmMatch[0].length === 1 ? amPmMatch[0] + 'M' : amPmMatch[0]
           maskedValue += period
           cursorPosition = maskedValue.length
           isComplete = true
@@ -167,7 +172,7 @@ function applyTimeMask(input: string, format: TimeFormat): {
       isComplete = true
     }
   }
-  
+
   return { value: maskedValue, cursorPosition, isComplete, isValid }
 }
 
@@ -177,21 +182,23 @@ function handleCommonPatterns(input: string, format: TimeFormat): string {
   if (/^\d{4}$/.test(input)) {
     const hours = input.slice(0, 2)
     const minutes = input.slice(2, 4)
-    return format === '12h' ? `${hours.padStart(2, '0')}:${minutes} ` : `${hours}:${minutes}`
+    return format === '12h'
+      ? `${hours.padStart(2, '0')}:${minutes} `
+      : `${hours}:${minutes}`
   }
-  
+
   // Patrón: 2p -> 02:00 PM (solo para 12h)
   if (format === '12h' && /^\d{1,2}[pP]$/i.test(input)) {
     const hour = input.slice(0, -1).padStart(2, '0')
     return `${hour}:00 PM`
   }
-  
+
   // Patrón: 2a -> 02:00 AM (solo para 12h)
   if (format === '12h' && /^\d{1,2}[aA]$/i.test(input)) {
     const hour = input.slice(0, -1).padStart(2, '0')
     return `${hour}:00 AM`
   }
-  
+
   return input
 }
 
@@ -205,13 +212,13 @@ function validateAndFormatTime(
   try {
     // Manejar patrones comunes primero
     const processedInput = handleCommonPatterns(inputValue.trim(), format)
-    
+
     // Validar usando el schema existente
     timeSchema.parse(processedInput)
 
     // Si pasa la validación, formatear según el formato
     const parsed = parseTimeString(processedInput, format)
-    
+
     if (parsed.hours !== null && parsed.minutes !== null) {
       if (format === '24h') {
         // Formatear a HH:MM
@@ -221,7 +228,7 @@ function validateAndFormatTime(
         return formatTimeString(parsed.hours, parsed.minutes, parsed.period)
       }
     }
-    
+
     return null
   } catch {
     return null
@@ -587,6 +594,8 @@ export interface TimePickerProps {
   className?: string
   name?: string
   id?: string
+  error?: boolean
+  errorMessage?: string
 }
 
 export function TimePicker({
@@ -598,9 +607,15 @@ export function TimePicker({
   className,
   name,
   id,
+  error = false,
+  errorMessage,
 }: TimePickerProps) {
   const [open, setOpen] = useState(false)
+  const [inputError, setInputError] = useState<string | null>(null)
   const isMobile = useIsMobile()
+
+  // Determinar si hay error
+  const hasError = error || !!inputError || !!errorMessage
 
   const handleTimeSelect = useCallback(
     (timeString: string) => {
@@ -620,21 +635,26 @@ export function TimePicker({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value
       const currentCursorPosition = e.target.selectionStart || 0
-      
+
       // Aplicar máscara inteligente con validación
-      const { value: maskedValue, cursorPosition, isComplete, isValid } = applyTimeMask(inputValue, format)
-      
+      const {
+        value: maskedValue,
+        cursorPosition,
+        isComplete,
+        isValid,
+      } = applyTimeMask(inputValue, format)
+
       // Solo actualizar si es válido o si estamos borrando
       if (isValid || maskedValue.length < (value?.length || 0)) {
         onChange?.(maskedValue)
-        
+
         // Posicionar cursor después del próximo render
         setTimeout(() => {
           if (inputRef.current) {
             inputRef.current.setSelectionRange(cursorPosition, cursorPosition)
           }
         }, 0)
-        
+
         // Si está completo y válido, intentar formatear
         if (isComplete && isValid) {
           const formattedTime = validateAndFormatTime(maskedValue, format)
@@ -652,11 +672,14 @@ export function TimePicker({
     (e: React.KeyboardEvent<HTMLInputElement>) => {
       const currentValue = value || ''
       const cursorPosition = e.currentTarget.selectionStart || 0
-      
+
       // Manejo de teclas A/P para AM/PM en formato 12h
-      if (format === '12h' && (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'p')) {
+      if (
+        format === '12h' &&
+        (e.key.toLowerCase() === 'a' || e.key.toLowerCase() === 'p')
+      ) {
         e.preventDefault()
-        
+
         // Si ya tenemos HH:MM, agregar AM/PM
         if (/^\d{2}:\d{2}/.test(currentValue)) {
           const period = e.key.toLowerCase() === 'a' ? 'AM' : 'PM'
@@ -664,7 +687,7 @@ export function TimePicker({
           onChange?.(newValue)
           return
         }
-        
+
         // Si solo tenemos dígitos, completar con :00 AM/PM
         if (/^\d{1,2}$/.test(currentValue)) {
           const period = e.key.toLowerCase() === 'a' ? 'AM' : 'PM'
@@ -674,47 +697,57 @@ export function TimePicker({
           return
         }
       }
-      
+
       // Backspace inteligente - borrado completo de estructura
       if (e.key === 'Backspace') {
         e.preventDefault()
-        
+
         if (cursorPosition > 0) {
           // Eliminar carácter por carácter y reaplicar máscara
-          const newValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition)
-          
+          const newValue =
+            currentValue.slice(0, cursorPosition - 1) +
+            currentValue.slice(cursorPosition)
+
           // Procesar el nuevo valor a través de la máscara para limpiar separadores huérfanos
           const cleanedValue = newValue.replace(/[^\d\sAPMapm]/g, '')
           const maskedResult = applyTimeMask(cleanedValue, format)
-          
+
           onChange?.(maskedResult.value)
-          
+
           setTimeout(() => {
             if (inputRef.current) {
-              const newPosition = Math.max(0, Math.min(maskedResult.cursorPosition, cursorPosition - 1))
+              const newPosition = Math.max(
+                0,
+                Math.min(maskedResult.cursorPosition, cursorPosition - 1)
+              )
               inputRef.current.setSelectionRange(newPosition, newPosition)
             }
           }, 0)
         }
       }
-      
+
       // Delete inteligente - borrado completo de estructura hacia adelante
       if (e.key === 'Delete') {
         e.preventDefault()
-        
+
         if (cursorPosition < currentValue.length) {
           // Eliminar carácter hacia adelante y reaplicar máscara
-          const newValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1)
-          
+          const newValue =
+            currentValue.slice(0, cursorPosition) +
+            currentValue.slice(cursorPosition + 1)
+
           // Procesar el nuevo valor a través de la máscara para limpiar separadores huérfanos
           const cleanedValue = newValue.replace(/[^\d\sAPMapm]/g, '')
           const maskedResult = applyTimeMask(cleanedValue, format)
-          
+
           onChange?.(maskedResult.value)
-          
+
           setTimeout(() => {
             if (inputRef.current) {
-              const newPosition = Math.min(maskedResult.value.length, cursorPosition)
+              const newPosition = Math.min(
+                maskedResult.value.length,
+                cursorPosition
+              )
               inputRef.current.setSelectionRange(newPosition, newPosition)
             }
           }, 0)
@@ -728,14 +761,61 @@ export function TimePicker({
   const handleInputBlur = useCallback(
     (e: React.FocusEvent<HTMLInputElement>) => {
       const inputValue = e.target.value.trim()
-      
-      if (inputValue) {
-        // Intentar validar y formatear cuando el usuario sale del campo
-        const formattedTime = validateAndFormatTime(inputValue, format)
-        
-        if (formattedTime) {
-          onChange?.(formattedTime)
+
+      if (!inputValue) {
+        setInputError(null)
+        return
+      }
+
+      // Validar formato de tiempo
+      const timeRegex =
+        format === '12h'
+          ? /^(0?[1-9]|1[0-2]):[0-5][0-9]\s*(AM|PM)$/i
+          : /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+
+      if (!timeRegex.test(inputValue)) {
+        setInputError('Formato de tiempo inválido')
+        return
+      }
+
+      // Validar rangos específicos
+      const timeParts = inputValue.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i)
+      if (timeParts) {
+        const hours = parseInt(timeParts[1], 10)
+        const minutes = parseInt(timeParts[2], 10)
+        const period = timeParts[3]?.toUpperCase()
+
+        // Validar horas según formato
+        if (format === '12h') {
+          if (hours < 1 || hours > 12) {
+            setInputError('Las horas deben estar entre 1 y 12 para formato 12h')
+            return
+          }
+          if (!period) {
+            setInputError('Se requiere AM/PM para formato 12h')
+            return
+          }
+        } else {
+          if (hours < 0 || hours > 23) {
+            setInputError('Las horas deben estar entre 0 y 23 para formato 24h')
+            return
+          }
         }
+
+        // Validar minutos
+        if (minutes < 0 || minutes > 59) {
+          setInputError('Los minutos deben estar entre 0 y 59')
+          return
+        }
+      }
+
+      // Si llegamos aquí, el tiempo es válido
+      setInputError(null)
+
+      // Intentar validar y formatear cuando el usuario sale del campo
+      const formattedTime = validateAndFormatTime(inputValue, format)
+      if (formattedTime) {
+        onChange?.(formattedTime)
       }
     },
     [onChange, format]
@@ -773,7 +853,14 @@ export function TimePicker({
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onBlur={handleInputBlur}
-        className="font-mono relative z-10 bg-transparent"
+        className={cn(
+          'font-mono relative z-10 bg-transparent',
+          hasError && 'text-destructive placeholder:text-destructive/50'
+        )}
+        aria-invalid={hasError}
+        aria-describedby={
+          hasError && (inputError || errorMessage) ? `${id}-error` : undefined
+        }
       />
       {/* Máscara visual corregida */}
       <div
@@ -782,9 +869,7 @@ export function TimePicker({
       >
         {!value || value.trim() === '' ? (
           // Mostrar máscara completa cuando no hay valor o está vacío
-          <span className="text-muted-foreground/30">
-            {maskFormat}
-          </span>
+          <span className="text-muted-foreground/30">{maskFormat}</span>
         ) : (
           // Mostrar máscara dinámica basada en el contenido actual
           <div className="flex">
@@ -792,16 +877,14 @@ export function TimePicker({
             {(() => {
               const cleanValue = value.replace(/[^\d\sAPMapm]/g, '')
               const expectedMask = getTimeMask(format)
-              
+
               // Para formato 12h, detectar si ya hay AM/PM en el valor
               if (format === '12h') {
                 const hasAmPm = /\s*(AM|PM)$/i.test(value)
-                
+
                 if (hasAmPm) {
                   // Si ya tiene AM/PM, no mostrar máscara adicional
-                  return (
-                    <span className="invisible select-none">{value}</span>
-                  )
+                  return <span className="invisible select-none">{value}</span>
                 } else {
                   // Si no tiene AM/PM, mostrar la parte restante de la máscara
                   const remainingMask = expectedMask.slice(value.length)
@@ -817,7 +900,7 @@ export function TimePicker({
                   )
                 }
               }
-              
+
               // Para formato 24h o valores muy cortos
               if (cleanValue.length <= 1) {
                 return (
@@ -829,7 +912,7 @@ export function TimePicker({
                   </>
                 )
               }
-              
+
               // Para valores más largos en formato 24h
               return (
                 <>
@@ -872,7 +955,7 @@ export function TimePicker({
 
   if (isMobile) {
     return (
-      <>
+      <div>
         {inputComponent}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="bottom" className="h-auto">
@@ -882,18 +965,31 @@ export function TimePicker({
             {content}
           </SheetContent>
         </Sheet>
-      </>
+
+        {/* Mensaje de error */}
+        {hasError && (inputError || errorMessage) && (
+          <p
+            id={`${id}-error`}
+            className="mt-1 text-sm text-destructive"
+            role="alert"
+          >
+            {inputError || errorMessage}
+          </p>
+        )}
+      </div>
     )
   }
 
   // Para desktop
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      {inputComponent}
-      <PopoverContent className="w-auto p-0" align="start">
-        {content}
-      </PopoverContent>
-    </Popover>
+    <div>
+      <Popover open={open} onOpenChange={setOpen}>
+        {inputComponent}
+        <PopoverContent className="w-auto p-0" align="start">
+          {content}
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 
