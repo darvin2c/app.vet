@@ -14,65 +14,18 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from '@/components/ui/collapsible'
-import {
-  Stethoscope,
-  Syringe,
-  Scissors,
-  Bath,
-  Building2,
-  Bug,
-  Home,
-  GraduationCap,
-  ChevronDown,
-} from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useState } from 'react'
+import useRecordType from '@/hooks/medical-records/use-record-type'
+import { Enums } from '@/types/supabase.types'
 
 interface MedicalRecordTypeGridProps {
-  value?: string
+  value?: Enums<'record_type'>
   onValueChange?: (value: string) => void
   disabled?: boolean
   className?: string
 }
-
-const medicalRecordTypes = [
-  {
-    value: 'vaccination',
-    label: 'Vacunación',
-    icon: Syringe,
-    description: 'Aplicación de vacunas',
-  },
-  {
-    value: 'surgery',
-    label: 'Cirugía',
-    icon: Scissors,
-    description: 'Procedimientos quirúrgicos',
-  },
-  {
-    value: 'grooming',
-    label: 'Peluquería',
-    icon: Bath,
-    description: 'Servicios de estética',
-  },
-  {
-    value: 'deworming',
-    label: 'Desparasitación',
-    icon: Bug,
-    description: 'Registro antiparasitario',
-  },
-  {
-    value: 'boarding',
-    label: 'Hospedaje',
-    icon: Home,
-    description: 'Alojamiento temporal',
-  },
-  {
-    value: 'training',
-    label: 'Entrenamiento',
-    icon: GraduationCap,
-    description: 'Adiestramiento y educación',
-  },
-]
 
 export function MedicalRecordTypeGrid({
   value,
@@ -81,9 +34,9 @@ export function MedicalRecordTypeGrid({
 }: MedicalRecordTypeGridProps) {
   const isMobile = useIsMobile()
   const [isOpen, setIsOpen] = useState(true)
-
+  const { recordTypes, getRecordType } = useRecordType()
   // Encontrar el tipo seleccionado
-  const selectedType = medicalRecordTypes.find((type) => type.value === value)
+  const selectedType = getRecordType(value)
 
   const handleSelection = (selectedValue: string) => {
     onValueChange?.(selectedValue)
@@ -105,7 +58,7 @@ export function MedicalRecordTypeGrid({
                   variant="icon"
                   className="bg-primary text-primary-foreground border-primary"
                 >
-                  <selectedType.icon className="h-5 w-5" />
+                  {selectedType.icon}
                 </ItemMedia>
                 <div>
                   <ItemTitle className="text-primary">
@@ -129,7 +82,7 @@ export function MedicalRecordTypeGrid({
         <ItemGroup
           className={cn('grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3')}
         >
-          {medicalRecordTypes.map((type) => {
+          {recordTypes.map((type) => {
             const Icon = type.icon
             const isSelected = value === type.value
 
@@ -154,7 +107,7 @@ export function MedicalRecordTypeGrid({
                         : 'bg-muted text-muted-foreground'
                     )}
                   >
-                    <Icon className="h-5 w-5" />
+                    {Icon}
                   </ItemMedia>
                   <ItemTitle
                     className={cn(

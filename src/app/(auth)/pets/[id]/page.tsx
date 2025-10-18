@@ -115,23 +115,6 @@ export default function PetProfilePage() {
     )
   }
 
-  const getAgeString = (birthDate: string | null) => {
-    if (!birthDate) return 'Edad no registrada'
-
-    const birth = new Date(birthDate)
-    const now = new Date()
-    const years = now.getFullYear() - birth.getFullYear()
-    const months = now.getMonth() - birth.getMonth()
-
-    if (years > 0) {
-      return `${years} año${years > 1 ? 's' : ''}`
-    } else if (months > 0) {
-      return `${months} mes${months > 1 ? 'es' : ''}`
-    } else {
-      return 'Menos de 1 mes'
-    }
-  }
-
   return (
     <div className="container mx-auto p-6 space-y-6">
       {/* Header */}
@@ -179,9 +162,7 @@ export default function PetProfilePage() {
                 </div>
                 <AppointmentCreateButton petId={petId} />
               </div>
-              <AppointmentList
-                filters={{ pet_id: petId }}
-              />
+              <AppointmentList filters={{ pet_id: petId }} />
             </TabsContent>
 
             {/* All Medical Records - Now the main medical records view */}
@@ -238,8 +219,8 @@ export default function PetProfilePage() {
         </div>
 
         {/* Sidebar */}
-        <PetProfileSidebar 
-          pet={pet} 
+        <PetProfileSidebar
+          pet={pet}
           appointmentsCount={appointments.length}
           medicalRecordsCount={medicalRecords.length}
         />

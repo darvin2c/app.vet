@@ -109,6 +109,31 @@ export function useResourceList(({
 
 ```
 
+**Enums**
+
+- Para los enums se usara los tipos de datos de supabase `Enums<'record_type'>`
+
+```typescript
+type RecordType = {
+  value: Enums<'record_type'>
+  label: string
+  icon: React.ReactNode
+}
+
+export default function useRecordType() {
+  const recordTypes = useMemo<RecordType[]>(...)
+
+  const getRecordType = (value: Enums<'record_type'>) => {
+   ...
+  }
+
+  return {
+    recordTypes,
+    getRecordType,
+  }
+}
+```
+
 ## fetch
 
 Para las consultas y mutaciones de la base de datos se debe de usar react-query en `use-<feature>-<action>.ts`

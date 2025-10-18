@@ -15,19 +15,12 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
   Stethoscope,
-  Calendar,
-  User,
-  FileText,
   Syringe,
   Scissors,
   GraduationCap,
   Package,
   Activity,
-  Building,
-  Search,
-  Filter,
 } from 'lucide-react'
-import { Tables } from '@/types/supabase.types'
 
 // Import existing components
 import { PetClinicalParameters } from './pet-clinical-parameters'
@@ -38,6 +31,7 @@ import { PetVaccinations } from './pet-vaccinations'
 import { usePetMedicalRecords } from '@/hooks/pets/use-pet-medical-records'
 import { MedicalRecordCreateButton } from '@/components/medical-records/medical-record-create-button'
 import { PetMedicalRecordsList } from '@/components/pets/pet-treatments-list'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 
 interface PetAllMedicalRecordsProps {
   petId: string
@@ -93,34 +87,6 @@ export function PetAllTreatments({ petId }: PetAllMedicalRecordsProps) {
         <div className="flex gap-2">
           <MedicalRecordCreateButton petId={petId} />
         </div>
-      </div>
-
-      {/* Search and Filter Bar */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar registros médicos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={filterType} onValueChange={setFilterType}>
-          <SelectTrigger className="w-[200px]">
-            <Filter className="h-4 w-4 mr-2" />
-            <SelectValue placeholder="Filtrar por tipo" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todos los tipos</SelectItem>
-            <SelectItem value="consultation">Consultas</SelectItem>
-            <SelectItem value="vaccination">Vacunaciones</SelectItem>
-            <SelectItem value="surgery">Cirugías</SelectItem>
-            <SelectItem value="training">Entrenamientos</SelectItem>
-            <SelectItem value="clinical">Parámetros Clínicos</SelectItem>
-            <SelectItem value="items">Medicamentos</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
 
       {/* Treatment Views */}
