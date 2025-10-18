@@ -30,6 +30,7 @@ import {
 } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from './separator'
+import TimePicker from './time-picker'
 
 // Schema de validación para fechas
 const dateSchema = z.string().refine(
@@ -100,6 +101,7 @@ export interface DatePickerProps {
    * Si incluye selector de tiempo (para compatibilidad)
    */
   hasTime?: boolean
+  timeFormat?: '12h' | '24h'
 }
 
 /**
@@ -121,10 +123,12 @@ export function DatePicker({
   name,
   required = false,
   hasTime, // Prop para compatibilidad, no se usa
+  timeFormat = '12h',
   ...props
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
+  const [timeValue, setTimeValue] = useState('')
   const [inputError, setInputError] = useState<string | null>(null)
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -360,7 +364,6 @@ export function DatePicker({
           if (maxDate && date > maxDate) return true
           return false
         }}
-        initialFocus
         locale={es}
         className={cn('w-full', isMobile && 'max-w-none')}
       />
@@ -455,6 +458,18 @@ export function DatePicker({
           </PopoverTrigger>
         )}
       </InputGroupAddon>
+      {hasTime && (
+        <InputGroupAddon align="inline-end">
+          <TimePicker
+            format={timeFormat}
+            value={timeValue}
+            className="border-0 -mr-5"
+            onChange={(value) => {
+              setTimeValue(value || '')
+            }}
+          />
+        </InputGroupAddon>
+      )}
     </InputGroup>
   )
 

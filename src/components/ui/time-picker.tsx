@@ -39,19 +39,22 @@ export type TimeValue = string
 const timeSchema = z.string().refine(
   (value) => {
     if (!value) return true // Permitir valores vacíos
-    
+
     // Validar formato 24h (HH:MM)
     const time24hMatch = value.match(/^([01]?[0-9]|2[0-3]):([0-5][0-9])$/)
     if (time24hMatch) return true
-    
+
     // Validar formato 12h (H:MM AM/PM o HH:MM AM/PM)
-    const time12hMatch = value.match(/^(0?[1-9]|1[0-2]):([0-5][0-9])\s*(AM|PM)$/i)
+    const time12hMatch = value.match(
+      /^(0?[1-9]|1[0-2]):([0-5][0-9])\s*(AM|PM)$/i
+    )
     if (time12hMatch) return true
-    
+
     return false
   },
   {
-    message: 'Formato de tiempo inválido. Use HH:MM para 24h o H:MM AM/PM para 12h',
+    message:
+      'Formato de tiempo inválido. Use HH:MM para 24h o H:MM AM/PM para 12h',
   }
 )
 
@@ -74,7 +77,10 @@ function getMinutesArray(): number[] {
 }
 
 // Parsear tiempo desde string
-function parseTimeString(timeString: string, format: TimeFormat): {
+function parseTimeString(
+  timeString: string,
+  format: TimeFormat
+): {
   hours: number | null
   minutes: number | null
   period: 'AM' | 'PM' | null
@@ -89,7 +95,7 @@ function parseTimeString(timeString: string, format: TimeFormat): {
       return {
         hours: parseInt(match[1], 10),
         minutes: parseInt(match[2], 10),
-        period: null
+        period: null,
       }
     }
   } else {
@@ -98,7 +104,7 @@ function parseTimeString(timeString: string, format: TimeFormat): {
       return {
         hours: parseInt(match[1], 10),
         minutes: parseInt(match[2], 10),
-        period: match[3].toUpperCase() as 'AM' | 'PM'
+        period: match[3].toUpperCase() as 'AM' | 'PM',
       }
     }
   }
@@ -113,7 +119,7 @@ function formatTimeString(
   period?: 'AM' | 'PM'
 ): string {
   const formattedMinutes = minutes.toString().padStart(2, '0')
-  
+
   if (period) {
     return `${hours}:${formattedMinutes} ${period}`
   } else {
@@ -134,11 +140,16 @@ interface HourSelectorProps {
   format: TimeFormat
 }
 
-function HourSelector({ hours, selectedHour, onHourSelect, format }: HourSelectorProps) {
+function HourSelector({
+  hours,
+  selectedHour,
+  onHourSelect,
+  format,
+}: HourSelectorProps) {
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-center">Hora</div>
-      <ScrollArea className="h-32">
+      <ScrollArea className="h-52">
         <div className="grid grid-cols-3 gap-1 p-1">
           {hours.map((hour) => (
             <Button
@@ -164,16 +175,24 @@ interface MinuteSelectorProps {
   onMinuteSelect: (minute: number) => void
 }
 
-function MinuteSelector({ minutes, selectedMinute, onMinuteSelect }: MinuteSelectorProps) {
+function MinuteSelector({
+  minutes,
+  selectedMinute,
+  onMinuteSelect,
+}: MinuteSelectorProps) {
   return (
     <div className="space-y-2">
       <div className="text-sm font-medium text-center">Minutos</div>
-      <ScrollArea className="h-32">
+      <ScrollArea className="h-52">
         <div className="grid grid-cols-3 gap-1 p-1">
           {minutes.map((minute) => (
             <Button
               key={minute}
-              variant={selectedMinute === minute.toString().padStart(2, '0') ? 'default' : 'ghost'}
+              variant={
+                selectedMinute === minute.toString().padStart(2, '0')
+                  ? 'default'
+                  : 'ghost'
+              }
               size="sm"
               className="h-8 text-xs"
               onClick={() => onMinuteSelect(minute)}
@@ -193,10 +212,12 @@ interface PeriodSelectorProps {
   onPeriodSelect: (period: 'AM' | 'PM') => void
 }
 
-function PeriodSelector({ selectedPeriod, onPeriodSelect }: PeriodSelectorProps) {
+function PeriodSelector({
+  selectedPeriod,
+  onPeriodSelect,
+}: PeriodSelectorProps) {
   return (
     <div className="space-y-2">
-      <div className="text-sm font-medium text-center">Período</div>
       <div className="flex gap-2">
         <Toggle
           pressed={selectedPeriod === 'AM'}
@@ -248,7 +269,7 @@ function TimePickerContent({
   }>({
     hour: null,
     minute: null,
-    period: null
+    period: null,
   })
 
   // Valores actuales (combinando inicial + selecciones del usuario)
@@ -257,48 +278,75 @@ function TimePickerContent({
   const currentPeriod = userSelections.period ?? parsedInitialTime.period
 
   // Handler para selección de hora
-  const handleHourSelect = useCallback((hour: number) => {
-    setUserSelections(prev => ({ ...prev, hour }))
-    
-    // Solo proceder si tenemos todos los valores necesarios
-    if (userSelections.minute !== null && (format === '24h' || userSelections.period !== null)) {
-      const timeString = formatTimeString(hour, userSelections.minute, userSelections.period || undefined)
-      onTimeSelect(timeString)
-      
-      // Cerrar si la selección está completa
-      if (format === '24h' || userSelections.period !== null) {
-        onClose?.()
+  const handleHourSelect = useCallback(
+    (hour: number) => {
+      setUserSelections((prev) => ({ ...prev, hour }))
+
+      // Solo proceder si tenemos todos los valores necesarios
+      if (
+        userSelections.minute !== null &&
+        (format === '24h' || userSelections.period !== null)
+      ) {
+        const timeString = formatTimeString(
+          hour,
+          userSelections.minute,
+          userSelections.period || undefined
+        )
+        onTimeSelect(timeString)
+
+        // Cerrar si la selección está completa
+        if (format === '24h' || userSelections.period !== null) {
+          onClose?.()
+        }
       }
-    }
-  }, [userSelections, format, onTimeSelect, onClose])
+    },
+    [userSelections, format, onTimeSelect, onClose]
+  )
 
   // Handler para selección de minutos
-  const handleMinuteSelect = useCallback((minute: number) => {
-    setUserSelections(prev => ({ ...prev, minute }))
-    
-    // Solo proceder si tenemos todos los valores necesarios
-    if (userSelections.hour !== null && (format === '24h' || userSelections.period !== null)) {
-      const timeString = formatTimeString(userSelections.hour, minute, userSelections.period || undefined)
-      onTimeSelect(timeString)
-      
-      // Cerrar si la selección está completa
-      if (format === '24h' || userSelections.period !== null) {
-        onClose?.()
+  const handleMinuteSelect = useCallback(
+    (minute: number) => {
+      setUserSelections((prev) => ({ ...prev, minute }))
+
+      // Solo proceder si tenemos todos los valores necesarios
+      if (
+        userSelections.hour !== null &&
+        (format === '24h' || userSelections.period !== null)
+      ) {
+        const timeString = formatTimeString(
+          userSelections.hour,
+          minute,
+          userSelections.period || undefined
+        )
+        onTimeSelect(timeString)
+
+        // Cerrar si la selección está completa
+        if (format === '24h' || userSelections.period !== null) {
+          onClose?.()
+        }
       }
-    }
-  }, [userSelections, format, onTimeSelect, onClose])
+    },
+    [userSelections, format, onTimeSelect, onClose]
+  )
 
   // Handler para selección de período
-  const handlePeriodSelect = useCallback((period: 'AM' | 'PM') => {
-    setUserSelections(prev => ({ ...prev, period }))
-    
-    // Solo proceder si tenemos todos los valores necesarios
-    if (userSelections.hour !== null && userSelections.minute !== null) {
-      const timeString = formatTimeString(userSelections.hour, userSelections.minute, period)
-      onTimeSelect(timeString)
-      onClose?.()
-    }
-  }, [userSelections, onTimeSelect, onClose])
+  const handlePeriodSelect = useCallback(
+    (period: 'AM' | 'PM') => {
+      setUserSelections((prev) => ({ ...prev, period }))
+
+      // Solo proceder si tenemos todos los valores necesarios
+      if (userSelections.hour !== null && userSelections.minute !== null) {
+        const timeString = formatTimeString(
+          userSelections.hour,
+          userSelections.minute,
+          period
+        )
+        onTimeSelect(timeString)
+        onClose?.()
+      }
+    },
+    [userSelections, onTimeSelect, onClose]
+  )
 
   // Handler para "Ahora"
   const handleNowClick = useCallback(() => {
@@ -318,7 +366,7 @@ function TimePickerContent({
   }, [format, onTimeSelect, onClose])
 
   return (
-    <div className="space-y-4 p-4">
+    <div className="space-y-4 p-4 min-w-md">
       <div className="grid grid-cols-2 gap-4">
         <HourSelector
           hours={hoursArray}
@@ -328,7 +376,11 @@ function TimePickerContent({
         />
         <MinuteSelector
           minutes={minutesArray}
-          selectedMinute={currentMinute !== null ? currentMinute.toString().padStart(2, '0') : ''}
+          selectedMinute={
+            currentMinute !== null
+              ? currentMinute.toString().padStart(2, '0')
+              : ''
+          }
           onMinuteSelect={handleMinuteSelect}
         />
       </div>
@@ -395,6 +447,22 @@ export function TimePicker({
     setOpen(false)
   }, [])
 
+  // Handler para entrada manual
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value
+      onChange?.(inputValue)
+    },
+    [onChange]
+  )
+
+  // Handler para abrir el picker solo con el icono
+  const handleIconClick = useCallback(() => {
+    if (!disabled) {
+      setOpen(true)
+    }
+  }, [disabled])
+
   const content = (
     <TimePickerContent
       format={format}
@@ -404,31 +472,33 @@ export function TimePicker({
     />
   )
 
+  // Componente del input para mobile
+  const mobileInputComponent = (
+    <InputGroup className={className}>
+      <InputGroupInput
+        id={id}
+        name={name}
+        value={value}
+        placeholder={placeholder}
+        disabled={disabled}
+        onChange={handleInputChange}
+      />
+      <InputGroupButton
+        type="button"
+        variant="ghost"
+        size="sm"
+        disabled={disabled}
+        onClick={handleIconClick}
+      >
+        <Clock className="h-4 w-4" />
+      </InputGroupButton>
+    </InputGroup>
+  )
+
   if (isMobile) {
     return (
       <>
-        <InputGroup className={className}>
-          <InputGroupInput
-            id={id}
-            name={name}
-            value={value}
-            placeholder={placeholder}
-            disabled={disabled}
-            readOnly
-            onClick={() => !disabled && setOpen(true)}
-            className="cursor-pointer"
-          />
-          <InputGroupButton
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={disabled}
-            onClick={() => setOpen(true)}
-          >
-            <Clock className="h-4 w-4" />
-          </InputGroupButton>
-        </InputGroup>
-
+        {mobileInputComponent}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="bottom" className="h-auto">
             <SheetHeader>
@@ -441,24 +511,29 @@ export function TimePicker({
     )
   }
 
+  // Para desktop: separar input del trigger
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <InputGroup className={className}>
-          <InputGroupInput
-            id={id}
-            name={name}
-            value={value}
-            placeholder={placeholder}
+      <InputGroup className={className}>
+        <InputGroupInput
+          id={id}
+          name={name}
+          value={value}
+          placeholder={placeholder}
+          disabled={disabled}
+          onChange={handleInputChange}
+        />
+        <PopoverTrigger asChild>
+          <InputGroupButton
+            type="button"
+            variant="ghost"
+            size="sm"
             disabled={disabled}
-            readOnly
-            className="cursor-pointer"
-          />
-          <InputGroupAddon>
+          >
             <Clock className="h-4 w-4" />
-          </InputGroupAddon>
-        </InputGroup>
-      </PopoverTrigger>
+          </InputGroupButton>
+        </PopoverTrigger>
+      </InputGroup>
       <PopoverContent className="w-auto p-0" align="start">
         {content}
       </PopoverContent>

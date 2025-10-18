@@ -12,6 +12,14 @@ export default function DatePickerDemo() {
   const [disabledDate, setDisabledDate] = useState<Date | undefined>()
   const [dateWithError, setDateWithError] = useState<Date | undefined>()
   const [showError, setShowError] = useState(false)
+  
+  // Nuevos estados para ejemplos con tiempo
+  const [dateTime12h, setDateTime12h] = useState<Date | undefined>()
+  const [dateTime24h, setDateTime24h] = useState<Date | undefined>()
+  const [dateTimePreFilled, setDateTimePreFilled] = useState<Date | undefined>(
+    new Date('2024-12-25T14:30:00.000Z')
+  )
+  const [dateTimeRestricted, setDateTimeRestricted] = useState<Date | undefined>()
 
   const handleErrorToggle = () => {
     setShowError(!showError)
@@ -22,6 +30,10 @@ export default function DatePickerDemo() {
     setDateWithTime(undefined)
     setDisabledDate(undefined)
     setDateWithError(undefined)
+    setDateTime12h(undefined)
+    setDateTime24h(undefined)
+    setDateTimePreFilled(new Date('2024-12-25T14:30:00.000Z'))
+    setDateTimeRestricted(undefined)
     setShowError(false)
   }
 
@@ -31,7 +43,7 @@ export default function DatePickerDemo() {
         <h1 className="text-3xl font-bold">DatePicker Component Demo</h1>
         <p className="text-muted-foreground">
           Componente reutilizable para selección de fechas con entrada manual y
-          calendario visual integrado.
+          calendario visual integrado. Incluye soporte para TimePicker.
         </p>
       </div>
 
@@ -69,6 +81,81 @@ export default function DatePickerDemo() {
           </CardContent>
         </Card>
 
+        {/* DatePicker con TimePicker 12h */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              DatePicker + TimePicker (12h)
+              <Badge variant="default">Fecha + Hora</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <DatePicker
+              value={dateTime12h}
+              onChange={setDateTime12h}
+              hasTime={true}
+              timeFormat="12h"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong>{' '}
+              {dateTime12h ? dateTime12h.toISOString() : 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Combina selección de fecha con TimePicker en formato 12 horas (AM/PM).
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* DatePicker con TimePicker 24h */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              DatePicker + TimePicker (24h)
+              <Badge variant="default">Fecha + Hora</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <DatePicker
+              value={dateTime24h}
+              onChange={setDateTime24h}
+              hasTime={true}
+              timeFormat="24h"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong>{' '}
+              {dateTime24h ? dateTime24h.toISOString() : 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Combina selección de fecha con TimePicker en formato 24 horas.
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* DatePicker con TimePicker Pre-rellenado */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              DatePicker + TimePicker Pre-rellenado
+              <Badge variant="secondary">Valor inicial</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <DatePicker
+              value={dateTimePreFilled}
+              onChange={setDateTimePreFilled}
+              hasTime={true}
+              timeFormat="12h"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong>{' '}
+              {dateTimePreFilled ? dateTimePreFilled.toISOString() : 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Ejemplo con fecha y hora pre-seleccionadas (25/12/2024 14:30).
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Date Picker with Restrictions */}
         <Card>
           <CardHeader>
@@ -91,6 +178,33 @@ export default function DatePickerDemo() {
             <div className="text-xs text-muted-foreground">
               Fechas mínima: hoy, máxima: 31/12/2025. Fechas pasadas
               deshabilitadas.
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* DatePicker con TimePicker y Restricciones */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              DatePicker + TimePicker con Restricciones
+              <Badge variant="destructive">Fecha + Hora + Límites</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <DatePicker
+              value={dateTimeRestricted}
+              onChange={setDateTimeRestricted}
+              hasTime={true}
+              timeFormat="24h"
+              minDate={new Date()}
+              maxDate={new Date(2025, 5, 30)} // Junio 2025
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong>{' '}
+              {dateTimeRestricted ? dateTimeRestricted.toISOString() : 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Combina fecha + hora con restricciones (hoy hasta 30/06/2025).
             </div>
           </CardContent>
         </Card>
@@ -144,28 +258,6 @@ export default function DatePickerDemo() {
           </CardContent>
         </Card>
 
-        {/* Date Picker Pre-filled */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              DatePicker Pre-rellenado
-              <Badge variant="secondary">Valor inicial</Badge>
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <DatePicker
-              value={new Date('2024-12-20T14:30:00.000Z')}
-              onChange={() => {}} // Read-only for demo
-            />
-            <div className="text-sm text-muted-foreground">
-              <strong>Valor:</strong> 2024-12-20T14:30:00.000Z
-            </div>
-            <div className="text-xs text-muted-foreground">
-              Ejemplo con fecha pre-seleccionada desde un valor ISO.
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Date Picker without Today Button */}
         <Card>
           <CardHeader>
@@ -203,6 +295,7 @@ export default function DatePickerDemo() {
               <ul className="text-sm text-muted-foreground space-y-1">
                 <li>• Entrada manual con formato DD/MM/YYYY</li>
                 <li>• Selección visual con calendario</li>
+                <li>• Integración con TimePicker (12h/24h)</li>
                 <li>• Validación automática de fechas</li>
                 <li>• Soporte para fechas mínimas y máximas</li>
                 <li>• Botón "Hoy" para selección rápida</li>
@@ -218,6 +311,7 @@ export default function DatePickerDemo() {
                 <li>• date-fns para manejo de fechas</li>
                 <li>• Radix UI Popover</li>
                 <li>• react-day-picker para calendario</li>
+                <li>• TimePicker personalizado</li>
                 <li>• Tailwind CSS para estilos</li>
                 <li>• Zod para validación</li>
                 <li>• InputGroup para estructura</li>
