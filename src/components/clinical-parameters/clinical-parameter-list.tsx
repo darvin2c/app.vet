@@ -149,7 +149,12 @@ export function ClinicalParameterList({
 
   // Función para renderizar parámetros principales
   const renderMainParameters = (params: any) => {
-    const mainParams = ['temperature', 'heart_rate', 'respiratory_rate', 'weight']
+    const mainParams = [
+      'temperature',
+      'heart_rate',
+      'respiratory_rate',
+      'weight',
+    ]
     const values = []
 
     for (const param of mainParams) {
@@ -169,7 +174,11 @@ export function ClinicalParameterList({
       }
     }
 
-    return values.length > 0 ? values : <span className="text-muted-foreground">-</span>
+    return values.length > 0 ? (
+      values
+    ) : (
+      <span className="text-muted-foreground">-</span>
+    )
   }
 
   const columns: ColumnDef<ClinicalParameter>[] = [
@@ -239,13 +248,18 @@ export function ClinicalParameterList({
   const renderTableHeader = useCallback(
     (headerGroup: HeaderGroup<ClinicalParameter>) => (
       <TableRow key={headerGroup.id}>
-        {headerGroup.headers.map((header: Header<ClinicalParameter, unknown>) => (
-          <TableHead key={header.id}>
-            {header.isPlaceholder
-              ? null
-              : flexRender(header.column.columnDef.header, header.getContext())}
-          </TableHead>
-        ))}
+        {headerGroup.headers.map(
+          (header: Header<ClinicalParameter, unknown>) => (
+            <TableHead key={header.id}>
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+            </TableHead>
+          )
+        )}
       </TableRow>
     ),
     []
@@ -344,8 +358,8 @@ export function ClinicalParameterList({
             </EmptyMedia>
             <EmptyTitle>No hay parámetros clínicos</EmptyTitle>
             <EmptyDescription>
-              No se encontraron parámetros clínicos que coincidan con los filtros
-              aplicados.
+              No se encontraron parámetros clínicos que coincidan con los
+              filtros aplicados.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
@@ -373,7 +387,10 @@ export function ClinicalParameterList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="clinical-parameters" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="clinical-parameters"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

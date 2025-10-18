@@ -84,7 +84,10 @@ export function getSexColor(sex: string | null): string {
 /**
  * Formatea una fecha para mostrar en la interfaz
  */
-export function formatDate(date: string | null, formatStr: string = 'dd/MM/yyyy'): string | undefined {
+export function formatDate(
+  date: string | null,
+  formatStr: string = 'dd/MM/yyyy'
+): string | undefined {
   if (!date) return undefined
   return format(new Date(date), formatStr, { locale: es })
 }

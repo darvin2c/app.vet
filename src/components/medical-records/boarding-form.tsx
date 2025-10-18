@@ -37,7 +37,6 @@ export function BoardingForm() {
               value={watch('check_in_at')}
               onChange={(value) => setValue('check_in_at', value)}
               hasTime={true}
-
             />
             <FieldError errors={[errors.check_in_at]} />
           </FieldContent>
@@ -52,7 +51,6 @@ export function BoardingForm() {
               value={watch('check_out_at')}
               onChange={(value) => setValue('check_out_at', value)}
               hasTime={true}
-
             />
             <FieldError errors={[errors.check_out_at]} />
           </FieldContent>

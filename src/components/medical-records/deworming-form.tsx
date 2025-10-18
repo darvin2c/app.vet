@@ -127,7 +127,6 @@ export function DewormingForm() {
               value={watch('next_dose_date')}
               onChange={(value) => setValue('next_dose_date', value)}
               hasTime={false}
-
             />
             <FieldError errors={[errors.next_dose_date]} />
           </FieldContent>

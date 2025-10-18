@@ -19,8 +19,6 @@ interface PetGeneralInfoProps {
 }
 
 export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
-
-
   return (
     <div className="space-y-6">
       {/* Información Básica */}

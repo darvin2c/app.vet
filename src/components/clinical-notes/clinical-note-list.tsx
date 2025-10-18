@@ -188,7 +188,10 @@ export function ClinicalNoteList({
     <div className="space-y-4">
       {!compact && (
         <div className="flex justify-end">
-          <ViewModeToggle onValueChange={setViewMode} resource="clinical-notes" />
+          <ViewModeToggle
+            onValueChange={setViewMode}
+            resource="clinical-notes"
+          />
         </div>
       )}
 

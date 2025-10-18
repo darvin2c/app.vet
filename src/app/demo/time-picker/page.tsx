@@ -5,7 +5,13 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TimePicker } from '@/components/ui/time-picker'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -17,58 +23,70 @@ import {
 } from '@/components/ui/field'
 
 // Esquema de validación para el formulario
-const TimeFormSchema = z.object({
-  appointment_time: z.string().nonempty('La hora de cita es requerida').refine(
-    (value) => {
-      // Validar formato 24h: HH:MM
-      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-      return timeRegex.test(value)
+const TimeFormSchema = z
+  .object({
+    appointment_time: z
+      .string()
+      .nonempty('La hora de cita es requerida')
+      .refine(
+        (value) => {
+          // Validar formato 24h: HH:MM
+          const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+          return timeRegex.test(value)
+        },
+        {
+          message: 'Formato de tiempo inválido. Use HH:MM para 24h',
+        }
+      ),
+    meeting_time: z
+      .string()
+      .optional()
+      .or(z.literal(''))
+      .refine(
+        (value) => {
+          if (!value || value === '') return true
+          // Validar formato 12h: H:MM AM/PM
+          const timeRegex = /^(1[0-2]|[1-9]):[0-5][0-9] (AM|PM)$/
+          return timeRegex.test(value)
+        },
+        {
+          message: 'Formato de tiempo inválido. Use H:MM AM/PM para 12h',
+        }
+      ),
+    start_time: z.string().nonempty('La hora de inicio es requerida'),
+    end_time: z.string().nonempty('La hora de fin es requerida'),
+    break_time: z.string().optional().or(z.literal('')),
+    notification_time: z
+      .string()
+      .nonempty('La hora de notificación es requerida')
+      .refine(
+        (value) => {
+          // Validar que sea una hora futura (simplificado para demo)
+          const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+          return timeRegex.test(value)
+        },
+        {
+          message: 'Formato de tiempo inválido',
+        }
+      ),
+  })
+  .refine(
+    (data) => {
+      // Validar que end_time sea posterior a start_time
+      if (data.start_time && data.end_time) {
+        const [startHour, startMin] = data.start_time.split(':').map(Number)
+        const [endHour, endMin] = data.end_time.split(':').map(Number)
+        const startMinutes = startHour * 60 + startMin
+        const endMinutes = endHour * 60 + endMin
+        return endMinutes > startMinutes
+      }
+      return true
     },
     {
-      message: 'Formato de tiempo inválido. Use HH:MM para 24h',
+      message: 'La hora de fin debe ser posterior a la hora de inicio',
+      path: ['end_time'],
     }
-  ),
-  meeting_time: z.string().optional().or(z.literal('')).refine(
-    (value) => {
-      if (!value || value === '') return true
-      // Validar formato 12h: H:MM AM/PM
-      const timeRegex = /^(1[0-2]|[1-9]):[0-5][0-9] (AM|PM)$/
-      return timeRegex.test(value)
-    },
-    {
-      message: 'Formato de tiempo inválido. Use H:MM AM/PM para 12h',
-    }
-  ),
-  start_time: z.string().nonempty('La hora de inicio es requerida'),
-  end_time: z.string().nonempty('La hora de fin es requerida'),
-  break_time: z.string().optional().or(z.literal('')),
-  notification_time: z.string().nonempty('La hora de notificación es requerida').refine(
-    (value) => {
-      // Validar que sea una hora futura (simplificado para demo)
-      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
-      return timeRegex.test(value)
-    },
-    {
-      message: 'Formato de tiempo inválido',
-    }
-  ),
-}).refine(
-  (data) => {
-    // Validar que end_time sea posterior a start_time
-    if (data.start_time && data.end_time) {
-      const [startHour, startMin] = data.start_time.split(':').map(Number)
-      const [endHour, endMin] = data.end_time.split(':').map(Number)
-      const startMinutes = startHour * 60 + startMin
-      const endMinutes = endHour * 60 + endMin
-      return endMinutes > startMinutes
-    }
-    return true
-  },
-  {
-    message: 'La hora de fin debe ser posterior a la hora de inicio',
-    path: ['end_time'],
-  }
-)
+  )
 
 type TimeFormData = z.infer<typeof TimeFormSchema>
 
@@ -106,7 +124,9 @@ export default function TimePickerDemo() {
 
   const onSubmit = (data: TimeFormData) => {
     console.log('Datos del formulario:', data)
-    alert('Formulario enviado correctamente. Revisa la consola para ver los datos.')
+    alert(
+      'Formulario enviado correctamente. Revisa la consola para ver los datos.'
+    )
   }
 
   return (
@@ -114,8 +134,9 @@ export default function TimePickerDemo() {
       <div className="space-y-2">
         <h1 className="text-3xl font-bold">TimePicker Component Demo</h1>
         <p className="text-muted-foreground">
-          Componente reutilizable para selección de tiempo con entrada manual inteligente
-          y selección visual. Soporta formatos 12h y 24h con validación automática.
+          Componente reutilizable para selección de tiempo con entrada manual
+          inteligente y selección visual. Soporta formatos 12h y 24h con
+          validación automática.
         </p>
       </div>
 
@@ -148,7 +169,8 @@ export default function TimePickerDemo() {
               <strong>Valor:</strong> {time24h || 'No seleccionado'}
             </div>
             <div className="text-xs text-muted-foreground">
-              Formato 24 horas (00:00 - 23:59). Entrada manual con máscara automática.
+              Formato 24 horas (00:00 - 23:59). Entrada manual con máscara
+              automática.
             </div>
           </CardContent>
         </Card>
@@ -172,7 +194,8 @@ export default function TimePickerDemo() {
               <strong>Valor:</strong> {time12h || 'No seleccionado'}
             </div>
             <div className="text-xs text-muted-foreground">
-              Formato 12 horas con AM/PM (1:00 AM - 12:59 PM). Selección visual incluida.
+              Formato 12 horas con AM/PM (1:00 AM - 12:59 PM). Selección visual
+              incluida.
             </div>
           </CardContent>
         </Card>
@@ -191,14 +214,17 @@ export default function TimePickerDemo() {
               value={timeWithError}
               onChange={setTimeWithError}
               error={showError}
-              errorMessage={showError ? 'Formato de tiempo inválido' : undefined}
+              errorMessage={
+                showError ? 'Formato de tiempo inválido' : undefined
+              }
               placeholder="HH:MM"
             />
             <div className="text-sm text-muted-foreground">
               <strong>Valor:</strong> {timeWithError || 'No seleccionado'}
             </div>
             <div className="text-xs text-muted-foreground">
-              Muestra estados de error con estilos visuales y mensajes de validación.
+              Muestra estados de error con estilos visuales y mensajes de
+              validación.
             </div>
           </CardContent>
         </Card>
@@ -323,7 +349,8 @@ export default function TimePickerDemo() {
             <Badge variant="default">RHF + Zod</Badge>
           </CardTitle>
           <CardDescription>
-            TimePicker integrado con react-hook-form y validación Zod usando Field externo.
+            TimePicker integrado con react-hook-form y validación Zod usando
+            Field externo.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -342,12 +369,22 @@ export default function TimePickerDemo() {
                       name="appointment_time"
                       format="24h"
                       value={form.watch('appointment_time')}
-                      onChange={(value) => form.setValue('appointment_time', value)}
+                      onChange={(value) =>
+                        form.setValue('appointment_time', value)
+                      }
                       error={!!form.formState.errors.appointment_time}
-                      errorMessage={form.formState.errors.appointment_time?.message}
+                      errorMessage={
+                        form.formState.errors.appointment_time?.message
+                      }
                       placeholder="HH:MM"
                     />
-                    <FieldError errors={form.formState.errors.appointment_time ? [form.formState.errors.appointment_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.appointment_time
+                          ? [form.formState.errors.appointment_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
 
@@ -367,15 +404,19 @@ export default function TimePickerDemo() {
                       errorMessage={form.formState.errors.meeting_time?.message}
                       placeholder="H:MM AM/PM"
                     />
-                    <FieldError errors={form.formState.errors.meeting_time ? [form.formState.errors.meeting_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.meeting_time
+                          ? [form.formState.errors.meeting_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
 
                 {/* Rango de Tiempo - Inicio */}
                 <Field>
-                  <FieldLabel htmlFor="start_time">
-                    Hora de Inicio *
-                  </FieldLabel>
+                  <FieldLabel htmlFor="start_time">Hora de Inicio *</FieldLabel>
                   <FieldContent>
                     <TimePicker
                       id="start_time"
@@ -387,15 +428,19 @@ export default function TimePickerDemo() {
                       errorMessage={form.formState.errors.start_time?.message}
                       placeholder="HH:MM"
                     />
-                    <FieldError errors={form.formState.errors.start_time ? [form.formState.errors.start_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.start_time
+                          ? [form.formState.errors.start_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
 
                 {/* Rango de Tiempo - Fin */}
                 <Field>
-                  <FieldLabel htmlFor="end_time">
-                    Hora de Fin *
-                  </FieldLabel>
+                  <FieldLabel htmlFor="end_time">Hora de Fin *</FieldLabel>
                   <FieldContent>
                     <TimePicker
                       id="end_time"
@@ -407,7 +452,13 @@ export default function TimePickerDemo() {
                       errorMessage={form.formState.errors.end_time?.message}
                       placeholder="HH:MM"
                     />
-                    <FieldError errors={form.formState.errors.end_time ? [form.formState.errors.end_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.end_time
+                          ? [form.formState.errors.end_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
 
@@ -427,7 +478,13 @@ export default function TimePickerDemo() {
                       errorMessage={form.formState.errors.break_time?.message}
                       placeholder="H:MM AM/PM"
                     />
-                    <FieldError errors={form.formState.errors.break_time ? [form.formState.errors.break_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.break_time
+                          ? [form.formState.errors.break_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
 
@@ -442,22 +499,30 @@ export default function TimePickerDemo() {
                       name="notification_time"
                       format="24h"
                       value={form.watch('notification_time')}
-                      onChange={(value) => form.setValue('notification_time', value)}
+                      onChange={(value) =>
+                        form.setValue('notification_time', value)
+                      }
                       error={!!form.formState.errors.notification_time}
-                      errorMessage={form.formState.errors.notification_time?.message}
+                      errorMessage={
+                        form.formState.errors.notification_time?.message
+                      }
                       placeholder="HH:MM"
                     />
-                    <FieldError errors={form.formState.errors.notification_time ? [form.formState.errors.notification_time] : []} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.notification_time
+                          ? [form.formState.errors.notification_time]
+                          : []
+                      }
+                    />
                   </FieldContent>
                 </Field>
               </div>
 
               <div className="flex gap-4 pt-4">
-                <Button type="submit">
-                  Enviar Formulario
-                </Button>
-                <Button 
-                  type="button" 
+                <Button type="submit">Enviar Formulario</Button>
+                <Button
+                  type="button"
                   variant="outline"
                   onClick={() => form.reset()}
                 >
@@ -502,15 +567,33 @@ export default function TimePickerDemo() {
             <div>
               <h4 className="font-medium mb-2">Props Principales</h4>
               <ul className="text-sm space-y-1 text-muted-foreground">
-                <li>• <code>format</code>: '12h' | '24h'</li>
-                <li>• <code>value</code>: string</li>
-                <li>• <code>onChange</code>: (value: string) =&gt; void</li>
-                <li>• <code>error</code>: boolean</li>
-                <li>• <code>errorMessage</code>: string</li>
-                <li>• <code>disabled</code>: boolean</li>
-                <li>• <code>placeholder</code>: string</li>
-                <li>• <code>name</code>: string (para formularios)</li>
-                <li>• <code>id</code>: string (para accesibilidad)</li>
+                <li>
+                  • <code>format</code>: '12h' | '24h'
+                </li>
+                <li>
+                  • <code>value</code>: string
+                </li>
+                <li>
+                  • <code>onChange</code>: (value: string) =&gt; void
+                </li>
+                <li>
+                  • <code>error</code>: boolean
+                </li>
+                <li>
+                  • <code>errorMessage</code>: string
+                </li>
+                <li>
+                  • <code>disabled</code>: boolean
+                </li>
+                <li>
+                  • <code>placeholder</code>: string
+                </li>
+                <li>
+                  • <code>name</code>: string (para formularios)
+                </li>
+                <li>
+                  • <code>id</code>: string (para accesibilidad)
+                </li>
               </ul>
             </div>
           </div>

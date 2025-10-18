@@ -135,7 +135,9 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
                 id="birth_date"
                 name="birth_date"
                 value={watch('birth_date')}
-                onChange={(value) => setValue('birth_date', value?.toISOString())}
+                onChange={(value) =>
+                  setValue('birth_date', value?.toISOString())
+                }
                 hasTime={false}
                 error={!!errors.birth_date}
                 errorMessage={errors.birth_date?.message as string}

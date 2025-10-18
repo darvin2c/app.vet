@@ -6,7 +6,14 @@ import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
-import { calculateAge, formatSex, getSexIcon, getSexColor, formatDate, formatWeight } from '@/lib/pet-utils'
+import {
+  calculateAge,
+  formatSex,
+  getSexIcon,
+  getSexColor,
+  formatDate,
+  formatWeight,
+} from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
@@ -24,10 +31,6 @@ interface PetProfileHeaderProps {
 
 export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
   const router = useRouter()
-
-
-
-
 
   return (
     <Card className="mb-6">
@@ -95,7 +98,9 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
               {pet.microchip && (
                 <Badge variant="outline">Microchip: {pet.microchip}</Badge>
               )}
-              {pet.weight && <Badge variant="outline">{formatWeight(pet.weight)}</Badge>}
+              {pet.weight && (
+                <Badge variant="outline">{formatWeight(pet.weight)}</Badge>
+              )}
             </div>
 
             {pet.notes && (

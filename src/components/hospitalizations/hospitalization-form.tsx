@@ -27,9 +27,10 @@ export function HospitalizationForm() {
             id="admission_at"
             name="admission_at"
             value={watch('admission_at')}
-            onChange={(value) => setValue('admission_at', value?.toISOString() || '')}
+            onChange={(value) =>
+              setValue('admission_at', value?.toISOString() || '')
+            }
             hasTime={true}
-
           />
           <FieldError errors={[errors.admission_at]} />
         </FieldContent>
@@ -42,9 +43,10 @@ export function HospitalizationForm() {
             id="discharge_at"
             name="discharge_at"
             value={watch('discharge_at')}
-            onChange={(value) => setValue('discharge_at', value?.toISOString() || '')}
+            onChange={(value) =>
+              setValue('discharge_at', value?.toISOString() || '')
+            }
             hasTime={true}
-
           />
           <FieldError errors={[errors.discharge_at]} />
         </FieldContent>
