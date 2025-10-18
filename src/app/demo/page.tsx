@@ -54,6 +54,12 @@ const demoComponents = [
       'Demostración de filtros personalizados usando componentes custom en el sistema de filtros',
     href: '/demo/custom-filters',
   },
+  {
+    name: 'Rich Minimal Editor',
+    description:
+      'Editor de texto enriquecido minimalista con toolbar flotante que aparece solo al seleccionar texto',
+    href: '/demo/rich-text-editor',
+  },
 ]
 
 export default function DemoPage() {
