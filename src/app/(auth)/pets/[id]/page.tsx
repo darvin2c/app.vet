@@ -17,7 +17,7 @@ import { PetProfileSidebar } from '@/components/pets/pet-profile-sidebar'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { AppointmentList } from '@/components/appointments/appointment-list'
 import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
-import { PetAllTreatments } from '@/components/pets/pet-all-treatments'
+import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
 import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 import { ClinicalNoteList } from '@/components/clinical-notes/clinical-note-list'
@@ -167,7 +167,7 @@ export default function PetProfilePage() {
 
             {/* All Medical Records - Now the main medical records view */}
             <TabsContent value="treatments" className="space-y-6">
-              <PetAllTreatments petId={petId} />
+              <PetMedicalRecords petId={petId} />
             </TabsContent>
 
             {/* Clinical Parameters */}

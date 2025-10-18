@@ -19,8 +19,6 @@ import { MedicalRecordTypeGrid } from './medical-record-type-grid'
 
 import { VaccinationForm } from './vaccination-form'
 import { SurgeryForm } from './surgery-form'
-import { TrainingForm } from './training-form'
-import { BoardingForm } from './boarding-form'
 
 export function MedicalRecordForm() {
   const {
@@ -107,10 +105,6 @@ export function MedicalRecordForm() {
       {watchedType === 'vaccination' && <VaccinationForm />}
 
       {watchedType === 'surgery' && <SurgeryForm />}
-
-      {watchedType === 'training' && <TrainingForm />}
-
-      {watchedType === 'boarding' && <BoardingForm />}
     </div>
   )
 }

@@ -7,11 +7,8 @@ export const MedicalRecordSchema = z.object({
       'consultation',
       'vaccination',
       'surgery',
-      'grooming',
       'hospitalization',
       'deworming',
-      'boarding',
-      'training',
     ])
     .refine((val) => val !== undefined, {
       message: 'El tipo de registro médico es requerido',
