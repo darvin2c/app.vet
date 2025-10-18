@@ -5,52 +5,72 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { TimePicker } from '@/components/ui/time-picker'
-import { Field, FieldLabel, FieldContent, FieldError } from '@/components/ui/field'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import { Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 
-// Esquemas de validación
-const timeValidationSchema = z.object({
-  appointment_time: z
-    .string()
-    .nonempty('La hora es requerida')
-    .refine(
-      (value) => {
-        // Validar formato 24h (HH:MM)
-        const time24hMatch = value.match(/^([01][0-9]|2[0-3]):([0-5][0-9])$/)
-        if (time24hMatch) return true
-        
-        // Validar formato 12h (HH:MM AM/PM)
-        const time12hMatch = value.match(/^(0[1-9]|1[0-2]):([0-5][0-9])\s*(AM|PM)$/i)
-        if (time12hMatch) return true
-        
-        return false
-      },
-      {
-        message: 'Formato de tiempo inválido. Use HH:MM para 24h o H:MM AM/PM para 12h',
-      }
-    ),
-  meeting_time: z
-    .string()
-    .optional()
-    .refine(
-      (value) => {
-        if (!value) return true // Opcional
-        
-        // Validar formato 12h
-        const time12hMatch = value.match(/^(0[1-9]|1[0-2]):([0-5][0-9])\s*(AM|PM)$/i)
-        return !!time12hMatch
-      },
-      {
-        message: 'Use formato H:MM AM/PM para 12h',
-      }
-    ),
-})
+// Esquema de validación para el formulario
+const TimeFormSchema = z.object({
+  appointment_time: z.string().nonempty('La hora de cita es requerida').refine(
+    (value) => {
+      // Validar formato 24h: HH:MM
+      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+      return timeRegex.test(value)
+    },
+    {
+      message: 'Formato de tiempo inválido. Use HH:MM para 24h',
+    }
+  ),
+  meeting_time: z.string().optional().or(z.literal('')).refine(
+    (value) => {
+      if (!value || value === '') return true
+      // Validar formato 12h: H:MM AM/PM
+      const timeRegex = /^(1[0-2]|[1-9]):[0-5][0-9] (AM|PM)$/
+      return timeRegex.test(value)
+    },
+    {
+      message: 'Formato de tiempo inválido. Use H:MM AM/PM para 12h',
+    }
+  ),
+  start_time: z.string().nonempty('La hora de inicio es requerida'),
+  end_time: z.string().nonempty('La hora de fin es requerida'),
+  break_time: z.string().optional().or(z.literal('')),
+  notification_time: z.string().nonempty('La hora de notificación es requerida').refine(
+    (value) => {
+      // Validar que sea una hora futura (simplificado para demo)
+      const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
+      return timeRegex.test(value)
+    },
+    {
+      message: 'Formato de tiempo inválido',
+    }
+  ),
+}).refine(
+  (data) => {
+    // Validar que end_time sea posterior a start_time
+    if (data.start_time && data.end_time) {
+      const [startHour, startMin] = data.start_time.split(':').map(Number)
+      const [endHour, endMin] = data.end_time.split(':').map(Number)
+      const startMinutes = startHour * 60 + startMin
+      const endMinutes = endHour * 60 + endMin
+      return endMinutes > startMinutes
+    }
+    return true
+  },
+  {
+    message: 'La hora de fin debe ser posterior a la hora de inicio',
+    path: ['end_time'],
+  }
+)
 
-type TimeValidationForm = z.infer<typeof timeValidationSchema>
+type TimeFormData = z.infer<typeof TimeFormSchema>
 
 export default function TimePickerDemo() {
   // Estados para ejemplos básicos
@@ -59,143 +79,159 @@ export default function TimePickerDemo() {
   const [timeWithError, setTimeWithError] = useState('')
   const [showError, setShowError] = useState(false)
 
-  // Formulario con validación
-  const form = useForm<TimeValidationForm>({
-    resolver: zodResolver(timeValidationSchema),
+  // Form para ejemplos con React Hook Form
+  const form = useForm<TimeFormData>({
+    resolver: zodResolver(TimeFormSchema),
     defaultValues: {
       appointment_time: '',
       meeting_time: '',
+      start_time: '',
+      end_time: '',
+      break_time: '',
+      notification_time: '',
     },
   })
 
-  const onSubmit = (data: TimeValidationForm) => {
+  const clearAllTimes = () => {
+    setTime24h('')
+    setTime12h('')
+    setTimeWithError('')
+    setShowError(false)
+    form.reset()
+  }
+
+  const handleErrorToggle = () => {
+    setShowError(!showError)
+  }
+
+  const onSubmit = (data: TimeFormData) => {
     console.log('Datos del formulario:', data)
-    alert(`Formulario enviado:\nCita: ${data.appointment_time}\nReunión: ${data.meeting_time || 'No especificada'}`)
+    alert('Formulario enviado correctamente. Revisa la consola para ver los datos.')
   }
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
-      <div className="space-y-4">
-        <div className="flex items-center gap-2">
-          <Clock className="h-6 w-6" />
-          <h1 className="text-3xl font-bold">TimePicker Demo</h1>
-        </div>
+    <div className="container mx-auto p-6 space-y-8">
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold">TimePicker Component Demo</h1>
         <p className="text-muted-foreground">
-          Componente para selección de tiempo con soporte para formatos 12h y 24h, 
-          entrada manual inteligente y validación de errores.
+          Componente reutilizable para selección de tiempo con entrada manual inteligente
+          y selección visual. Soporta formatos 12h y 24h con validación automática.
         </p>
       </div>
 
-      {/* Ejemplos Básicos */}
+      <div className="flex gap-4 mb-6">
+        <Button onClick={clearAllTimes} variant="outline">
+          Limpiar todos los tiempos
+        </Button>
+        <Button onClick={handleErrorToggle} variant="outline">
+          {showError ? 'Ocultar' : 'Mostrar'} error
+        </Button>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        {/* TimePicker 24h */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              TimePicker 24h
+              <Badge variant="default">Formato 24h</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TimePicker
+              format="24h"
+              value={time24h}
+              onChange={setTime24h}
+              placeholder="HH:MM"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong> {time24h || 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Formato 24 horas (00:00 - 23:59). Entrada manual con máscara automática.
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* TimePicker 12h */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              TimePicker 12h
+              <Badge variant="secondary">Formato 12h</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TimePicker
+              format="12h"
+              value={time12h}
+              onChange={setTime12h}
+              placeholder="H:MM AM/PM"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong> {time12h || 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Formato 12 horas con AM/PM (1:00 AM - 12:59 PM). Selección visual incluida.
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* TimePicker con Error */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              TimePicker con Error
+              <Badge variant="destructive">Estado de error</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TimePicker
+              format="24h"
+              value={timeWithError}
+              onChange={setTimeWithError}
+              error={showError}
+              errorMessage={showError ? 'Formato de tiempo inválido' : undefined}
+              placeholder="HH:MM"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong> {timeWithError || 'No seleccionado'}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Muestra estados de error con estilos visuales y mensajes de validación.
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* TimePicker Deshabilitado */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              TimePicker Deshabilitado
+              <Badge variant="outline">disabled=true</Badge>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <TimePicker
+              format="12h"
+              value="2:30 PM"
+              disabled={true}
+              placeholder="H:MM AM/PM"
+            />
+            <div className="text-sm text-muted-foreground">
+              <strong>Valor:</strong> 2:30 PM (fijo)
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Estado deshabilitado con opacidad reducida y cursor not-allowed.
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Casos de Validación */}
       <Card>
         <CardHeader>
-          <CardTitle>Ejemplos Básicos</CardTitle>
-          <CardDescription>
-            TimePicker en diferentes formatos con entrada manual y selección visual.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Formato 24h */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Formato 24h (HH:MM)</label>
-              <TimePicker
-                format="24h"
-                value={time24h}
-                onChange={setTime24h}
-                placeholder="HH:MM"
-              />
-              <p className="text-xs text-muted-foreground">
-                Valor actual: <code>{time24h || 'vacío'}</code>
-              </p>
-            </div>
-
-            {/* Formato 12h */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Formato 12h (H:MM AM/PM)</label>
-              <TimePicker
-                format="12h"
-                value={time12h}
-                onChange={setTime12h}
-                placeholder="H:MM AM/PM"
-              />
-              <p className="text-xs text-muted-foreground">
-                Valor actual: <code>{time12h || 'vacío'}</code>
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Estados Simplificados */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Estados del Componente</CardTitle>
-          <CardDescription>
-            Diferentes estados visuales del TimePicker.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Normal */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <CheckCircle className="h-4 w-4 text-green-500" />
-                Normal
-              </label>
-              <TimePicker
-                format="24h"
-                value="14:30"
-                onChange={() => {}}
-                placeholder="HH:MM"
-              />
-            </div>
-
-            {/* Deshabilitado */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <XCircle className="h-4 w-4 text-gray-400" />
-                Deshabilitado
-              </label>
-              <TimePicker
-                format="24h"
-                value="09:15"
-                onChange={() => {}}
-                disabled={true}
-                placeholder="HH:MM"
-              />
-            </div>
-
-            {/* Con Error */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium flex items-center gap-2">
-                <AlertCircle className="h-4 w-4 text-destructive" />
-                Con Error
-              </label>
-              <TimePicker
-                format="24h"
-                value={timeWithError}
-                onChange={setTimeWithError}
-                error={showError}
-                errorMessage="Hora inválida"
-                placeholder="HH:MM"
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowError(!showError)}
-              >
-                {showError ? 'Quitar Error' : 'Mostrar Error'}
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Ejemplos de Tiempos Inválidos */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Ejemplos de Tiempos Inválidos</CardTitle>
+          <CardTitle>Casos de Validación Automática</CardTitle>
           <CardDescription>
             Casos que el TimePicker rechaza automáticamente durante la entrada.
           </CardDescription>
@@ -279,10 +315,13 @@ export default function TimePickerDemo() {
         </CardContent>
       </Card>
 
-      {/* Campo de Tiempo con Validación */}
+      {/* React Hook Form Section */}
       <Card>
         <CardHeader>
-          <CardTitle>Campo de Tiempo con Validación</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            TimePicker con React Hook Form
+            <Badge variant="default">RHF + Zod</Badge>
+          </CardTitle>
           <CardDescription>
             TimePicker integrado con react-hook-form y validación Zod usando Field externo.
           </CardDescription>
@@ -331,9 +370,89 @@ export default function TimePickerDemo() {
                     <FieldError errors={form.formState.errors.meeting_time ? [form.formState.errors.meeting_time] : []} />
                   </FieldContent>
                 </Field>
+
+                {/* Rango de Tiempo - Inicio */}
+                <Field>
+                  <FieldLabel htmlFor="start_time">
+                    Hora de Inicio *
+                  </FieldLabel>
+                  <FieldContent>
+                    <TimePicker
+                      id="start_time"
+                      name="start_time"
+                      format="24h"
+                      value={form.watch('start_time')}
+                      onChange={(value) => form.setValue('start_time', value)}
+                      error={!!form.formState.errors.start_time}
+                      errorMessage={form.formState.errors.start_time?.message}
+                      placeholder="HH:MM"
+                    />
+                    <FieldError errors={form.formState.errors.start_time ? [form.formState.errors.start_time] : []} />
+                  </FieldContent>
+                </Field>
+
+                {/* Rango de Tiempo - Fin */}
+                <Field>
+                  <FieldLabel htmlFor="end_time">
+                    Hora de Fin *
+                  </FieldLabel>
+                  <FieldContent>
+                    <TimePicker
+                      id="end_time"
+                      name="end_time"
+                      format="24h"
+                      value={form.watch('end_time')}
+                      onChange={(value) => form.setValue('end_time', value)}
+                      error={!!form.formState.errors.end_time}
+                      errorMessage={form.formState.errors.end_time?.message}
+                      placeholder="HH:MM"
+                    />
+                    <FieldError errors={form.formState.errors.end_time ? [form.formState.errors.end_time] : []} />
+                  </FieldContent>
+                </Field>
+
+                {/* Tiempo de Descanso */}
+                <Field>
+                  <FieldLabel htmlFor="break_time">
+                    Hora de Descanso (Opcional)
+                  </FieldLabel>
+                  <FieldContent>
+                    <TimePicker
+                      id="break_time"
+                      name="break_time"
+                      format="12h"
+                      value={form.watch('break_time') || ''}
+                      onChange={(value) => form.setValue('break_time', value)}
+                      error={!!form.formState.errors.break_time}
+                      errorMessage={form.formState.errors.break_time?.message}
+                      placeholder="H:MM AM/PM"
+                    />
+                    <FieldError errors={form.formState.errors.break_time ? [form.formState.errors.break_time] : []} />
+                  </FieldContent>
+                </Field>
+
+                {/* Tiempo de Notificación */}
+                <Field>
+                  <FieldLabel htmlFor="notification_time">
+                    Hora de Notificación *
+                  </FieldLabel>
+                  <FieldContent>
+                    <TimePicker
+                      id="notification_time"
+                      name="notification_time"
+                      format="24h"
+                      value={form.watch('notification_time')}
+                      onChange={(value) => form.setValue('notification_time', value)}
+                      error={!!form.formState.errors.notification_time}
+                      errorMessage={form.formState.errors.notification_time?.message}
+                      placeholder="HH:MM"
+                    />
+                    <FieldError errors={form.formState.errors.notification_time ? [form.formState.errors.notification_time] : []} />
+                  </FieldContent>
+                </Field>
               </div>
 
-              <div className="flex gap-4">
+              <div className="flex gap-4 pt-4">
                 <Button type="submit">
                   Enviar Formulario
                 </Button>
@@ -342,14 +461,14 @@ export default function TimePickerDemo() {
                   variant="outline"
                   onClick={() => form.reset()}
                 >
-                  Limpiar
+                  Limpiar Formulario
                 </Button>
               </div>
 
               {/* Estado del formulario */}
-              <div className="p-4 bg-muted rounded-lg">
-                <h4 className="font-medium mb-2">Estado del Formulario:</h4>
-                <pre className="text-xs overflow-auto">
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <h4 className="font-semibold mb-2">Estado del Formulario:</h4>
+                <pre className="text-sm overflow-auto">
                   {JSON.stringify(form.watch(), null, 2)}
                 </pre>
               </div>
@@ -376,6 +495,8 @@ export default function TimePickerDemo() {
                 <li>• Estados de error y validación</li>
                 <li>• Accesibilidad completa (ARIA)</li>
                 <li>• Responsive (mobile/desktop)</li>
+                <li>• Validación de rangos de tiempo</li>
+                <li>• Soporte para campos opcionales</li>
               </ul>
             </div>
             <div>
@@ -388,6 +509,8 @@ export default function TimePickerDemo() {
                 <li>• <code>errorMessage</code>: string</li>
                 <li>• <code>disabled</code>: boolean</li>
                 <li>• <code>placeholder</code>: string</li>
+                <li>• <code>name</code>: string (para formularios)</li>
+                <li>• <code>id</code>: string (para accesibilidad)</li>
               </ul>
             </div>
           </div>

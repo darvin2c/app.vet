@@ -586,7 +586,7 @@ export function DatePicker({
           <TimePicker
             format={timeFormat}
             value={timeValue}
-            className="max-w-32 border-0 "
+            className="border-0"
             disabled={disabled}
             onChange={(value) => {
               const newTimeValue = value || ''

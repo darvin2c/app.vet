@@ -1,10 +1,68 @@
 'use client'
 
 import { useState } from 'react'
+import { useForm, FormProvider } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
+
+// Esquema de validación para React Hook Form
+const DateFormSchema = z.object({
+  required_date: z.date().nullable().refine(
+    (date) => date !== null,
+    {
+      message: 'La fecha es requerida',
+    }
+  ),
+  optional_date: z.date().optional().nullable(),
+  datetime_field: z.date().nullable().refine(
+    (date) => date !== null,
+    {
+      message: 'La fecha y hora son requeridas',
+    }
+  ),
+  future_date: z.date().nullable().refine(
+    (date) => !date || date > new Date(),
+    {
+      message: 'La fecha debe ser futura',
+    }
+  ),
+  date_range_start: z.date().nullable().refine(
+    (date) => date !== null,
+    {
+      message: 'La fecha de inicio es requerida',
+    }
+  ),
+  date_range_end: z.date().nullable().refine(
+    (date) => date !== null,
+    {
+      message: 'La fecha de fin es requerida',
+    }
+  ),
+}).refine(
+  (data) => {
+    // Validar que date_range_end sea posterior a date_range_start
+    if (data.date_range_start && data.date_range_end) {
+      return data.date_range_end > data.date_range_start
+    }
+    return true
+  },
+  {
+    message: 'La fecha de fin debe ser posterior a la fecha de inicio',
+    path: ['date_range_end'],
+  }
+)
+
+type DateFormData = z.infer<typeof DateFormSchema>
 
 export default function DatePickerDemo() {
   const [basicDate, setBasicDate] = useState<Date | undefined>()
@@ -21,6 +79,19 @@ export default function DatePickerDemo() {
   )
   const [dateTimeRestricted, setDateTimeRestricted] = useState<Date | undefined>()
 
+  // Form para ejemplos con React Hook Form
+  const form = useForm<DateFormData>({
+    resolver: zodResolver(DateFormSchema),
+    defaultValues: {
+      required_date: null,
+      optional_date: null,
+      datetime_field: null,
+      future_date: null,
+      date_range_start: null,
+      date_range_end: null,
+    },
+  })
+
   const handleErrorToggle = () => {
     setShowError(!showError)
   }
@@ -35,6 +106,12 @@ export default function DatePickerDemo() {
     setDateTimePreFilled(new Date('2024-12-25T14:30:00.000Z'))
     setDateTimeRestricted(undefined)
     setShowError(false)
+    form.reset()
+  }
+
+  const onSubmit = (data: DateFormData) => {
+    console.log('Datos del formulario:', data)
+    alert('Formulario enviado correctamente. Revisa la consola para ver los datos.')
   }
 
   return (
@@ -283,6 +360,116 @@ export default function DatePickerDemo() {
         </Card>
       </div>
 
+      {/* React Hook Form Section */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            DatePicker con React Hook Form
+            <Badge variant="default">RHF + Zod</Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid gap-6 md:grid-cols-2">
+                {/* Fecha Requerida */}
+                <Field>
+                  <FieldLabel htmlFor="required_date">Fecha Requerida *</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('required_date') || undefined}
+                      onChange={(date) => form.setValue('required_date', date || null)}
+                    />
+                    <FieldError errors={[form.formState.errors.required_date]} />
+                  </FieldContent>
+                </Field>
+
+                {/* Fecha Opcional */}
+                <Field>
+                  <FieldLabel htmlFor="optional_date">Fecha Opcional</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('optional_date') || undefined}
+                      onChange={(date) => form.setValue('optional_date', date || null)}
+                    />
+                    <FieldError errors={[form.formState.errors.optional_date]} />
+                  </FieldContent>
+                </Field>
+
+                {/* Fecha con Tiempo */}
+                <Field>
+                  <FieldLabel htmlFor="datetime_field">Fecha y Hora *</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('datetime_field') || undefined}
+                      onChange={(date) => form.setValue('datetime_field', date || null)}
+                      hasTime={true}
+                      timeFormat="12h"
+                    />
+                    <FieldError errors={[form.formState.errors.datetime_field]} />
+                  </FieldContent>
+                </Field>
+
+                {/* Fecha Futura */}
+                <Field>
+                  <FieldLabel htmlFor="future_date">Fecha Futura *</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('future_date') || undefined}
+                      onChange={(date) => form.setValue('future_date', date || null)}
+                      minDate={new Date()}
+                    />
+                    <FieldError errors={[form.formState.errors.future_date]} />
+                  </FieldContent>
+                </Field>
+
+                {/* Rango de Fechas - Inicio */}
+                <Field>
+                  <FieldLabel htmlFor="date_range_start">Fecha de Inicio *</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('date_range_start') || undefined}
+                      onChange={(date) => form.setValue('date_range_start', date || null)}
+                    />
+                    <FieldError errors={[form.formState.errors.date_range_start]} />
+                  </FieldContent>
+                </Field>
+
+                {/* Rango de Fechas - Fin */}
+                <Field>
+                  <FieldLabel htmlFor="date_range_end">Fecha de Fin *</FieldLabel>
+                  <FieldContent>
+                    <DatePicker
+                      value={form.watch('date_range_end') || undefined}
+                      onChange={(date) => form.setValue('date_range_end', date || null)}
+                      minDate={form.watch('date_range_start') || undefined}
+                    />
+                    <FieldError errors={[form.formState.errors.date_range_end]} />
+                  </FieldContent>
+                </Field>
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button type="submit">
+                  Enviar Formulario
+                </Button>
+                <Button type="button" variant="outline" onClick={() => form.reset()}>
+                  Limpiar Formulario
+                </Button>
+              </div>
+
+              {/* Estado del Formulario */}
+              <div className="mt-6 p-4 bg-muted rounded-lg">
+                <h4 className="font-semibold mb-2">Estado del Formulario:</h4>
+                <pre className="text-sm overflow-auto">
+                  {JSON.stringify(form.watch(), null, 2)}
+                </pre>
+              </div>
+            </form>
+          </FormProvider>
+        </CardContent>
+      </Card>
+
       {/* Features Section */}
       <Card>
         <CardHeader>
@@ -302,6 +489,8 @@ export default function DatePickerDemo() {
                 <li>• Estados de error y validación</li>
                 <li>• Soporte para disabled</li>
                 <li>• Integración con InputGroup</li>
+                <li>• Integración completa con React Hook Form</li>
+                <li>• Validación con Zod</li>
               </ul>
             </div>
             <div>
@@ -314,6 +503,7 @@ export default function DatePickerDemo() {
                 <li>• TimePicker personalizado</li>
                 <li>• Tailwind CSS para estilos</li>
                 <li>• Zod para validación</li>
+                <li>• React Hook Form para formularios</li>
                 <li>• InputGroup para estructura</li>
                 <li>• Lucide React para iconos</li>
               </ul>
