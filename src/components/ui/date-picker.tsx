@@ -69,7 +69,7 @@ function combineDateTime(date: Date, timeString: string): Date {
       hours = parseInt(time12hMatch[1], 10)
       minutes = parseInt(time12hMatch[2], 10)
       const period = time12hMatch[3].toUpperCase()
-      
+
       if (period === 'PM' && hours !== 12) {
         hours += 12
       } else if (period === 'AM' && hours === 12) {
@@ -85,7 +85,10 @@ function combineDateTime(date: Date, timeString: string): Date {
 }
 
 // Función para extraer hora de una fecha
-function extractTimeFromDate(date: Date, format: '12h' | '24h' = '24h'): string {
+function extractTimeFromDate(
+  date: Date,
+  format: '12h' | '24h' = '24h'
+): string {
   const hours = date.getHours()
   const minutes = date.getMinutes()
 
@@ -187,7 +190,7 @@ export function DatePicker({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const inputRef = useRef<HTMLInputElement>(null)
   const isMobile = useIsMobile()
-  
+
   // Bandera para controlar si el usuario está editando activamente la hora
   const isUserEditingTime = useRef(false)
   const timeEditTimeout = useRef<NodeJS.Timeout | null>(null)
@@ -212,7 +215,7 @@ export function DatePicker({
         const hours = dateValue.getHours()
         const minutes = dateValue.getMinutes()
         const seconds = dateValue.getSeconds()
-        
+
         // Solo mostrar la hora si es diferente de 00:00:00 (fecha sin hora específica)
         if (hours !== 0 || minutes !== 0 || seconds !== 0) {
           setTimeValue(extractTimeFromDate(dateValue, timeFormat))
@@ -385,7 +388,7 @@ export function DatePicker({
           // En desktop, aplicar inmediatamente
           setInputValue(format(selectedDate, dateFormat))
           setInputError(null)
-          
+
           // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
           if (hasTime && timeValue && timeValue.trim() !== '') {
             const combinedDateTime = combineDateTime(selectedDate, timeValue)
@@ -408,7 +411,7 @@ export function DatePicker({
       // En desktop, aplicar inmediatamente
       setInputValue(format(today, dateFormat))
       setInputError(null)
-      
+
       // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
       if (hasTime && timeValue && timeValue.trim() !== '') {
         const combinedDateTime = combineDateTime(today, timeValue)
@@ -425,7 +428,7 @@ export function DatePicker({
     if (selectedDate) {
       setInputValue(format(selectedDate, dateFormat))
       setInputError(null)
-      
+
       // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
       if (hasTime && timeValue && timeValue.trim() !== '') {
         const combinedDateTime = combineDateTime(selectedDate, timeValue)
@@ -570,39 +573,48 @@ export function DatePicker({
             </PopoverTrigger>
           )}
         </InputGroupAddon>
+        {/* TimePicker dentro de un InputGroupAddon */}
+        <InputGroupAddon align="inline-end" className=" !pr-0">
+          <TimePicker
+            format={timeFormat}
+            value={timeValue}
+            className="max-w-32 border-0 "
+            disabled={disabled}
+            onChange={(value) => {
+              const newTimeValue = value || ''
+
+              // Marcar que el usuario está editando activamente
+              isUserEditingTime.current = true
+
+              // Limpiar timeout anterior si existe
+              if (timeEditTimeout.current) {
+                clearTimeout(timeEditTimeout.current)
+              }
+
+              // Establecer timeout para marcar que terminó la edición
+              timeEditTimeout.current = setTimeout(() => {
+                isUserEditingTime.current = false
+              }, 500) // 500ms después de la última edición
+
+              setTimeValue(newTimeValue)
+
+              // Solo combinar si hay una fecha válida y el valor realmente cambió
+              if (
+                hasTime &&
+                onChange &&
+                dateValue &&
+                newTimeValue !== timeValue
+              ) {
+                const combinedDateTime = combineDateTime(
+                  dateValue,
+                  newTimeValue
+                )
+                onChange(combinedDateTime)
+              }
+            }}
+          />
+        </InputGroupAddon>
       </InputGroup>
-      
-      {/* TimePicker como componente independiente */}
-      <TimePicker
-        format={timeFormat}
-        value={timeValue}
-        className="max-w-32"
-        disabled={disabled}
-        onChange={(value) => {
-          const newTimeValue = value || ''
-          
-          // Marcar que el usuario está editando activamente
-          isUserEditingTime.current = true
-          
-          // Limpiar timeout anterior si existe
-          if (timeEditTimeout.current) {
-            clearTimeout(timeEditTimeout.current)
-          }
-          
-          // Establecer timeout para marcar que terminó la edición
-          timeEditTimeout.current = setTimeout(() => {
-            isUserEditingTime.current = false
-          }, 500) // 500ms después de la última edición
-          
-          setTimeValue(newTimeValue)
-          
-          // Solo combinar si hay una fecha válida y el valor realmente cambió
-          if (hasTime && onChange && dateValue && newTimeValue !== timeValue) {
-            const combinedDateTime = combineDateTime(dateValue, newTimeValue)
-            onChange(combinedDateTime)
-          }
-        }}
-      />
     </div>
   ) : (
     // Cuando hasTime es false, renderizar como InputGroup normal
