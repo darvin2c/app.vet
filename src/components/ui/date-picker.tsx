@@ -46,8 +46,8 @@ const dateSchema = z.string().refine(
 
 // Función para combinar fecha y hora
 function combineDateTime(date: Date, timeString: string): Date {
-  if (!timeString) {
-    // Si no hay hora, usar 00:00
+  if (!timeString || timeString.trim() === '') {
+    // Si no hay hora, crear fecha con 00:00:00 explícitamente (fecha sin hora específica)
     const combined = new Date(date)
     combined.setHours(0, 0, 0, 0)
     return combined
@@ -187,6 +187,10 @@ export function DatePicker({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const inputRef = useRef<HTMLInputElement>(null)
   const isMobile = useIsMobile()
+  
+  // Bandera para controlar si el usuario está editando activamente la hora
+  const isUserEditingTime = useRef(false)
+  const timeEditTimeout = useRef<NodeJS.Timeout | null>(null)
 
   // Convertir value a Date si es string
   const dateValue = useMemo(() => {
@@ -203,13 +207,22 @@ export function DatePicker({
   useEffect(() => {
     if (dateValue) {
       setInputValue(format(dateValue, dateFormat))
-      // Si hasTime está habilitado, extraer la hora del dateValue
-      if (hasTime) {
-        setTimeValue(extractTimeFromDate(dateValue, timeFormat))
+      // Si hasTime está habilitado, solo extraer la hora si NO es 00:00:00 Y el usuario NO está editando
+      if (hasTime && !isUserEditingTime.current) {
+        const hours = dateValue.getHours()
+        const minutes = dateValue.getMinutes()
+        const seconds = dateValue.getSeconds()
+        
+        // Solo mostrar la hora si es diferente de 00:00:00 (fecha sin hora específica)
+        if (hours !== 0 || minutes !== 0 || seconds !== 0) {
+          setTimeValue(extractTimeFromDate(dateValue, timeFormat))
+        } else {
+          setTimeValue('')
+        }
       }
     } else {
       setInputValue('')
-      if (hasTime) {
+      if (hasTime && !isUserEditingTime.current) {
         setTimeValue('')
       }
     }
@@ -373,8 +386,8 @@ export function DatePicker({
           setInputValue(format(selectedDate, dateFormat))
           setInputError(null)
           
-          // Si hasTime está habilitado, combinar con la hora actual
-          if (hasTime && timeValue) {
+          // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
+          if (hasTime && timeValue && timeValue.trim() !== '') {
             const combinedDateTime = combineDateTime(selectedDate, timeValue)
             onChange?.(combinedDateTime)
           } else {
@@ -396,8 +409,8 @@ export function DatePicker({
       setInputValue(format(today, dateFormat))
       setInputError(null)
       
-      // Si hasTime está habilitado, combinar con la hora actual
-      if (hasTime && timeValue) {
+      // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
+      if (hasTime && timeValue && timeValue.trim() !== '') {
         const combinedDateTime = combineDateTime(today, timeValue)
         onChange?.(combinedDateTime)
       } else {
@@ -413,8 +426,8 @@ export function DatePicker({
       setInputValue(format(selectedDate, dateFormat))
       setInputError(null)
       
-      // Si hasTime está habilitado, combinar con la hora actual
-      if (hasTime && timeValue) {
+      // Si hasTime está habilitado y hay hora, combinar; sino solo fecha
+      if (hasTime && timeValue && timeValue.trim() !== '') {
         const combinedDateTime = combineDateTime(selectedDate, timeValue)
         onChange?.(combinedDateTime)
       } else {
@@ -566,12 +579,26 @@ export function DatePicker({
         className="max-w-32"
         disabled={disabled}
         onChange={(value) => {
-          setTimeValue(value || '')
+          const newTimeValue = value || ''
           
-          // Combinar fecha actual con la nueva hora
-          if (hasTime && onChange) {
-            const currentDate = dateValue || new Date()
-            const combinedDateTime = combineDateTime(currentDate, value || '')
+          // Marcar que el usuario está editando activamente
+          isUserEditingTime.current = true
+          
+          // Limpiar timeout anterior si existe
+          if (timeEditTimeout.current) {
+            clearTimeout(timeEditTimeout.current)
+          }
+          
+          // Establecer timeout para marcar que terminó la edición
+          timeEditTimeout.current = setTimeout(() => {
+            isUserEditingTime.current = false
+          }, 500) // 500ms después de la última edición
+          
+          setTimeValue(newTimeValue)
+          
+          // Solo combinar si hay una fecha válida y el valor realmente cambió
+          if (hasTime && onChange && dateValue && newTimeValue !== timeValue) {
+            const combinedDateTime = combineDateTime(dateValue, newTimeValue)
             onChange(combinedDateTime)
           }
         }}
