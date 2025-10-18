@@ -54,10 +54,12 @@ export function ClinicalNoteList({
   filterConfig,
   orderByConfig,
   petId,
+  compact = false,
 }: {
   filterConfig?: FilterConfig[]
   orderByConfig?: OrderByConfig
   petId?: string
+  compact?: boolean
 }) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
@@ -184,9 +186,11 @@ export function ClinicalNoteList({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="clinical-notes" />
-      </div>
+      {!compact && (
+        <div className="flex justify-end">
+          <ViewModeToggle onValueChange={setViewMode} resource="clinical-notes" />
+        </div>
+      )}
 
       {viewMode === 'table' && (
         <div className="rounded-md border">

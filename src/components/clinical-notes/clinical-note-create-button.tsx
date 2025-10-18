@@ -6,6 +6,7 @@ import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalNoteCreate } from './clinical-note-create'
 
 interface ClinicalNoteCreateButtonProps {
+  petId?: string
   medicalRecordId?: string
   hospitalizationId?: string
   variant?:
@@ -19,6 +20,7 @@ interface ClinicalNoteCreateButtonProps {
 }
 
 export function ClinicalNoteCreateButton({
+  petId,
   medicalRecordId,
   hospitalizationId,
   variant = 'default',
@@ -32,14 +34,15 @@ export function ClinicalNoteCreateButton({
         onClick={() => setOpen(true)}
         variant={variant}
         size={size}
+        icon={Plus}
       >
-        <Plus className="h-4 w-4" />
         Nueva Nota Clínica
       </ResponsiveButton>
 
       <ClinicalNoteCreate
         open={open}
         onOpenChange={setOpen}
+        petId={petId}
         medicalRecordId={medicalRecordId}
         hospitalizationId={hospitalizationId}
       />

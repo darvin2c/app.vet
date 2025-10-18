@@ -49,6 +49,7 @@ export function ClinicalNoteCreate({
       const data = {
         content: formData.content,
         clinical_record_id: formData.clinical_record_id,
+        pet_id: petId || '',
       }
       await createClinicalNote.mutateAsync(data)
       toast.success('Nota clínica creada exitosamente')

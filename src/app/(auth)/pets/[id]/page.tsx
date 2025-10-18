@@ -172,9 +172,9 @@ export default function PetProfilePage() {
                     Historial médico y observaciones de la mascota
                   </p>
                 </div>
-                <ClinicalNoteCreateButton />
+                <ClinicalNoteCreateButton petId={petId} />
               </div>
-              <ClinicalNoteList />
+              <ClinicalNoteList petId={petId} compact />
             </TabsContent>
           </Tabs>
         </div>
