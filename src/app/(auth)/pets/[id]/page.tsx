@@ -15,7 +15,8 @@ import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { PetProfileHeader } from '@/components/pets/pet-profile-header'
 import { PetProfileSidebar } from '@/components/pets/pet-profile-sidebar'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
-import { PetAppointmentsList } from '@/components/pets/pet-appointments-list'
+import { AppointmentList } from '@/components/appointments/appointment-list'
+import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
 import { PetAllTreatments } from '@/components/pets/pet-all-treatments'
 import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
@@ -169,10 +170,17 @@ export default function PetProfilePage() {
 
             {/* Appointments */}
             <TabsContent value="appointments" className="space-y-6">
-              <PetAppointmentsList
-                appointments={appointments}
-                isLoading={appointmentsLoading}
-                petId={petId}
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Citas</h2>
+                  <p className="text-muted-foreground">
+                    Historial de citas de la mascota
+                  </p>
+                </div>
+                <AppointmentCreateButton petId={petId} />
+              </div>
+              <AppointmentList
+                filters={{ pet_id: petId }}
               />
             </TabsContent>
 
