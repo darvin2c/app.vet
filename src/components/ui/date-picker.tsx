@@ -354,7 +354,7 @@ export function DatePicker({
 
   // Componente de calendario reutilizable
   const CalendarComponent = () => (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col items-center gap-2">
       <Calendar
         mode="single"
         selected={selectedDate}
@@ -365,17 +365,17 @@ export function DatePicker({
           return false
         }}
         locale={es}
-        className={cn('w-full', isMobile && 'max-w-none')}
+        className={cn('w-full', isMobile && 'max-w-sm')}
       />
       <Separator />
       {showTodayButton && (
-        <div className="flex justify-center pb-3">
+        <div className="flex justify-center pb-3 px-4">
           <Button
             type="button"
             variant="outline"
             size="sm"
             onClick={handleTodayClick}
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto min-w-sm"
           >
             Hoy
           </Button>
@@ -459,11 +459,11 @@ export function DatePicker({
         )}
       </InputGroupAddon>
       {hasTime && (
-        <InputGroupAddon align="inline-end">
+        <InputGroupAddon align="inline-end" className="px-0">
           <TimePicker
             format={timeFormat}
             value={timeValue}
-            className="border-0 -mr-5"
+            className="border-0 px-2 max-w-40"
             onChange={(value) => {
               setTimeValue(value || '')
             }}
@@ -481,7 +481,7 @@ export function DatePicker({
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
           {inputGroupContent}
-          <PopoverContent className="w-auto p-0" align="start">
+          <PopoverContent className="w-auto p-0" align="end">
             <CalendarComponent />
           </PopoverContent>
         </Popover>
