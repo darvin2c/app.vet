@@ -12,11 +12,6 @@ import { AppointmentActions } from '@/components/appointments/appointment-action
 type PetAppointment = Tables<'appointments'> & {
   appointment_types: Tables<'appointment_types'> | null
   staff: Tables<'staff'> | null
-  pets:
-    | (Tables<'pets'> & {
-        customers: Tables<'customers'> | null
-      })
-    | null
 }
 
 interface PetAppointmentsListProps {
@@ -106,7 +101,7 @@ export function PetAppointmentsList({
               <Calendar className="h-5 w-5" />
               Historial de Citas
             </CardTitle>
-            <AppointmentCreateButton />
+            <AppointmentCreateButton petId={petId} />
           </div>
         </CardHeader>
         <CardContent>
@@ -128,7 +123,7 @@ export function PetAppointmentsList({
             <Calendar className="h-5 w-5" />
             Historial de Citas ({appointments.length})
           </CardTitle>
-          <AppointmentCreateButton />
+          <AppointmentCreateButton petId={petId} />
         </div>
       </CardHeader>
       <CardContent>
@@ -139,7 +134,7 @@ export function PetAppointmentsList({
               className="border rounded-lg p-4 hover:bg-muted/50 transition-colors relative"
             >
               <div className="absolute top-2 right-2">
-                <AppointmentActions appointment={appointment} />
+                {/* TODO: Crear PetAppointmentActions específico para citas de mascotas */}
               </div>
 
               <div className="flex items-start justify-between mb-3 pr-8">

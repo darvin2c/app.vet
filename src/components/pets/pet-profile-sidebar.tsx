@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Tables } from '@/types/supabase.types'
 import { PetInfoField } from './pet-info-field'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { formatDate } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
@@ -133,24 +132,12 @@ export function PetProfileSidebar({
           <div className="space-y-2">
             <PetInfoField
               label="Registrado"
-              value={
-                pet.created_at
-                  ? format(new Date(pet.created_at), 'dd/MM/yyyy', {
-                      locale: es,
-                    })
-                  : undefined
-              }
+              value={formatDate(pet.created_at)}
             />
 
             <PetInfoField
               label="Última actualización"
-              value={
-                pet.updated_at
-                  ? format(new Date(pet.updated_at), 'dd/MM/yyyy', {
-                      locale: es,
-                    })
-                  : undefined
-              }
+              value={formatDate(pet.updated_at)}
             />
           </div>
         </CardContent>

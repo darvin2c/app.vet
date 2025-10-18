@@ -6,8 +6,7 @@ import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { calculateAge, formatSex, getSexIcon, getSexColor, formatDate, formatWeight } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
@@ -26,40 +25,9 @@ interface PetProfileHeaderProps {
 export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
   const router = useRouter()
 
-  const getAgeText = (birthDate: string | null) => {
-    if (!birthDate) return 'Edad desconocida'
 
-    const birth = new Date(birthDate)
-    const now = new Date()
-    const diffTime = Math.abs(now.getTime() - birth.getTime())
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-    if (diffDays < 30) {
-      return `${diffDays} días`
-    } else if (diffDays < 365) {
-      const months = Math.floor(diffDays / 30)
-      return `${months} ${months === 1 ? 'mes' : 'meses'}`
-    } else {
-      const years = Math.floor(diffDays / 365)
-      const remainingMonths = Math.floor((diffDays % 365) / 30)
-      if (remainingMonths === 0) {
-        return `${years} ${years === 1 ? 'año' : 'años'}`
-      }
-      return `${years} ${years === 1 ? 'año' : 'años'} y ${remainingMonths} ${remainingMonths === 1 ? 'mes' : 'meses'}`
-    }
-  }
 
-  const getSexIcon = (sex: string | null) => {
-    if (sex === 'male' || sex === 'macho') return '♂'
-    if (sex === 'female' || sex === 'hembra') return '♀'
-    return '?'
-  }
-
-  const getSexColor = (sex: string | null) => {
-    if (sex === 'male' || sex === 'macho') return 'text-blue-600'
-    if (sex === 'female' || sex === 'hembra') return 'text-pink-600'
-    return 'text-muted-foreground'
-  }
 
   return (
     <Card className="mb-6">
@@ -113,14 +81,11 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
             <div className="flex items-center gap-4 text-sm">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                <span>{getAgeText(pet.birth_date)}</span>
+                <span>{calculateAge(pet.birth_date)}</span>
               </div>
               {pet.birth_date && (
                 <div className="text-muted-foreground">
-                  Nacido el{' '}
-                  {format(new Date(pet.birth_date), 'dd/MM/yyyy', {
-                    locale: es,
-                  })}
+                  Nacido el {formatDate(pet.birth_date)}
                 </div>
               )}
             </div>
@@ -130,7 +95,7 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
               {pet.microchip && (
                 <Badge variant="outline">Microchip: {pet.microchip}</Badge>
               )}
-              {pet.weight && <Badge variant="outline">{pet.weight} kg</Badge>}
+              {pet.weight && <Badge variant="outline">{formatWeight(pet.weight)}</Badge>}
             </div>
 
             {pet.notes && (

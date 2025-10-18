@@ -7,6 +7,8 @@ import { ArrowLeft, MoreHorizontal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePetDetail } from '@/hooks/pets/use-pet-detail'
+import { usePetAppointments } from '@/hooks/pets/use-pet-appointments'
+import { usePetMedicalRecords } from '@/hooks/pets/use-pet-medical-records'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 // Import modular components
@@ -35,6 +37,20 @@ export default function PetProfilePage() {
     isLoading: petLoading,
     error: petError,
   } = usePetDetail(petId)
+
+  // Obtener citas de la mascota
+  const {
+    data: appointments = [],
+    isLoading: appointmentsLoading,
+    error: appointmentsError,
+  } = usePetAppointments(petId)
+
+  // Obtener registros médicos de la mascota
+  const {
+    data: medicalRecords = [],
+    isLoading: medicalRecordsLoading,
+    error: medicalRecordsError,
+  } = usePetMedicalRecords(petId)
 
   // Configuración de filtros para parámetros clínicos
   const clinicalParameterFilters: FilterConfig[] = [
@@ -134,8 +150,12 @@ export default function PetProfilePage() {
               <TabsTrigger value="clinical-parameters">
                 Parámetros Clínicos
               </TabsTrigger>
-              <TabsTrigger value="treatments">Registros Médicos</TabsTrigger>
-              <TabsTrigger value="appointments">Citas</TabsTrigger>
+              <TabsTrigger value="treatments">
+                Registros Médicos ({medicalRecords.length})
+              </TabsTrigger>
+              <TabsTrigger value="appointments">
+                Citas ({appointments.length})
+              </TabsTrigger>
               <TabsTrigger value="hospitalizations">
                 Hospitalizaciones
               </TabsTrigger>
@@ -150,8 +170,8 @@ export default function PetProfilePage() {
             {/* Appointments */}
             <TabsContent value="appointments" className="space-y-6">
               <PetAppointmentsList
-                appointments={[]}
-                isLoading={false}
+                appointments={appointments}
+                isLoading={appointmentsLoading}
                 petId={petId}
               />
             </TabsContent>
@@ -210,7 +230,11 @@ export default function PetProfilePage() {
         </div>
 
         {/* Sidebar */}
-        <PetProfileSidebar pet={pet} />
+        <PetProfileSidebar 
+          pet={pet} 
+          appointmentsCount={appointments.length}
+          medicalRecordsCount={medicalRecords.length}
+        />
       </div>
     </div>
   )

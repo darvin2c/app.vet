@@ -2,8 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tables } from '@/types/supabase.types'
 import { PetInfoField } from './pet-info-field'
 import { PetStatusBadge } from './pet-status-badge'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
+import { calculateAge, formatSex, formatDate } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
@@ -20,18 +19,7 @@ interface PetGeneralInfoProps {
 }
 
 export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
-  const getSexText = (sex: string | null) => {
-    switch (sex?.toLowerCase()) {
-      case 'male':
-      case 'macho':
-        return 'Macho'
-      case 'female':
-      case 'hembra':
-        return 'Hembra'
-      default:
-        return 'No especificado'
-    }
-  }
+
 
   return (
     <div className="space-y-6">
@@ -52,7 +40,7 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
 
             <PetInfoField label="Raza" value={pet.breeds?.name} />
 
-            <PetInfoField label="Sexo" value={getSexText(pet.sex)} />
+            <PetInfoField label="Sexo" value={formatSex(pet.sex)} />
 
             <PetInfoField label="Color" value={pet.color} />
 
@@ -63,13 +51,7 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
 
             <PetInfoField
               label="Fecha de nacimiento"
-              value={
-                pet.birth_date
-                  ? format(new Date(pet.birth_date), 'dd/MM/yyyy', {
-                      locale: es,
-                    })
-                  : undefined
-              }
+              value={formatDate(pet.birth_date)}
             />
           </dl>
         </CardContent>
@@ -110,24 +92,12 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
           <dl className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <PetInfoField
               label="Fecha de registro"
-              value={
-                pet.created_at
-                  ? format(new Date(pet.created_at), 'dd/MM/yyyy HH:mm', {
-                      locale: es,
-                    })
-                  : undefined
-              }
+              value={formatDate(pet.created_at, 'dd/MM/yyyy HH:mm')}
             />
 
             <PetInfoField
               label="Última actualización"
-              value={
-                pet.updated_at
-                  ? format(new Date(pet.updated_at), 'dd/MM/yyyy HH:mm', {
-                      locale: es,
-                    })
-                  : undefined
-              }
+              value={formatDate(pet.updated_at, 'dd/MM/yyyy HH:mm')}
             />
           </dl>
         </CardContent>
