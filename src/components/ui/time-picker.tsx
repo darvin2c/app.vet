@@ -98,24 +98,31 @@ function applyTimeMask(input: string, format: TimeFormat): {
       isValid = false
     }
     
-    // Para un solo dígito, agregarlo sin padding aún
+    // Para un solo dígito, agregarlo sin separadores
     maskedValue += digits[0]
     cursorPosition = 1
-  }
-  
-  if (digits.length >= 2) {
-    const hour = parseInt(digits.slice(0, 2))
     
-    // Validar hora completa
-    if (format === '24h' && hour > 23) {
-      isValid = false
-    } else if (format === '12h' && (hour === 0 || hour > 12)) {
-      isValid = false
+    // Solo agregar dos puntos si hay al menos 2 dígitos
+    if (digits.length >= 2) {
+      const hour = parseInt(digits.slice(0, 2))
+      
+      // Validar hora completa
+      if (format === '24h' && hour > 23) {
+        isValid = false
+      } else if (format === '12h' && (hour === 0 || hour > 12)) {
+        isValid = false
+      }
+      
+      // Formatear con 2 dígitos y agregar dos puntos solo si hay más dígitos
+      maskedValue = digits.slice(0, 2).padStart(2, '0')
+      cursorPosition = 2
+      
+      // Solo agregar ":" si hay minutos o más caracteres
+      if (digits.length > 2) {
+        maskedValue += ':'
+        cursorPosition = 3
+      }
     }
-    
-    // Siempre formatear con 2 dígitos y agregar dos puntos
-    maskedValue = digits.slice(0, 2).padStart(2, '0') + ':'
-    cursorPosition = 3
   }
   
   if (digits.length >= 3) {
@@ -668,68 +675,49 @@ export function TimePicker({
         }
       }
       
-      // Backspace inteligente - eliminar carácter por carácter preservando estructura
+      // Backspace inteligente - borrado completo de estructura
       if (e.key === 'Backspace') {
         e.preventDefault()
         
         if (cursorPosition > 0) {
-          const charToDelete = currentValue[cursorPosition - 1]
+          // Eliminar carácter por carácter y reaplicar máscara
+          const newValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition)
           
-          // Si es un separador (:, espacio), saltar al carácter anterior
-          if (charToDelete === ':' || charToDelete === ' ') {
-            const newPosition = Math.max(0, cursorPosition - 1)
-            setTimeout(() => {
-              if (inputRef.current) {
-                inputRef.current.setSelectionRange(newPosition, newPosition)
-              }
-            }, 0)
-            return
-          }
+          // Procesar el nuevo valor a través de la máscara para limpiar separadores huérfanos
+          const cleanedValue = newValue.replace(/[^\d\sAPMapm]/g, '')
+          const maskedResult = applyTimeMask(cleanedValue, format)
           
-          // Eliminar solo dígitos y letras (AM/PM)
-          if (/[\dAPM]/i.test(charToDelete)) {
-            const newValue = currentValue.slice(0, cursorPosition - 1) + currentValue.slice(cursorPosition)
-            onChange?.(newValue)
-            
-            setTimeout(() => {
-              if (inputRef.current) {
-                const newPosition = Math.max(0, cursorPosition - 1)
-                inputRef.current.setSelectionRange(newPosition, newPosition)
-              }
-            }, 0)
-          }
+          onChange?.(maskedResult.value)
+          
+          setTimeout(() => {
+            if (inputRef.current) {
+              const newPosition = Math.max(0, Math.min(maskedResult.cursorPosition, cursorPosition - 1))
+              inputRef.current.setSelectionRange(newPosition, newPosition)
+            }
+          }, 0)
         }
       }
       
-      // Delete inteligente - eliminar carácter por carácter hacia adelante preservando estructura
+      // Delete inteligente - borrado completo de estructura hacia adelante
       if (e.key === 'Delete') {
         e.preventDefault()
         
         if (cursorPosition < currentValue.length) {
-          const charToDelete = currentValue[cursorPosition]
+          // Eliminar carácter hacia adelante y reaplicar máscara
+          const newValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1)
           
-          // Si es un separador (:, espacio), saltar al siguiente carácter
-          if (charToDelete === ':' || charToDelete === ' ') {
-            const newPosition = Math.min(currentValue.length, cursorPosition + 1)
-            setTimeout(() => {
-              if (inputRef.current) {
-                inputRef.current.setSelectionRange(newPosition, newPosition)
-              }
-            }, 0)
-            return
-          }
+          // Procesar el nuevo valor a través de la máscara para limpiar separadores huérfanos
+          const cleanedValue = newValue.replace(/[^\d\sAPMapm]/g, '')
+          const maskedResult = applyTimeMask(cleanedValue, format)
           
-          // Eliminar solo dígitos y letras (AM/PM)
-          if (/[\dAPM]/i.test(charToDelete)) {
-            const newValue = currentValue.slice(0, cursorPosition) + currentValue.slice(cursorPosition + 1)
-            onChange?.(newValue)
-            
-            setTimeout(() => {
-              if (inputRef.current) {
-                inputRef.current.setSelectionRange(cursorPosition, cursorPosition)
-              }
-            }, 0)
-          }
+          onChange?.(maskedResult.value)
+          
+          setTimeout(() => {
+            if (inputRef.current) {
+              const newPosition = Math.min(maskedResult.value.length, cursorPosition)
+              inputRef.current.setSelectionRange(newPosition, newPosition)
+            }
+          }, 0)
         }
       }
     },
@@ -787,29 +775,48 @@ export function TimePicker({
         onBlur={handleInputBlur}
         className="font-mono relative z-10 bg-transparent"
       />
-      {/* Máscara visual mejorada */}
+      {/* Máscara visual corregida */}
       <div
         className="absolute inset-0 flex items-center px-3 pointer-events-none font-mono text-sm z-0"
         aria-hidden="true"
       >
-        {!value ? (
-          // Mostrar máscara completa cuando no hay valor
+        {!value || value.trim() === '' ? (
+          // Mostrar máscara completa cuando no hay valor o está vacío
           <span className="text-muted-foreground/30">
             {maskFormat}
           </span>
         ) : (
-          // Mostrar máscara parcial cuando hay valor
+          // Mostrar máscara dinámica basada en el contenido actual
           <div className="flex">
-            {/* Parte invisible que coincide con el valor ingresado */}
-            <span className="invisible select-none">
-              {value}
-            </span>
-            {/* Parte visible de la máscara restante */}
-            {value.length < maskFormat.length && (
-              <span className="text-muted-foreground/30">
-                {maskFormat.slice(value.length)}
-              </span>
-            )}
+            {/* Crear máscara que se ajuste al valor actual */}
+            {(() => {
+              const cleanValue = value.replace(/[^\d\sAPMapm]/g, '')
+              const expectedMask = getTimeMask(format)
+              
+              // Si el valor limpio es muy corto, mostrar máscara completa
+              if (cleanValue.length <= 1) {
+                return (
+                  <>
+                    <span className="invisible select-none">{value}</span>
+                    <span className="text-muted-foreground/30">
+                      {expectedMask.slice(value.length)}
+                    </span>
+                  </>
+                )
+              }
+              
+              // Para valores más largos, mostrar máscara restante
+              return (
+                <>
+                  <span className="invisible select-none">{value}</span>
+                  {value.length < expectedMask.length && (
+                    <span className="text-muted-foreground/30">
+                      {expectedMask.slice(value.length)}
+                    </span>
+                  )}
+                </>
+              )
+            })()}
           </div>
         )}
       </div>
