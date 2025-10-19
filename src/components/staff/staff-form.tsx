@@ -10,6 +10,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
+import { UserSelect } from '../users/user-select'
 
 export function StaffForm() {
   const form = useFormContext<CreateStaffSchema | UpdateStaffSchema>()
@@ -21,14 +22,22 @@ export function StaffForm() {
     <div className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="full_name">Nombre Completo *</FieldLabel>
+          <FieldLabel htmlFor="first_name">Nombre *</FieldLabel>
           <FieldContent>
             <Input
-              id="full_name"
-              placeholder="Ingresa el nombre completo"
-              {...form.register('full_name')}
+              id="first_name"
+              type="text"
+              {...form.register('first_name')}
             />
-            <FieldError errors={[errors.full_name]} />
+            <FieldError errors={[errors.first_name]} />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel htmlFor="last_name">Apellido *</FieldLabel>
+          <FieldContent>
+            <Input id="last_name" type="text" {...form.register('last_name')} />
+            <FieldError errors={[errors.last_name]} />
           </FieldContent>
         </Field>
 
@@ -73,13 +82,9 @@ export function StaffForm() {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="user_id">ID de Usuario *</FieldLabel>
+        <FieldLabel htmlFor="user_id">ID de Usuario</FieldLabel>
         <FieldContent>
-          <Input
-            id="user_id"
-            placeholder="Ingresa el ID de usuario"
-            {...form.register('user_id')}
-          />
+          <UserSelect />
           <FieldError errors={[errors.user_id]} />
         </FieldContent>
       </Field>

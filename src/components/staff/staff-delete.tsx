@@ -3,6 +3,7 @@
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { Database } from '@/types/supabase.types'
 import useDeleteStaff from '@/hooks/staff/use-staff-delete'
+import { getStaffFullName } from '@/lib/staff-utils'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 
@@ -20,7 +21,7 @@ export function StaffDelete({ staff, open, onOpenChange }: StaffDeleteProps) {
     onOpenChange(false)
   }
 
-  const staffName = staff.full_name
+  const staffName = getStaffFullName(staff)
 
   return (
     <AlertConfirmation

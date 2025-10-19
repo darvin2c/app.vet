@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import {
   Calendar,
   Clock,
@@ -69,7 +70,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
     : 'Cliente no especificado'
 
   const staffName = appointment.staff
-    ? appointment.staff.full_name
+    ? getStaffFullName(appointment.staff)
     : 'Personal no asignado'
 
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'

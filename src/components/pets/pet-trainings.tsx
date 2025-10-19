@@ -7,6 +7,7 @@ import { usePetTrainings } from '@/hooks/pets/use-pet-trainings'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import { TrainingCreateButton } from '@/components/trainings/training-create-button'
 import { TrainingActions } from '@/components/trainings/training-actions'
 
@@ -108,7 +109,8 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    <strong>Entrenador:</strong> {training.staff.full_name}
+                    <strong>Entrenador:</strong>{' '}
+                    {getStaffFullName(training.staff)}
                   </span>
                 </div>
               )}

@@ -7,6 +7,7 @@ import { usePetVaccinations } from '@/hooks/pets/use-pet-vaccinations'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import { VaccinationCreateButton } from '@/components/vaccinations/vaccination-create-button'
 import { VaccinationActions } from '@/components/vaccinations/vaccination-actions'
 
@@ -121,7 +122,8 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
               <div className="flex items-center gap-2">
                 <User className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  <strong>Veterinario:</strong> {vaccination.staff.full_name}
+                  <strong>Veterinario:</strong>{' '}
+                  {getStaffFullName(vaccination.staff)}
                 </span>
               </div>
             )}

@@ -17,7 +17,8 @@ export default function useStaffSpecialties(filters?: StaffSpecialtyFilters) {
           *,
           staff (
             id,
-            full_name,
+            first_name,
+            last_name,
             email,
             is_active
           ),
@@ -40,7 +41,7 @@ export default function useStaffSpecialties(filters?: StaffSpecialtyFilters) {
       // Filtro de búsqueda por nombre de staff o especialidad
       if (filters?.search) {
         query = query.or(
-          `staff.full_name.ilike.%${filters.search}%,specialties.name.ilike.%${filters.search}%`
+          `staff.first_name.ilike.%${filters.search}%,staff.last_name.ilike.%${filters.search}%,specialties.name.ilike.%${filters.search}%`
         )
       }
 

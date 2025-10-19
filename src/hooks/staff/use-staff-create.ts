@@ -1,11 +1,10 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CreateStaffSchema } from '@/schemas/staff.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
-export default function useCreateStaff() {
+export default function useStaffCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
@@ -14,7 +13,7 @@ export default function useCreateStaff() {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
-
+      console.log('data', data)
       // Crear el staff
       const { data: staff, error } = await supabase
         .from('staff')

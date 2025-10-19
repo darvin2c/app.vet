@@ -2,12 +2,26 @@ import { z } from 'zod'
 
 // Esquema base para staff - basado en la tabla staff de Supabase
 export const staffBaseSchema = z.object({
-  full_name: z
+  first_name: z
     .string()
-    .nonempty('El nombre completo es requerido')
-    .max(200, 'El nombre completo no puede exceder 200 caracteres'),
+    .nonempty('El nombre es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
 
-  email: z.string().email('Formato de email inválido').nullable().optional(),
+  last_name: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true
+        return value.length <= 100
+      },
+      {
+        message: 'El apellido no puede exceder 100 caracteres',
+      }
+    ),
+
+  email: z.email('Formato de email inválido').or(z.literal('')).optional(),
 
   phone: z
     .string()
@@ -39,9 +53,9 @@ export const staffBaseSchema = z.object({
       }
     ),
 
-  user_id: z.string().nonempty('El ID de usuario es requerido'),
+  user_id: z.string().nullable(),
 
-  is_active: z.boolean().default(true),
+  is_active: z.boolean(),
 })
 
 // Esquema para crear staff

@@ -48,11 +48,13 @@ import { StaffSpecialtyFilters } from '@/schemas/staff-specialties.schema'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 
 type StaffSpecialty = Tables<'staff_specialties'> & {
   staff?: {
     id: string
-    full_name: string
+    first_name: string
+    last_name: string | null
     email: string | null
     is_active: boolean
   }
@@ -75,10 +77,12 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
 
   const columns: ColumnDef<StaffSpecialty>[] = [
     {
-      accessorKey: 'staff.full_name',
+      accessorKey: 'staff.first_name',
       header: 'Staff',
       cell: ({ row }) => (
-        <div className="font-medium">{row.original.staff?.full_name}</div>
+        <div className="font-medium">
+          {row.original.staff ? getStaffFullName(row.original.staff) : '-'}
+        </div>
       ),
     },
     {
@@ -197,7 +201,9 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg flex items-center gap-2">
                 <User className="h-5 w-5 text-blue-600" />
-                {staffSpecialty.staff?.full_name}
+                {staffSpecialty.staff
+                  ? getStaffFullName(staffSpecialty.staff)
+                  : '-'}
               </CardTitle>
               <StaffSpecialtyActions staffSpecialty={staffSpecialty} />
             </div>
@@ -279,7 +285,9 @@ export function StaffSpecialtyList({ filters }: StaffSpecialtyListProps) {
           <ItemContent>
             <ItemTitle className="flex items-center gap-2">
               <User className="h-4 w-4 text-blue-600" />
-              {staffSpecialty.staff?.full_name}
+              {staffSpecialty.staff
+                ? getStaffFullName(staffSpecialty.staff)
+                : '-'}
             </ItemTitle>
             <ItemDescription className="flex items-center gap-2">
               <GraduationCap className="h-4 w-4 text-green-600" />

@@ -35,10 +35,12 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const form = useForm<UpdateStaffSchema>({
     resolver: zodResolver(updateStaffSchema),
     defaultValues: {
-      full_name: staff.full_name,
+      first_name: staff.first_name,
+      last_name: staff.last_name,
       email: staff.email,
       phone: staff.phone,
       license_number: staff.license_number,
+      user_id: staff.user_id,
       is_active: staff.is_active,
     },
   })
@@ -46,10 +48,12 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   useEffect(() => {
     if (staff) {
       form.reset({
-        full_name: staff.full_name,
+        first_name: staff.first_name,
+        last_name: staff.last_name,
         email: staff.email,
         phone: staff.phone,
         license_number: staff.license_number,
+        user_id: staff.user_id,
         is_active: staff.is_active,
       })
     }

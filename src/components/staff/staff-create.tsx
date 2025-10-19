@@ -39,9 +39,15 @@ export function StaffCreate({
   const setOpen = controlledOnOpenChange ?? setInternalOpen
   const mutation = useCreateStaff()
 
-  const form = useForm({
+  const form = useForm<CreateStaffSchema>({
     resolver: zodResolver(createStaffSchema),
     defaultValues: {
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      license_number: '',
+      user_id: null,
       is_active: true,
     },
   })

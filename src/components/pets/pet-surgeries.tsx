@@ -7,6 +7,7 @@ import { usePetSurgeries } from '@/hooks/pets/use-pet-surgeries'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import { SurgeryCreateButton } from '@/components/surgeries/surgery-create-button'
 import { SurgeryActions } from '@/components/surgeries/surgery-actions'
 
@@ -119,7 +120,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-muted-foreground" />
                   <span className="text-sm">
-                    <strong>Cirujano:</strong> {surgery.staff.full_name}
+                    <strong>Cirujano:</strong> {getStaffFullName(surgery.staff)}
                   </span>
                 </div>
               )}

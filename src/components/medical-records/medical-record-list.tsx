@@ -46,6 +46,7 @@ import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record
 import { MedicalRecordActions } from './medical-record-actions'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import { Tables } from '@/types/supabase.types'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderByConfig } from '@/types/order-by.types'
@@ -149,7 +150,7 @@ export function MedicalRecordList({
       header: 'Veterinario',
       cell: ({ row }) => {
         const staff = row.original.staff
-        return staff ? staff.full_name : 'Sin asignar'
+        return staff ? getStaffFullName(staff) : 'Sin asignar'
       },
     },
     {
@@ -245,7 +246,7 @@ export function MedicalRecordList({
               </div>
               <div>
                 <span className="font-medium">Veterinario: </span>
-                {record.staff ? record.staff.full_name : 'Sin asignar'}
+                {record.staff ? getStaffFullName(record.staff) : 'Sin asignar'}
               </div>
               {record.notes && (
                 <div>
@@ -285,7 +286,7 @@ export function MedicalRecordList({
                         locale: es,
                       })
                     : 'Sin fecha'}
-                  {record.staff && ` • ${record.staff.full_name}`}
+                  {record.staff && ` • ${getStaffFullName(record.staff)}`}
                 </ItemDescription>
               </div>
               <Badge>{recordType?.label || record.record_type}</Badge>

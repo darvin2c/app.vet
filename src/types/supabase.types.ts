@@ -1128,7 +1128,7 @@ export type Database = {
           tenant_id: string
           updated_at: string
           updated_by: string | null
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           created_at?: string
@@ -1143,7 +1143,7 @@ export type Database = {
           tenant_id: string
           updated_at?: string
           updated_by?: string | null
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           created_at?: string
@@ -1158,7 +1158,7 @@ export type Database = {
           tenant_id?: string
           updated_at?: string
           updated_by?: string | null
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -1417,6 +1417,13 @@ export type Database = {
             columns: ["tenant_id"]
             isOneToOne: false
             referencedRelation: "tenants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tenant_users_user_id_fkey1"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]

@@ -22,6 +22,7 @@ import { StaffCreate } from './staff-create'
 import { StaffEdit } from './staff-edit'
 import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
+import { getStaffFullName, getStaffInitials } from '@/lib/staff-utils'
 
 type Staff = Tables<'staff'>
 
@@ -73,7 +74,7 @@ export function StaffSelect({
               {selectedStaff ? (
                 <div className="flex items-center gap-2">
                   <UserCheck className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedStaff.full_name}</span>
+                  <span>{getStaffFullName(selectedStaff)}</span>
                 </div>
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
@@ -98,13 +99,15 @@ export function StaffSelect({
                 {staff.map((member: Staff) => (
                   <CommandItem
                     key={member.id}
-                    value={member.full_name}
+                    value={getStaffFullName(member)}
                     onSelect={() => handleSelect(member.id)}
                   >
                     <div className="flex items-center gap-2">
                       <UserCheck className="w-4 h-4 text-muted-foreground" />
                       <div className="flex flex-col">
-                        <span className="font-medium">{member.full_name}</span>
+                        <span className="font-medium">
+                          {getStaffFullName(member)}
+                        </span>
                         {member.email && (
                           <span className="text-sm text-muted-foreground">
                             {member.email}

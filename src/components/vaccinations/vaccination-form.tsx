@@ -8,8 +8,8 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
+import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
 import { VaccinationFormData } from '@/schemas/vaccinations.schema'
 
 export function VaccinationForm() {
@@ -80,11 +80,10 @@ export function VaccinationForm() {
       <Field>
         <FieldLabel htmlFor="adverse_event">Eventos Adversos</FieldLabel>
         <FieldContent>
-          <Textarea
-            id="adverse_event"
+          <RichMinimalEditor
+            value={watch('adverse_event') || ''}
+            onChange={(value) => setValue('adverse_event', value)}
             placeholder="Describir cualquier reacción adversa observada..."
-            rows={3}
-            {...register('adverse_event')}
           />
           <FieldError errors={[errors.adverse_event]} />
         </FieldContent>

@@ -4,8 +4,9 @@ import { useIlamyCalendarContext, type CalendarEvent } from '@ilamy/calendar'
 import { Clock, User, UserCheck, Stethoscope } from 'lucide-react'
 import type { Tables } from '@/types/supabase.types'
 import { Badge } from '@/components/ui/badge'
-import { es } from 'date-fns/locale'
 import { format } from 'date-fns'
+import { es } from 'date-fns/locale'
+import { getStaffFullName } from '@/lib/staff-utils'
 import { cn } from '@/lib/utils'
 import { EventCard } from './event-card'
 import { AppointmentWithRelations } from '@/types/appointment.types'
@@ -48,7 +49,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const clientName = client
     ? `${client.first_name} ${client.last_name}`
     : 'Sin cliente'
-  const staffName = staff ? staff.full_name : null
+  const staffName = staff ? getStaffFullName(staff) : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
 

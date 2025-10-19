@@ -14,8 +14,18 @@ import { Tables } from '@/types/supabase.types'
 
 interface StaffSpecialtyActionsProps {
   staffSpecialty: Tables<'staff_specialties'> & {
-    staff?: { full_name: string } | null
-    specialties?: { name: string } | null
+    staff?: {
+      id: string
+      first_name: string
+      last_name: string | null
+      email: string | null
+      is_active: boolean
+    } | null
+    specialties?: {
+      id: string
+      name: string
+      is_active: boolean
+    } | null
   }
 }
 

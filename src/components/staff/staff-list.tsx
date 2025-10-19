@@ -26,6 +26,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tables } from '@/types/supabase.types'
 import { StaffActions } from './staff-actions'
+import { getStaffFullName, getStaffInitials } from '@/lib/staff-utils'
 
 // Tipo extendido para staff con especialidades
 type StaffWithSpecialties = Tables<'staff'> & {
@@ -77,10 +78,10 @@ export function StaffList({ filters }: StaffListProps) {
 
   const columns: ColumnDef<StaffWithSpecialties>[] = [
     {
-      accessorKey: 'full_name',
+      accessorKey: 'first_name',
       header: 'Nombre',
-      cell: ({ row }: { row: Row<StaffWithSpecialties> }) => (
-        <div className="font-medium">{row.getValue('full_name')}</div>
+      cell: ({ row }) => (
+        <div className="font-medium">{getStaffFullName(row.original)}</div>
       ),
     },
     {
@@ -253,7 +254,7 @@ export function StaffList({ filters }: StaffListProps) {
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <h3 className="font-medium text-sm">
-                    {staffMember.full_name}
+                    {getStaffFullName(staffMember)}
                   </h3>
                   {staffMember.specialties &&
                     staffMember.specialties.length > 0 && (
@@ -319,8 +320,7 @@ export function StaffList({ filters }: StaffListProps) {
               {/* Avatar */}
               <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <span className="text-sm font-medium text-primary">
-                  {staffMember.full_name?.charAt(0)}
-                  {staffMember.full_name?.charAt(1) || ''}
+                  {getStaffInitials(staffMember)}
                 </span>
               </div>
 
@@ -328,7 +328,7 @@ export function StaffList({ filters }: StaffListProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium text-foreground truncate">
-                    {staffMember.full_name}
+                    {getStaffFullName(staffMember)}
                   </p>
                   {staffMember.specialties &&
                     staffMember.specialties.length > 0 && (
