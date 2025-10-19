@@ -52,15 +52,7 @@ export default function useProductList({
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      filters.forEach((filter) => {
-        if (filter.field === 'search' && filter.value) {
-          query = query.or(
-            `name.ilike.%${filter.value}%,abbreviation.ilike.%${filter.value}%`
-          )
-        } else {
-          query = query.eq(filter.field, filter.value)
-        }
-      })
+      filters.forEach((filter) => {})
 
       // Aplicar ordenamiento
       orders.forEach((order) => {

@@ -1,7 +1,7 @@
 'use client'
 
-import { useState } from 'react'
-import { Check, ChevronsUpDown, X, Package } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Check, ChevronsUpDown, X, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
@@ -16,12 +16,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Tables } from '@/types/supabase.types'
 import useUserList from '@/hooks/users/use-user-list'
+import { Tables } from '@/types/supabase.types'
+
+type UserProfile = Tables<'profiles'>
 
 interface UserSelectProps {
   value?: string
-  onValueChange?: (value?: string | null) => void
+  onValueChange?: (value: string) => void
   placeholder?: string
   disabled?: boolean
   className?: string
@@ -37,14 +39,15 @@ export function UserSelect({
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data: users = [], isLoading } = useUserList()
-  console.log('users', users)
-  const selectedUser = users.find(
-    (user: Tables<'profiles'>) => user.id === value
-  )
+  const { data: users = [], isLoading } = useUserList({
+    search: searchTerm,
+  })
 
+  const selectedUser = users.find((user: UserProfile) => user.id === value)
+  console.log('value', value)
   const handleSelect = (userId: string) => {
-    onValueChange?.(userId === '' ? null : userId)
+    console.log('userId', userId)
+    onValueChange?.(userId)
     setOpen(false)
   }
 
@@ -62,12 +65,14 @@ export function UserSelect({
             >
               {selectedUser ? (
                 <div className="flex items-center gap-2">
-                  <Package className="w-4 h-4 text-muted-foreground" />
+                  <User className="w-4 h-4 text-muted-foreground" />
                   <div className="flex items-center gap-1">
-                    <span>{selectedUser?.first_name}</span>
-                    {selectedUser?.last_name && (
+                    <span>
+                      {selectedUser.first_name} {selectedUser.last_name}
+                    </span>
+                    {selectedUser.email && (
                       <span className="text-xs text-muted-foreground">
-                        ({selectedUser?.last_name})
+                        ({selectedUser.email})
                       </span>
                     )}
                   </div>
@@ -92,19 +97,21 @@ export function UserSelect({
                 {isLoading ? 'Cargando...' : 'No se encontraron usuarios.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {users.map((user: Tables<'profiles'>) => (
+                {users.map((user: UserProfile) => (
                   <CommandItem
                     key={user.id}
-                    value={user.id}
+                    value={`${user.first_name} ${user.last_name}`}
                     onSelect={() => handleSelect(user.id)}
                   >
                     <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-muted-foreground" />
+                      <User className="w-4 h-4 text-muted-foreground" />
                       <div className="flex flex-col">
-                        <span className="font-medium">{user.first_name}</span>
-                        {user.last_name && (
+                        <span className="font-medium">
+                          {user.first_name} {user.last_name}
+                        </span>
+                        {user.email && (
                           <span className="text-sm text-muted-foreground">
-                            {user.last_name}
+                            {user.email}
                           </span>
                         )}
                       </div>

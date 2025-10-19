@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Check, ChevronsUpDown, X, Package, Plus, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
@@ -67,6 +67,17 @@ export function ProductSelect({
     onValueChange?.(productId)
     setOpen(false)
   }
+
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setOpen((open) => !open)
+      }
+    }
+    document.addEventListener('keydown', down)
+    return () => document.removeEventListener('keydown', down)
+  }, [])
 
   return (
     <>

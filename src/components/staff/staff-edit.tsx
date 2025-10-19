@@ -37,7 +37,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     defaultValues: {
       first_name: staff.first_name,
       last_name: staff.last_name,
-      email: staff.email,
+      email: staff.email || undefined,
       phone: staff.phone,
       license_number: staff.license_number,
       user_id: staff.user_id,
@@ -50,7 +50,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
       form.reset({
         first_name: staff.first_name,
         last_name: staff.last_name,
-        email: staff.email,
+        email: staff.email || undefined,
         phone: staff.phone,
         license_number: staff.license_number,
         user_id: staff.user_id,
