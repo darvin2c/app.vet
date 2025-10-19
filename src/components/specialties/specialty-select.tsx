@@ -33,7 +33,7 @@ type Specialty = Tables<'specialties'>
 
 interface SpecialtySelectProps {
   value?: string[]
-  onValueChange: (value: string[]) => void
+  onValueChange?: (value: string[]) => void
   placeholder?: string
   disabled?: boolean
   multiple?: boolean
@@ -84,6 +84,7 @@ export function SpecialtySelect({
   )
 
   const handleSelect = (specialtyId: string) => {
+    if (!onValueChange) return
     if (multiple) {
       const newValue = value.includes(specialtyId)
         ? value.filter((id) => id !== specialtyId)
@@ -91,8 +92,8 @@ export function SpecialtySelect({
       onValueChange(newValue)
     } else {
       onValueChange(value.includes(specialtyId) ? [] : [specialtyId])
-      setOpen(false)
     }
+    setOpen(false)
   }
 
   const displayText = () => {
@@ -172,7 +173,7 @@ export function SpecialtySelect({
         {selectedSpecialties.length > 0 && (
           <InputGroupButton
             variant="ghost"
-            onClick={() => onValueChange([])}
+            onClick={() => onValueChange?.([])}
             disabled={disabled}
             aria-label="Limpiar selección"
             className="h-full"

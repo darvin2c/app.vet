@@ -26,7 +26,7 @@ type Supplier = Database['public']['Tables']['suppliers']['Row']
 
 interface SupplierSelectProps {
   value?: string
-  onValueChange: (value: string) => void
+  onValueChange?: (value: string) => void
   placeholder?: string
   disabled?: boolean
   className?: string
@@ -128,7 +128,7 @@ export function SupplierSelect({
         {selectedSupplier && (
           <InputGroupButton
             variant="ghost"
-            onClick={() => onValueChange('')}
+            onClick={() => onValueChange?.('')}
             disabled={disabled}
             aria-label="Limpiar selección"
             className="h-full"
