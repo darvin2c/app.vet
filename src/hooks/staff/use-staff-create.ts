@@ -10,7 +10,7 @@ export default function useCreateStaff() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: CreateStaffSchema) => {
+    mutationFn: async (data: Omit<TablesInsert<'staff'>, 'tenant_id'>) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
@@ -32,7 +32,7 @@ export default function useCreateStaff() {
       return staff
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['staff'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'staff'] })
       toast.success('Miembro del staff creado exitosamente')
     },
     onError: (error) => {

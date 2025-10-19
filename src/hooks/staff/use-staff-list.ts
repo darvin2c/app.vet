@@ -10,7 +10,7 @@ export default function useStaffList(filters?: StaffFilters) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['staff-list', currentTenant?.id, filters],
+    queryKey: [currentTenant?.id, 'staff', filters],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')

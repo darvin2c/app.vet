@@ -16,11 +16,7 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar-right'
 import { cn } from '@/lib/utils'
-import {
-  navigationGroups,
-  type NavItem,
-  type NavGroup,
-} from './reference-navigation'
+import { navigationGroups } from './reference-navigation'
 
 export function ReferenceSidebar({
   children,

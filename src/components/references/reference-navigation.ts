@@ -1,4 +1,12 @@
-import { Stethoscope, Calendar, Package, Ruler, LucideIcon } from 'lucide-react'
+import {
+  Stethoscope,
+  Calendar,
+  Package,
+  Ruler,
+  LucideIcon,
+  Briefcase,
+  Dna,
+} from 'lucide-react'
 
 export interface NavItem {
   title: string
@@ -44,8 +52,14 @@ export const navigationGroups: NavGroup[] = [
       {
         title: 'Especies',
         href: '/references/species',
-        icon: Ruler,
+        icon: Dna,
         tooltip: 'Definir especies de animales',
+      },
+      {
+        title: 'Staff',
+        href: '/references/staff',
+        icon: Briefcase,
+        tooltip: 'Gestionar personal del veterinario',
       },
     ],
   },

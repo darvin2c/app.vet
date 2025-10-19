@@ -83,9 +83,7 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
               <div>
                 <CardTitle className="text-lg">Entrenamiento</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">
-                    Entrenamiento
-                  </Badge>
+                  <Badge variant="outline">Entrenamiento</Badge>
                 </div>
               </div>
               <TrainingActions training={training} />

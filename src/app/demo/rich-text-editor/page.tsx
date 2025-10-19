@@ -17,7 +17,12 @@ import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Eye, Code2, FileText } from 'lucide-react'
 import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
-import { Field, FieldContent, FieldLabel, FieldError } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldLabel,
+  FieldError,
+} from '@/components/ui/field'
 
 // Schema para el formulario de ejemplo
 const demoSchema = z.object({
@@ -29,7 +34,9 @@ type DemoFormData = z.infer<typeof demoSchema>
 
 export default function RichMinimalEditorDemo() {
   const [basicValue, setBasicValue] = useState('')
-  const [disabledValue, setDisabledValue] = useState('<p>Este contenido está deshabilitado</p>')
+  const [disabledValue, setDisabledValue] = useState(
+    '<p>Este contenido está deshabilitado</p>'
+  )
   const [formResult, setFormResult] = useState<DemoFormData | null>(null)
 
   // Configuración del formulario
@@ -58,7 +65,8 @@ export default function RichMinimalEditorDemo() {
           </Button>
           <h1 className="text-3xl font-bold mb-2">Rich Minimal Editor</h1>
           <p className="text-muted-foreground">
-            Editor de texto enriquecido minimalista con toolbar flotante que aparece solo al seleccionar texto
+            Editor de texto enriquecido minimalista con toolbar flotante que
+            aparece solo al seleccionar texto
           </p>
         </div>
 
@@ -82,7 +90,7 @@ export default function RichMinimalEditorDemo() {
                 placeholder="Escribe algo y selecciona texto para ver la toolbar..."
               />
             </div>
-            
+
             {basicValue && (
               <div className="space-y-2">
                 <label className="text-sm font-medium">Contenido HTML:</label>
@@ -101,13 +109,13 @@ export default function RichMinimalEditorDemo() {
               <FileText className="h-5 w-5" />
               <CardTitle>Estado Deshabilitado</CardTitle>
             </div>
-            <CardDescription>
-              Editor en modo solo lectura
-            </CardDescription>
+            <CardDescription>Editor en modo solo lectura</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Editor Deshabilitado:</label>
+              <label className="text-sm font-medium">
+                Editor Deshabilitado:
+              </label>
               <RichMinimalEditor
                 value={disabledValue}
                 onChange={setDisabledValue}
@@ -131,9 +139,14 @@ export default function RichMinimalEditorDemo() {
           </CardHeader>
           <CardContent className="space-y-6">
             <FormProvider {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
                 <Field>
-                  <FieldLabel htmlFor="content">Contenido Principal *</FieldLabel>
+                  <FieldLabel htmlFor="content">
+                    Contenido Principal *
+                  </FieldLabel>
                   <FieldContent>
                     <RichMinimalEditor
                       value={form.watch('content')}
@@ -145,7 +158,9 @@ export default function RichMinimalEditorDemo() {
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="description">Descripción Adicional</FieldLabel>
+                  <FieldLabel htmlFor="description">
+                    Descripción Adicional
+                  </FieldLabel>
                   <FieldContent>
                     <RichMinimalEditor
                       value={form.watch('description') || ''}
@@ -158,8 +173,8 @@ export default function RichMinimalEditorDemo() {
 
                 <div className="flex gap-2">
                   <Button type="submit">Enviar Formulario</Button>
-                  <Button 
-                    type="button" 
+                  <Button
+                    type="button"
                     variant="outline"
                     onClick={() => form.reset()}
                   >
@@ -171,7 +186,9 @@ export default function RichMinimalEditorDemo() {
 
             {formResult && (
               <div className="space-y-2">
-                <label className="text-sm font-medium">Resultado del Formulario:</label>
+                <label className="text-sm font-medium">
+                  Resultado del Formulario:
+                </label>
                 <div className="p-4 bg-muted rounded-md">
                   <pre className="text-sm overflow-auto">
                     {JSON.stringify(formResult, null, 2)}
@@ -197,19 +214,25 @@ export default function RichMinimalEditorDemo() {
               <div className="grid gap-4">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg">
                   <div>
-                    <Badge variant="outline" className="mb-2">value</Badge>
+                    <Badge variant="outline" className="mb-2">
+                      value
+                    </Badge>
                     <p className="text-sm text-muted-foreground">
                       Contenido HTML del editor
                     </p>
                   </div>
                   <div>
-                    <Badge variant="outline" className="mb-2">onChange</Badge>
+                    <Badge variant="outline" className="mb-2">
+                      onChange
+                    </Badge>
                     <p className="text-sm text-muted-foreground">
                       Función que se ejecuta al cambiar el contenido
                     </p>
                   </div>
                   <div>
-                    <Badge variant="outline" className="mb-2">placeholder</Badge>
+                    <Badge variant="outline" className="mb-2">
+                      placeholder
+                    </Badge>
                     <p className="text-sm text-muted-foreground">
                       Texto de placeholder cuando está vacío
                     </p>
@@ -217,13 +240,17 @@ export default function RichMinimalEditorDemo() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 border rounded-lg">
                   <div>
-                    <Badge variant="outline" className="mb-2">disabled</Badge>
+                    <Badge variant="outline" className="mb-2">
+                      disabled
+                    </Badge>
                     <p className="text-sm text-muted-foreground">
                       Deshabilita la edición (modo solo lectura)
                     </p>
                   </div>
                   <div>
-                    <Badge variant="outline" className="mb-2">className</Badge>
+                    <Badge variant="outline" className="mb-2">
+                      className
+                    </Badge>
                     <p className="text-sm text-muted-foreground">
                       Clases CSS adicionales para el contenedor
                     </p>
@@ -271,7 +298,7 @@ export default function RichMinimalEditorDemo() {
               <h3 className="text-lg font-semibold">Ejemplo de Uso</h3>
               <div className="p-4 bg-muted rounded-lg">
                 <pre className="text-sm overflow-auto">
-{`import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
+                  {`import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
 
 function MyComponent() {
   const [content, setContent] = useState('')

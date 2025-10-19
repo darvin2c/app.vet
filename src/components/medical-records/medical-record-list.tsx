@@ -121,15 +121,15 @@ export function MedicalRecordList({
               status === 'completed'
                 ? 'default'
                 : status === 'draft'
-                ? 'secondary'
-                : 'outline'
+                  ? 'secondary'
+                  : 'outline'
             }
           >
             {status === 'completed'
               ? 'Completado'
               : status === 'draft'
-              ? 'Borrador'
-              : 'Cancelado'}
+                ? 'Borrador'
+                : 'Cancelado'}
           </Badge>
         )
       },
@@ -149,9 +149,7 @@ export function MedicalRecordList({
       header: 'Veterinario',
       cell: ({ row }) => {
         const staff = row.original.staff
-        return staff
-          ? staff.full_name
-          : 'Sin asignar'
+        return staff ? staff.full_name : 'Sin asignar'
       },
     },
     {
@@ -228,9 +226,7 @@ export function MedicalRecordList({
                 {recordType?.icon}
                 {recordType?.label || record.record_type}
               </CardTitle>
-              <Badge>
-                {recordType?.label || record.record_type}
-              </Badge>
+              <Badge>{recordType?.label || record.record_type}</Badge>
             </div>
           </CardHeader>
           <CardContent>
@@ -249,9 +245,7 @@ export function MedicalRecordList({
               </div>
               <div>
                 <span className="font-medium">Veterinario: </span>
-                {record.staff
-                  ? record.staff.full_name
-                  : 'Sin asignar'}
+                {record.staff ? record.staff.full_name : 'Sin asignar'}
               </div>
               {record.notes && (
                 <div>
@@ -291,13 +285,10 @@ export function MedicalRecordList({
                         locale: es,
                       })
                     : 'Sin fecha'}
-                  {record.staff &&
-                    ` • ${record.staff.full_name}`}
+                  {record.staff && ` • ${record.staff.full_name}`}
                 </ItemDescription>
               </div>
-              <Badge>
-                {recordType?.label || record.record_type}
-              </Badge>
+              <Badge>{recordType?.label || record.record_type}</Badge>
             </div>
           </ItemContent>
           <ItemActions>
@@ -345,7 +336,10 @@ export function MedicalRecordList({
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="medical-records" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="medical-records"
+        />
       </div>
 
       {viewMode === 'table' && (

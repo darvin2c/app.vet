@@ -41,7 +41,13 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { ChevronLeft, ChevronRight, FileText, CalendarDays, User } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  CalendarDays,
+  User,
+} from 'lucide-react'
 import { MedicalRecordActions } from '../medical-records/medical-record-actions'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -97,8 +103,10 @@ export function PetMedicalRecordsList({
         recordType?.label || record.record_type,
         record.notes || '',
         record.created_by || '',
-      ].join(' ').toLowerCase()
-      
+      ]
+        .join(' ')
+        .toLowerCase()
+
       if (!searchableText.includes(searchTerm)) {
         return false
       }
@@ -112,7 +120,9 @@ export function PetMedicalRecordsList({
           return fieldValue === filter.value
         }
         if (filter.operator === 'contains') {
-          return String(fieldValue).toLowerCase().includes(String(filter.value).toLowerCase())
+          return String(fieldValue)
+            .toLowerCase()
+            .includes(String(filter.value).toLowerCase())
         }
         return true
       })
@@ -146,15 +156,15 @@ export function PetMedicalRecordsList({
               status === 'completed'
                 ? 'default'
                 : status === 'draft'
-                ? 'secondary'
-                : 'outline'
+                  ? 'secondary'
+                  : 'outline'
             }
           >
             {status === 'completed'
               ? 'Completado'
               : status === 'draft'
-              ? 'Borrador'
-              : 'Cancelado'}
+                ? 'Borrador'
+                : 'Cancelado'}
           </Badge>
         )
       },
@@ -214,13 +224,18 @@ export function PetMedicalRecordsList({
   const renderTableHeader = useCallback(
     (headerGroup: HeaderGroup<PetMedicalRecord>) => (
       <TableRow key={headerGroup.id}>
-        {headerGroup.headers.map((header: Header<PetMedicalRecord, unknown>) => (
-          <TableHead key={header.id}>
-            {header.isPlaceholder
-              ? null
-              : flexRender(header.column.columnDef.header, header.getContext())}
-          </TableHead>
-        ))}
+        {headerGroup.headers.map(
+          (header: Header<PetMedicalRecord, unknown>) => (
+            <TableHead key={header.id}>
+              {header.isPlaceholder
+                ? null
+                : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
+            </TableHead>
+          )
+        )}
       </TableRow>
     ),
     []
@@ -250,9 +265,7 @@ export function PetMedicalRecordsList({
                 {recordType?.icon}
                 {recordType?.label || record.record_type}
               </CardTitle>
-              <Badge>
-                {recordType?.label || record.record_type}
-              </Badge>
+              <Badge>{recordType?.label || record.record_type}</Badge>
             </div>
           </CardHeader>
           <CardContent>
@@ -326,9 +339,7 @@ export function PetMedicalRecordsList({
                   {record.notes && ` • ${record.notes.substring(0, 50)}...`}
                 </ItemDescription>
               </div>
-              <Badge>
-                {recordType?.label || record.record_type}
-              </Badge>
+              <Badge>{recordType?.label || record.record_type}</Badge>
             </div>
           </ItemContent>
           <ItemActions>
@@ -375,7 +386,10 @@ export function PetMedicalRecordsList({
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="pet-medical-records" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="pet-medical-records"
+        />
       </div>
 
       {viewMode === 'table' && (

@@ -13,7 +13,7 @@ import {
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'

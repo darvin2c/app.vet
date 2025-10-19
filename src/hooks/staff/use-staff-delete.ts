@@ -13,6 +13,7 @@ export default function useDeleteStaff() {
         throw new Error('No hay tenant seleccionado')
       }
 
+      // Eliminar el staff
       const { error } = await supabase
         .from('staff')
         .delete()
@@ -26,7 +27,7 @@ export default function useDeleteStaff() {
       return id
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['staff'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'staff'] })
       toast.success('Miembro del staff eliminado exitosamente')
     },
     onError: (error) => {

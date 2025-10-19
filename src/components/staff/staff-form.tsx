@@ -4,19 +4,11 @@ import { useFormContext } from 'react-hook-form'
 import { CreateStaffSchema, UpdateStaffSchema } from '@/schemas/staff.schema'
 import { Input } from '@/components/ui/input'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   Field,
   FieldContent,
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
-import { SpecialtySelect } from '@/components/specialties/specialty-select'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function StaffForm() {
@@ -66,9 +58,7 @@ export function StaffForm() {
             <FieldError errors={[errors.phone]} />
           </FieldContent>
         </Field>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
           <FieldLabel htmlFor="license_number">Número de Licencia</FieldLabel>
           <FieldContent>
@@ -81,6 +71,18 @@ export function StaffForm() {
           </FieldContent>
         </Field>
       </div>
+
+      <Field>
+        <FieldLabel htmlFor="user_id">ID de Usuario *</FieldLabel>
+        <FieldContent>
+          <Input
+            id="user_id"
+            placeholder="Ingresa el ID de usuario"
+            {...form.register('user_id')}
+          />
+          <FieldError errors={[errors.user_id]} />
+        </FieldContent>
+      </Field>
 
       <IsActiveFormField />
     </div>

@@ -171,9 +171,7 @@ export function MedicalRecordQuickActions({
                   locale: es,
                 })}
               </span>
-              <Badge>
-                {getTypeLabel(medicalRecord.record_type)}
-              </Badge>
+              <Badge>{getTypeLabel(medicalRecord.record_type)}</Badge>
             </div>
           </div>
         </div>

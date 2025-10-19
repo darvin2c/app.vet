@@ -10,13 +10,18 @@ export default function useStaffUpdate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: TablesUpdate<'staff'> & { id: string }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: Omit<TablesUpdate<'staff'>, 'tenant_id'>
+    }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const { id, ...updateFields } = data
-      const updateData: TablesUpdate<'staff'> = removeUndefined(updateFields)
+      const updateData: TablesUpdate<'staff'> = removeUndefined(data)
 
       // Actualizar datos del staff
       const { data: staff, error } = await supabase
@@ -34,7 +39,7 @@ export default function useStaffUpdate() {
       return staff
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['staff'] })
+      queryClient.invalidateQueries({ queryKey: [currentTenant?.id, 'staff'] })
       toast.success('Miembro del staff actualizado exitosamente')
     },
     onError: (error) => {

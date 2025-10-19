@@ -83,9 +83,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
               <div>
                 <CardTitle className="text-lg">Cirugía</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">
-                    Cirugía
-                  </Badge>
+                  <Badge variant="outline">Cirugía</Badge>
                 </div>
                 <Badge variant="secondary">
                   {surgery.clinical_records?.record_type || 'Cirugía'}

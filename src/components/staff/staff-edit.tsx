@@ -12,7 +12,7 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
@@ -58,7 +58,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const onSubmit = async (data: UpdateStaffSchema) => {
     await mutation.mutateAsync({
       id: staff.id,
-      ...data,
+      data,
     })
     onOpenChange(false)
   }

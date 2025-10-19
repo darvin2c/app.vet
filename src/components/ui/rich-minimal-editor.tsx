@@ -7,15 +7,15 @@ import Link from '@tiptap/extension-link'
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { 
-  Bold, 
-  Italic, 
-  Underline, 
-  List, 
-  ListOrdered, 
+import {
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
   Link as LinkIcon,
   Undo,
-  Redo
+  Redo,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
 
@@ -32,59 +32,68 @@ export function RichMinimalEditor({
   onChange,
   placeholder = 'Escribe algo...',
   disabled = false,
-  className
+  className,
 }: RichMinimalEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
 
   // Estabilizar la configuración de extensiones con useMemo
-  const extensions = useMemo(() => [
-    StarterKit.configure({
-      paragraph: {
-        HTMLAttributes: {
-          class: 'leading-relaxed min-h-[1.5em] mb-2'
-        }
-      },
-      bulletList: {
-        HTMLAttributes: {
-          class: 'list-disc list-outside ml-6 space-y-1 mb-2'
+  const extensions = useMemo(
+    () => [
+      StarterKit.configure({
+        paragraph: {
+          HTMLAttributes: {
+            class: 'leading-relaxed min-h-[1.5em] mb-2',
+          },
         },
-        keepMarks: false,
-        keepAttributes: false
-      },
-      orderedList: {
-        HTMLAttributes: {
-          class: 'list-decimal list-outside ml-6 space-y-1 mb-2'
+        bulletList: {
+          HTMLAttributes: {
+            class: 'list-disc list-outside ml-6 space-y-1 mb-2',
+          },
+          keepMarks: false,
+          keepAttributes: false,
         },
-        keepMarks: false,
-        keepAttributes: false
-      },
-      listItem: {
+        orderedList: {
+          HTMLAttributes: {
+            class: 'list-decimal list-outside ml-6 space-y-1 mb-2',
+          },
+          keepMarks: false,
+          keepAttributes: false,
+        },
+        listItem: {
+          HTMLAttributes: {
+            class: 'leading-relaxed mb-1',
+          },
+        },
+      }),
+      Link.configure({
+        openOnClick: false,
         HTMLAttributes: {
-          class: 'leading-relaxed mb-1'
-        }
-      }
-    }),
-    Link.configure({
-      openOnClick: false,
-      HTMLAttributes: {
-        class: 'text-blue-600 hover:text-blue-800 underline cursor-pointer'
-      }
-    })
-  ], [])
+          class: 'text-blue-600 hover:text-blue-800 underline cursor-pointer',
+        },
+      }),
+    ],
+    []
+  )
 
   // Usar useCallback para la función onUpdate
-  const handleUpdate = useCallback(({ editor }: { editor: any }) => {
-    const html = editor.getHTML()
-    onChange?.(html)
-  }, [onChange])
+  const handleUpdate = useCallback(
+    ({ editor }: { editor: any }) => {
+      const html = editor.getHTML()
+      onChange?.(html)
+    },
+    [onChange]
+  )
 
-  const editor = useEditor({
-    extensions,
-    content: value,
-    immediatelyRender: false,
-    editable: !disabled,
-    onUpdate: handleUpdate
-  }, [extensions, disabled, handleUpdate])
+  const editor = useEditor(
+    {
+      extensions,
+      content: value,
+      immediatelyRender: false,
+      editable: !disabled,
+      onUpdate: handleUpdate,
+    },
+    [extensions, disabled, handleUpdate]
+  )
 
   useEffect(() => {
     setIsMounted(true)
@@ -133,9 +142,9 @@ export function RichMinimalEditor({
       {editor && (
         <BubbleMenu
           editor={editor}
-          options={{ 
+          options={{
             placement: 'top',
-            offset: 10
+            offset: 10,
           }}
           className="flex items-center gap-1 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
         >
@@ -150,7 +159,7 @@ export function RichMinimalEditor({
           >
             <Bold className="h-4 w-4" />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -162,7 +171,7 @@ export function RichMinimalEditor({
           >
             <Italic className="h-4 w-4" />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -174,9 +183,9 @@ export function RichMinimalEditor({
           >
             <Underline className="h-4 w-4" />
           </Button>
-          
+
           <div className="w-px h-6 bg-gray-200 mx-1" />
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -188,7 +197,7 @@ export function RichMinimalEditor({
           >
             <List className="h-4 w-4" />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -200,7 +209,7 @@ export function RichMinimalEditor({
           >
             <ListOrdered className="h-4 w-4" />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -212,9 +221,9 @@ export function RichMinimalEditor({
           >
             <LinkIcon className="h-4 w-4" />
           </Button>
-          
+
           <div className="w-px h-6 bg-gray-200 mx-1" />
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -224,7 +233,7 @@ export function RichMinimalEditor({
           >
             <Undo className="h-4 w-4" />
           </Button>
-          
+
           <Button
             variant="ghost"
             size="sm"
@@ -236,7 +245,7 @@ export function RichMinimalEditor({
           </Button>
         </BubbleMenu>
       )}
-      
+
       <EditorContent
         editor={editor}
         key="editor-content"

@@ -83,9 +83,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
               <div>
                 <CardTitle className="text-lg">Vacuna</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
-                  <Badge variant="outline">
-                    Vacunación
-                  </Badge>
+                  <Badge variant="outline">Vacunación</Badge>
                 </div>
               </div>
               <VaccinationActions vaccination={vaccination} />

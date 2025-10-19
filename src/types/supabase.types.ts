@@ -1119,9 +1119,10 @@ export type Database = {
           created_at: string
           created_by: string | null
           email: string | null
-          full_name: string
+          first_name: string
           id: string
           is_active: boolean
+          last_name: string | null
           license_number: string | null
           phone: string | null
           tenant_id: string
@@ -1133,9 +1134,10 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
-          full_name: string
+          first_name: string
           id?: string
           is_active?: boolean
+          last_name?: string | null
           license_number?: string | null
           phone?: string | null
           tenant_id: string
@@ -1147,9 +1149,10 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           email?: string | null
-          full_name?: string
+          first_name?: string
           id?: string
           is_active?: boolean
+          last_name?: string | null
           license_number?: string | null
           phone?: string | null
           tenant_id?: string
