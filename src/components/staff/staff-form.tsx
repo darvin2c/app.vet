@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import { CreateStaffSchema, UpdateStaffSchema } from '@/schemas/staff.schema'
 import { Input } from '@/components/ui/input'
 import {
@@ -15,6 +15,7 @@ import { UserSelect } from '../users/user-select'
 export function StaffForm() {
   const form = useFormContext<CreateStaffSchema | UpdateStaffSchema>()
   const {
+    control,
     formState: { errors },
   } = form
 
@@ -82,9 +83,19 @@ export function StaffForm() {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="user_id">ID de Usuario</FieldLabel>
+        <FieldLabel htmlFor="user_id">Usuario</FieldLabel>
         <FieldContent>
-          <UserSelect />
+          <Controller
+            name="user_id"
+            control={control}
+            render={({ field }) => (
+              <UserSelect
+                value={field.value || ''}
+                onValueChange={field.onChange}
+                placeholder="Seleccionar usuario..."
+              />
+            )}
+          />
           <FieldError errors={[errors.user_id]} />
         </FieldContent>
       </Field>
