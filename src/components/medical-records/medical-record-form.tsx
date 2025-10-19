@@ -5,15 +5,9 @@ import {
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
+import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
+import { StaffSelect } from '@/components/staff/staff-select'
 import { MedicalRecordFormData } from '@/schemas/medical-record.schema'
 import { MedicalRecordTypeGrid } from './medical-record-type-grid'
 
@@ -58,11 +52,23 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
+        <FieldLabel htmlFor="vet_id">Veterinario</FieldLabel>
+        <FieldContent>
+          <StaffSelect
+            value={watch('vet_id') || ''}
+            onValueChange={(value) => setValue('vet_id', value)}
+            placeholder="Seleccionar veterinario..."
+          />
+          <FieldError errors={[errors.vet_id]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
         <FieldLabel htmlFor="reason">Motivo de la Consulta</FieldLabel>
         <FieldContent>
-          <Input
-            id="reason"
-            {...register('reason')}
+          <RichMinimalEditor
+            value={watch('reason') || ''}
+            onChange={(value) => setValue('reason', value)}
             placeholder="Motivo de la consulta"
           />
           <FieldError errors={[errors.reason]} />
@@ -72,9 +78,9 @@ export function MedicalRecordForm() {
       <Field>
         <FieldLabel htmlFor="diagnosis">Diagnóstico</FieldLabel>
         <FieldContent>
-          <Input
-            id="diagnosis"
-            {...register('diagnosis')}
+          <RichMinimalEditor
+            value={watch('diagnosis') || ''}
+            onChange={(value) => setValue('diagnosis', value)}
             placeholder="Diagnóstico del paciente"
           />
           <FieldError errors={[errors.diagnosis]} />
@@ -82,23 +88,11 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="vet_id">Veterinario</FieldLabel>
-        <FieldContent>
-          <Input
-            id="vet_id"
-            {...register('vet_id')}
-            placeholder="ID del veterinario"
-          />
-          <FieldError errors={[errors.vet_id]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
         <FieldLabel htmlFor="notes">Notas</FieldLabel>
         <FieldContent>
-          <Input
-            id="notes"
-            {...register('notes')}
+          <RichMinimalEditor
+            value={watch('notes') || ''}
+            onChange={(value) => setValue('notes', value)}
             placeholder="Notas adicionales"
           />
           <FieldError errors={[errors.notes]} />
