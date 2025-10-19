@@ -2,7 +2,6 @@
 
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import {
   Drawer,
   DrawerContent,
@@ -36,26 +35,21 @@ export function MedicalRecordCreate({
     resolver: zodResolver(MedicalRecordSchema),
     defaultValues: {
       pet_id: petId,
-      type: 'vaccination',
-      status: 'draft',
-      date: new Date().toISOString().split('T')[0],
+      record_type: 'consultation',
+      record_date: new Date().toISOString().split('T')[0],
+      reason: '',
+      diagnosis: '',
       vet_id: '',
       notes: '',
     },
   })
 
   const onSubmit = async (data: MedicalRecordFormData) => {
-    try {
-      await createMedicalRecord.mutateAsync({
-        ...data,
-        pet_id: petId || data.pet_id,
-      })
-      toast.success('Registro médico creado exitosamente')
-      form.reset()
-      onOpenChange(false)
-    } catch (error) {
-      toast.error('Error al crear el registro médico')
-    }
+    await createMedicalRecord.mutateAsync({
+      ...data,
+      pet_id: petId || data.pet_id,
+    })
+    onOpenChange(false)
   }
 
   return (
@@ -70,7 +64,11 @@ export function MedicalRecordCreate({
 
         <div className="px-4">
           <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form
+              id="medical-record-create-form"
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-4"
+            >
               <MedicalRecordForm />
             </form>
           </FormProvider>
@@ -82,7 +80,7 @@ export function MedicalRecordCreate({
             form="medical-record-create-form"
             isLoading={createMedicalRecord.isPending}
           >
-            Registrar Registro Médico
+            Crear Registro Médico
           </ResponsiveButton>
           <ResponsiveButton
             variant="outline"

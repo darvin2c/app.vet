@@ -84,11 +84,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <CardTitle className="text-lg">Cirugía</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {surgery.clinical_records?.status === 'completed'
-                      ? 'Completada'
-                      : surgery.clinical_records?.status === 'cancelled'
-                        ? 'Cancelada'
-                        : 'Programada'}
+                    Cirugía
                   </Badge>
                 </div>
                 <Badge variant="secondary">

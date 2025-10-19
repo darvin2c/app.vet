@@ -22,7 +22,7 @@ import {
   Clock,
 } from 'lucide-react'
 
-import { Tables } from '@/types/supabase.types'
+import { Tables, Enums } from '@/types/supabase.types'
 
 interface MedicalRecordDetailProps {
   medicalRecord: Tables<'clinical_records'>
@@ -63,21 +63,16 @@ export function MedicalRecordDetail({
     }
   }
 
-  const getMedicalRecordTypeText = (type: string) => {
+  const getMedicalRecordTypeText = (type: Enums<'record_type'>) => {
     switch (type) {
       case 'vaccination':
         return 'Vacunación'
       case 'surgery':
         return 'Cirugía'
-      case 'grooming':
-        return 'Peluquería'
-
+      case 'consultation':
+        return 'Consulta'
       case 'deworming':
         return 'Desparasitación'
-      case 'boarding':
-        return 'Hospedaje'
-      case 'training':
-        return 'Entrenamiento'
       default:
         return type
     }
@@ -94,8 +89,8 @@ export function MedicalRecordDetail({
                 <CardTitle className="text-xl">
                   {getMedicalRecordTypeText(medicalRecord.record_type)}
                 </CardTitle>
-                <Badge className={getStatusColor(medicalRecord.status)}>
-                  {getStatusText(medicalRecord.status)}
+                <Badge>
+                  {getMedicalRecordTypeText(medicalRecord.record_type)}
                 </Badge>
               </div>
               <div className="flex items-center gap-4 text-sm text-muted-foreground">

@@ -1,7 +1,8 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Tables, TablesInsert } from '@/types/supabase.types'
+import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import { toast } from 'sonner'
 
 export function useMedicalRecordCreate() {
   const queryClient = useQueryClient()
@@ -29,14 +30,21 @@ export function useMedicalRecordCreate() {
         throw error
       }
 
-      return medicalRecord as Tables<'clinical_records'>
+      return medicalRecord
     },
     onSuccess: () => {
+      toast.success('Registro médico creado exitosamente')
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'clinical_records'],
       })
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'pet-medical-records'],
+      })
+    },
+    onError: (error) => {
+      console.error('Error al crear el registro médico', error)
+      toast.error('Error al crear el registro médico', {
+        description: error.message,
       })
     },
   })

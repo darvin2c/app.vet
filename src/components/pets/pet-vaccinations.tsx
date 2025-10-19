@@ -84,11 +84,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CardTitle className="text-lg">Vacuna</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {vaccination.clinical_records?.status === 'completed'
-                      ? 'Completado'
-                      : vaccination.clinical_records?.status === 'draft'
-                        ? 'Borrador'
-                        : 'Cancelada'}
+                    Vacunación
                   </Badge>
                 </div>
               </div>

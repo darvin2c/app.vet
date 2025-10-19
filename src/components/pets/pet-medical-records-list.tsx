@@ -95,7 +95,6 @@ export function PetMedicalRecordsList({
       const recordType = getRecordType(record.record_type)
       const searchableText = [
         recordType?.label || record.record_type,
-        record.status,
         record.notes || '',
         record.created_by || '',
       ].join(' ').toLowerCase()
@@ -251,20 +250,8 @@ export function PetMedicalRecordsList({
                 {recordType?.icon}
                 {recordType?.label || record.record_type}
               </CardTitle>
-              <Badge
-                variant={
-                  record.status === 'completed'
-                    ? 'default'
-                    : record.status === 'draft'
-                    ? 'secondary'
-                    : 'outline'
-                }
-              >
-                {record.status === 'completed'
-                  ? 'Completado'
-                  : record.status === 'draft'
-                  ? 'Borrador'
-                  : 'Cancelado'}
+              <Badge>
+                {recordType?.label || record.record_type}
               </Badge>
             </div>
           </CardHeader>
@@ -339,20 +326,8 @@ export function PetMedicalRecordsList({
                   {record.notes && ` • ${record.notes.substring(0, 50)}...`}
                 </ItemDescription>
               </div>
-              <Badge
-                variant={
-                  record.status === 'completed'
-                    ? 'default'
-                    : record.status === 'draft'
-                    ? 'secondary'
-                    : 'outline'
-                }
-              >
-                {record.status === 'completed'
-                  ? 'Completado'
-                  : record.status === 'draft'
-                  ? 'Borrador'
-                  : 'Cancelado'}
+              <Badge>
+                {recordType?.label || record.record_type}
               </Badge>
             </div>
           </ItemContent>

@@ -41,7 +41,7 @@ export function VaccinationEdit({
       next_due_at: vaccination.next_due_at || '',
       route: vaccination.route || '',
       site: vaccination.site || '',
-      treatment_id: vaccination.treatment_id,
+      clinical_record_id: vaccination.clinical_record_id,
     },
   })
 

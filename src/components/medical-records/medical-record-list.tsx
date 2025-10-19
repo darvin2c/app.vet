@@ -228,20 +228,8 @@ export function MedicalRecordList({
                 {recordType?.icon}
                 {recordType?.label || record.record_type}
               </CardTitle>
-              <Badge
-                variant={
-                  record.status === 'completed'
-                    ? 'default'
-                    : record.status === 'draft'
-                    ? 'secondary'
-                    : 'outline'
-                }
-              >
-                {record.status === 'completed'
-                  ? 'Completado'
-                  : record.status === 'draft'
-                  ? 'Borrador'
-                  : 'Cancelado'}
+              <Badge>
+                {recordType?.label || record.record_type}
               </Badge>
             </div>
           </CardHeader>
@@ -307,20 +295,8 @@ export function MedicalRecordList({
                     ` • ${record.staff.full_name}`}
                 </ItemDescription>
               </div>
-              <Badge
-                variant={
-                  record.status === 'completed'
-                    ? 'default'
-                    : record.status === 'draft'
-                    ? 'secondary'
-                    : 'outline'
-                }
-              >
-                {record.status === 'completed'
-                  ? 'Completado'
-                  : record.status === 'draft'
-                  ? 'Borrador'
-                  : 'Cancelado'}
+              <Badge>
+                {recordType?.label || record.record_type}
               </Badge>
             </div>
           </ItemContent>

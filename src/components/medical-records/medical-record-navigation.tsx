@@ -105,8 +105,8 @@ export function MedicalRecordNavigation({
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Badge variant={getStatusVariant(medicalRecord.status)}>
-                {medicalRecord.status}
+              <Badge>
+                {getTypeLabel(medicalRecord.record_type)}
               </Badge>
               <MedicalRecordActions medicalRecord={medicalRecord} />
             </div>
@@ -166,8 +166,8 @@ export function MedicalRecordNavigation({
                     Estado
                   </label>
                   <div className="mt-1">
-                    <Badge variant={getStatusVariant(medicalRecord.status)}>
-                      {medicalRecord.status}
+                    <Badge>
+                      {getTypeLabel(medicalRecord.record_type)}
                     </Badge>
                   </div>
                 </div>

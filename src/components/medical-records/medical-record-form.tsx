@@ -27,53 +27,57 @@ export function MedicalRecordForm() {
     watch,
     setValue,
   } = useFormContext<MedicalRecordFormData>()
-  const watchedType = watch('type')
-  const watchedStatus = watch('status')
-
+  const watchedType = watch('record_type')
   return (
     <div className="space-y-4">
       <Field>
-        <FieldLabel htmlFor="type">Tipo de Registro Médico</FieldLabel>
+        <FieldLabel htmlFor="record_type">Tipo de Registro Médico</FieldLabel>
         <FieldContent>
           <MedicalRecordTypeGrid
             value={watchedType}
-            onValueChange={(value) => setValue('type', value as any)}
+            onValueChange={(value) => setValue('record_type', value as any)}
           />
-          <FieldError errors={[errors.type]} />
+          <FieldError errors={[errors.record_type]} />
         </FieldContent>
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="status">Estado</FieldLabel>
-        <FieldContent>
-          <Select
-            value={watchedStatus}
-            onValueChange={(value) => setValue('status', value as any)}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Selecciona el estado" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="draft">Borrador</SelectItem>
-              <SelectItem value="completed">Completado</SelectItem>
-              <SelectItem value="cancelled">Cancelado</SelectItem>
-            </SelectContent>
-          </Select>
-          <FieldError errors={[errors.status]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="date">Fecha del Registro</FieldLabel>
+        <FieldLabel htmlFor="record_date">Fecha del Registro</FieldLabel>
         <FieldContent>
           <DatePicker
-            id="date"
-            name="date"
-            value={watch('date')}
-            onChange={(value) => setValue('date', value?.toISOString() || '')}
+            id="record_date"
+            name="record_date"
+            value={watch('record_date')}
+            onChange={(value) =>
+              setValue('record_date', value?.toISOString() || '')
+            }
             hasTime={false}
           />
-          <FieldError errors={[errors.date]} />
+          <FieldError errors={[errors.record_date]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="reason">Motivo de la Consulta</FieldLabel>
+        <FieldContent>
+          <Input
+            id="reason"
+            {...register('reason')}
+            placeholder="Motivo de la consulta"
+          />
+          <FieldError errors={[errors.reason]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="diagnosis">Diagnóstico</FieldLabel>
+        <FieldContent>
+          <Input
+            id="diagnosis"
+            {...register('diagnosis')}
+            placeholder="Diagnóstico del paciente"
+          />
+          <FieldError errors={[errors.diagnosis]} />
         </FieldContent>
       </Field>
 

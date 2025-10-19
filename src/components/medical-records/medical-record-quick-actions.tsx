@@ -100,12 +100,8 @@ export function MedicalRecordQuickActions({
                 <h4 className="font-medium truncate">
                   {getTypeLabel(medicalRecord.record_type)}
                 </h4>
-                <Badge
-                  variant={getStatusVariant(medicalRecord.status)}
-                  className="ml-auto"
-                >
-                  {getStatusIcon(medicalRecord.status)}
-                  <span className="ml-1">{medicalRecord.status}</span>
+                <Badge className="ml-auto">
+                  {getTypeLabel(medicalRecord.record_type)}
                 </Badge>
               </div>
 
@@ -175,9 +171,8 @@ export function MedicalRecordQuickActions({
                   locale: es,
                 })}
               </span>
-              <Badge variant={getStatusVariant(medicalRecord.status)}>
-                {getStatusIcon(medicalRecord.status)}
-                <span className="ml-1">{medicalRecord.status}</span>
+              <Badge>
+                {getTypeLabel(medicalRecord.record_type)}
               </Badge>
             </div>
           </div>
@@ -196,8 +191,8 @@ export function MedicalRecordQuickActions({
                 {getTypeLabel(medicalRecord.record_type)}
               </p>
               <p>
-                <span className="font-medium">Estado:</span>{' '}
-                {medicalRecord.status}
+                <span className="font-medium">Tipo:</span>{' '}
+                {getTypeLabel(medicalRecord.record_type)}
               </p>
               <p>
                 <span className="font-medium">Fecha:</span>{' '}

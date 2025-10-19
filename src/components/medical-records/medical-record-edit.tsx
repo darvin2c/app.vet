@@ -38,9 +38,10 @@ export function MedicalRecordEdit({
     resolver: zodResolver(MedicalRecordSchema),
     defaultValues: {
       pet_id: medicalRecord.pet_id,
-      type: medicalRecord.record_type as MedicalRecordFormData['type'],
-      status: medicalRecord.status,
-      date: medicalRecord.record_date?.split('T')[0] || '',
+      record_type: medicalRecord.record_type,
+      record_date: medicalRecord.record_date?.split('T')[0] || '',
+      reason: medicalRecord.reason || '',
+      diagnosis: medicalRecord.diagnosis || '',
       vet_id: medicalRecord.vet_id || '',
       notes: medicalRecord.notes || '',
     },
@@ -50,9 +51,10 @@ export function MedicalRecordEdit({
     if (medicalRecord) {
       form.reset({
         pet_id: medicalRecord.pet_id,
-        type: medicalRecord.record_type as MedicalRecordFormData['type'],
-        status: medicalRecord.status,
-        date: medicalRecord.record_date?.split('T')[0] || '',
+        record_type: medicalRecord.record_type,
+        record_date: medicalRecord.record_date?.split('T')[0] || '',
+        reason: medicalRecord.reason || '',
+        diagnosis: medicalRecord.diagnosis || '',
         vet_id: medicalRecord.vet_id || '',
         notes: medicalRecord.notes || '',
       })

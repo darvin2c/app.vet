@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import { toast } from 'sonner'
 
 export function useMedicalRecordUpdate() {
   const queryClient = useQueryClient()
@@ -30,11 +31,18 @@ export function useMedicalRecordUpdate() {
       return medicalRecord
     },
     onSuccess: () => {
+      toast.success('Registro médico actualizado exitosamente')
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'clinical_records'],
       })
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'pet-medical-records'],
+      })
+    },
+    onError: (error) => {
+      console.error('Error al actualizar el registro médico', error)
+      toast.error('Error al actualizar el registro médico', {
+        description: error.message,
       })
     },
   })

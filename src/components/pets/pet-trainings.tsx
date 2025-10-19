@@ -84,11 +84,7 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 <CardTitle className="text-lg">Entrenamiento</CardTitle>
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">
-                    {training.clinical_records?.status === 'completed'
-                      ? 'Completado'
-                      : training.clinical_records?.status === 'cancelled'
-                        ? 'Cancelado'
-                        : 'En progreso'}
+                    Entrenamiento
                   </Badge>
                 </div>
               </div>
