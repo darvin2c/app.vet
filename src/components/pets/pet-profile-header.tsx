@@ -12,7 +12,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -26,7 +26,6 @@ import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
 import {
   calculateAge,
-  formatSex,
   getSexIcon,
   getSexColor,
   formatDate,
