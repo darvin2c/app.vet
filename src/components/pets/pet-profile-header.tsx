@@ -1,8 +1,26 @@
-import { ArrowLeft, Edit, Heart, Calendar } from 'lucide-react'
+import {
+  ArrowLeft,
+  MoreVertical,
+  Camera,
+  Activity,
+  FileText,
+  Download,
+  Trash2,
+  Calendar,
+  Edit,
+  Menu,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
@@ -27,46 +45,125 @@ type PetDetail = Tables<'pets'> & {
 
 interface PetProfileHeaderProps {
   pet: PetDetail
+  onMenuClick?: () => void
+  onEdit?: () => void
+  onAddPhoto?: () => void
+  onChangeStatus?: () => void
+  onViewHistory?: () => void
+  onScheduleAppointment?: () => void
+  onGenerateReport?: () => void
+  onDelete?: () => void
 }
 
-export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
+export function PetProfileHeader({
+  pet,
+  onMenuClick,
+  onEdit,
+  onAddPhoto,
+  onChangeStatus,
+  onViewHistory,
+  onScheduleAppointment,
+  onGenerateReport,
+  onDelete,
+}: PetProfileHeaderProps) {
   const router = useRouter()
 
   return (
-    <Card className="mb-6">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
+    <Card className="mb-4 md:mb-6">
+      <CardContent className="p-4 md:p-6">
+        {/* Mobile Header Actions */}
+        <div className="flex items-center justify-between mb-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.back()}
-            className="mb-2"
+            className="p-2 md:px-3"
           >
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Volver
+            <ArrowLeft className="h-4 w-4 md:mr-2" />
+            <span className="hidden md:inline">Volver</span>
           </Button>
-          <Button variant="outline" size="sm">
-            <Edit className="h-4 w-4 mr-2" />
-            Editar
-          </Button>
+
+          <div className="flex items-center gap-2">
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="sm" className="p-2 md:px-3">
+                  <MoreVertical className="h-4 w-4 md:mr-2" />
+                  <span className="hidden md:inline">Acciones</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={onEdit}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Editar información básica</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onAddPhoto}>
+                  <Camera className="mr-2 h-4 w-4" />
+                  <span>Agregar foto</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onChangeStatus}>
+                  <Activity className="mr-2 h-4 w-4" />
+                  <span>Cambiar estado</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onViewHistory}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Ver historial médico completo</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onScheduleAppointment}>
+                  <Calendar className="mr-2 h-4 w-4" />
+                  <span>Programar cita</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={onGenerateReport}>
+                  <Download className="mr-2 h-4 w-4" />
+                  <span>Generar reporte</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={onDelete}
+                  className="text-destructive"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  <span>Eliminar mascota</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {onMenuClick && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onMenuClick}
+                className="p-2 md:hidden"
+              >
+                <Menu className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-start gap-6">
-          <Avatar className="h-24 w-24">
-            <AvatarFallback className="text-2xl">
-              {pet.name?.charAt(0)?.toUpperCase() || 'M'}
-            </AvatarFallback>
-          </Avatar>
+        {/* Pet Information */}
+        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
+          {/* Avatar */}
+          <div className="flex justify-center md:justify-start">
+            <Avatar className="h-20 w-20 md:h-24 md:w-24">
+              <AvatarFallback className="text-xl md:text-2xl">
+                {pet.name?.charAt(0)?.toUpperCase() || 'M'}
+              </AvatarFallback>
+            </Avatar>
+          </div>
 
-          <div className="flex-1 space-y-3">
+          {/* Pet Details */}
+          <div className="flex-1 space-y-3 text-center md:text-left">
+            {/* Name and Sex */}
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-3xl font-bold">{pet.name}</h1>
-                <span className={`text-2xl ${getSexColor(pet.sex)}`}>
+              <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3 mb-2">
+                <h1 className="text-2xl md:text-3xl font-bold">{pet.name}</h1>
+                <span className={`text-xl md:text-2xl ${getSexColor(pet.sex)}`}>
                   {getSexIcon(pet.sex)}
                 </span>
               </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
+
+              {/* Breed and Species */}
+              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 text-sm md:text-base text-muted-foreground">
                 <span>
                   {pet.breeds?.name ||
                     pet.species?.name ||
@@ -74,37 +171,44 @@ export function PetProfileHeader({ pet }: PetProfileHeaderProps) {
                 </span>
                 {pet.breeds?.name && pet.species?.name && (
                   <>
-                    <span>•</span>
+                    <span className="hidden md:inline">•</span>
                     <span>{pet.species.name}</span>
                   </>
                 )}
               </div>
             </div>
 
-            <div className="flex items-center gap-4 text-sm">
-              <div className="flex items-center gap-1">
+            {/* Age and Birth Date */}
+            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm">
+              <div className="flex items-center justify-center md:justify-start gap-1">
                 <Calendar className="h-4 w-4" />
                 <span>{calculateAge(pet.birth_date)}</span>
               </div>
               {pet.birth_date && (
-                <div className="text-muted-foreground">
+                <div className="text-muted-foreground text-xs md:text-sm">
                   Nacido el {formatDate(pet.birth_date)}
                 </div>
               )}
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Status and Additional Info */}
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
               <PetStatusBadge status="active" />
               {pet.microchip && (
-                <Badge variant="outline">Microchip: {pet.microchip}</Badge>
+                <Badge variant="outline" className="text-xs">
+                  Microchip: {pet.microchip}
+                </Badge>
               )}
               {pet.weight && (
-                <Badge variant="outline">{formatWeight(pet.weight)}</Badge>
+                <Badge variant="outline" className="text-xs">
+                  {formatWeight(pet.weight)}
+                </Badge>
               )}
             </div>
 
+            {/* Notes */}
             {pet.notes && (
-              <p className="text-sm text-muted-foreground max-w-2xl">
+              <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
                 {pet.notes}
               </p>
             )}

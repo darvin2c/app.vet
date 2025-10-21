@@ -14,6 +14,8 @@ import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 // Import modular components
 import { PetProfileHeader } from '@/components/pets/pet-profile-header'
 import { PetProfileSidebar } from '@/components/pets/pet-profile-sidebar'
+import { PetProfileMobileSidebar } from '@/components/pets/pet-profile-mobile-sidebar'
+import { PetProfileMobileTabs } from '@/components/pets/pet-profile-mobile-tabs'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { AppointmentList } from '@/components/appointments/appointment-list'
 import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
@@ -32,6 +34,7 @@ export default function PetProfilePage() {
   const petId = params.id as string
   const { currentTenant } = useCurrentTenantStore()
   const [activeTab, setActiveTab] = useState('general')
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 
   const {
     data: pet,
@@ -85,15 +88,25 @@ export default function PetProfilePage() {
     ],
   }
 
+  // Mobile tabs configuration
+  const mobileTabs = [
+    { value: 'general', label: 'General' },
+    { value: 'clinical-parameters', label: 'Parámetros' },
+    { value: 'treatments', label: 'Registros', count: medicalRecords.length },
+    { value: 'appointments', label: 'Citas', count: appointments.length },
+    { value: 'hospitalizations', label: 'Hospitalizaciones' },
+    { value: 'clinical-notes', label: 'Notas' },
+  ]
+
   if (petLoading || !pet) {
     return (
-      <div className="container mx-auto p-6 space-y-6">
+      <div className="container mx-auto p-4 md:p-6 space-y-4 md:space-y-6">
         <div className="h-32 bg-muted animate-pulse rounded-lg" />
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+          <div className="lg:col-span-2 space-y-4 md:space-y-6">
             <div className="h-96 bg-muted animate-pulse rounded-lg" />
           </div>
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             <div className="h-64 bg-muted animate-pulse rounded-lg" />
             <div className="h-48 bg-muted animate-pulse rounded-lg" />
           </div>
@@ -104,7 +117,7 @@ export default function PetProfilePage() {
 
   if (petError) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-4 md:p-6">
         <div className="text-center py-8">
           <p className="text-muted-foreground">
             Error al cargar la información de la mascota. Por favor, intenta de
@@ -116,20 +129,34 @@ export default function PetProfilePage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 md:p-6 space-y-4 md:space-y-6">
       {/* Header */}
-      <PetProfileHeader pet={pet} />
+      <PetProfileHeader
+        pet={pet}
+        onMenuClick={() => setIsMobileSidebarOpen(true)}
+      />
 
       {/* Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Main Content */}
         <div className="lg:col-span-2">
+          {/* Mobile Tabs - Only visible on mobile */}
+          <div className="md:hidden mb-4">
+            <PetProfileMobileTabs
+              tabs={mobileTabs}
+              activeTab={activeTab}
+              onTabChange={setActiveTab}
+            />
+          </div>
+
+          {/* Desktop Tabs */}
           <Tabs
             value={activeTab}
             onValueChange={setActiveTab}
-            className="space-y-6"
+            className="space-y-4 md:space-y-6"
           >
-            <TabsList className="grid w-full grid-cols-6 text-xs">
+            {/* Desktop TabsList - Hidden on mobile */}
+            <TabsList className="hidden md:grid w-full grid-cols-6 text-xs">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="clinical-parameters">
                 Parámetros Clínicos
@@ -147,16 +174,19 @@ export default function PetProfilePage() {
             </TabsList>
 
             {/* General Information */}
-            <TabsContent value="general" className="space-y-6">
+            <TabsContent value="general" className="space-y-4 md:space-y-6">
               <PetGeneralInfo pet={pet} />
             </TabsContent>
 
             {/* Appointments */}
-            <TabsContent value="appointments" className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
+            <TabsContent
+              value="appointments"
+              className="space-y-4 md:space-y-6"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Citas</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-xl md:text-2xl font-bold">Citas</h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Historial de citas de la mascota
                   </p>
                 </div>
@@ -166,16 +196,21 @@ export default function PetProfilePage() {
             </TabsContent>
 
             {/* All Medical Records - Now the main medical records view */}
-            <TabsContent value="treatments" className="space-y-6">
+            <TabsContent value="treatments" className="space-y-4 md:space-y-6">
               <PetMedicalRecords petId={petId} />
             </TabsContent>
 
             {/* Clinical Parameters */}
-            <TabsContent value="clinical-parameters" className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
+            <TabsContent
+              value="clinical-parameters"
+              className="space-y-4 md:space-y-6"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Parámetros Clínicos</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-xl md:text-2xl font-bold">
+                    Parámetros Clínicos
+                  </h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Mediciones y parámetros vitales de la mascota
                   </p>
                 </div>
@@ -189,11 +224,16 @@ export default function PetProfilePage() {
             </TabsContent>
 
             {/* Hospitalizations */}
-            <TabsContent value="hospitalizations" className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
+            <TabsContent
+              value="hospitalizations"
+              className="space-y-4 md:space-y-6"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Hospitalizaciones</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-xl md:text-2xl font-bold">
+                    Hospitalizaciones
+                  </h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Historial de hospitalizaciones de la mascota
                   </p>
                 </div>
@@ -203,11 +243,16 @@ export default function PetProfilePage() {
             </TabsContent>
 
             {/* Clinical Notes */}
-            <TabsContent value="clinical-notes" className="space-y-6">
-              <div className="flex items-center justify-between mb-6">
+            <TabsContent
+              value="clinical-notes"
+              className="space-y-4 md:space-y-6"
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
                 <div>
-                  <h2 className="text-2xl font-bold">Notas Clínicas</h2>
-                  <p className="text-muted-foreground">
+                  <h2 className="text-xl md:text-2xl font-bold">
+                    Notas Clínicas
+                  </h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
                     Historial médico y observaciones de la mascota
                   </p>
                 </div>
@@ -218,13 +263,24 @@ export default function PetProfilePage() {
           </Tabs>
         </div>
 
-        {/* Sidebar */}
-        <PetProfileSidebar
-          pet={pet}
-          appointmentsCount={appointments.length}
-          medicalRecordsCount={medicalRecords.length}
-        />
+        {/* Desktop Sidebar - Hidden on mobile */}
+        <div className="hidden lg:block">
+          <PetProfileSidebar
+            pet={pet}
+            appointmentsCount={appointments.length}
+            medicalRecordsCount={medicalRecords.length}
+          />
+        </div>
       </div>
+
+      {/* Mobile Sidebar Drawer */}
+      <PetProfileMobileSidebar
+        pet={pet}
+        appointmentsCount={appointments.length}
+        medicalRecordsCount={medicalRecords.length}
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
+      />
     </div>
   )
 }
