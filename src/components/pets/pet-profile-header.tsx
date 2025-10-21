@@ -1,29 +1,12 @@
-import {
-  ArrowLeft,
-  MoreVertical,
-  Camera,
-  Activity,
-  FileText,
-  Download,
-  Trash2,
-  Calendar,
-  Edit,
-  Menu,
-} from 'lucide-react'
+import { ArrowLeft, Calendar, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
 import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
+import { PetActions } from './pet-actions'
 import {
   calculateAge,
   getSexIcon,
@@ -83,49 +66,17 @@ export function PetProfileHeader({
           </Button>
 
           <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="p-2 md:px-3">
-                  <MoreVertical className="h-4 w-4 md:mr-2" />
-                  <span className="hidden md:inline">Acciones</span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuItem onClick={onEdit}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  <span>Editar información básica</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onAddPhoto}>
-                  <Camera className="mr-2 h-4 w-4" />
-                  <span>Agregar foto</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onChangeStatus}>
-                  <Activity className="mr-2 h-4 w-4" />
-                  <span>Cambiar estado</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={onViewHistory}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>Ver historial médico completo</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onScheduleAppointment}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>Programar cita</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={onGenerateReport}>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Generar reporte</span>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={onDelete}
-                  className="text-destructive"
-                >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  <span>Eliminar mascota</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <PetActions
+              pet={pet}
+              size="sm"
+              onEdit={onEdit}
+              onAddPhoto={onAddPhoto}
+              onChangeStatus={onChangeStatus}
+              onViewHistory={onViewHistory}
+              onScheduleAppointment={onScheduleAppointment}
+              onGenerateReport={onGenerateReport}
+              onDelete={onDelete}
+            />
             {onMenuClick && (
               <Button
                 variant="ghost"
