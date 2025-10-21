@@ -63,6 +63,7 @@ export function AppointmentCreate({
       scheduled_start: defaultScheduledStart || '',
       scheduled_end: defaultScheduledEnd || '',
       veterinarian_id: undefined,
+      status: 'scheduled' as any,
       reason: '',
       notes: '',
     },
@@ -77,6 +78,7 @@ export function AppointmentCreate({
       scheduled_start: defaultScheduledStart || '',
       scheduled_end: defaultScheduledEnd || '',
       veterinarian_id: undefined,
+      status: 'scheduled' as any,
       reason: '',
       notes: '',
     }

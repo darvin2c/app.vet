@@ -9,29 +9,14 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { PetSelect } from '@/components/pets/pet-select'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
+import { AppointmentStatusGrid } from '@/components/appointments/appointment-status-grid'
 
 import Calendar20 from '@/components/ui/calendar-20'
 import { useAvailableTimeSlots } from '@/hooks/appointments/use-available-time-slots'
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
-
-const APPOINTMENT_STATUSES = [
-  { value: 'scheduled', label: 'Programada' },
-  { value: 'confirmed', label: 'Confirmada' },
-  { value: 'in_progress', label: 'En Progreso' },
-  { value: 'completed', label: 'Completada' },
-  { value: 'cancelled', label: 'Cancelada' },
-  { value: 'no_show', label: 'No Asistió' },
-] as const
 
 interface AppointmentFormProps {
   disablePetSelection?: boolean
@@ -143,18 +128,10 @@ export function AppointmentForm({
         <Field data-invalid={!!errors.status}>
           <FieldLabel htmlFor="status">Estado *</FieldLabel>
           <FieldContent>
-            <Select {...control.register('status')}>
-              <SelectTrigger id="status">
-                <SelectValue placeholder="Seleccionar estado" />
-              </SelectTrigger>
-              <SelectContent>
-                {APPOINTMENT_STATUSES.map((status) => (
-                  <SelectItem key={status.value} value={status.value}>
-                    {status.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AppointmentStatusGrid
+              value={watch('status') || ''}
+              onValueChange={(value) => setValue('status', value as any)}
+            />
             <FieldError errors={[errors.status]} />
           </FieldContent>
         </Field>
