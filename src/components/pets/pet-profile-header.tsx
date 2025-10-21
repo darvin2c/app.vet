@@ -29,11 +29,7 @@ interface PetProfileHeaderProps {
   pet: PetDetail
   onMenuClick?: () => void
   onEdit?: () => void
-  onAddPhoto?: () => void
-  onChangeStatus?: () => void
-  onViewHistory?: () => void
   onScheduleAppointment?: () => void
-  onGenerateReport?: () => void
   onDelete?: () => void
 }
 
@@ -41,11 +37,7 @@ export function PetProfileHeader({
   pet,
   onMenuClick,
   onEdit,
-  onAddPhoto,
-  onChangeStatus,
-  onViewHistory,
   onScheduleAppointment,
-  onGenerateReport,
   onDelete,
 }: PetProfileHeaderProps) {
   const router = useRouter()
@@ -66,17 +58,7 @@ export function PetProfileHeader({
           </Button>
 
           <div className="flex items-center gap-2">
-            <PetActions
-              pet={pet}
-              size="sm"
-              onEdit={onEdit}
-              onAddPhoto={onAddPhoto}
-              onChangeStatus={onChangeStatus}
-              onViewHistory={onViewHistory}
-              onScheduleAppointment={onScheduleAppointment}
-              onGenerateReport={onGenerateReport}
-              onDelete={onDelete}
-            />
+            <PetActions pet={pet} size="sm" />
             {onMenuClick && (
               <Button
                 variant="ghost"

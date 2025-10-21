@@ -24,34 +24,22 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { PetEdit } from './pet-edit'
 import { PetDelete } from './pet-delete'
+import { AppointmentCreate } from '@/components/appointments/appointment-create'
 
 interface PetActionsProps {
   pet: Tables<'pets'>
   variant?: 'ghost' | 'outline'
   size?: 'sm' | 'default'
-  onEdit?: () => void
-  onAddPhoto?: () => void
-  onChangeStatus?: () => void
-  onViewHistory?: () => void
-  onScheduleAppointment?: () => void
-  onGenerateReport?: () => void
-  onDelete?: () => void
 }
 
 export function PetActions({
   pet,
   variant = 'ghost',
   size = 'default',
-  onEdit,
-  onAddPhoto,
-  onChangeStatus,
-  onViewHistory,
-  onScheduleAppointment,
-  onGenerateReport,
-  onDelete,
 }: PetActionsProps) {
   const [showEdit, setShowEdit] = useState(false)
   const [showDelete, setShowDelete] = useState(false)
+  const [showAppointmentCreate, setShowAppointmentCreate] = useState(false)
   const router = useRouter()
 
   const handleViewProfile = () => {
@@ -59,19 +47,35 @@ export function PetActions({
   }
 
   const handleEdit = () => {
-    if (onEdit) {
-      onEdit()
-    } else {
-      setShowEdit(true)
-    }
+    setShowEdit(true)
   }
 
   const handleDelete = () => {
-    if (onDelete) {
-      onDelete()
-    } else {
-      setShowDelete(true)
-    }
+    setShowDelete(true)
+  }
+
+  const handleScheduleAppointment = () => {
+    setShowAppointmentCreate(true)
+  }
+
+  const handleAddPhoto = () => {
+    console.log('Agregar foto para:', pet.name)
+    // TODO: Implementar funcionalidad de agregar foto
+  }
+
+  const handleChangeStatus = () => {
+    console.log('Cambiar estado para:', pet.name)
+    // TODO: Implementar funcionalidad de cambiar estado
+  }
+
+  const handleViewHistory = () => {
+    console.log('Ver historial médico completo para:', pet.name)
+    // TODO: Implementar funcionalidad de ver historial médico completo
+  }
+
+  const handleGenerateReport = () => {
+    console.log('Generar reporte para:', pet.name)
+    // TODO: Implementar funcionalidad de generar reporte
   }
 
   return (
@@ -95,7 +99,6 @@ export function PetActions({
                 <Eye className="mr-2 h-4 w-4" />
                 Ver Perfil
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
             </>
           )}
 
@@ -108,49 +111,32 @@ export function PetActions({
           </DropdownMenuItem>
 
           {/* Acciones adicionales para el header */}
-          {variant === 'outline' && (
-            <>
-              {onAddPhoto && (
-                <DropdownMenuItem onClick={onAddPhoto}>
-                  <Camera className="mr-2 h-4 w-4" />
-                  <span>Agregar foto</span>
-                </DropdownMenuItem>
-              )}
+          <DropdownMenuItem onClick={handleAddPhoto}>
+            <Camera className="mr-2 h-4 w-4" />
+            <span>Agregar foto</span>
+          </DropdownMenuItem>
 
-              {onChangeStatus && (
-                <DropdownMenuItem onClick={onChangeStatus}>
-                  <Activity className="mr-2 h-4 w-4" />
-                  <span>Cambiar estado</span>
-                </DropdownMenuItem>
-              )}
-
-              <DropdownMenuSeparator />
-
-              {onViewHistory && (
-                <DropdownMenuItem onClick={onViewHistory}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>Ver historial médico completo</span>
-                </DropdownMenuItem>
-              )}
-
-              {onScheduleAppointment && (
-                <DropdownMenuItem onClick={onScheduleAppointment}>
-                  <Calendar className="mr-2 h-4 w-4" />
-                  <span>Programar cita</span>
-                </DropdownMenuItem>
-              )}
-
-              {onGenerateReport && (
-                <DropdownMenuItem onClick={onGenerateReport}>
-                  <Download className="mr-2 h-4 w-4" />
-                  <span>Generar reporte</span>
-                </DropdownMenuItem>
-              )}
-            </>
-          )}
+          <DropdownMenuItem onClick={handleChangeStatus}>
+            <Activity className="mr-2 h-4 w-4" />
+            <span>Cambiar estado</span>
+          </DropdownMenuItem>
 
           <DropdownMenuSeparator />
 
+          <DropdownMenuItem onClick={handleViewHistory}>
+            <FileText className="mr-2 h-4 w-4" />
+            <span>Ver historial médico completo</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={handleScheduleAppointment}>
+            <Calendar className="mr-2 h-4 w-4" />
+            <span>Programar cita</span>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={handleGenerateReport}>
+            <Download className="mr-2 h-4 w-4" />
+            <span>Generar reporte</span>
+          </DropdownMenuItem>
           {/* Eliminar */}
           <DropdownMenuItem onClick={handleDelete} className="text-destructive">
             <Trash2 className="mr-2 h-4 w-4" />
@@ -161,14 +147,16 @@ export function PetActions({
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Modales - solo se muestran si no hay callbacks personalizados */}
-      {!onEdit && (
-        <PetEdit pet={pet} open={showEdit} onOpenChange={setShowEdit} />
-      )}
+      {/* Modales */}
+      <PetEdit pet={pet} open={showEdit} onOpenChange={setShowEdit} />
 
-      {!onDelete && (
-        <PetDelete pet={pet} open={showDelete} onOpenChange={setShowDelete} />
-      )}
+      <PetDelete pet={pet} open={showDelete} onOpenChange={setShowDelete} />
+
+      <AppointmentCreate
+        open={showAppointmentCreate}
+        onOpenChange={setShowAppointmentCreate}
+        defaultPetId={pet.id}
+      />
     </>
   )
 }
