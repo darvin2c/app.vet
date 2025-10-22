@@ -1,6 +1,6 @@
 'use client'
 
-import { Timeline, type TimelineItemData } from '@/components/ui/timeline'
+import { Timeline, TimelineItem, type TimelineItemData } from '@/components/ui/timeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -34,6 +34,7 @@ import {
   Copy,
   Share,
   Download,
+  MessageSquare,
 } from 'lucide-react'
 
 export default function TimelineDemoPage() {
@@ -283,14 +284,126 @@ export default function TimelineDemoPage() {
 
       <Separator />
 
-      {/* Timeline with Actions */}
+      {/* Timeline with Composition Pattern */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Timeline con Acciones</h2>
+          <h2 className="text-2xl font-semibold">Timeline con Patrón de Composición (Nuevo)</h2>
           <p className="text-muted-foreground">
-            Timeline con botones de acción y dropdowns para interactuar con cada
-            elemento. Incluye ejemplos de botones simples, dropdowns y acciones
-            múltiples.
+            Timeline usando el nuevo patrón de composición donde los items se pasan como componentes hijos.
+            Los elementos se ordenan automáticamente por timestamp.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Historial Médico - Patrón de Composición</CardTitle>
+            <CardDescription>
+              Ejemplo usando TimelineItem como componentes hijos
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Timeline orientation="vertical" size="md" showConnector={true} dateFormat="dd/MM/yyyy HH:mm">
+              <TimelineItem
+                timestamp={new Date('2024-12-19T09:00:00')}
+                title="Consulta General"
+                description="Revisión médica de rutina"
+                variant="success"
+                icon={<Stethoscope className="h-4 w-4" />}
+                actions={
+                  <div className="flex gap-1">
+                    <Button size="sm" variant="outline">
+                      <Edit className="h-3 w-3" />
+                    </Button>
+                    <Button size="sm" variant="outline">
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </div>
+                }
+              >
+                <Card className="mt-2">
+                  <CardContent className="pt-4">
+                    <p className="text-sm">Paciente: Max (Golden Retriever)</p>
+                    <p className="text-sm text-muted-foreground">
+                      Peso: 28kg, Temperatura: 38.5°C
+                    </p>
+                  </CardContent>
+                </Card>
+              </TimelineItem>
+
+              <TimelineItem
+                timestamp={new Date('2024-12-19T10:30:00')}
+                title="Vacunación"
+                description="Aplicación de vacuna antirrábica"
+                variant="primary"
+                icon={<Heart className="h-4 w-4" />}
+                actions={
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" variant="outline">
+                        <MoreHorizontal className="h-3 w-3" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem>Ver detalles</DropdownMenuItem>
+                      <DropdownMenuItem>Editar</DropdownMenuItem>
+                      <DropdownMenuItem>Eliminar</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                }
+              >
+                <div className="mt-2 p-3 bg-muted rounded-md">
+                  <p className="text-sm">
+                    <strong>Vacuna:</strong> Antirrábica
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    Próxima dosis: 19/12/2025
+                  </p>
+                </div>
+              </TimelineItem>
+
+              <TimelineItem
+                timestamp={new Date('2024-12-19T14:30:00')}
+                title="Nota Clínica"
+                description="Observaciones del veterinario"
+                variant="muted"
+                icon={<MessageSquare className="h-4 w-4" />}
+                actions={
+                  <Button size="sm" variant="outline">
+                    Editar
+                  </Button>
+                }
+              >
+                <div className="mt-2 p-3 border rounded-md">
+                  <p className="text-sm">
+                    El paciente muestra signos de mejoría después del tratamiento.
+                    Se recomienda continuar con la medicación por 5 días más.
+                  </p>
+                </div>
+              </TimelineItem>
+
+              <TimelineItem
+                timestamp={new Date('2024-12-19T16:00:00')}
+                title="Próxima Cita"
+                description="Cita de seguimiento programada"
+                variant="warning"
+                icon={<AlertTriangle className="h-4 w-4" />}
+                actions={
+                  <Button size="sm" variant="default">
+                    Confirmar
+                  </Button>
+                }
+              />
+            </Timeline>
+          </CardContent>
+        </Card>
+      </section>
+
+      {/* Timeline with Actions (Legacy) */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-semibold">Timeline con Acciones (Legacy)</h2>
+          <p className="text-muted-foreground">
+            Timeline usando el patrón legacy con prop items. Mantiene compatibilidad
+            con código existente.
           </p>
         </div>
         <Card>
@@ -305,6 +418,8 @@ export default function TimelineDemoPage() {
               items={medicalTimelineItems}
               orientation="vertical"
               size="md"
+              showConnector={true}
+              dateFormat="dd/MM/yyyy HH:mm"
             />
           </CardContent>
         </Card>
