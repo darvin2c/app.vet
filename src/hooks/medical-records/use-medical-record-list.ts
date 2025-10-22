@@ -17,8 +17,17 @@ interface UseMedicalRecordListParams {
   orders?: AppliedSort[]
 }
 
-export function useMedicalRecordList(params?: UseMedicalRecordListParams) {
-  const { filters = [], search, orders = [] } = params || {}
+export function useMedicalRecordList({
+  filters = [],
+  search,
+  orders = [
+    {
+      field: 'created_at',
+      direction: 'desc',
+      ascending: false,
+    },
+  ],
+}: UseMedicalRecordListParams) {
   const { currentTenant } = useCurrentTenantStore()
   const supabase = createClient()
 
@@ -55,46 +64,20 @@ export function useMedicalRecordList(params?: UseMedicalRecordListParams) {
 
       // Aplicar búsqueda
       if (search) {
-        query = query.or(
-          `notes.ilike.%${search}%,pets.name.ilike.%${search}%,pets.microchip.ilike.%${search}%`
-        )
       }
 
       // Aplicar filtros
       filters.forEach((filter) => {
-        switch (filter.field) {
-          case 'pet_id':
-            query = query.eq('pet_id', filter.value)
-            break
-          case 'record_type':
-            query = query.eq('record_type', filter.value)
-            break
-          case 'status':
-            query = query.eq('status', filter.value)
-            break
-          case 'vet_id':
-            query = query.eq('vet_id', filter.value)
-            break
-          case 'date_from':
-            query = query.gte('record_date', filter.value)
-            break
-          case 'date_to':
-            query = query.lte('record_date', filter.value)
-            break
-        }
+        query = query.filter(filter.field, filter.operator, filter.value)
       })
 
       // Aplicar ordenamiento
-      if (orders.length > 0) {
-        orders.forEach((order) => {
-          query = query.order(order.field, {
-            ascending: order.direction === 'asc',
-          })
+
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
         })
-      } else {
-        // Orden por defecto
-        query = query.order('created_at', { ascending: false })
-      }
+      })
 
       const { data, error } = await query
 
@@ -102,7 +85,7 @@ export function useMedicalRecordList(params?: UseMedicalRecordListParams) {
         throw new Error(`Error al obtener registros médicos: ${error.message}`)
       }
 
-      return data as MedicalRecord[]
+      return data
     },
     enabled: !!currentTenant?.id,
   })
