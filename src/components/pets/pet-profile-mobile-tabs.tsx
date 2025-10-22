@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { Card } from '../ui/card'
 
 interface TabItem {
   value: string
@@ -74,7 +75,7 @@ export function PetProfileMobileTabs({
   }, [activeTab])
 
   return (
-    <div className={cn('relative', className)}>
+    <Card className={cn('relative px-4 py-2 md:px-6 md:py-3', className)}>
       {/* Left scroll button */}
       {showLeftArrow && (
         <Button
@@ -98,23 +99,17 @@ export function PetProfileMobileTabs({
         }}
       >
         {tabs.map((tab) => (
-          <button
+          <Button
             key={tab.value}
             data-value={tab.value}
             onClick={() => onTabChange(tab.value)}
-            className={cn(
-              'flex-shrink-0 px-3 py-2 text-sm font-medium rounded-md transition-colors whitespace-nowrap',
-              'hover:bg-muted/50',
-              activeTab === tab.value
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground'
-            )}
+            variant={activeTab === tab.value ? 'default' : 'ghost'}
           >
             {tab.label}
             {tab.count !== undefined && (
               <span className="ml-1 text-xs opacity-75">({tab.count})</span>
             )}
-          </button>
+          </Button>
         ))}
       </div>
 
@@ -135,6 +130,6 @@ export function PetProfileMobileTabs({
           display: none;
         }
       `}</style>
-    </div>
+    </Card>
   )
 }

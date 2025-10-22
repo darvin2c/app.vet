@@ -141,13 +141,11 @@ export default function PetProfilePage() {
         {/* Main Content */}
         <div className="lg:col-span-2">
           {/* Mobile Tabs - Only visible on mobile */}
-          <div className="md:hidden mb-4">
-            <PetProfileMobileTabs
-              tabs={mobileTabs}
-              activeTab={activeTab}
-              onTabChange={setActiveTab}
-            />
-          </div>
+          <PetProfileMobileTabs
+            tabs={mobileTabs}
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+          />
 
           {/* Desktop Tabs */}
           <Tabs
@@ -155,24 +153,6 @@ export default function PetProfilePage() {
             onValueChange={setActiveTab}
             className="space-y-4 md:space-y-6"
           >
-            {/* Desktop TabsList - Hidden on mobile */}
-            <TabsList className="hidden md:grid w-full grid-cols-6 text-xs">
-              <TabsTrigger value="general">General</TabsTrigger>
-              <TabsTrigger value="clinical-parameters">
-                Parámetros Clínicos
-              </TabsTrigger>
-              <TabsTrigger value="treatments">
-                Registros Médicos ({medicalRecords.length})
-              </TabsTrigger>
-              <TabsTrigger value="appointments">
-                Citas ({appointments.length})
-              </TabsTrigger>
-              <TabsTrigger value="hospitalizations">
-                Hospitalizaciones
-              </TabsTrigger>
-              <TabsTrigger value="clinical-notes">Notas Clínicas</TabsTrigger>
-            </TabsList>
-
             {/* General Information */}
             <TabsContent value="general" className="space-y-4 md:space-y-6">
               <PetGeneralInfo pet={pet} />
