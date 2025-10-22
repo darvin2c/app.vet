@@ -12,12 +12,14 @@ type MedicalRecord = Tables<'clinical_records'> & {
 }
 
 interface UseMedicalRecordListParams {
+  petId: string
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
 }
 
 export function useMedicalRecordList({
+  petId,
   filters = [],
   search,
   orders = [
@@ -57,10 +59,14 @@ export function useMedicalRecordList({
             id,
             scheduled_start,
             reason
+          ),
+          clinical_notes (
+            id
           )
         `
         )
         .eq('tenant_id', currentTenant.id)
+        .eq('pet_id', petId)
 
       // Aplicar búsqueda
       if (search) {

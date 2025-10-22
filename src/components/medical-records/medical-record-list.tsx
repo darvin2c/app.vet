@@ -43,11 +43,13 @@ type MedicalRecord = Tables<'clinical_records'> & {
 interface MedicalRecordListProps {
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
+  petId: string
 }
 
 export function MedicalRecordList({
   filterConfig,
   orderByConfig,
+  petId,
 }: MedicalRecordListProps) {
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
@@ -59,6 +61,7 @@ export function MedicalRecordList({
     isPending,
     error,
   } = useMedicalRecordList({
+    petId,
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,

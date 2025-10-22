@@ -2,13 +2,9 @@
 
 import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import { ArrowLeft, MoreHorizontal } from 'lucide-react'
-
-import { Button } from '@/components/ui/button'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePetDetail } from '@/hooks/pets/use-pet-detail'
 import { usePetAppointments } from '@/hooks/pets/use-pet-appointments'
-import { useMedicalRecordListByPet } from '@/hooks/medical-records/use-medical-record-list-by-pet'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 // Import modular components
@@ -28,6 +24,7 @@ import { ClinicalParameterList } from '@/components/clinical-parameters/clinical
 import { ClinicalParameterCreateButton } from '@/components/clinical-parameters/clinical-parameter-create-button'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderByConfig } from '@/types/order-by.types'
+import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -54,7 +51,9 @@ export default function PetProfilePage() {
     data: medicalRecords = [],
     isLoading: medicalRecordsLoading,
     error: medicalRecordsError,
-  } = useMedicalRecordListByPet(petId)
+  } = useMedicalRecordList({
+    petId,
+  })
 
   // Configuración de filtros para parámetros clínicos
   const clinicalParameterFilters: FilterConfig[] = [

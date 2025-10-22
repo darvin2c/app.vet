@@ -1,17 +1,13 @@
 'use client'
 
-import { useState } from 'react'
 import { MedicalRecordCreateButton } from '../medical-records/medical-record-create-button'
-import { useMedicalRecordListByPet } from '@/hooks/medical-records/use-medical-record-list-by-pet'
-import { PetMedicalRecordsList } from './pet-medical-records-list'
+import { MedicalRecordList } from '../medical-records/medical-record-list'
 
 interface PetMedicalRecordsProps {
   petId: string
 }
 
 export function PetMedicalRecords({ petId }: PetMedicalRecordsProps) {
-  const { data: medicalRecords = [] } = useMedicalRecordListByPet(petId)
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -25,10 +21,12 @@ export function PetMedicalRecords({ petId }: PetMedicalRecordsProps) {
         </div>
         <MedicalRecordCreateButton petId={petId} />
       </div>
-      <PetMedicalRecordsList
+      <MedicalRecordList
         petId={petId}
-        medicalRecords={medicalRecords}
-        isLoading={false}
+        filterConfig={[]}
+        orderByConfig={{
+          columns: [],
+        }}
       />
     </div>
   )
