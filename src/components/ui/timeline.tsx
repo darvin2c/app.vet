@@ -150,17 +150,23 @@ interface LegacyTimelineItemProps
 
 // Helper function to extract TimelineItem children and sort them
 const extractAndSortTimelineItems = (children: React.ReactNode) => {
-  const items: Array<{ element: React.ReactElement<TimelineItemProps>; timestamp: Date }> = []
-  
+  const items: Array<{
+    element: React.ReactElement<TimelineItemProps>
+    timestamp: Date
+  }> = []
+
   React.Children.forEach(children, (child) => {
-    if (React.isValidElement<TimelineItemProps>(child) && child.type === TimelineItem) {
+    if (
+      React.isValidElement<TimelineItemProps>(child) &&
+      child.type === TimelineItem
+    ) {
       const timestamp = child.props.timestamp
       if (timestamp instanceof Date) {
         items.push({ element: child, timestamp })
       }
     }
   })
-  
+
   // Sort by timestamp
   return items.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
 }
@@ -312,9 +318,7 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
               )}
             >
               <div className="flex-1 min-w-0">
-                <h3 className="text-sm font-medium leading-none">
-                  {title}
-                </h3>
+                <h3 className="text-sm font-medium leading-none">{title}</h3>
                 <time
                   className={cn(
                     'text-xs text-muted-foreground block mt-1',
@@ -373,7 +377,10 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
 TimelineItem.displayName = 'TimelineItem'
 
 // Legacy TimelineItem component (for backward compatibility)
-const LegacyTimelineItem = React.forwardRef<HTMLDivElement, LegacyTimelineItemProps>(
+const LegacyTimelineItem = React.forwardRef<
+  HTMLDivElement,
+  LegacyTimelineItemProps
+>(
   (
     {
       className,

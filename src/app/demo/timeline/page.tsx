@@ -1,6 +1,10 @@
 'use client'
 
-import { Timeline, TimelineItem, type TimelineItemData } from '@/components/ui/timeline'
+import {
+  Timeline,
+  TimelineItem,
+  type TimelineItemData,
+} from '@/components/ui/timeline'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -287,10 +291,13 @@ export default function TimelineDemoPage() {
       {/* Timeline with Composition Pattern */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Timeline con Patrón de Composición (Nuevo)</h2>
+          <h2 className="text-2xl font-semibold">
+            Timeline con Patrón de Composición (Nuevo)
+          </h2>
           <p className="text-muted-foreground">
-            Timeline usando el nuevo patrón de composición donde los items se pasan como componentes hijos.
-            Los elementos se ordenan automáticamente por timestamp.
+            Timeline usando el nuevo patrón de composición donde los items se
+            pasan como componentes hijos. Los elementos se ordenan
+            automáticamente por timestamp.
           </p>
         </div>
         <Card>
@@ -301,7 +308,12 @@ export default function TimelineDemoPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Timeline orientation="vertical" size="md" showConnector={true} dateFormat="dd/MM/yyyy HH:mm">
+            <Timeline
+              orientation="vertical"
+              size="md"
+              showConnector={true}
+              dateFormat="dd/MM/yyyy HH:mm"
+            >
               <TimelineItem
                 timestamp={new Date('2024-12-19T09:00:00')}
                 title="Consulta General"
@@ -374,8 +386,9 @@ export default function TimelineDemoPage() {
               >
                 <div className="mt-2 p-3 border rounded-md">
                   <p className="text-sm">
-                    El paciente muestra signos de mejoría después del tratamiento.
-                    Se recomienda continuar con la medicación por 5 días más.
+                    El paciente muestra signos de mejoría después del
+                    tratamiento. Se recomienda continuar con la medicación por 5
+                    días más.
                   </p>
                 </div>
               </TimelineItem>
@@ -400,10 +413,12 @@ export default function TimelineDemoPage() {
       {/* Timeline with Actions (Legacy) */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Timeline con Acciones (Legacy)</h2>
+          <h2 className="text-2xl font-semibold">
+            Timeline con Acciones (Legacy)
+          </h2>
           <p className="text-muted-foreground">
-            Timeline usando el patrón legacy con prop items. Mantiene compatibilidad
-            con código existente.
+            Timeline usando el patrón legacy con prop items. Mantiene
+            compatibilidad con código existente.
           </p>
         </div>
         <Card>

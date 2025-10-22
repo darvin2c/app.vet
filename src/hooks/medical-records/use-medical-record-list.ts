@@ -1,15 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Tables } from '@/types/supabase.types'
 import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
-
-type MedicalRecord = Tables<'clinical_records'> & {
-  pets: Tables<'pets'> | null
-  staff: Tables<'staff'> | null
-  appointments: Tables<'appointments'> | null
-}
 
 interface UseMedicalRecordListParams {
   petId: string
@@ -55,7 +48,7 @@ export function useMedicalRecordList({
             first_name,
             last_name
           ),
-          clinical_pars (
+          clinical_parameters (
             id,
             params,
             schema_version, 

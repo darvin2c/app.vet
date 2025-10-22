@@ -32,11 +32,16 @@ type MedicalRecord = Tables<'clinical_records'> & {
     first_name: string
     last_name: string | null
   } | null
-  appointments: {
+  clinical_notes: {
     id: string
-    scheduled_start: string
-    reason: string | null
-  } | null
+    note: string
+  }[]
+  clinical_pars: {
+    id: string
+    params: any
+    schema_version: string
+    measured_at: string
+  }[]
 }
 
 interface MedicalRecordSelectProps {
@@ -61,22 +66,14 @@ export function MedicalRecordSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: medicalRecords = [], isLoading } = useMedicalRecordList({
-    petId: petId || '',
-    filters: petId
-      ? [
-          {
-            field: 'pet_id',
-            operator: 'eq',
-            value: petId,
-          },
-        ]
-      : [],
-    search: searchTerm,
-  })
+  const { data: medicalRecords = [], isPending: isLoading } =
+    useMedicalRecordList({
+      petId: petId || '',
+      search: searchTerm,
+    })
 
   const selectedMedicalRecord = medicalRecords.find(
-    (medicalRecord: MedicalRecord) => medicalRecord.id === value
+    (medicalRecord) => medicalRecord.id === value
   )
 
   const handleSelect = (medicalRecordId: string) => {
@@ -147,7 +144,7 @@ export function MedicalRecordSelect({
                   : 'No se encontraron registros médicos.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {medicalRecords.map((medicalRecord: MedicalRecord) => (
+                {medicalRecords.map((medicalRecord) => (
                   <CommandItem
                     key={medicalRecord.id}
                     value={medicalRecord.reason || 'Registro médico'}
