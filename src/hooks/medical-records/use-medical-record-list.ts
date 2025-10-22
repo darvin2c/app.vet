@@ -55,13 +55,15 @@ export function useMedicalRecordList({
             first_name,
             last_name
           ),
-          appointments (
+          clinical_pars (
             id,
-            scheduled_start,
-            reason
+            params,
+            schema_version, 
+            measured_at
           ),
           clinical_notes (
-            id
+            id, 
+            note
           )
         `
         )
