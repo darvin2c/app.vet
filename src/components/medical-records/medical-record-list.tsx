@@ -82,13 +82,36 @@ export function MedicalRecordList({
   filterConfig,
   orderByConfig,
 }: MedicalRecordListProps) {
-  const [viewMode, setViewMode] = useState<ViewMode>('table')
+  // Inicializar viewMode desde localStorage directamente
+  const [viewMode, setViewMode] = useState<ViewMode>(() => {
+    if (typeof window === 'undefined') return 'table'
+    try {
+      const stored = localStorage.getItem('medical-records-view-mode')
+      if (stored && ['table', 'cards', 'list'].includes(stored)) {
+        return stored as ViewMode
+      }
+    } catch (error) {
+      console.warn('Error reading from localStorage:', error)
+    }
+    return 'table'
+  })
   const [sorting, setSorting] = useState<SortingState>([])
 
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { getRecordType } = useRecordType()
+
+  // Función para manejar cambios de vista
+  const handleViewModeChange = useCallback((newViewMode: ViewMode) => {
+    setViewMode(newViewMode)
+    // Guardar en localStorage
+    try {
+      localStorage.setItem('medical-records-view-mode', newViewMode)
+    } catch (error) {
+      console.warn('Error writing to localStorage:', error)
+    }
+  }, [])
 
   const {
     data: medicalRecords = [],
@@ -350,7 +373,7 @@ export function MedicalRecordList({
     <div className="space-y-4">
       <div className="flex justify-end">
         <ViewModeToggle
-          onValueChange={setViewMode}
+          onValueChange={handleViewModeChange}
           resource="medical-records"
         />
       </div>

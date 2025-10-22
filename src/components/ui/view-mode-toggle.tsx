@@ -88,11 +88,8 @@ export function ViewModeToggle({
     onValueChange?.(newValue)
   }
 
-  // Efecto para notificar el valor inicial al componente padre
-  React.useEffect(() => {
-    // Llamar onValueChange con el valor inicial al montar
-    onValueChange?.(currentValue)
-  }, []) // Solo ejecutar al montar
+  // No necesitamos useEffect para notificar el valor inicial
+  // El componente padre debe manejar su propio estado inicial
 
   return (
     <TooltipProvider>
