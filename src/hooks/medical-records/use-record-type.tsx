@@ -19,6 +19,12 @@ export default function useRecordType() {
         icon: <Stethoscope className="h-4 w-4" />,
       },
       {
+        value: 'vaccination',
+        label: 'Vacunación',
+        description: 'Procedimiento para proteger contra enfermedades.',
+        icon: <Syringe className="h-4 w-4" />,
+      },
+      {
         value: 'surgery',
         label: 'Cirugía',
         description: 'Procedimiento quirúrgico para tratar enfermedades.',
@@ -29,12 +35,6 @@ export default function useRecordType() {
         label: 'Control de Enfermedad',
         description: 'Procedimiento para controlar enfermedades en animales.',
         icon: <Activity className="h-4 w-4" />,
-      },
-      {
-        value: 'vaccination',
-        label: 'Vacunación',
-        description: 'Procedimiento para proteger contra enfermedades.',
-        icon: <Syringe className="h-4 w-4" />,
       },
     ],
     []

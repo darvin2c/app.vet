@@ -1,5 +1,8 @@
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { Tables } from '@/types/supabase.types'
+
+type Customer = Tables<'customers'>
 
 /**
  * Calcula la edad de una mascota basada en su fecha de nacimiento
@@ -98,4 +101,22 @@ export function formatDate(
 export function formatWeight(weight: number | null): string | undefined {
   if (!weight) return undefined
   return `${weight} kg`
+}
+
+/**
+ * Genera el nombre completo de un cliente
+ * @param customer - El objeto customer con first_name y last_name
+ * @returns El nombre completo formateado
+ */
+export function getCustomerFullName(
+  customer: Customer | { first_name: string; last_name: string }
+): string {
+  const firstName = customer.first_name || ''
+  const lastName = customer.last_name || ''
+
+  if (!firstName && !lastName) {
+    return 'Sin nombre'
+  }
+
+  return `${firstName} ${lastName}`.trim()
 }

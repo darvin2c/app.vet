@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Menu } from 'lucide-react'
+import { ArrowLeft, Calendar, Menu, User, MapPin, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -9,10 +9,11 @@ import { PetStatusBadge } from './pet-status-badge'
 import { PetActions } from './pet-actions'
 import {
   calculateAge,
-  getSexIcon,
+  formatSex,
   getSexColor,
   formatDate,
   formatWeight,
+  getCustomerFullName,
 } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
@@ -43,10 +44,10 @@ export function PetProfileHeader({
   const router = useRouter()
 
   return (
-    <Card className="mb-4 md:mb-6">
-      <CardContent className="p-4 md:p-6">
-        {/* Mobile Header Actions */}
-        <div className="flex items-center justify-between mb-4">
+    <Card className="mb-3 md:mb-4">
+      <CardContent className="p-3 md:p-4">
+        {/* Header Actions */}
+        <div className="flex items-center justify-between mb-3 md:mb-4">
           <Button
             variant="ghost"
             size="sm"
@@ -72,79 +73,144 @@ export function PetProfileHeader({
           </div>
         </div>
 
-        {/* Pet Information */}
-        <div className="flex flex-col md:flex-row md:items-start gap-4 md:gap-6">
-          {/* Avatar */}
-          <div className="flex justify-center md:justify-start">
-            <Avatar className="h-20 w-20 md:h-24 md:w-24">
-              <AvatarFallback className="text-xl md:text-2xl">
+        {/* Mobile Layout - Más compacto */}
+        <div className="block md:hidden">
+          <div className="flex items-center space-x-3">
+            {/* Avatar más pequeño */}
+            <Avatar className="h-14 w-14 flex-shrink-0">
+              <AvatarFallback className="text-lg">
                 {pet.name?.charAt(0)?.toUpperCase() || 'M'}
               </AvatarFallback>
             </Avatar>
-          </div>
 
-          {/* Pet Details */}
-          <div className="flex-1 space-y-3 text-center md:text-left">
-            {/* Name and Sex */}
-            <div>
-              <div className="flex items-center justify-center md:justify-start gap-2 md:gap-3 mb-2">
-                <h1 className="text-2xl md:text-3xl font-bold">{pet.name}</h1>
-                <span className={`text-xl md:text-2xl ${getSexColor(pet.sex)}`}>
-                  {getSexIcon(pet.sex)}
-                </span>
+            {/* Info principal */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <h1 className="text-lg font-bold truncate">{pet.name}</h1>
+                <Badge
+                  variant="outline"
+                  className={`text-xs flex-shrink-0 ${getSexColor(pet.sex)}`}
+                >
+                  {formatSex(pet.sex)}
+                </Badge>
               </div>
 
-              {/* Breed and Species */}
-              <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-2 text-sm md:text-base text-muted-foreground">
-                <span>
+              <div className="text-sm text-muted-foreground mb-2 truncate">
+                {pet.breeds?.name ||
+                  pet.species?.name ||
+                  'Raza no especificada'}
+              </div>
+
+              {/* Badges horizontales compactos */}
+              <div className="flex flex-wrap gap-1">
+                <Badge variant="outline" className="text-xs px-2 py-0.5">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  {calculateAge(pet.birth_date)}
+                </Badge>
+                {pet.weight && (
+                  <Badge variant="outline" className="text-xs px-2 py-0.5">
+                    {formatWeight(pet.weight)}
+                  </Badge>
+                )}
+                <PetStatusBadge
+                  status="active"
+                  className="text-xs px-2 py-0.5"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Desktop Layout - Horizontal y compacto */}
+        <div className="hidden md:block">
+          <div className="flex items-center gap-4">
+            {/* Avatar más pequeño */}
+            <div className="flex-shrink-0">
+              <Avatar className="h-16 w-16">
+                <AvatarFallback className="text-xl">
+                  {pet.name?.charAt(0)?.toUpperCase() || 'M'}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+
+            {/* Información principal en una línea */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-3 mb-2">
+                <h1 className="text-2xl font-bold">{pet.name}</h1>
+                <Badge
+                  variant="outline"
+                  className={`text-sm px-2 py-1 ${getSexColor(pet.sex)}`}
+                >
+                  {formatSex(pet.sex)}
+                </Badge>
+                <PetStatusBadge status="active" />
+                <span className="text-muted-foreground">
                   {pet.breeds?.name ||
                     pet.species?.name ||
                     'Raza no especificada'}
                 </span>
                 {pet.breeds?.name && pet.species?.name && (
                   <>
-                    <span className="hidden md:inline">•</span>
-                    <span>{pet.species.name}</span>
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-muted-foreground">
+                      {pet.species.name}
+                    </span>
                   </>
                 )}
               </div>
-            </div>
 
-            {/* Age and Birth Date */}
-            <div className="flex flex-col md:flex-row md:items-center gap-2 md:gap-4 text-sm">
-              <div className="flex items-center justify-center md:justify-start gap-1">
-                <Calendar className="h-4 w-4" />
-                <span>{calculateAge(pet.birth_date)}</span>
+              {/* Información secundaria en badges horizontales */}
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline" className="text-sm px-3 py-1">
+                  <Calendar className="h-3 w-3 mr-1" />
+                  {calculateAge(pet.birth_date)}
+                  {pet.birth_date && (
+                    <span className="ml-1 text-xs opacity-70">
+                      ({formatDate(pet.birth_date)})
+                    </span>
+                  )}
+                </Badge>
+
+                {pet.weight && (
+                  <Badge variant="outline" className="text-sm px-3 py-1">
+                    {formatWeight(pet.weight)}
+                  </Badge>
+                )}
+
+                {pet.microchip && (
+                  <Badge
+                    variant="outline"
+                    className="text-sm px-3 py-1 font-mono"
+                  >
+                    Chip: {pet.microchip}
+                  </Badge>
+                )}
+
+                {pet.customers && (
+                  <Badge variant="outline" className="text-sm px-3 py-1">
+                    <User className="h-3 w-3 mr-1" />
+                    {getCustomerFullName(pet.customers)}
+                  </Badge>
+                )}
+
+                {pet.customers?.phone && (
+                  <Badge variant="outline" className="text-sm px-3 py-1">
+                    <Phone className="h-3 w-3 mr-1" />
+                    {pet.customers.phone}
+                  </Badge>
+                )}
               </div>
-              {pet.birth_date && (
-                <div className="text-muted-foreground text-xs md:text-sm">
-                  Nacido el {formatDate(pet.birth_date)}
-                </div>
-              )}
             </div>
+          </div>
 
-            {/* Status and Additional Info */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 md:gap-3">
-              <PetStatusBadge status="active" />
-              {pet.microchip && (
-                <Badge variant="outline" className="text-xs">
-                  Microchip: {pet.microchip}
-                </Badge>
-              )}
-              {pet.weight && (
-                <Badge variant="outline" className="text-xs">
-                  {formatWeight(pet.weight)}
-                </Badge>
-              )}
-            </div>
-
-            {/* Notes */}
-            {pet.notes && (
-              <p className="text-sm text-muted-foreground max-w-2xl leading-relaxed">
+          {/* Notas compactas si existen */}
+          {pet.notes && (
+            <div className="mt-3 pt-3 border-t">
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {pet.notes}
               </p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </CardContent>
     </Card>
