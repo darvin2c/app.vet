@@ -60,6 +60,12 @@ const demoComponents = [
       'Editor de texto enriquecido minimalista con toolbar flotante que aparece solo al seleccionar texto',
     href: '/demo/rich-text-editor',
   },
+  {
+    name: 'Timeline',
+    description:
+      'Componente reutilizable para mostrar eventos cronológicos con variantes vertical/horizontal y personalización completa',
+    href: '/demo/timeline',
+  },
 ]
 
 export default function DemoPage() {
