@@ -39,17 +39,20 @@ export function ClinicalNoteCreate({
   const form = useForm<ClinicalNoteFormData>({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
-      content: '',
+      note: '',
       clinical_record_id: medicalRecordId || '',
+      pet_id: petId || '',
+      vet_id: '',
     },
   })
 
   const onSubmit = async (formData: ClinicalNoteFormData) => {
     try {
       const data = {
-        content: formData.content,
+        note: formData.note,
         clinical_record_id: formData.clinical_record_id,
-        pet_id: petId || '',
+        pet_id: formData.pet_id,
+        vet_id: formData.vet_id,
       }
       await createClinicalNote.mutateAsync(data)
       toast.success('Nota clínica creada exitosamente')

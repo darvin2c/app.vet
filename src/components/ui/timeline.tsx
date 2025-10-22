@@ -95,6 +95,7 @@ export interface TimelineItemData {
   content?: React.ReactNode
   icon?: React.ReactNode
   variant?: 'default' | 'primary' | 'success' | 'warning' | 'error' | 'muted'
+  actions?: React.ReactNode
 }
 
 export interface TimelineProps
@@ -207,7 +208,7 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
         {/* Content */}
         <div className="flex-1 min-w-0">
           <div className="flex flex-col space-y-1">
-            {/* Title and Timestamp */}
+            {/* Title, Timestamp and Actions */}
             <div
               className={cn(
                 'flex items-start justify-between',
@@ -215,16 +216,34 @@ const TimelineItem = React.forwardRef<HTMLDivElement, TimelineItemProps>(
                   'flex-col items-center text-center'
               )}
             >
-              <h3 className="text-sm font-medium leading-none">{item.title}</h3>
-              <time
-                className={cn(
-                  'text-xs text-muted-foreground',
-                  orientation === 'horizontal' && 'mt-1'
-                )}
-                dateTime={item.timestamp.toISOString()}
-              >
-                {format(item.timestamp, dateFormat, { locale })}
-              </time>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-medium leading-none">
+                  {item.title}
+                </h3>
+                <time
+                  className={cn(
+                    'text-xs text-muted-foreground block mt-1',
+                    orientation === 'horizontal' && 'mt-1'
+                  )}
+                  dateTime={item.timestamp.toISOString()}
+                >
+                  {format(item.timestamp, dateFormat, { locale })}
+                </time>
+              </div>
+
+              {/* Actions */}
+              {item.actions && (
+                <div
+                  className={cn(
+                    'flex-shrink-0 ml-2',
+                    orientation === 'horizontal' && 'ml-0 mt-2'
+                  )}
+                  role="group"
+                  aria-label="Acciones del elemento"
+                >
+                  {item.actions}
+                </div>
+              )}
             </div>
 
             {/* Description */}

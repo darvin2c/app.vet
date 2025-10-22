@@ -62,6 +62,7 @@ export function MedicalRecordSelect({
   const [editOpen, setEditOpen] = useState(false)
 
   const { data: medicalRecords = [], isLoading } = useMedicalRecordList({
+    petId: petId || '',
     filters: petId
       ? [
           {

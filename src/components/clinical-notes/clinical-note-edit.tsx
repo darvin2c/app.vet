@@ -38,16 +38,20 @@ export function ClinicalNoteEdit({
   const form = useForm<ClinicalNoteFormData>({
     resolver: zodResolver(ClinicalNoteSchema),
     defaultValues: {
-      content: clinicalNote.content,
+      note: clinicalNote.note,
       clinical_record_id: clinicalNote.clinical_record_id || '',
+      pet_id: clinicalNote.pet_id,
+      vet_id: clinicalNote.vet_id || '',
     },
   })
 
   const onSubmit = async (formData: ClinicalNoteFormData) => {
     try {
       const data = {
-        content: formData.content,
+        note: formData.note,
         clinical_record_id: formData.clinical_record_id,
+        pet_id: formData.pet_id,
+        vet_id: formData.vet_id,
       }
       await updateClinicalNote.mutateAsync({
         id: clinicalNote.id,

@@ -86,17 +86,17 @@ export function ClinicalNoteList({
 
   const columns: ColumnDef<ClinicalNote>[] = [
     {
-      accessorKey: 'content',
+      accessorKey: 'note',
       header: () => (
-        <OrderByTableHeader field="content" orderByHook={orderByHook}>
-          Contenido
+        <OrderByTableHeader field="note" orderByHook={orderByHook}>
+          Nota
         </OrderByTableHeader>
       ),
       cell: ({ row }) => {
-        const content = row.getValue('content') as string
+        const note = row.getValue('note') as string
         return (
           <div className="max-w-md">
-            <p className="text-sm line-clamp-2">{content}</p>
+            <p className="text-sm line-clamp-2">{note}</p>
           </div>
         )
       },
@@ -248,9 +248,7 @@ export function ClinicalNoteList({
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-sm mb-3 line-clamp-3">
-                  {clinicalNote.content}
-                </p>
+                <p className="text-sm mb-3 line-clamp-3">{clinicalNote.note}</p>
 
                 <div className="flex flex-wrap gap-2 mb-3">
                   {clinicalNote.clinical_records && (
@@ -294,7 +292,7 @@ export function ClinicalNoteList({
                 </ItemTitle>
                 <ItemDescription>
                   <div className="space-y-1">
-                    <p className="line-clamp-2">{clinicalNote.content}</p>
+                    <p className="line-clamp-2">{clinicalNote.note}</p>
                     <div className="flex items-center gap-2 text-xs">
                       <Calendar className="h-3 w-3" />
                       {format(

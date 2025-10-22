@@ -2,6 +2,7 @@
 
 import { Timeline, type TimelineItemData } from '@/components/ui/timeline'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -10,6 +11,12 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import {
   CheckCircle,
   Clock,
@@ -21,10 +28,16 @@ import {
   Heart,
   Stethoscope,
   Pill,
+  Edit,
+  Trash2,
+  MoreHorizontal,
+  Copy,
+  Share,
+  Download,
 } from 'lucide-react'
 
 export default function TimelineDemoPage() {
-  // Demo data for medical records timeline
+  // Demo data for medical records timeline with actions
   const medicalTimelineItems: TimelineItemData[] = [
     {
       id: '1',
@@ -33,6 +46,16 @@ export default function TimelineDemoPage() {
       description: 'Revisión médica de rutina',
       variant: 'success',
       icon: <Stethoscope className="h-4 w-4" />,
+      actions: (
+        <div className="flex gap-1">
+          <Button size="sm" variant="outline">
+            <Edit className="h-3 w-3" />
+          </Button>
+          <Button size="sm" variant="outline">
+            <Trash2 className="h-3 w-3" />
+          </Button>
+        </div>
+      ),
       content: (
         <Card className="mt-2">
           <CardContent className="pt-4">
@@ -51,6 +74,33 @@ export default function TimelineDemoPage() {
       description: 'Aplicación de vacuna antirrábica',
       variant: 'primary',
       icon: <Heart className="h-4 w-4" />,
+      actions: (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline">
+              <MoreHorizontal className="h-3 w-3" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem>
+              <Edit className="h-4 w-4 mr-2" />
+              Editar
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Copy className="h-4 w-4 mr-2" />
+              Duplicar
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Share className="h-4 w-4 mr-2" />
+              Compartir
+            </DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive">
+              <Trash2 className="h-4 w-4 mr-2" />
+              Eliminar
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
       content: (
         <div className="mt-2">
           <Badge variant="outline">Vacuna Antirrábica</Badge>
@@ -67,6 +117,37 @@ export default function TimelineDemoPage() {
       description: 'Prescripción de antibióticos',
       variant: 'warning',
       icon: <Pill className="h-4 w-4" />,
+      actions: (
+        <div className="flex gap-1">
+          <Button size="sm" variant="outline">
+            <Download className="h-3 w-3" />
+          </Button>
+          <Button size="sm" variant="outline">
+            <Edit className="h-3 w-3" />
+          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="sm" variant="outline">
+                <MoreHorizontal className="h-3 w-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Copy className="h-4 w-4 mr-2" />
+                Duplicar receta
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Share className="h-4 w-4 mr-2" />
+                Enviar por email
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive">
+                <Trash2 className="h-4 w-4 mr-2" />
+                Cancelar receta
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      ),
       content: (
         <div className="mt-2 space-y-1">
           <p className="text-sm font-medium">Amoxicilina 500mg</p>
@@ -83,10 +164,16 @@ export default function TimelineDemoPage() {
       description: 'Cita de control programada',
       variant: 'default',
       icon: <Calendar className="h-4 w-4" />,
+      actions: (
+        <Button size="sm" variant="default">
+          <Calendar className="h-3 w-3 mr-1" />
+          Reagendar
+        </Button>
+      ),
     },
   ]
 
-  // Simple timeline items
+  // Simple timeline items with different action types
   const simpleTimelineItems: TimelineItemData[] = [
     {
       id: '1',
@@ -95,6 +182,11 @@ export default function TimelineDemoPage() {
       description: 'Se creó el repositorio y configuración inicial',
       variant: 'success',
       icon: <CheckCircle className="h-4 w-4" />,
+      actions: (
+        <Button size="sm" variant="secondary">
+          Ver detalles
+        </Button>
+      ),
     },
     {
       id: '2',
@@ -103,6 +195,16 @@ export default function TimelineDemoPage() {
       description: 'Implementando componentes principales',
       variant: 'primary',
       icon: <Clock className="h-4 w-4" />,
+      actions: (
+        <div className="flex gap-1">
+          <Button size="sm" variant="outline">
+            Pausar
+          </Button>
+          <Button size="sm" variant="default">
+            Continuar
+          </Button>
+        </div>
+      ),
     },
     {
       id: '3',
@@ -111,6 +213,20 @@ export default function TimelineDemoPage() {
       description: 'Esperando aprobación del código',
       variant: 'warning',
       icon: <AlertTriangle className="h-4 w-4" />,
+      actions: (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="sm" variant="outline">
+              Acciones
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>Aprobar</DropdownMenuItem>
+            <DropdownMenuItem>Rechazar</DropdownMenuItem>
+            <DropdownMenuItem>Solicitar cambios</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ),
     },
     {
       id: '4',
@@ -119,6 +235,11 @@ export default function TimelineDemoPage() {
       description: 'Error en el proceso de deployment',
       variant: 'error',
       icon: <XCircle className="h-4 w-4" />,
+      actions: (
+        <Button size="sm" variant="destructive">
+          Reintentar
+        </Button>
+      ),
     },
   ]
 
@@ -162,22 +283,21 @@ export default function TimelineDemoPage() {
 
       <Separator />
 
-      {/* Vertical Timeline - Medical Records */}
+      {/* Timeline with Actions */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">
-            Timeline Vertical - Registros Médicos
-          </h2>
+          <h2 className="text-2xl font-semibold">Timeline con Acciones</h2>
           <p className="text-muted-foreground">
-            Timeline vertical con contenido personalizado para registros médicos
-            veterinarios.
+            Timeline con botones de acción y dropdowns para interactuar con cada
+            elemento. Incluye ejemplos de botones simples, dropdowns y acciones
+            múltiples.
           </p>
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Historial Médico - Max</CardTitle>
+            <CardTitle>Historial Médico con Acciones - Max</CardTitle>
             <CardDescription>
-              Eventos del día 19 de Diciembre, 2024
+              Eventos del día 19 de Diciembre, 2024 con opciones de acción
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -192,19 +312,22 @@ export default function TimelineDemoPage() {
 
       <Separator />
 
-      {/* Horizontal Timeline */}
+      {/* Horizontal Timeline with Actions */}
       <section className="space-y-4">
         <div>
-          <h2 className="text-2xl font-semibold">Timeline Horizontal</h2>
+          <h2 className="text-2xl font-semibold">
+            Timeline Horizontal con Acciones
+          </h2>
           <p className="text-muted-foreground">
-            Timeline horizontal ideal para mostrar procesos o flujos de trabajo.
+            Timeline horizontal con diferentes tipos de acciones: botones
+            simples, múltiples botones y dropdowns.
           </p>
         </div>
         <Card>
           <CardHeader>
-            <CardTitle>Proceso de Desarrollo</CardTitle>
+            <CardTitle>Proceso de Desarrollo con Acciones</CardTitle>
             <CardDescription>
-              Estados del proyecto durante el día
+              Estados del proyecto durante el día con opciones de interacción
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -282,6 +405,148 @@ export default function TimelineDemoPage() {
             />
           </CardContent>
         </Card>
+      </section>
+
+      <Separator />
+
+      {/* Examples of Action Types */}
+      <section className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-semibold">Tipos de Acciones</h2>
+          <p className="text-muted-foreground">
+            Ejemplos de diferentes tipos de acciones que se pueden implementar
+            en el timeline.
+          </p>
+        </div>
+
+        <div className="grid gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Botones Simples</CardTitle>
+              <CardDescription>
+                Un solo botón de acción por elemento
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Timeline
+                items={[
+                  {
+                    id: '1',
+                    timestamp: new Date('2024-12-19T09:00:00'),
+                    title: 'Tarea Completada',
+                    description: 'Revisión finalizada',
+                    variant: 'success',
+                    icon: <CheckCircle className="h-4 w-4" />,
+                    actions: (
+                      <Button size="sm" variant="outline">
+                        Ver reporte
+                      </Button>
+                    ),
+                  },
+                ]}
+                orientation="vertical"
+                size="md"
+                showConnector={false}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Múltiples Botones</CardTitle>
+              <CardDescription>
+                Varios botones de acción agrupados
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Timeline
+                items={[
+                  {
+                    id: '1',
+                    timestamp: new Date('2024-12-19T10:00:00'),
+                    title: 'Documento Pendiente',
+                    description: 'Requiere aprobación',
+                    variant: 'warning',
+                    icon: <FileText className="h-4 w-4" />,
+                    actions: (
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="outline">
+                          <Edit className="h-3 w-3" />
+                        </Button>
+                        <Button size="sm" variant="default">
+                          Aprobar
+                        </Button>
+                        <Button size="sm" variant="destructive">
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    ),
+                  },
+                ]}
+                orientation="vertical"
+                size="md"
+                showConnector={false}
+              />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg">Dropdown Menu</CardTitle>
+              <CardDescription>
+                Menú desplegable con múltiples opciones
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Timeline
+                items={[
+                  {
+                    id: '1',
+                    timestamp: new Date('2024-12-19T11:00:00'),
+                    title: 'Evento Programado',
+                    description: 'Múltiples opciones disponibles',
+                    variant: 'primary',
+                    icon: <Calendar className="h-4 w-4" />,
+                    actions: (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" variant="outline">
+                            <MoreHorizontal className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem>
+                            <Edit className="h-4 w-4 mr-2" />
+                            Editar evento
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Copy className="h-4 w-4 mr-2" />
+                            Duplicar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Share className="h-4 w-4 mr-2" />
+                            Compartir
+                          </DropdownMenuItem>
+                          <DropdownMenuItem>
+                            <Download className="h-4 w-4 mr-2" />
+                            Exportar
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="text-destructive">
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Eliminar
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    ),
+                  },
+                ]}
+                orientation="vertical"
+                size="md"
+                showConnector={false}
+              />
+            </CardContent>
+          </Card>
+        </div>
       </section>
 
       <Separator />
