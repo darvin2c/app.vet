@@ -27,13 +27,7 @@ export function useMedicalRecordItemList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [
-      currentTenant?.id,
-      'record_items',
-      filters,
-      search,
-      orders,
-    ],
+    queryKey: [currentTenant?.id, 'record_items', filters, search, orders],
     queryFn: async () => {
       if (!currentTenant) {
         return []
@@ -42,10 +36,12 @@ export function useMedicalRecordItemList({
       const supabase = createClient()
       let query = supabase
         .from('record_items')
-        .select(`
+        .select(
+          `
           *,
           products(*)
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
 
       // Apply filters

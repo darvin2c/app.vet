@@ -76,7 +76,7 @@ export function MedicalRecordEdit({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-4xl">
         <DrawerHeader>
           <DrawerTitle>Editar Registro Médico</DrawerTitle>
           <DrawerDescription>

@@ -92,11 +92,9 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
               <div className="flex items-center gap-2">
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  <strong>Fecha:</strong>{' '}
-                  No especificada
+                  <strong>Fecha:</strong> No especificada
                 </span>
               </div>
-
             </div>
 
             {training.goal && (

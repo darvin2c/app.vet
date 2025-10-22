@@ -41,7 +41,9 @@ export function usePetAppointments(petId: string) {
         .order('scheduled_start', { ascending: false })
 
       if (error) {
-        throw new Error(`Error al obtener citas de la mascota: ${error.message}`)
+        throw new Error(
+          `Error al obtener citas de la mascota: ${error.message}`
+        )
       }
 
       return data as PetAppointment[]

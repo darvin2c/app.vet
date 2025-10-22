@@ -17,10 +17,12 @@ export function useVaccinationList(petId?: string) {
 
       let query = supabase
         .from('vaccinations')
-        .select(`
+        .select(
+          `
           *,
           clinical_record:clinical_records(*)
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
         .order('created_at', { ascending: false })
 

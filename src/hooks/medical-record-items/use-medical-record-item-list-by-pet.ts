@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
-
 export function useMedicalRecordItemListByPet(petId: string) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -13,10 +12,12 @@ export function useMedicalRecordItemListByPet(petId: string) {
 
       const { data, error } = await supabase
         .from('record_items')
-        .select(`
+        .select(
+          `
           *,
           products(*)
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
         .eq('pet_id', petId)
         .order('created_at', { ascending: false })

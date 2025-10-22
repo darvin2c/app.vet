@@ -17,13 +17,14 @@ export function useSurgeryList(petId?: string) {
         .from('surgeries')
         .select('*')
         .eq('tenant_id', currentTenant.id)
-      
+
       if (petId) {
         query = query.eq('pet_id', petId)
       }
 
-      const { data, error } = await query
-        .order('created_at', { ascending: false })
+      const { data, error } = await query.order('created_at', {
+        ascending: false,
+      })
 
       if (error) throw error
       return data || []

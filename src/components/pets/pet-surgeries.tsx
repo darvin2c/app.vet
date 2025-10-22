@@ -83,9 +83,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                 <div className="flex items-center gap-2 mt-2">
                   <Badge variant="outline">Cirugía</Badge>
                 </div>
-                <Badge variant="secondary">
-                  Cirugía
-                </Badge>
+                <Badge variant="secondary">Cirugía</Badge>
               </div>
               <SurgeryActions surgery={surgery} />
             </div>
@@ -106,7 +104,6 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                   </span>
                 </div>
               )}
-
             </div>
 
             {surgery.surgeon_notes && (

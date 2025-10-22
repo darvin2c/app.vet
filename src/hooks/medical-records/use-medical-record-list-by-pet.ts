@@ -23,7 +23,8 @@ export function useMedicalRecordListByPet(petId: string) {
 
       const { data, error } = await supabase
         .from('clinical_records')
-        .select(`
+        .select(
+          `
           *,
           appointments(
             *,
@@ -31,7 +32,8 @@ export function useMedicalRecordListByPet(petId: string) {
           ),
           clinical_notes(*),
           clinical_parameters(*)
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
         .eq('pet_id', petId)
         .order('record_date', { ascending: false })

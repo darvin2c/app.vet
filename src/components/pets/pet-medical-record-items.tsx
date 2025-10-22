@@ -3,15 +3,11 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Package, DollarSign, Hash } from 'lucide-react'
-import {
-  useMedicalRecordItemListByPet,
-
-} from '@/hooks/medical-record-items/use-medical-record-item-list-by-pet'
+import { useMedicalRecordItemListByPet } from '@/hooks/medical-record-items/use-medical-record-item-list-by-pet'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { MedicalRecordItemActions } from '@/components/medical-record-items/medical-record-item-actions'
-
 
 interface PetMedicalRecordItemsProps {
   petId: string
@@ -111,8 +107,6 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
                 </span>
               </div>
             </div>
-
-
 
             {item.products && (
               <>

@@ -17,10 +17,12 @@ export function useTrainingList(petId?: string) {
 
       let query = supabase
         .from('trainings')
-        .select(`
+        .select(
+          `
           *,
           trainer:staff(*)
-        `)
+        `
+        )
         .eq('tenant_id', currentTenant.id)
         .order('created_at', { ascending: false })
 
