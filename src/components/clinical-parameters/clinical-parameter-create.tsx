@@ -18,6 +18,7 @@ import {
   type ClinicalParameterFormData,
 } from '@/schemas/clinical-parameters.schema'
 import { useClinicalParameterCreate } from '@/hooks/clinical-parameters/use-clinical-parameter-create'
+import { Json } from '@/types/supabase.types'
 
 interface ClinicalParameterCreateProps {
   open: boolean
@@ -32,13 +33,13 @@ export function ClinicalParameterCreate({
 }: ClinicalParameterCreateProps) {
   const createClinicalParameter = useClinicalParameterCreate()
 
-  const form = useForm({
+  const form = useForm<ClinicalParameterFormData>({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      treatment_id: undefined, // This will be set when creating a treatment
+      record_id: '',
       measured_at: new Date().toISOString().split('T')[0],
       params: {} as Record<string, string | number>,
-      schema_version: 1,
+      schema_version: undefined,
     },
   })
 
@@ -46,6 +47,7 @@ export function ClinicalParameterCreate({
     const dataWithPetId = {
       ...data,
       pet_id: petId,
+      params: data.params as Json,
     }
     await createClinicalParameter.mutateAsync(dataWithPetId)
     onOpenChange(false)

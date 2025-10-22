@@ -18,7 +18,7 @@ import {
   type ClinicalParameterFormData,
 } from '@/schemas/clinical-parameters.schema'
 import { useClinicalParameterUpdate } from '@/hooks/clinical-parameters/use-clinical-parameter-update'
-import { Tables } from '@/types/supabase.types'
+import { Json, Tables } from '@/types/supabase.types'
 
 interface ClinicalParameterEditProps {
   clinicalParameter: Tables<'clinical_parameters'>
@@ -33,23 +33,24 @@ export function ClinicalParameterEdit({
 }: ClinicalParameterEditProps) {
   const updateClinicalParameter = useClinicalParameterUpdate()
 
-  const form = useForm({
+  const form = useForm<ClinicalParameterFormData>({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      treatment_id: clinicalParameter.treatment_id || undefined,
-      measured_at: clinicalParameter.measured_at
-        ? clinicalParameter.measured_at.split('T')[0]
-        : new Date().toISOString().split('T')[0],
+      record_id: clinicalParameter?.record_id || '',
+      measured_at: clinicalParameter?.measured_at || '',
       params:
-        (clinicalParameter.params as Record<string, string | number>) || {},
-      schema_version: clinicalParameter.schema_version || 1,
+        (clinicalParameter?.params as Record<string, string | number>) || {},
+      schema_version: clinicalParameter?.schema_version,
     },
   })
 
-  const onSubmit = async (data: ClinicalParameterFormData) => {
-    await updateClinicalParameter.mutateAsync({
+  const onSubmit = (data: ClinicalParameterFormData) => {
+    updateClinicalParameter.mutate({
       id: clinicalParameter.id,
-      data,
+      data: {
+        ...data,
+        params: data.params as Json,
+      },
     })
   }
 

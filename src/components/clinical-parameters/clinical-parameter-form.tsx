@@ -1,6 +1,7 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
+import { useEffect } from 'react'
 import {
   Field,
   FieldContent,
@@ -41,19 +42,23 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
     })
   }
 
+  // watcher para validar el campo record_id
+  const recordId = watch('record_id')
+  useEffect(() => {
+    // en caso se requiera
+  }, [recordId])
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <Field>
-        <FieldLabel htmlFor="treatment_id">Tratamiento (Opcional)</FieldLabel>
+        <FieldLabel htmlFor="record_id">Registro Clínico</FieldLabel>
         <FieldContent>
           <MedicalRecordSelect
-            value={watch('treatment_id') || ''}
-            onValueChange={(value) =>
-              setValue('treatment_id', value || undefined)
-            }
+            value={watch('record_id') || ''}
+            onValueChange={(value) => setValue('record_id', value || undefined)}
             petId={petId}
           />
-          <FieldError errors={[errors.treatment_id]} />
+          <FieldError errors={[errors.record_id]} />
         </FieldContent>
       </Field>
 

@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { usePetDetail } from '@/hooks/pets/use-pet-detail'
 import { usePetAppointments } from '@/hooks/pets/use-pet-appointments'
-import { usePetMedicalRecords } from '@/hooks/pets/use-pet-medical-records'
+import { useMedicalRecordListByPet } from '@/hooks/medical-records/use-medical-record-list-by-pet'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 // Import modular components
@@ -54,7 +54,7 @@ export default function PetProfilePage() {
     data: medicalRecords = [],
     isLoading: medicalRecordsLoading,
     error: medicalRecordsError,
-  } = usePetMedicalRecords(petId)
+  } = useMedicalRecordListByPet(petId)
 
   // Configuración de filtros para parámetros clínicos
   const clinicalParameterFilters: FilterConfig[] = [

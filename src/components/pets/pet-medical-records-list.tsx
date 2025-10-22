@@ -67,7 +67,6 @@ type PetMedicalRecord = Tables<'clinical_records'> & {
     | null
   clinical_notes: Tables<'clinical_notes'>[]
   clinical_parameters: Tables<'clinical_parameters'>[]
-  boardings: Tables<'boardings'>[]
 }
 
 interface PetMedicalRecordsListProps {

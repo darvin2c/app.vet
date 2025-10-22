@@ -2,26 +2,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CalendarDays, Syringe, User } from 'lucide-react'
-import { usePetVaccinations } from '@/hooks/pets/use-pet-vaccinations'
+import { CalendarDays, Syringe } from 'lucide-react'
+import { useVaccinationList } from '@/hooks/vaccinations/use-vaccination-list'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { getStaffFullName } from '@/lib/staff-utils'
+
 import { VaccinationCreateButton } from '@/components/vaccinations/vaccination-create-button'
 import { VaccinationActions } from '@/components/vaccinations/vaccination-actions'
 
-type Vaccination = Tables<'vaccinations'> & {
-  clinical_records: Tables<'clinical_records'> | null
-  staff: Tables<'staff'> | null
-}
+type Vaccination = Tables<'vaccinations'>
 
 interface PetVaccinationsProps {
   petId: string
 }
 
 export function PetVaccinations({ petId }: PetVaccinationsProps) {
-  const { data: vaccinations = [], isLoading } = usePetVaccinations(petId)
+  const { data: vaccinations = [], isLoading } = useVaccinationList(petId)
 
   if (isLoading) {
     return (
@@ -96,13 +93,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha de aplicación:</strong>{' '}
-                  {vaccination.clinical_records?.record_date
-                    ? format(
-                        new Date(vaccination.clinical_records.record_date),
-                        'PPP',
-                        { locale: es }
-                      )
-                    : 'No especificada'}
+                  No especificada
                 </span>
               </div>
               {vaccination.next_due_at && (
@@ -118,15 +109,7 @@ export function PetVaccinations({ petId }: PetVaccinationsProps) {
               )}
             </div>
 
-            {vaccination.staff && (
-              <div className="flex items-center gap-2">
-                <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">
-                  <strong>Veterinario:</strong>{' '}
-                  {getStaffFullName(vaccination.staff)}
-                </span>
-              </div>
-            )}
+
 
             {vaccination.dose && (
               <>

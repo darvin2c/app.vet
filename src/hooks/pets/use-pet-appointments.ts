@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import { supabase } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
-import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 type PetAppointment = Tables<'appointments'> & {
   appointment_types: Tables<'appointment_types'> | null
@@ -10,9 +10,10 @@ type PetAppointment = Tables<'appointments'> & {
 
 export function usePetAppointments(petId: string) {
   const { currentTenant } = useCurrentTenantStore()
+  const supabase = createClient()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'pet-appointments', petId],
+    queryKey: [currentTenant?.id, 'appointments', 'pet', petId],
     queryFn: async () => {
       if (!currentTenant?.id || !petId) {
         return []
@@ -26,14 +27,12 @@ export function usePetAppointments(petId: string) {
           appointment_types (
             id,
             name,
-            color,
-            description
+            color
           ),
           staff (
             id,
             first_name,
-            last_name,
-            email
+            last_name
           )
         `
         )
@@ -42,7 +41,7 @@ export function usePetAppointments(petId: string) {
         .order('scheduled_start', { ascending: false })
 
       if (error) {
-        throw new Error(`Error al obtener citas: ${error.message}`)
+        throw new Error(`Error al obtener citas de la mascota: ${error.message}`)
       }
 
       return data as PetAppointment[]

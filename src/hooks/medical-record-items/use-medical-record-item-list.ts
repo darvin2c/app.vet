@@ -3,6 +3,11 @@ import { createClient } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
+import { Tables } from '@/types/supabase.types'
+
+export type MedicalRecordItem = Tables<'record_items'> & {
+  products: Tables<'products'> | null
+}
 
 export function useMedicalRecordItemList({
   filters = [],
@@ -24,27 +29,30 @@ export function useMedicalRecordItemList({
   return useQuery({
     queryKey: [
       currentTenant?.id,
-      'medical_record_items',
+      'record_items',
       filters,
       search,
       orders,
     ],
     queryFn: async () => {
-      if (!currentTenant?.id) {
-        throw new Error('No tenant selected')
+      if (!currentTenant) {
+        return []
       }
 
       const supabase = createClient()
       let query = supabase
         .from('record_items')
-        .select('*')
+        .select(`
+          *,
+          products(*)
+        `)
         .eq('tenant_id', currentTenant.id)
 
       // Apply filters
       filters.forEach((filter) => {
         switch (filter.field) {
-          case 'clinical_record_id':
-            query = query.eq('clinical_record_id', filter.value)
+          case 'record_id':
+            query = query.eq('record_id', filter.value)
             break
           default:
             break
@@ -69,6 +77,6 @@ export function useMedicalRecordItemList({
 
       return data || []
     },
-    enabled: !!currentTenant?.id,
+    enabled: !!currentTenant,
   })
 }

@@ -40,6 +40,8 @@ src/
         └── use-<feature>-<action>.ts
 ```
 
+Los archivos deben de estar siempre dentro de su carpeta de `feature`, excepto los archivos que se encuentren en `ui/`
+
 ## Auth
 
 Para el sistema de autenticación se usara supabase auth
@@ -77,7 +79,7 @@ export function useResourceUpdate() {
     mutationFn: ({id, data}: {
       id: string
       data: Omit<TablesUpdate<'resources'>, 'tenant_id'>
-    }) =>
+    })
 }
 
 export function useResourceDelete() {
@@ -107,6 +109,27 @@ export function useResourceList(({
   })
 }
 
+```
+
+- cada entidad/feature debe de tener su carpeta para los hooks
+
+**incorrecto**
+
+```bat
+// hooks
+/src/hooks/<feature>/
+use-feature-feature2.ts
+use-feature-feature2-action.ts
+```
+
+**correcto**
+
+```bat
+// hooks
+/src/hooks/<feature>/
+use-feature-action.ts
+/src/hooks/<feature2>/
+use-feature2-action.ts
 ```
 
 **Enums**

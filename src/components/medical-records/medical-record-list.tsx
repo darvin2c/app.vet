@@ -56,9 +56,21 @@ import { useSearch } from '@/hooks/use-search'
 import useRecordType from '@/hooks/medical-records/use-record-type'
 
 type MedicalRecord = Tables<'clinical_records'> & {
-  pets: Tables<'pets'> | null
-  staff: Tables<'staff'> | null
-  appointments: Tables<'appointments'> | null
+  pets: {
+    id: string
+    name: string
+    microchip: string | null
+  } | null
+  staff: {
+    id: string
+    first_name: string
+    last_name: string | null
+  } | null
+  appointments: {
+    id: string
+    scheduled_start: string
+    reason: string | null
+  } | null
 }
 
 interface MedicalRecordListProps {

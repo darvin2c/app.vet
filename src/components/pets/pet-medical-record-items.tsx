@@ -4,14 +4,14 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Package, DollarSign, Hash } from 'lucide-react'
 import {
-  usePetMedicalRecordItems,
-  type MedicalRecordItem,
-} from '@/hooks/pets/use-pet-medical-record-items'
+  useMedicalRecordItemListByPet,
+
+} from '@/hooks/medical-record-items/use-medical-record-item-list-by-pet'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { MedicalRecordItemActions } from '@/components/medical-record-items/medical-record-item-actions'
-import { getTypeLabel } from '@/lib/treatment-utils'
+
 
 interface PetMedicalRecordItemsProps {
   petId: string
@@ -19,7 +19,7 @@ interface PetMedicalRecordItemsProps {
 
 export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
   const { data: medicalRecordItems = [], isLoading } =
-    usePetMedicalRecordItems(petId)
+    useMedicalRecordItemListByPet(petId)
 
   if (isLoading) {
     return (
@@ -83,12 +83,7 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
                   {item.products?.name || 'Producto'}
                 </CardTitle>
                 <div className="flex items-center gap-2 mt-2">
-                  {item.products?.is_service && (
-                    <Badge variant="secondary">Servicio</Badge>
-                  )}
-                  {!item.products?.is_service && (
-                    <Badge variant="outline">Producto</Badge>
-                  )}
+                  <Badge variant="outline">Producto</Badge>
                 </div>
               </div>
               <MedicalRecordItemActions medicalRecordItem={item} />
@@ -117,30 +112,7 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
               </div>
             </div>
 
-            {item.clinical_records && (
-              <>
-                <Separator />
-                <div>
-                  <h4 className="font-medium mb-2">Registro Médico Asociado</h4>
-                  <p className="text-sm text-muted-foreground">
-                    {item.clinical_records.record_type
-                      ? getTypeLabel(item.clinical_records.record_type)
-                      : 'Registro médico sin descripción'}
-                  </p>
-                  {item.clinical_records.record_date && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {format(
-                        new Date(item.clinical_records.record_date),
-                        'PPP',
-                        {
-                          locale: es,
-                        }
-                      )}
-                    </p>
-                  )}
-                </div>
-              </>
-            )}
+
 
             {item.products && (
               <>

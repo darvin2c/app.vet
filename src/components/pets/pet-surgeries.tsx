@@ -2,26 +2,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CalendarDays, Clock, User, AlertTriangle } from 'lucide-react'
-import { usePetSurgeries } from '@/hooks/pets/use-pet-surgeries'
+import { CalendarDays, Clock, AlertTriangle } from 'lucide-react'
+import { useSurgeryList } from '@/hooks/surgeries/use-surgery-list'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { getStaffFullName } from '@/lib/staff-utils'
+
 import { SurgeryCreateButton } from '@/components/surgeries/surgery-create-button'
 import { SurgeryActions } from '@/components/surgeries/surgery-actions'
 
-type Surgery = Tables<'surgeries'> & {
-  clinical_records: Tables<'clinical_records'> | null
-  staff: Tables<'staff'> | null
-}
+type Surgery = Tables<'surgeries'>
 
 interface PetSurgeriesProps {
   petId: string
 }
 
 export function PetSurgeries({ petId }: PetSurgeriesProps) {
-  const { data: surgeries = [], isLoading } = usePetSurgeries(petId)
+  const { data: surgeries = [], isLoading } = useSurgeryList(petId)
 
   if (isLoading) {
     return (
@@ -87,7 +84,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                   <Badge variant="outline">Cirugía</Badge>
                 </div>
                 <Badge variant="secondary">
-                  {surgery.clinical_records?.record_type || 'Cirugía'}
+                  Cirugía
                 </Badge>
               </div>
               <SurgeryActions surgery={surgery} />
@@ -98,14 +95,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
               <div className="flex items-center gap-2">
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
-                  <strong>Fecha:</strong>{' '}
-                  {surgery.clinical_records?.record_date
-                    ? format(
-                        new Date(surgery.clinical_records.record_date),
-                        'PPP',
-                        { locale: es }
-                      )
-                    : 'No especificada'}
+                  <strong>Fecha:</strong> No especificada
                 </span>
               </div>
               {surgery.duration_min && (
@@ -116,14 +106,7 @@ export function PetSurgeries({ petId }: PetSurgeriesProps) {
                   </span>
                 </div>
               )}
-              {surgery.staff && (
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">
-                    <strong>Cirujano:</strong> {getStaffFullName(surgery.staff)}
-                  </span>
-                </div>
-              )}
+
             </div>
 
             {surgery.surgeon_notes && (

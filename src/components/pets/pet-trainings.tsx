@@ -2,26 +2,23 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
-import { CalendarDays, User, Target, BookOpen } from 'lucide-react'
-import { usePetTrainings } from '@/hooks/pets/use-pet-trainings'
+import { CalendarDays, Target, BookOpen } from 'lucide-react'
+import { useTrainingList } from '@/hooks/trainings/use-training-list'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { getStaffFullName } from '@/lib/staff-utils'
+
 import { TrainingCreateButton } from '@/components/trainings/training-create-button'
 import { TrainingActions } from '@/components/trainings/training-actions'
 
-type Training = Tables<'trainings'> & {
-  clinical_records: Tables<'clinical_records'> | null
-  staff: Tables<'staff'> | null
-}
+type Training = Tables<'trainings'>
 
 interface PetTrainingsProps {
   petId: string
 }
 
 export function PetTrainings({ petId }: PetTrainingsProps) {
-  const { data: trainings = [], isLoading } = usePetTrainings(petId)
+  const { data: trainings = [], isLoading } = useTrainingList(petId)
 
   if (isLoading) {
     return (
@@ -96,24 +93,10 @@ export function PetTrainings({ petId }: PetTrainingsProps) {
                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                 <span className="text-sm">
                   <strong>Fecha:</strong>{' '}
-                  {training.clinical_records?.record_date
-                    ? format(
-                        new Date(training.clinical_records.record_date),
-                        'PPP',
-                        { locale: es }
-                      )
-                    : 'No especificada'}
+                  No especificada
                 </span>
               </div>
-              {training.staff && (
-                <div className="flex items-center gap-2">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">
-                    <strong>Entrenador:</strong>{' '}
-                    {getStaffFullName(training.staff)}
-                  </span>
-                </div>
-              )}
+
             </div>
 
             {training.goal && (

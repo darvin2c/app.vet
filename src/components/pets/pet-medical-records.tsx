@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { MedicalRecordCreateButton } from '../medical-records/medical-record-create-button'
-import { usePetMedicalRecords } from '@/hooks/pets/use-pet-medical-records'
+import { useMedicalRecordListByPet } from '@/hooks/medical-records/use-medical-record-list-by-pet'
 import { PetMedicalRecordsList } from './pet-medical-records-list'
 
 interface PetMedicalRecordsProps {
@@ -10,7 +10,7 @@ interface PetMedicalRecordsProps {
 }
 
 export function PetMedicalRecords({ petId }: PetMedicalRecordsProps) {
-  const { data: medicalRecords = [] } = usePetMedicalRecords(petId)
+  const { data: medicalRecords = [] } = useMedicalRecordListByPet(petId)
 
   return (
     <div className="space-y-6">
