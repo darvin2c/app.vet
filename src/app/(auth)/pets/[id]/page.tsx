@@ -18,11 +18,8 @@ import { AppointmentCreateButton } from '@/components/appointments/appointment-c
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
 import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
-import { ClinicalNoteList } from '@/components/clinical-notes/clinical-note-list'
 import { ClinicalNoteCreateButton } from '@/components/clinical-notes/clinical-note-create-button'
-import { ClinicalParameterCreateButton } from '@/components/clinical-parameters/clinical-parameter-create-button'
 import { FilterConfig } from '@/types/filters.types'
-import { OrderByConfig } from '@/types/order-by.types'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 
 export default function PetProfilePage() {
@@ -88,7 +85,6 @@ export default function PetProfilePage() {
     },
     { value: 'appointments', label: 'Citas', count: appointments.length },
     { value: 'hospitalizations', label: 'Hospitalizaciones' },
-    { value: 'clinical-notes', label: 'Notas' },
   ]
 
   if (petLoading || !pet) {
@@ -193,25 +189,6 @@ export default function PetProfilePage() {
                 <HospitalizationCreateButton petId={petId} />
               </div>
               <HospitalizationList petId={petId} />
-            </TabsContent>
-
-            {/* Clinical Notes */}
-            <TabsContent
-              value="clinical-notes"
-              className="space-y-4 md:space-y-6"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold">
-                    Notas Clínicas
-                  </h2>
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Historial médico y observaciones de la mascota
-                  </p>
-                </div>
-                <ClinicalNoteCreateButton petId={petId} />
-              </div>
-              <ClinicalNoteList petId={petId} compact />
             </TabsContent>
           </Tabs>
         </div>
