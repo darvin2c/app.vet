@@ -36,7 +36,6 @@ export function ClinicalParameterEdit({
   const form = useForm<ClinicalParameterFormData>({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      record_id: clinicalParameter?.record_id || '',
       measured_at: clinicalParameter?.measured_at || '',
       params:
         (clinicalParameter?.params as Record<string, string | number>) || {},

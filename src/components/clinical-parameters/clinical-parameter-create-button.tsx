@@ -7,10 +7,12 @@ import { Plus } from 'lucide-react'
 
 interface ClinicalParameterCreateButtonProps {
   petId: string
+  clinicalRecordId: string
 }
 
 export function ClinicalParameterCreateButton({
   petId,
+  clinicalRecordId,
 }: ClinicalParameterCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
@@ -28,6 +30,7 @@ export function ClinicalParameterCreateButton({
         open={open}
         onOpenChange={setOpen}
         petId={petId}
+        clinicalRecordId={clinicalRecordId}
       />
     </>
   )

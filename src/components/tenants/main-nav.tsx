@@ -91,6 +91,12 @@ const navigationGroups: NavGroup[] = [
         icon: ListCollapse,
         tooltip: 'Referencias',
       },
+      {
+        title: 'Configuración',
+        href: '/settings',
+        icon: Box,
+        tooltip: 'Configuración',
+      },
     ],
   },
 ]
