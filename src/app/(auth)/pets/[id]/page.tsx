@@ -20,7 +20,6 @@ import { HospitalizationList } from '@/components/hospitalizations/hospitalizati
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 import { ClinicalNoteList } from '@/components/clinical-notes/clinical-note-list'
 import { ClinicalNoteCreateButton } from '@/components/clinical-notes/clinical-note-create-button'
-import { ClinicalParameterList } from '@/components/clinical-parameters/clinical-parameter-list'
 import { ClinicalParameterCreateButton } from '@/components/clinical-parameters/clinical-parameter-create-button'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderByConfig } from '@/types/order-by.types'
@@ -79,19 +78,14 @@ export default function PetProfilePage() {
     },
   ]
 
-  const clinicalParameterOrderByConfig: OrderByConfig = {
-    columns: [
-      { field: 'measured_at', label: 'Fecha de medición' },
-      { field: 'schema_version', label: 'Versión' },
-      { field: 'created_at', label: 'Fecha de creación' },
-    ],
-  }
-
-  // Mobile tabs configuration
+  // tabs configuration
   const mobileTabs = [
     { value: 'general', label: 'General' },
-    { value: 'clinical-parameters', label: 'Parámetros' },
-    { value: 'treatments', label: 'Registros', count: medicalRecords.length },
+    {
+      value: 'clinical-records',
+      label: 'Registros',
+      count: medicalRecords.length,
+    },
     { value: 'appointments', label: 'Citas', count: appointments.length },
     { value: 'hospitalizations', label: 'Hospitalizaciones' },
     { value: 'clinical-notes', label: 'Notas' },
@@ -175,31 +169,11 @@ export default function PetProfilePage() {
             </TabsContent>
 
             {/* All Medical Records - Now the main medical records view */}
-            <TabsContent value="treatments" className="space-y-4 md:space-y-6">
-              <PetMedicalRecords petId={petId} />
-            </TabsContent>
-
-            {/* Clinical Parameters */}
             <TabsContent
-              value="clinical-parameters"
+              value="clinical-records"
               className="space-y-4 md:space-y-6"
             >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold">
-                    Parámetros Clínicos
-                  </h2>
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Mediciones y parámetros vitales de la mascota
-                  </p>
-                </div>
-                <ClinicalParameterCreateButton petId={petId} />
-              </div>
-              <ClinicalParameterList
-                filterConfig={clinicalParameterFilters}
-                orderByConfig={clinicalParameterOrderByConfig}
-                petId={petId}
-              />
+              <PetMedicalRecords petId={petId} />
             </TabsContent>
 
             {/* Hospitalizations */}

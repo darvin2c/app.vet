@@ -44,18 +44,6 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
   return (
     <div className="space-y-6">
       <Field>
-        <FieldLabel htmlFor="record_id">Registro Clínico</FieldLabel>
-        <FieldContent>
-          <MedicalRecordSelect
-            value={watch('record_id') || ''}
-            onValueChange={(value) => setValue('record_id', value || undefined)}
-            petId={petId || ''}
-          />
-          <FieldError errors={[errors.record_id]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
         <FieldLabel htmlFor="measured_at">Fecha y Hora de Medición</FieldLabel>
         <FieldContent>
           <DatePicker
