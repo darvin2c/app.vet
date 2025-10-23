@@ -28,13 +28,13 @@ import { useFilters } from '@/hooks/use-filters'
 import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/hooks/use-order-by'
 import { MedicalRecordActions } from './medical-record-actions'
-import { ClinicalParameterActions } from '@/components/clinical-parameters/clinical-parameter-actions'
 import { ClinicalNoteActions } from '@/components/clinical-notes/clinical-note-actions'
 import type { Tables } from '@/types/supabase.types'
 import type { FilterConfig } from '@/types/filters.types'
 import type { OrderByConfig } from '@/types/order-by.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import ClinicalParameterItem from './records/clinical-parameter-item'
 
 type MedicalRecord = Tables<'clinical_records'> & {
   pets: {
@@ -134,23 +134,6 @@ export function MedicalRecordList({
     )
   }, [medicalRecords])
 
-  // Helper function to format clinical parameters for end users
-  const formatClinicalParameters = (params: any) => {
-    if (!params) return []
-
-    try {
-      const parsedParams =
-        typeof params === 'string' ? JSON.parse(params) : params
-      return Object.entries(parsedParams).map(([key, value]) => ({
-        key: key.replace(/_/g, ' ').replace(/\b\w/g, (l) => l.toUpperCase()),
-        value: value,
-        unit: getParameterUnit(key),
-      }))
-    } catch {
-      return []
-    }
-  }
-
   // Helper function to get parameter units
   const getParameterUnit = (key: string) => {
     const units: Record<string, string> = {
@@ -164,23 +147,6 @@ export function MedicalRecordList({
       // Add more units as needed
     }
     return units[key] || ''
-  }
-
-  // Helper function to get variant for parameter values
-  const getParameterVariant = (key: string, value: any) => {
-    // Define normal ranges for common parameters
-    const normalRanges: Record<string, { min: number; max: number }> = {
-      temperature: { min: 38, max: 39.5 },
-      heart_rate: { min: 60, max: 120 },
-      respiratory_rate: { min: 10, max: 30 },
-      // Add more ranges as needed
-    }
-
-    const range = normalRanges[key]
-    if (!range || typeof value !== 'number') return 'secondary'
-
-    if (value < range.min || value > range.max) return 'destructive'
-    return 'default'
   }
 
   const isLoading = isLoadingRecords || isLoadingParameters || isLoadingNotes
@@ -296,60 +262,12 @@ export function MedicalRecordList({
                       <Activity className="h-4 w-4" />
                       Parámetros Clínicos
                     </h4>
-                    {recordParameters.map((parameter) => {
-                      const formattedParams = formatClinicalParameters(
-                        parameter.params
-                      )
-                      return (
-                        <Item key={parameter.id} variant="muted" size="sm">
-                          <ItemContent>
-                            <ItemTitle className="text-sm flex items-center gap-2">
-                              <Activity className="h-3 w-3 text-green-500" />
-                              <span>
-                                {format(
-                                  new Date(parameter.measured_at),
-                                  'dd/MM/yyyy HH:mm',
-                                  { locale: es }
-                                )}
-                              </span>
-                              {parameter.schema_version && (
-                                <Badge variant="outline" className="text-xs">
-                                  v{parameter.schema_version}
-                                </Badge>
-                              )}
-                            </ItemTitle>
-                            <ItemDescription className="mt-2">
-                              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                {formattedParams.map(({ key, value, unit }) => (
-                                  <div
-                                    key={key}
-                                    className="flex items-center justify-between p-2 bg-background rounded border"
-                                  >
-                                    <span className="text-xs font-medium text-muted-foreground">
-                                      {key}:
-                                    </span>
-                                    <Badge
-                                      variant={getParameterVariant(
-                                        key.toLowerCase().replace(/ /g, '_'),
-                                        value
-                                      )}
-                                      className="text-xs"
-                                    >
-                                      {String(value)} {unit}
-                                    </Badge>
-                                  </div>
-                                ))}
-                              </div>
-                            </ItemDescription>
-                          </ItemContent>
-                          <ItemActions>
-                            <ClinicalParameterActions
-                              clinicalParameter={parameter}
-                            />
-                          </ItemActions>
-                        </Item>
-                      )
-                    })}
+                    {recordParameters.map((parameter) => (
+                      <ClinicalParameterItem
+                        key={parameter.id}
+                        clinicalParameter={parameter}
+                      />
+                    ))}
                   </div>
                 )}
 
@@ -361,27 +279,7 @@ export function MedicalRecordList({
                       Notas Clínicas
                     </h4>
                     {recordNotes.map((note) => (
-                      <Item key={note.id} variant="muted" size="sm">
-                        <ItemContent>
-                          <ItemTitle className="text-sm flex items-center gap-2">
-                            <FileText className="h-3 w-3 text-blue-500" />
-                            <span>Nota Clínica</span>
-                            <Badge variant="outline" className="text-xs">
-                              {format(
-                                new Date(note.created_at),
-                                'dd/MM/yyyy HH:mm',
-                                { locale: es }
-                              )}
-                            </Badge>
-                          </ItemTitle>
-                          <ItemDescription className="mt-2">
-                            <p className="text-sm">{note.note}</p>
-                          </ItemDescription>
-                        </ItemContent>
-                        <ItemActions>
-                          <ClinicalNoteActions clinicalNote={note} />
-                        </ItemActions>
-                      </Item>
+                      <ClinicalNoteItem key={note.id} clinicalNote={note} />
                     ))}
                   </div>
                 )}
