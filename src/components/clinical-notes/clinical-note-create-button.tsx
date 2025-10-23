@@ -39,13 +39,15 @@ export function ClinicalNoteCreateButton({
         Nueva Nota Clínica
       </ResponsiveButton>
 
-      <ClinicalNoteCreate
-        open={open}
-        onOpenChange={setOpen}
-        petId={petId}
-        medicalRecordId={medicalRecordId}
-        hospitalizationId={hospitalizationId}
-      />
+      {petId && (
+        <ClinicalNoteCreate
+          open={open}
+          onOpenChange={setOpen}
+          petId={petId}
+          medicalRecordId={medicalRecordId}
+          hospitalizationId={hospitalizationId}
+        />
+      )}
     </>
   )
 }

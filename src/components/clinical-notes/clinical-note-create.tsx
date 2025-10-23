@@ -23,7 +23,7 @@ interface ClinicalNoteCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   medicalRecordId?: string
-  petId?: string
+  petId: string
   hospitalizationId?: string
 }
 

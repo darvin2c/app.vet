@@ -9,13 +9,6 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { DatePicker } from '@/components/ui/date-picker'
 import { type ClinicalParameterFormData } from '@/schemas/clinical-parameters.schema'
 import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
@@ -56,7 +49,7 @@ export function ClinicalParameterForm({ petId }: ClinicalParameterFormProps) {
           <MedicalRecordSelect
             value={watch('record_id') || ''}
             onValueChange={(value) => setValue('record_id', value || undefined)}
-            petId={petId}
+            petId={petId || ''}
           />
           <FieldError errors={[errors.record_id]} />
         </FieldContent>

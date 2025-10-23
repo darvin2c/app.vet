@@ -14,7 +14,7 @@ import { type ClinicalNoteFormData } from '@/schemas/clinical-notes.schema'
 import { StaffSelect } from '../staff/staff-select'
 
 interface ClinicalNoteFormProps {
-  petId?: string
+  petId: string
   clinicalRecordId?: string
 }
 

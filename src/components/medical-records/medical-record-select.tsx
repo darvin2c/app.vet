@@ -50,7 +50,7 @@ interface MedicalRecordSelectProps {
   placeholder?: string
   disabled?: boolean
   className?: string
-  petId?: string
+  petId: string
 }
 
 export function MedicalRecordSelect({
@@ -68,7 +68,7 @@ export function MedicalRecordSelect({
 
   const { data: medicalRecords = [], isPending: isLoading } =
     useMedicalRecordList({
-      petId: petId || '',
+      petId: petId,
       search: searchTerm,
     })
 

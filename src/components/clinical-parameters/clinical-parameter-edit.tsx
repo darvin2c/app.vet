@@ -66,7 +66,7 @@ export function ClinicalParameterEdit({
 
         <FormProvider {...form}>
           <div className="px-4">
-            <ClinicalParameterForm />
+            <ClinicalParameterForm petId={clinicalParameter.pet_id} />
           </div>
         </FormProvider>
 

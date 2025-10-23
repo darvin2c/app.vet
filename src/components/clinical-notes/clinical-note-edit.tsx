@@ -24,14 +24,12 @@ interface ClinicalNoteEditProps {
   clinicalNote: Tables<'clinical_notes'>
   open: boolean
   onOpenChange: (open: boolean) => void
-  petId?: string
 }
 
 export function ClinicalNoteEdit({
   clinicalNote,
   open,
   onOpenChange,
-  petId,
 }: ClinicalNoteEditProps) {
   const updateClinicalNote = useClinicalNoteUpdate()
 
@@ -78,7 +76,7 @@ export function ClinicalNoteEdit({
         <div className="px-4 pb-4">
           <FormProvider {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <ClinicalNoteForm petId={petId} />
+              <ClinicalNoteForm petId={clinicalNote.pet_id} />
             </form>
           </FormProvider>
         </div>
