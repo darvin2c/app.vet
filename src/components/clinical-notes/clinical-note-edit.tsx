@@ -10,7 +10,7 @@ import {
   DrawerTitle,
   DrawerDescription,
   DrawerFooter,
-} from '@/components/ui/drawer'
+} from '@/components/ui/drawer-form'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalNoteForm } from './clinical-note-form'
 import {
@@ -65,7 +65,7 @@ export function ClinicalNoteEdit({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
+      <DrawerContent className="!max-w-2xl">
         <DrawerHeader>
           <DrawerTitle>Editar Nota Clínica</DrawerTitle>
           <DrawerDescription>

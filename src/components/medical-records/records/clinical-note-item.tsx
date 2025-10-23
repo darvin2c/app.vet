@@ -29,9 +29,9 @@ export default function ClinicalNoteItem({
             })}
           </Badge>
         </ItemTitle>
-        <ItemDescription className="mt-2">
+        <div className="mt-2">
           <p className="text-sm">{clinicalNote.note}</p>
-        </ItemDescription>
+        </div>
       </ItemContent>
       <ItemActions>
         <ClinicalNoteActions clinicalNote={clinicalNote} />

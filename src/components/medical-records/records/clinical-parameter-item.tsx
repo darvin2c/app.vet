@@ -1,7 +1,9 @@
 import { Badge } from '@/components/ui/badge'
-import { Item, ItemContent } from '@/components/ui/item'
+import { Item, ItemActions, ItemContent } from '@/components/ui/item'
 import useClinicalParameterParms from '@/hooks/clinical-parameters/use-clinical-parameter-parms'
 import { Tables } from '@/types/supabase.types'
+import { MedicalRecordActions } from '../medical-record-actions'
+import { ClinicalParameterActions } from '@/components/clinical-parameters/clinical-parameter-actions'
 
 type ClinicalParameter = Tables<'clinical_parameters'>
 
@@ -36,6 +38,9 @@ export default function ClinicalParameterItem({
           })}
         </div>
       </ItemContent>
+      <ItemActions>
+        <ClinicalParameterActions clinicalParameter={clinicalParameter} />
+      </ItemActions>
     </Item>
   )
 }

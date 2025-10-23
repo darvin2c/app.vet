@@ -39,24 +39,16 @@ export function useMedicalRecordList({
           `
           *,
           pets (
-            id,
-            name,
-            microchip
+            *
           ),
           staff (
-            id,
-            first_name,
-            last_name
+            *
           ),
           clinical_parameters (
-            id,
-            params,
-            schema_version, 
-            measured_at
+            *
           ),
           clinical_notes (
-            id, 
-            note
+            *
           )
         `
         )

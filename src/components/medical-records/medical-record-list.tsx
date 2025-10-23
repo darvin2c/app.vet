@@ -1,39 +1,15 @@
 'use client'
 
-import { useState, useMemo, useEffect, useCallback } from 'react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { useState, useMemo, useCallback } from 'react'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { Empty } from '@/components/ui/empty'
-import {
-  Item,
-  ItemContent,
-  ItemTitle,
-  ItemDescription,
-  ItemActions,
-  ItemGroup,
-  ItemSeparator,
-} from '@/components/ui/item'
-import {
-  ChevronRight,
-  ChevronDown,
-  Stethoscope,
-  FileText,
-  Activity,
-} from 'lucide-react'
+import { ItemGroup } from '@/components/ui/item'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
-import { useClinicalParameterList } from '@/hooks/clinical-parameters/use-clinical-parameter-list'
-import { useClinicalNoteList } from '@/hooks/clinical-notes/use-clinical-note-list'
 import { useFilters } from '@/hooks/use-filters'
-import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/hooks/use-order-by'
-import { MedicalRecordActions } from './medical-record-actions'
 import type { FilterConfig } from '@/types/filters.types'
 import type { OrderByConfig } from '@/types/order-by.types'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
-import ClinicalParameterItem from './records/clinical-parameter-item'
-import ClinicalNoteItem from './records/clinical-note-item'
+import ClinicalRecordItem from './records/clinical-record-item'
 
 export function MedicalRecordList({
   filterConfig,
@@ -51,28 +27,13 @@ export function MedicalRecordList({
 
   const {
     data: medicalRecords = [],
-    isPending: isLoadingRecords,
-    error: recordsError,
+    isPending,
+    error,
   } = useMedicalRecordList({
     petId: petId || '',
     filters: appliedFilters,
     orders: orderByHook.appliedSorts,
   })
-
-  const { data: clinicalParameters = [], isPending: isLoadingParameters } =
-    useClinicalParameterList({
-      petId,
-      filters: [],
-      search: '',
-      orders: [{ field: 'measured_at', ascending: false, direction: 'desc' }],
-    })
-
-  const { data: clinicalNotes = [], isPending: isLoadingNotes } =
-    useClinicalNoteList({
-      filters: [],
-      search: '',
-      orders: [{ field: 'created_at', ascending: false, direction: 'desc' }],
-    })
 
   const toggleExpanded = useCallback((recordId: string) => {
     setExpanded((prev) => {
@@ -93,13 +54,11 @@ export function MedicalRecordList({
     )
   }, [medicalRecords])
 
-  const isLoading = isLoadingRecords || isLoadingParameters || isLoadingNotes
-
-  if (isLoading) {
+  if (isPending) {
     return <TableSkeleton variant="list" />
   }
 
-  if (recordsError) {
+  if (error) {
     return (
       <Empty>
         <div className="text-center">
@@ -123,117 +82,9 @@ export function MedicalRecordList({
 
   return (
     <ItemGroup>
-      {sortedMedicalRecords.map((record, index) => {
-        const isExpanded = expanded.has(record.id)
-        const recordParameters = clinicalParameters.filter(
-          (param) => param.record_id === record.id
-        )
-        const recordNotes = clinicalNotes.filter(
-          (note) => note.clinical_record_id === record.id
-        )
-
-        return (
-          <div key={record.id}>
-            <Item variant="default" className="mb-2">
-              <ItemContent>
-                <ItemTitle className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => toggleExpanded(record.id)}
-                    className="h-6 w-6 p-0"
-                  >
-                    {isExpanded ? (
-                      <ChevronDown className="h-4 w-4" />
-                    ) : (
-                      <ChevronRight className="h-4 w-4" />
-                    )}
-                  </Button>
-                  <Stethoscope className="h-4 w-4 text-blue-500" />
-                  <span className="font-medium">
-                    {record.pets?.name || 'Mascota'} - {record.record_type}
-                  </span>
-                  <Badge variant="secondary" className="text-xs">
-                    {format(new Date(record.record_date), 'dd/MM/yyyy HH:mm', {
-                      locale: es,
-                    })}
-                  </Badge>
-                </ItemTitle>
-                <ItemDescription className="mt-2 space-y-1">
-                  {record.diagnosis && (
-                    <div className="text-sm">
-                      <span className="font-medium text-foreground">
-                        Diagnóstico:
-                      </span>{' '}
-                      {record.diagnosis}
-                    </div>
-                  )}
-                  {record.notes && (
-                    <div className="text-sm">
-                      <span className="font-medium text-foreground">
-                        Notas:
-                      </span>{' '}
-                      {record.notes}
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    {recordParameters.length > 0 && (
-                      <span className="flex items-center gap-1">
-                        <Activity className="h-3 w-3" />
-                        {recordParameters.length} parámetros
-                      </span>
-                    )}
-                    {recordNotes.length > 0 && (
-                      <span className="flex items-center gap-1">
-                        <FileText className="h-3 w-3" />
-                        {recordNotes.length} notas
-                      </span>
-                    )}
-                  </div>
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <MedicalRecordActions medicalRecord={record} />
-              </ItemActions>
-            </Item>
-
-            {isExpanded && (
-              <div className="ml-8 space-y-2 mb-4">
-                {/* Clinical Parameters */}
-                {recordParameters.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <Activity className="h-4 w-4" />
-                      Parámetros Clínicos
-                    </h4>
-                    {recordParameters.map((parameter) => (
-                      <ClinicalParameterItem
-                        key={parameter.id}
-                        clinicalParameter={parameter}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {/* Clinical Notes */}
-                {recordNotes.length > 0 && (
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Notas Clínicas
-                    </h4>
-                    {recordNotes.map((note) => (
-                      <ClinicalNoteItem key={note.id} clinicalNote={note} />
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {index !== sortedMedicalRecords.length - 1 && <ItemSeparator />}
-          </div>
-        )
-      })}
+      {sortedMedicalRecords.map((record) => (
+        <ClinicalRecordItem key={record.id} clinicalRecord={record} />
+      ))}
     </ItemGroup>
   )
 }
