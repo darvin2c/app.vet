@@ -5,11 +5,11 @@ Proyecto saas, en este proyecto implementaremos todo lo que esta dentro del tena
 Para formatear el documento debes de usar prettier
 
 ```bash
-pnpm run typecheck
-pnpm run format
+pnpm typecheck
+pnpm format
 ```
 
-- Antes de terminar de implementar una nueva funcion siempre debes de ejecutar `pnpm run typecheck`, y corregir los errores de tipado.
+- Antes de terminar de implementar una nueva funcion siempre debes de ejecutar `pnpm typecheck`, y corregir los errores de tipado.
 
 ## Estructura de carpetas
 
