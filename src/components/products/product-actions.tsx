@@ -40,6 +40,7 @@ export function ProductActions({ product }: ProductActionsProps) {
           <DropdownMenuItem
             onClick={() => setShowDeleteDialog(true)}
             className="text-destructive"
+            variant="destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Eliminar

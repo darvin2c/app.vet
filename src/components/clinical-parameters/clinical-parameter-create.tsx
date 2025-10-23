@@ -2,7 +2,6 @@
 
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import {
   Drawer,
   DrawerContent,
@@ -24,19 +23,20 @@ interface ClinicalParameterCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   petId: string
+  clinicalRecordId: string
 }
 
 export function ClinicalParameterCreate({
   open,
   onOpenChange,
   petId,
+  clinicalRecordId,
 }: ClinicalParameterCreateProps) {
   const createClinicalParameter = useClinicalParameterCreate()
 
   const form = useForm<ClinicalParameterFormData>({
     resolver: zodResolver(ClinicalParameterSchema),
     defaultValues: {
-      record_id: '',
       measured_at: new Date().toISOString().split('T')[0],
       params: {} as Record<string, string | number>,
       schema_version: undefined,
@@ -47,6 +47,7 @@ export function ClinicalParameterCreate({
     const dataWithPetId = {
       ...data,
       pet_id: petId,
+      clinical_record_id: clinicalRecordId,
       params: data.params as Json,
     }
     await createClinicalParameter.mutateAsync(dataWithPetId)
