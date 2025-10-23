@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
@@ -28,42 +28,12 @@ import { useFilters } from '@/hooks/use-filters'
 import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/hooks/use-order-by'
 import { MedicalRecordActions } from './medical-record-actions'
-import { ClinicalNoteActions } from '@/components/clinical-notes/clinical-note-actions'
-import type { Tables } from '@/types/supabase.types'
 import type { FilterConfig } from '@/types/filters.types'
 import type { OrderByConfig } from '@/types/order-by.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import ClinicalParameterItem from './records/clinical-parameter-item'
-
-type MedicalRecord = Tables<'clinical_records'> & {
-  pets: {
-    id: string
-    name: string
-    microchip: string | null
-  } | null
-  staff: {
-    id: string
-    first_name: string
-    last_name: string | null
-  } | null
-  clinical_parameters: {
-    id: string
-    params: any
-    schema_version: string | null
-    measured_at: string
-  }[]
-  clinical_notes: {
-    id: string
-    note: string
-  }[]
-}
-
-interface MedicalRecordListProps {
-  filterConfig: FilterConfig[]
-  orderByConfig: OrderByConfig
-  petId: string
-}
+import ClinicalNoteItem from './records/clinical-note-item'
 
 export function MedicalRecordList({
   filterConfig,
@@ -78,7 +48,6 @@ export function MedicalRecordList({
 
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
-  const { appliedSearch } = useSearch()
 
   const {
     data: medicalRecords = [],
@@ -87,7 +56,6 @@ export function MedicalRecordList({
   } = useMedicalRecordList({
     petId: petId || '',
     filters: appliedFilters,
-    search: appliedSearch,
     orders: orderByHook.appliedSorts,
   })
 
@@ -106,7 +74,7 @@ export function MedicalRecordList({
       orders: [{ field: 'created_at', ascending: false, direction: 'desc' }],
     })
 
-  const toggleExpanded = (recordId: string) => {
+  const toggleExpanded = useCallback((recordId: string) => {
     setExpanded((prev) => {
       const newExpanded = new Set(prev)
       if (newExpanded.has(recordId)) {
@@ -116,16 +84,7 @@ export function MedicalRecordList({
       }
       return newExpanded
     })
-  }
-
-  // Auto-expand all records when search is active
-  useEffect(() => {
-    if (appliedSearch) {
-      setExpanded(new Set(medicalRecords.map((record) => record.id)))
-    } else {
-      setExpanded(new Set())
-    }
-  }, [appliedSearch, medicalRecords])
+  }, [])
 
   const sortedMedicalRecords = useMemo(() => {
     return [...medicalRecords].sort(
@@ -133,21 +92,6 @@ export function MedicalRecordList({
         new Date(b.record_date).getTime() - new Date(a.record_date).getTime()
     )
   }, [medicalRecords])
-
-  // Helper function to get parameter units
-  const getParameterUnit = (key: string) => {
-    const units: Record<string, string> = {
-      temperature: '°C',
-      weight: 'kg',
-      heart_rate: 'bpm',
-      respiratory_rate: '/min',
-      blood_pressure_systolic: 'mmHg',
-      blood_pressure_diastolic: 'mmHg',
-      glucose: 'mg/dL',
-      // Add more units as needed
-    }
-    return units[key] || ''
-  }
 
   const isLoading = isLoadingRecords || isLoadingParameters || isLoadingNotes
 

@@ -347,4 +347,7 @@ if (patients.length === 0) {
 - Toda interacción con la base de datos debe de ser en UTC, dentro de los hooks se debe de cambiar `date.toUTCString()`
 - Todas las fechas mostradas en la interfaz de usuario deben de ser convertidas a la timezone del usuario o del navegador
 
-  **Nota** antes de finalizar siempre ejecuta `pnpm run typecheck`
+**Notas**
+
+- antes de finalizar siempre ejecuta `pnpm typecheck`
+- Los componentes debe de quedar siempre limpios, eliminar codigo que no se use.

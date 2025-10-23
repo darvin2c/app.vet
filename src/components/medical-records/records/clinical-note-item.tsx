@@ -3,12 +3,14 @@ import {
   ItemContent,
   ItemTitle,
   ItemDescription,
+  ItemActions,
 } from '@/components/ui/item'
 import { Tables } from '@/types/supabase.types'
 import { FileText } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { ClinicalNoteActions } from '@/components/clinical-notes/clinical-note-actions'
 
 export default function ClinicalNoteItem({
   clinicalNote,
