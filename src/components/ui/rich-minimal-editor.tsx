@@ -4,7 +4,7 @@ import { useEditor, EditorContent } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import StarterKit from '@tiptap/starter-kit'
 import Link from '@tiptap/extension-link'
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -35,6 +35,15 @@ export function RichMinimalEditor({
   className,
 }: RichMinimalEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
+
+  // Usar useRef para rastrear si el cambio viene del usuario o de props externas
+  const isInternalUpdate = useRef(false)
+  const onChangeRef = useRef(onChange)
+
+  // Mantener la referencia actualizada sin causar re-renders
+  useEffect(() => {
+    onChangeRef.current = onChange
+  }, [onChange])
 
   // Estabilizar la configuración de extensiones con useMemo
   const extensions = useMemo(
@@ -75,13 +84,18 @@ export function RichMinimalEditor({
     []
   )
 
-  // Usar useCallback para la función onUpdate
+  // Estabilizar handleUpdate para evitar recreaciones innecesarias
   const handleUpdate = useCallback(
     ({ editor }: { editor: any }) => {
+      isInternalUpdate.current = true
       const html = editor.getHTML()
-      onChange?.(html)
+      onChangeRef.current?.(html)
+      // Reset flag after a short delay to allow for external updates
+      setTimeout(() => {
+        isInternalUpdate.current = false
+      }, 0)
     },
-    [onChange]
+    [] // Sin dependencias para mantener la función estable
   )
 
   const editor = useEditor(
@@ -92,19 +106,37 @@ export function RichMinimalEditor({
       editable: !disabled,
       onUpdate: handleUpdate,
     },
-    [extensions, disabled, handleUpdate]
+    [extensions, disabled] // Removido handleUpdate de las dependencias
   )
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  // Optimizar la sincronización del contenido para evitar pérdida de foco
+  // Mejorar la sincronización del contenido para evitar pérdida de foco
   useEffect(() => {
-    if (editor && value !== undefined && value !== editor.getHTML()) {
-      // Solo actualizar si el editor no tiene foco para evitar interrumpir la escritura
-      if (!editor.isFocused) {
-        editor.commands.setContent(value)
+    if (
+      editor &&
+      value !== undefined &&
+      value !== editor.getHTML() &&
+      !isInternalUpdate.current && // Solo actualizar si no es un cambio interno
+      !editor.isFocused // Solo actualizar si el editor no tiene foco
+    ) {
+      // Preservar la posición del cursor si es posible
+      const { from, to } = editor.state.selection
+      editor.commands.setContent(value) // Usar sin el parámetro false
+
+      // Intentar restaurar la selección si es válida
+      try {
+        if (
+          from <= editor.state.doc.content.size &&
+          to <= editor.state.doc.content.size
+        ) {
+          editor.commands.setTextSelection({ from, to })
+        }
+      } catch (error) {
+        // Si no se puede restaurar la selección, continuar sin error
+        console.debug('Could not restore cursor position:', error)
       }
     }
   }, [editor, value])
