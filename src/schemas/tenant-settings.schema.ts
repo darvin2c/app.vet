@@ -139,19 +139,7 @@ export const TenantOperationalSettingsSchema = z.object({
 
 // Branding Settings Schema
 export const TenantBrandingSettingsSchema = z.object({
-  theme: z.enum(['light', 'dark', 'auto']).default('light'),
-  primary_color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i, 'Color debe ser un hexadecimal válido')
-    .default('#3B82F6'),
-  secondary_color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i, 'Color debe ser un hexadecimal válido')
-    .default('#64748B'),
-  accent_color: z
-    .string()
-    .regex(/^#[0-9A-F]{6}$/i, 'Color debe ser un hexadecimal válido')
-    .default('#10B981'),
+  theme: z.enum(['light', 'dark', 'system']).default('light'),
   logo_url: z.string().optional().or(z.literal('')),
   logo_position: z.enum(['left', 'center', 'right']).default('left'),
   show_logo_text: z.boolean().default(true),

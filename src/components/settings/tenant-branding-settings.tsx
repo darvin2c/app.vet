@@ -6,13 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
   Field,
   FieldContent,
   FieldLabel,
@@ -27,21 +20,14 @@ import {
 } from '@/components/ui/card'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
-import {
-  TenantBrandingSettingsSchema,
-  type TenantBrandingSettings,
-  THEME_OPTIONS,
-} from '@/schemas/tenant-settings.schema'
-import { Loader2, Palette, Upload, Eye, Image } from 'lucide-react'
+import { type TenantBrandingSettings } from '@/schemas/tenant-settings.schema'
+import { Loader2, Palette, Upload, Image } from 'lucide-react'
 import { toast } from 'sonner'
 import { z } from 'zod'
 
 // Schemas for individual sections
 const ThemeSettingsSchema = z.object({
   theme: z.enum(['light', 'dark', 'system']),
-  primary_color: z.string(),
-  secondary_color: z.string(),
-  accent_color: z.string(),
 })
 
 const LogoSettingsSchema = z.object({
@@ -66,9 +52,6 @@ function ThemeSettingsCard() {
     resolver: zodResolver(ThemeSettingsSchema),
     defaultValues: {
       theme: 'light',
-      primary_color: '#3b82f6',
-      secondary_color: '#64748b',
-      accent_color: '#f59e0b',
     },
   })
 
@@ -107,126 +90,106 @@ function ThemeSettingsCard() {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <CardContent className="space-y-4">
           <Field>
-            <FieldLabel htmlFor="theme">Tema</FieldLabel>
+            <FieldLabel htmlFor="theme">Theme:</FieldLabel>
             <FieldContent>
-              <Select
-                value={form.watch('theme')}
-                onValueChange={(value) => form.setValue('theme', value as any)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar tema" />
-                </SelectTrigger>
-                <SelectContent>
-                  {THEME_OPTIONS.map((theme) => (
-                    <SelectItem key={theme.value} value={theme.value}>
-                      {theme.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="flex items-center gap-4">
+                {/* Light Theme Card */}
+                <div
+                  className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all ${
+                    form.watch('theme') === 'light'
+                      ? 'border-blue-500'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => form.setValue('theme', 'light')}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    {/* Light Theme Preview */}
+                    <div className="w-16 h-12 rounded border border-gray-200 bg-white relative overflow-hidden">
+                      <div className="absolute top-1 left-1 right-1 h-2 bg-gray-100 rounded-sm"></div>
+                      <div className="absolute top-4 left-1 right-1 h-1 bg-gray-200 rounded-sm"></div>
+                      <div className="absolute top-6 left-1 w-8 h-1 bg-gray-200 rounded-sm"></div>
+                      <div className="absolute top-8 left-1 w-6 h-1 bg-gray-200 rounded-sm"></div>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-sm font-medium text-gray-900">
+                        Light
+                      </span>
+                      <p className="text-xs text-gray-500">
+                        Tema claro para uso diurno
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Dark Theme Card */}
+                <div
+                  className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all ${
+                    form.watch('theme') === 'dark'
+                      ? 'border-blue-500'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => form.setValue('theme', 'dark')}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    {/* Dark Theme Preview */}
+                    <div className="w-16 h-12 rounded border border-gray-600 bg-gray-900 relative overflow-hidden">
+                      <div className="absolute top-1 left-1 right-1 h-2 bg-gray-700 rounded-sm"></div>
+                      <div className="absolute top-4 left-1 right-1 h-1 bg-gray-600 rounded-sm"></div>
+                      <div className="absolute top-6 left-1 w-8 h-1 bg-gray-600 rounded-sm"></div>
+                      <div className="absolute top-8 left-1 w-6 h-1 bg-gray-600 rounded-sm"></div>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-sm font-medium text-gray-900">
+                        Dark
+                      </span>
+                      <p className="text-xs text-gray-500">
+                        Tema oscuro para reducir fatiga visual
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Auto/System Theme Card */}
+                <div
+                  className={`relative cursor-pointer rounded-lg border-2 p-3 transition-all ${
+                    form.watch('theme') === 'system'
+                      ? 'border-blue-500'
+                      : 'border-gray-200 hover:border-gray-300'
+                  }`}
+                  onClick={() => form.setValue('theme', 'system')}
+                >
+                  <div className="flex flex-col items-center space-y-2">
+                    {/* Auto Theme Preview - Split half light/half dark */}
+                    <div className="w-16 h-12 rounded border border-gray-300 relative overflow-hidden">
+                      {/* Left half - Light */}
+                      <div className="absolute top-0 left-0 w-8 h-full bg-white">
+                        <div className="absolute top-1 left-1 right-0 h-2 bg-gray-100 rounded-sm"></div>
+                        <div className="absolute top-4 left-1 right-0 h-1 bg-gray-200 rounded-sm"></div>
+                        <div className="absolute top-6 left-1 w-4 h-1 bg-gray-200 rounded-sm"></div>
+                        <div className="absolute top-8 left-1 w-3 h-1 bg-gray-200 rounded-sm"></div>
+                      </div>
+                      {/* Right half - Dark */}
+                      <div className="absolute top-0 right-0 w-8 h-full bg-gray-900">
+                        <div className="absolute top-1 left-0 right-1 h-2 bg-gray-700 rounded-sm"></div>
+                        <div className="absolute top-4 left-0 right-1 h-1 bg-gray-600 rounded-sm"></div>
+                        <div className="absolute top-6 left-0 w-4 h-1 bg-gray-600 rounded-sm"></div>
+                        <div className="absolute top-8 left-0 w-3 h-1 bg-gray-600 rounded-sm"></div>
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <span className="text-sm font-medium text-gray-900">
+                        Auto
+                      </span>
+                      <p className="text-xs text-gray-500">
+                        Se adapta automáticamente al sistema
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <FieldError errors={[form.formState.errors.theme]} />
             </FieldContent>
           </Field>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Field>
-              <FieldLabel htmlFor="primary_color">Color Primario</FieldLabel>
-              <FieldContent>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="primary_color"
-                    type="color"
-                    {...form.register('primary_color')}
-                    className="w-16 h-10 p-1 border rounded"
-                  />
-                  <Input
-                    type="text"
-                    {...form.register('primary_color')}
-                    placeholder="#3b82f6"
-                    className="flex-1"
-                  />
-                </div>
-                <FieldError errors={[form.formState.errors.primary_color]} />
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="secondary_color">
-                Color Secundario
-              </FieldLabel>
-              <FieldContent>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="secondary_color"
-                    type="color"
-                    {...form.register('secondary_color')}
-                    className="w-16 h-10 p-1 border rounded"
-                  />
-                  <Input
-                    type="text"
-                    {...form.register('secondary_color')}
-                    placeholder="#64748b"
-                    className="flex-1"
-                  />
-                </div>
-                <FieldError errors={[form.formState.errors.secondary_color]} />
-              </FieldContent>
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="accent_color">Color de Acento</FieldLabel>
-              <FieldContent>
-                <div className="flex items-center gap-2">
-                  <Input
-                    id="accent_color"
-                    type="color"
-                    {...form.register('accent_color')}
-                    className="w-16 h-10 p-1 border rounded"
-                  />
-                  <Input
-                    type="text"
-                    {...form.register('accent_color')}
-                    placeholder="#f59e0b"
-                    className="flex-1"
-                  />
-                </div>
-                <FieldError errors={[form.formState.errors.accent_color]} />
-              </FieldContent>
-            </Field>
-          </div>
-
-          {/* Color Preview */}
-          <div className="p-4 border rounded-lg">
-            <h5 className="text-sm font-medium mb-3">
-              Vista Previa de Colores
-            </h5>
-            <div className="flex items-center gap-4">
-              <div
-                className="w-12 h-12 rounded-lg border"
-                style={{ backgroundColor: form.watch('primary_color') }}
-                title="Color Primario"
-              />
-              <div
-                className="w-12 h-12 rounded-lg border"
-                style={{ backgroundColor: form.watch('secondary_color') }}
-                title="Color Secundario"
-              />
-              <div
-                className="w-12 h-12 rounded-lg border"
-                style={{ backgroundColor: form.watch('accent_color') }}
-                title="Color de Acento"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="ml-auto"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Vista Previa Completa
-              </Button>
-            </div>
-          </div>
 
           <div className="flex justify-end pt-4">
             <Button
