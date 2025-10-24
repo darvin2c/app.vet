@@ -18,13 +18,15 @@ import {
   CreateCustomerSchema,
 } from '@/schemas/customers.schema'
 import useCustomerCreate from '@/hooks/customers/use-customer-create'
+import { Tables } from '@/types/supabase.types'
 
 interface CustomerCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  onCustomerCreated?: (customer: Tables<'customers'>) => void
 }
 
-export function CustomerCreate({ open, onOpenChange }: CustomerCreateProps) {
+export function CustomerCreate({ open, onOpenChange, onCustomerCreated }: CustomerCreateProps) {
   const createCustomer = useCustomerCreate()
 
   const form = useForm<CreateCustomerSchema>({
@@ -41,9 +43,10 @@ export function CustomerCreate({ open, onOpenChange }: CustomerCreateProps) {
   })
 
   const onSubmit = async (data: CreateCustomerSchema) => {
-    await createCustomer.mutateAsync(data)
+    const newCustomer = await createCustomer.mutateAsync(data)
     form.reset()
     onOpenChange(false)
+    onCustomerCreated?.(newCustomer)
   }
 
   return (

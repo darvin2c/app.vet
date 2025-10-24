@@ -6,7 +6,7 @@ import {
   ResponsiveButton,
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
-import { OrderCreate } from './order-create'
+import { OrderPosCreate } from './order-pos-create'
 
 export function OrderCreateButton({
   children,
@@ -25,7 +25,7 @@ export function OrderCreateButton({
         {children || 'Nueva Orden'}
       </ResponsiveButton>
 
-      <OrderCreate open={open} onOpenChange={setOpen} />
+      <OrderPosCreate open={open} onOpenChange={setOpen} />
     </>
   )
 }
