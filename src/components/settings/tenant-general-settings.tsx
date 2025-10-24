@@ -11,13 +11,7 @@ import {
   FieldLabel,
   FieldError,
 } from '@/components/ui/field'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
 import { Loader2, Building2, FileText } from 'lucide-react'
@@ -75,17 +69,12 @@ function GeneralInfoCard() {
   }, [tenant, form])
 
   const onSubmit = async (data: GeneralInfoData) => {
-    try {
-      await updateTenant.mutateAsync({
-        name: data.name,
-        legal_name: data.legal_name || null,
-        email: data.email || null,
-        phone: data.phone || null,
-      })
-      toast.success('Información general actualizada')
-    } catch (error) {
-      toast.error('Error al actualizar información general')
-    }
+    await updateTenant.mutateAsync({
+      name: data.name,
+      legal_name: data.legal_name || null,
+      email: data.email || null,
+      phone: data.phone || null,
+    })
   }
 
   if (isLoading) {
