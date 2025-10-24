@@ -11,37 +11,25 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { CurrencyInput } from '@/components/ui/currency-input'
+import { TimezoneInput } from '@/components/ui/timezone-input'
 import { Loader2, DollarSign } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
-import {
-  CURRENCY_OPTIONS,
-  TIMEZONE_OPTIONS,
-} from '@/schemas/tenant-settings.schema'
 import { z } from 'zod'
 
 // Schema for Currency and Timezone settings
 const CurrencyTimezoneSchema = z.object({
-  currency: z.enum(['PEN', 'USD', 'EUR']).optional().nullish(),
-  timezone: z
-    .enum(['America/Lima', 'America/New_York', 'Europe/Madrid'])
-    .optional()
-    .nullish(),
+  currency: z.string().optional().nullish(),
+  timezone: z.string().optional().nullish(),
 })
 
 type CurrencyTimezoneSettings = z.infer<typeof CurrencyTimezoneSchema>
 
 // Currency and Timezone Card Component
 export function TenantCurrencyTimezoneSettings() {
-  const { data: tenant, isLoading } = useTenantDetail()
-  const updateTenant = useTenantUpdate()
+  const { data: tenant, isPending } = useTenantDetail()
+  const updateTenantMutation = useTenantUpdate()
 
   const defaultValues: CurrencyTimezoneSettings = {
     currency: undefined,
@@ -62,15 +50,12 @@ export function TenantCurrencyTimezoneSettings() {
   }, [tenant, form])
 
   const onSubmit = async (data: CurrencyTimezoneSettings) => {
-    // TODO: Add currency and timezone fields to tenants table schema
-    // await updateTenant.mutateAsync({
-    //   currency: data.currency || undefined,
-    //   timezone: data.timezone || undefined,
-    // })
-    console.log('Currency and timezone settings:', data)
+    await updateTenantMutation.mutateAsync({
+      ...data,
+    })
   }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <Card className="w-full">
         <CardContent className="flex items-center justify-center py-8">
@@ -101,23 +86,11 @@ export function TenantCurrencyTimezoneSettings() {
               <Field>
                 <FieldLabel htmlFor="currency">Moneda</FieldLabel>
                 <FieldContent>
-                  <Select
+                  <CurrencyInput
                     value={form.watch('currency') || ''}
-                    onValueChange={(value) =>
-                      form.setValue('currency', value as any)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar moneda" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CURRENCY_OPTIONS.map((currency) => (
-                        <SelectItem key={currency.value} value={currency.value}>
-                          {currency.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => form.setValue('currency', value)}
+                    placeholder="Seleccionar moneda"
+                  />
                   <FieldError errors={[form.formState.errors.currency]} />
                 </FieldContent>
               </Field>
@@ -125,23 +98,11 @@ export function TenantCurrencyTimezoneSettings() {
               <Field>
                 <FieldLabel htmlFor="timezone">Zona Horaria</FieldLabel>
                 <FieldContent>
-                  <Select
+                  <TimezoneInput
                     value={form.watch('timezone') || ''}
-                    onValueChange={(value) =>
-                      form.setValue('timezone', value as any)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Seleccionar zona horaria" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {TIMEZONE_OPTIONS.map((timezone) => (
-                        <SelectItem key={timezone.value} value={timezone.value}>
-                          {timezone.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    onChange={(value) => form.setValue('timezone', value)}
+                    placeholder="Seleccionar zona horaria"
+                  />
                   <FieldError errors={[form.formState.errors.timezone]} />
                 </FieldContent>
               </Field>
@@ -151,11 +112,11 @@ export function TenantCurrencyTimezoneSettings() {
             <div className="flex justify-end">
               <Button
                 type="submit"
-                disabled={updateTenant.isPending}
+                disabled={updateTenantMutation.isPending}
                 size="sm"
                 className="min-w-[100px]"
               >
-                {updateTenant.isPending ? (
+                {updateTenantMutation.isPending ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                     Guardando...
