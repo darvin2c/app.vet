@@ -10,6 +10,17 @@ import { Loader2, Clock } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
 import { z } from 'zod'
+import TimePicker from '../ui/time-picker'
+import { Checkbox } from '../ui/checkbox'
+import {
+  Field,
+  FieldDescription,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
+} from '../ui/field'
+import { Skeleton } from '../ui/skeleton'
+import { Alert } from '../ui/alert'
 
 // Schema for Business Hours settings
 const BusinessHoursSchema = z.object({
@@ -56,7 +67,7 @@ type BusinessHoursSettings = z.infer<typeof BusinessHoursSchema>
 
 // Business Hours Card Component
 export function TenantBusinessHoursSettings() {
-  const { data: tenant, isLoading } = useTenantDetail()
+  const { data: tenant, isPending, error } = useTenantDetail()
   const updateTenant = useTenantUpdate()
 
   const defaultValues: BusinessHoursSettings = {
@@ -84,13 +95,30 @@ export function TenantBusinessHoursSettings() {
     }
   }, [tenant, form])
 
-  const onSubmit = async (data: BusinessHoursSettings) => {}
+  const onSubmit = async (data: BusinessHoursSettings) => {
+    console.log(data)
+  }
 
-  if (isLoading) {
+  if (isPending) {
     return (
       <Card className="w-full">
         <CardContent className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin" />
+          <Skeleton className="w-full h-30" />
+          {Array.from({ length: 7 }).map((_, index) => (
+            <Skeleton key={index} className="w-full h-8" />
+          ))}
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (error) {
+    return (
+      <Card className="w-full">
+        <CardContent className="flex items-center justify-center py-8">
+          <Alert variant="destructive" className="w-full">
+            {error.message}
+          </Alert>
         </CardContent>
       </Card>
     )
@@ -109,21 +137,19 @@ export function TenantBusinessHoursSettings() {
   return (
     <Card className="w-full">
       <CardContent className="p-6">
-        <div className="flex items-start gap-6">
-          {/* Icon and Title */}
-          <div className="flex items-center gap-3 min-w-[200px]">
+        <FieldSet>
+          <FieldLegend>
             <Clock className="h-5 w-5 text-muted-foreground" />
-            <div>
-              <h3 className="font-semibold">Horario de Atención</h3>
-              <p className="text-sm text-muted-foreground">
-                Configura los horarios de atención
-              </p>
-            </div>
-          </div>
+            Horarios de Atención
+          </FieldLegend>
+          <FieldDescription>
+            Configura la moneda y zona horaria de tu clínica.
+          </FieldDescription>
+          <FieldSeparator />
 
           {/* Form Fields */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1">
-            <div className="space-y-3 mb-6">
+            <Field orientation={'responsive'}>
               {days.map((day) => (
                 <div
                   key={day.key}
@@ -134,47 +160,56 @@ export function TenantBusinessHoursSettings() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <input
-                      type="checkbox"
+                    <Checkbox
+                      className="rounded"
                       checked={form.watch(
-                        `business_hours.${day.key}.enabled` as any
+                        `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`
                       )}
-                      onChange={(e) =>
+                      onCheckedChange={(checked) =>
                         form.setValue(
-                          `business_hours.${day.key}.enabled` as any,
-                          e.target.checked
+                          `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`,
+                          checked === true
                         )
                       }
-                      className="rounded"
                     />
                     <span className="text-sm w-16">Abierto</span>
                   </div>
 
-                  {form.watch(`business_hours.${day.key}.enabled` as any) && (
+                  {form.watch(
+                    `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`
+                  ) && (
                     <div className="flex items-center gap-2 ml-auto">
-                      <Input
-                        type="time"
-                        {...form.register(
-                          `business_hours.${day.key}.start` as any
+                      <TimePicker
+                        value={form.watch(
+                          `business_hours.${day.key}.start` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.start`
                         )}
-                        className="w-20 h-8"
+                        onChange={(value) =>
+                          form.setValue(
+                            `business_hours.${day.key}.start` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.start`,
+                            value
+                          )
+                        }
                       />
                       <span className="text-sm text-muted-foreground">a</span>
-                      <Input
-                        type="time"
-                        {...form.register(
-                          `business_hours.${day.key}.end` as any
+                      <TimePicker
+                        value={form.watch(
+                          `business_hours.${day.key}.end` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.end`
                         )}
-                        className="w-20 h-8"
+                        onChange={(value) =>
+                          form.setValue(
+                            `business_hours.${day.key}.end` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.end`,
+                            value
+                          )
+                        }
                       />
                     </div>
                   )}
                 </div>
               ))}
-            </div>
+            </Field>
 
             {/* Save Button */}
-            <div className="flex justify-end">
+            <div className="flex pt-4 justify-end">
               <Button
                 type="submit"
                 disabled={updateTenant.isPending}
@@ -192,7 +227,7 @@ export function TenantBusinessHoursSettings() {
               </Button>
             </div>
           </form>
-        </div>
+        </FieldSet>
       </CardContent>
     </Card>
   )
