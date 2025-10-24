@@ -1448,6 +1448,7 @@ export type Database = {
       tenants: {
         Row: {
           address: Json | null
+          business_hours: Json | null
           created_at: string
           created_by: string
           currency: string | null
@@ -1466,6 +1467,7 @@ export type Database = {
         }
         Insert: {
           address?: Json | null
+          business_hours?: Json | null
           created_at?: string
           created_by?: string
           currency?: string | null
@@ -1484,6 +1486,7 @@ export type Database = {
         }
         Update: {
           address?: Json | null
+          business_hours?: Json | null
           created_at?: string
           created_by?: string
           currency?: string | null

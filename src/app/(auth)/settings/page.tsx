@@ -13,7 +13,7 @@ export default function SettingsPage() {
       title="Configuración"
       subtitle="Gestiona la configuración de tu organización"
     >
-      <div className="space-y-6 max-w-4xl">
+      <div className="space-y-6 max-w-3xl">
         <TenantGeneralSettings />
         <TenantBusinessSettings />
         <TenantOperationalSettings />

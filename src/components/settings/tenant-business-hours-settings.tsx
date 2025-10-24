@@ -4,7 +4,6 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Card, CardContent } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Loader2, Clock } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
@@ -14,17 +13,22 @@ import TimePicker from '../ui/time-picker'
 import { Checkbox } from '../ui/checkbox'
 import {
   Field,
+  FieldContent,
   FieldDescription,
+  FieldGroup,
+  FieldLabel,
   FieldLegend,
   FieldSeparator,
   FieldSet,
 } from '../ui/field'
 import { Skeleton } from '../ui/skeleton'
 import { Alert } from '../ui/alert'
+import { Switch } from '../ui/switch'
 
 // Schema for Business Hours settings
 const BusinessHoursSchema = z.object({
   business_hours: z.object({
+    enabled: z.boolean(),
     monday: z.object({
       enabled: z.boolean(),
       start: z.string(),
@@ -72,6 +76,7 @@ export function TenantBusinessHoursSettings() {
 
   const defaultValues: BusinessHoursSettings = {
     business_hours: {
+      enabled: false,
       monday: { enabled: true, start: '09:00', end: '17:00' },
       tuesday: { enabled: true, start: '09:00', end: '17:00' },
       wednesday: { enabled: true, start: '09:00', end: '17:00' },
@@ -90,22 +95,26 @@ export function TenantBusinessHoursSettings() {
   // Update form when tenant data is loaded
   React.useEffect(() => {
     if (tenant) {
-      // Since these fields don't exist in the current tenant schema,
-      // we'll keep the default values for now
+      form.reset({
+        business_hours:
+          tenant?.business_hours as BusinessHoursSettings['business_hours'],
+      })
     }
   }, [tenant, form])
 
   const onSubmit = async (data: BusinessHoursSettings) => {
-    console.log(data)
+    updateTenant.mutate({
+      business_hours: data.business_hours,
+    })
   }
 
   if (isPending) {
     return (
       <Card className="w-full">
-        <CardContent className="flex items-center justify-center py-8">
-          <Skeleton className="w-full h-30" />
+        <CardContent className="flex flex-col gap-4 py-8">
+          <Skeleton className="w-full h-8" />
           {Array.from({ length: 7 }).map((_, index) => (
-            <Skeleton key={index} className="w-full h-8" />
+            <Skeleton key={index} className="w-full h-16" />
           ))}
         </CardContent>
       </Card>
@@ -125,91 +134,126 @@ export function TenantBusinessHoursSettings() {
   }
 
   const days = [
-    { key: 'monday', label: 'Lun' },
-    { key: 'tuesday', label: 'Mar' },
-    { key: 'wednesday', label: 'Mié' },
-    { key: 'thursday', label: 'Jue' },
-    { key: 'friday', label: 'Vie' },
-    { key: 'saturday', label: 'Sáb' },
-    { key: 'sunday', label: 'Dom' },
+    { key: 'monday', label: 'Lunes', shortLabel: 'Lun' },
+    { key: 'tuesday', label: 'Martes', shortLabel: 'Mar' },
+    { key: 'wednesday', label: 'Miércoles', shortLabel: 'Mié' },
+    { key: 'thursday', label: 'Jueves', shortLabel: 'Jue' },
+    { key: 'friday', label: 'Viernes', shortLabel: 'Vie' },
+    { key: 'saturday', label: 'Sábado', shortLabel: 'Sáb' },
+    { key: 'sunday', label: 'Domingo', shortLabel: 'Dom' },
   ]
+
+  const businessHoursEnabled = form.watch('business_hours.enabled')
 
   return (
     <Card className="w-full">
       <CardContent className="p-6">
         <FieldSet>
-          <FieldLegend>
+          <FieldLegend className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-muted-foreground" />
             Horarios de Atención
           </FieldLegend>
           <FieldDescription>
-            Configura la moneda y zona horaria de tu clínica.
+            Configura los días y horarios en que tu clínica atiende al público.
           </FieldDescription>
           <FieldSeparator />
 
           {/* Form Fields */}
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1">
-            <Field orientation={'responsive'}>
-              {days.map((day) => (
-                <div
-                  key={day.key}
-                  className="flex items-center gap-4 p-3 border rounded-lg bg-muted/30"
-                >
-                  <div className="w-12 text-center">
-                    <label className="text-sm font-medium">{day.label}</label>
-                  </div>
+            <FieldGroup>
+              {/* Enable Business Hours Toggle */}
+              <Field orientation="horizontal">
+                <FieldContent>
+                  <FieldLabel htmlFor="business_hours.enabled">
+                    Habilitar horarios de atención
+                  </FieldLabel>
+                  <FieldDescription>
+                    Activa esta opción para definir los días y horarios en que
+                    tu clínica atiende al público. Los pacientes solo podrán
+                    agendar citas dentro de estos horarios.
+                  </FieldDescription>
+                </FieldContent>
+                <Switch
+                  id="business_hours.enabled"
+                  checked={businessHoursEnabled}
+                  onCheckedChange={(checked) =>
+                    form.setValue('business_hours.enabled', checked === true)
+                  }
+                />
+              </Field>
 
-                  <div className="flex items-center gap-2">
-                    <Checkbox
-                      className="rounded"
-                      checked={form.watch(
-                        `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`
-                      )}
-                      onCheckedChange={(checked) =>
-                        form.setValue(
-                          `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`,
-                          checked === true
-                        )
-                      }
-                    />
-                    <span className="text-sm w-16">Abierto</span>
-                  </div>
+              {/* Days Configuration - Only show when enabled */}
+              {businessHoursEnabled && (
+                <div className="space-y-4">
+                  <FieldLabel className="text-base font-medium">
+                    Configuración por día
+                  </FieldLabel>
+                  <div className="grid gap-3">
+                    {days.map((day) => {
+                      // Create specific paths for each day
+                      const dayEnabledPath =
+                        `business_hours.${day.key}.enabled` as keyof BusinessHoursSettings
+                      const dayStartPath =
+                        `business_hours.${day.key}.start` as keyof BusinessHoursSettings
+                      const dayEndPath =
+                        `business_hours.${day.key}.end` as keyof BusinessHoursSettings
 
-                  {form.watch(
-                    `business_hours.${day.key}.enabled` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.enabled`
-                  ) && (
-                    <div className="flex items-center gap-2 ml-auto">
-                      <TimePicker
-                        value={form.watch(
-                          `business_hours.${day.key}.start` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.start`
-                        )}
-                        onChange={(value) =>
-                          form.setValue(
-                            `business_hours.${day.key}.start` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.start`,
-                            value
-                          )
-                        }
-                      />
-                      <span className="text-sm text-muted-foreground">a</span>
-                      <TimePicker
-                        value={form.watch(
-                          `business_hours.${day.key}.end` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.end`
-                        )}
-                        onChange={(value) =>
-                          form.setValue(
-                            `business_hours.${day.key}.end` as `business_hours.${keyof BusinessHoursSettings['business_hours']}.end`,
-                            value
-                          )
-                        }
-                      />
-                    </div>
-                  )}
+                      return (
+                        <Field key={day.key} orientation="responsive">
+                          <FieldContent>
+                            <div className="flex items-center gap-3">
+                              <Checkbox
+                                checked={!!form.watch(dayEnabledPath as any)}
+                                onCheckedChange={(checked) =>
+                                  form.setValue(
+                                    dayEnabledPath as any,
+                                    checked === true
+                                  )
+                                }
+                              />
+                              <div className="min-w-0 flex-1">
+                                <FieldLabel className="text-sm font-medium">
+                                  {day.label}
+                                </FieldLabel>
+                                <FieldDescription className="text-xs">
+                                  {form.watch(dayEnabledPath as any)
+                                    ? 'Día habilitado para atención'
+                                    : 'Día cerrado'}
+                                </FieldDescription>
+                              </div>
+                            </div>
+                          </FieldContent>
+
+                          {/* Time Pickers - Only show when day is enabled */}
+                          {form.watch(dayEnabledPath as any) && (
+                            <div className="flex items-center gap-2 ml-auto">
+                              <TimePicker
+                                value={form.watch(dayStartPath as any)}
+                                onChange={(value) =>
+                                  form.setValue(dayStartPath as any, value)
+                                }
+                              />
+                              <span className="text-sm text-muted-foreground px-1">
+                                a
+                              </span>
+                              <TimePicker
+                                value={form.watch(dayEndPath as any)}
+                                onChange={(value) =>
+                                  form.setValue(dayEndPath as any, value)
+                                }
+                              />
+                            </div>
+                          )}
+                        </Field>
+                      )
+                    })}
+                  </div>
                 </div>
-              ))}
-            </Field>
+              )}
+            </FieldGroup>
 
             {/* Save Button */}
-            <div className="flex pt-4 justify-end">
+            <div className="flex pt-6 justify-end">
               <Button
                 type="submit"
                 disabled={updateTenant.isPending}
