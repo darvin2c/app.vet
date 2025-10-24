@@ -18,6 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 /**
  * Lista de monedas más comunes organizadas por región
@@ -260,5 +261,19 @@ const CurrencyInput = React.forwardRef<HTMLButtonElement, CurrencyInputProps>(
 )
 
 CurrencyInput.displayName = 'CurrencyInput'
+
+export function CurrencyDisplay({ children }: { children?: React.ReactNode }) {
+  const { currentTenant } = useCurrentTenantStore()
+  const currency = CURRENCIES.find(
+    (currency) => currency.value === currentTenant?.currency
+  )
+  return (
+    <>
+      {currency?.symbol} {children}
+    </>
+  )
+}
+
+CurrencyDisplay.displayName = 'CurrencyDisplay'
 
 export { CurrencyInput }
