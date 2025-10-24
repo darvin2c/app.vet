@@ -1,0 +1,63 @@
+import { supabase } from '@/lib/supabase/client'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { CreateOrderItemSchema } from '@/schemas/order-items.schema'
+import { TablesInsert } from '@/types/supabase.types'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { toast } from 'sonner'
+
+export default function useOrderItemCreate() {
+  const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
+
+  return useMutation({
+    mutationFn: async (data: CreateOrderItemSchema) => {
+      if (!currentTenant?.id) {
+        throw new Error('No hay tenant seleccionado')
+      }
+
+      // Calcular el total del item
+      const subtotal = data.quantity * data.unit_price
+      const discountAmount = (subtotal * (data.discount || 0)) / 100
+      const taxableAmount = subtotal - discountAmount
+      const taxAmount = (taxableAmount * (data.tax_rate || 0)) / 100
+      const total = taxableAmount + taxAmount
+
+      const orderItemData: TablesInsert<'order_items'> = {
+        order_id: data.order_id,
+        product_id: data.product_id,
+        description: data.description,
+        quantity: data.quantity,
+        unit_price: data.unit_price,
+        discount: data.discount || 0,
+        tax_rate: data.tax_rate || 0,
+        total: total,
+        tenant_id: currentTenant.id,
+      }
+
+      const { data: orderItem, error } = await supabase
+        .from('order_items')
+        .insert(orderItemData)
+        .select()
+        .single()
+
+      if (error) {
+        throw new Error(`Error al crear item de orden: ${error.message}`)
+      }
+
+      return orderItem
+    },
+    onSuccess: (data) => {
+      // Invalidar las consultas relacionadas
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'order-items', data.order_id],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'orders'],
+      })
+      toast.success('Item agregado exitosamente')
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Error al agregar item')
+    },
+  })
+}
