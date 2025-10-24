@@ -23,6 +23,7 @@ import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
 import { z } from 'zod'
 import { Skeleton } from '../ui/skeleton'
+import { Alert } from '../ui/alert'
 
 // Schema for Currency and Timezone settings
 const CurrencyTimezoneSchema = z.object({
@@ -34,7 +35,7 @@ type CurrencyTimezoneSettings = z.infer<typeof CurrencyTimezoneSchema>
 
 // Currency and Timezone Card Component
 export function TenantCurrencyTimezoneSettings() {
-  const { data: tenant, isPending } = useTenantDetail()
+  const { data: tenant, isPending, error } = useTenantDetail()
   const updateTenantMutation = useTenantUpdate()
   const defaultValues: CurrencyTimezoneSettings = {
     currency: undefined,
@@ -69,6 +70,17 @@ export function TenantCurrencyTimezoneSettings() {
           <Skeleton className="h-20 w-full" />
           <Skeleton className="h-20 w-full" />
           <Skeleton className="h-20 w-full" />
+        </CardContent>
+      </Card>
+    )
+  }
+  if (error) {
+    return (
+      <Card className="w-full">
+        <CardContent>
+          <Alert variant="destructive" className="w-full">
+            {error.message}
+          </Alert>
         </CardContent>
       </Card>
     )
