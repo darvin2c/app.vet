@@ -555,6 +555,321 @@ export type Database = {
           },
         ]
       }
+      order_items: {
+        Row: {
+          created_at: string
+          description: string
+          discount: number
+          id: string
+          order_id: string
+          product_id: string | null
+          quantity: number
+          tax_rate: number
+          tenant_id: string
+          total: number | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          discount?: number
+          id?: string
+          order_id: string
+          product_id?: string | null
+          quantity: number
+          tax_rate?: number
+          tenant_id: string
+          total?: number | null
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          discount?: number
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          quantity?: number
+          tax_rate?: number
+          tenant_id?: string
+          total?: number | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'order_items_order_id_fkey'
+            columns: ['order_id']
+            isOneToOne: false
+            referencedRelation: 'orders'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'order_items_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'order_items_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          balance: number | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          custumer_id: string
+          id: string
+          notes: string | null
+          order_number: string | null
+          paid_amount: number
+          pet_id: string | null
+          status: Database['public']['Enums']['order_status']
+          subtotal: number
+          tax: number
+          tenant_id: string
+          total: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          custumer_id: string
+          id?: string
+          notes?: string | null
+          order_number?: string | null
+          paid_amount?: number
+          pet_id?: string | null
+          status?: Database['public']['Enums']['order_status']
+          subtotal?: number
+          tax?: number
+          tenant_id: string
+          total?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          custumer_id?: string
+          id?: string
+          notes?: string | null
+          order_number?: string | null
+          paid_amount?: number
+          pet_id?: string | null
+          status?: Database['public']['Enums']['order_status']
+          subtotal?: number
+          tax?: number
+          tenant_id?: string
+          total?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'orders_created_by_fkey'
+            columns: ['created_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_custumer_id_fkey'
+            columns: ['custumer_id']
+            isOneToOne: false
+            referencedRelation: 'customers'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_pet_id_fkey'
+            columns: ['pet_id']
+            isOneToOne: false
+            referencedRelation: 'pets'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_updated_by_fkey'
+            columns: ['updated_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      payment_methods: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          name: string
+          payment_type: Database['public']['Enums']['payment_type']
+          sort_order: number | null
+          tenant_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          payment_type: Database['public']['Enums']['payment_type']
+          sort_order?: number | null
+          tenant_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          payment_type?: Database['public']['Enums']['payment_type']
+          sort_order?: number | null
+          tenant_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'payment_methods_created_by_fkey'
+            columns: ['created_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payment_methods_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payment_methods_updated_by_fkey'
+            columns: ['updated_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
+      payments: {
+        Row: {
+          amount: number
+          created_at: string
+          created_by: string | null
+          customer_id: string
+          id: string
+          notes: string | null
+          order_id: string | null
+          payment_date: string
+          payment_method_id: string
+          reference: string | null
+          tenant_id: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          created_by?: string | null
+          customer_id: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          payment_date?: string
+          payment_method_id: string
+          reference?: string | null
+          tenant_id: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          created_by?: string | null
+          customer_id?: string
+          id?: string
+          notes?: string | null
+          order_id?: string | null
+          payment_date?: string
+          payment_method_id?: string
+          reference?: string | null
+          tenant_id?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'payments_created_by_fkey'
+            columns: ['created_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_customer_id_fkey'
+            columns: ['customer_id']
+            isOneToOne: false
+            referencedRelation: 'customers'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_order_id_fkey'
+            columns: ['order_id']
+            isOneToOne: false
+            referencedRelation: 'orders'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_payment_method_id_fkey'
+            columns: ['payment_method_id']
+            isOneToOne: false
+            referencedRelation: 'payment_methods'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'payments_updated_by_fkey'
+            columns: ['updated_by']
+            isOneToOne: false
+            referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       pets: {
         Row: {
           birth_date: string | null
@@ -1397,6 +1712,35 @@ export type Database = {
           },
         ]
       }
+      tenant_counters: {
+        Row: {
+          counter_key: string
+          last_number: number
+          tenant_id: string
+          updated_at: string
+        }
+        Insert: {
+          counter_key: string
+          last_number?: number
+          tenant_id: string
+          updated_at?: string
+        }
+        Update: {
+          counter_key?: string
+          last_number?: number
+          tenant_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'tenant_counters_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       tenant_users: {
         Row: {
           created_at: string
@@ -1628,6 +1972,8 @@ export type Database = {
         | 'completed'
         | 'cancelled'
         | 'no_show'
+      order_status: 'draft' | 'confirmed' | 'paid' | 'cancelled' | 'refunded'
+      payment_type: 'cash' | 'app' | 'credit' | 'others'
       pet_sex: 'M' | 'F'
       record_type:
         | 'consultation'
@@ -1780,6 +2126,8 @@ export const Constants = {
         'cancelled',
         'no_show',
       ],
+      order_status: ['draft', 'confirmed', 'paid', 'cancelled', 'refunded'],
+      payment_type: ['cash', 'app', 'credit', 'others'],
       pet_sex: ['M', 'F'],
       record_type: [
         'consultation',
