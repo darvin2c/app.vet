@@ -7,8 +7,13 @@ import { Card, CardContent } from '@/components/ui/card'
 import {
   Field,
   FieldContent,
+  FieldDescription,
   FieldError,
+  FieldGroup,
   FieldLabel,
+  FieldLegend,
+  FieldSeparator,
+  FieldSet,
 } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
 import { CurrencyInput } from '@/components/ui/currency-input'
@@ -17,6 +22,7 @@ import { Loader2, DollarSign } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
 import { z } from 'zod'
+import { Skeleton } from '../ui/skeleton'
 
 // Schema for Currency and Timezone settings
 const CurrencyTimezoneSchema = z.object({
@@ -30,7 +36,6 @@ type CurrencyTimezoneSettings = z.infer<typeof CurrencyTimezoneSchema>
 export function TenantCurrencyTimezoneSettings() {
   const { data: tenant, isPending } = useTenantDetail()
   const updateTenantMutation = useTenantUpdate()
-
   const defaultValues: CurrencyTimezoneSettings = {
     currency: undefined,
     timezone: undefined,
@@ -44,8 +49,10 @@ export function TenantCurrencyTimezoneSettings() {
   // Update form when tenant data is loaded
   React.useEffect(() => {
     if (tenant) {
-      // Since these fields don't exist in the current tenant schema,
-      // we'll keep the default values for now
+      form.reset({
+        currency: tenant.currency,
+        timezone: tenant.timezone,
+      })
     }
   }, [tenant, form])
 
@@ -58,8 +65,10 @@ export function TenantCurrencyTimezoneSettings() {
   if (isPending) {
     return (
       <Card className="w-full">
-        <CardContent className="flex items-center justify-center py-8">
-          <Loader2 className="h-6 w-6 animate-spin" />
+        <CardContent>
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
+          <Skeleton className="h-20 w-full" />
         </CardContent>
       </Card>
     )
@@ -68,52 +77,64 @@ export function TenantCurrencyTimezoneSettings() {
   return (
     <Card className="w-full">
       <CardContent className="p-6">
-        <div className="flex items-start gap-6">
-          {/* Icon and Title */}
-          <div className="flex items-center gap-3 min-w-[200px]">
-            <DollarSign className="h-5 w-5 text-muted-foreground" />
-            <div>
-              <h3 className="font-semibold">Moneda y Zona Horaria</h3>
-              <p className="text-sm text-muted-foreground">
-                Configura la moneda y zona horaria
-              </p>
-            </div>
-          </div>
-
-          {/* Form Fields */}
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-              <Field>
-                <FieldLabel htmlFor="currency">Moneda</FieldLabel>
+        {/* Form */}
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <FieldSet>
+            <FieldLegend>Moneda y Zona Horaria</FieldLegend>
+            <FieldDescription>
+              Configura la moneda y zona horaria de tu clínica.
+            </FieldDescription>
+            <FieldSeparator />
+            <FieldGroup>
+              {/* Currency Field */}
+              <Field orientation="responsive">
                 <FieldContent>
-                  <CurrencyInput
-                    value={form.watch('currency') || ''}
-                    onChange={(value) => form.setValue('currency', value)}
-                    placeholder="Seleccionar moneda"
-                  />
-                  <FieldError errors={[form.formState.errors.currency]} />
+                  <FieldLabel
+                    htmlFor="currency"
+                    className="text-sm font-medium"
+                  >
+                    Moneda
+                  </FieldLabel>
+                  <FieldDescription>
+                    Selecciona la moneda principal para tu clínica
+                  </FieldDescription>
                 </FieldContent>
+                <CurrencyInput
+                  value={form.watch('currency') || ''}
+                  onChange={(value) => form.setValue('currency', value)}
+                  placeholder="Seleccionar moneda"
+                  className="max-w-md"
+                />
+                <FieldError errors={[form.formState.errors.currency]} />
               </Field>
-
-              <Field>
-                <FieldLabel htmlFor="timezone">Zona Horaria</FieldLabel>
+              <FieldSeparator />
+              {/* Timezone Field */}
+              <Field orientation="responsive">
                 <FieldContent>
-                  <TimezoneInput
-                    value={form.watch('timezone') || ''}
-                    onChange={(value) => form.setValue('timezone', value)}
-                    placeholder="Seleccionar zona horaria"
-                  />
-                  <FieldError errors={[form.formState.errors.timezone]} />
+                  <FieldLabel
+                    htmlFor="timezone"
+                    className="text-sm font-medium"
+                  >
+                    Zona Horaria
+                  </FieldLabel>
+                  <FieldDescription>
+                    Configura la zona horaria de tu ubicación
+                  </FieldDescription>
                 </FieldContent>
+                <TimezoneInput
+                  value={form.watch('timezone') || ''}
+                  onChange={(value) => form.setValue('timezone', value)}
+                  placeholder="Seleccionar zona horaria"
+                  className="max-w-md"
+                />
+                <FieldError errors={[form.formState.errors.timezone]} />
               </Field>
-            </div>
-
+            </FieldGroup>
             {/* Save Button */}
-            <div className="flex justify-end">
+            <div className="flex justify-start pt-4">
               <Button
                 type="submit"
                 disabled={updateTenantMutation.isPending}
-                size="sm"
                 className="min-w-[100px]"
               >
                 {updateTenantMutation.isPending ? (
@@ -126,8 +147,8 @@ export function TenantCurrencyTimezoneSettings() {
                 )}
               </Button>
             </div>
-          </form>
-        </div>
+          </FieldSet>
+        </form>
       </CardContent>
     </Card>
   )
