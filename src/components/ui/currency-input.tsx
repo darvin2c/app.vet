@@ -262,11 +262,16 @@ const CurrencyInput = React.forwardRef<HTMLButtonElement, CurrencyInputProps>(
 
 CurrencyInput.displayName = 'CurrencyInput'
 
-export function CurrencyDisplay({ children }: { children?: React.ReactNode }) {
+export function useCurrency() {
   const { currentTenant } = useCurrentTenantStore()
   const currency = CURRENCIES.find(
     (currency) => currency.value === currentTenant?.currency
   )
+  return { currency }
+}
+
+export function CurrencyDisplay({ children }: { children?: React.ReactNode }) {
+  const { currency } = useCurrency()
   return (
     <>
       {currency?.symbol} {children}
