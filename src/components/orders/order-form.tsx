@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/select'
 import { CustomerSelect } from '@/components/customers/customer-select'
 import { PetSelect } from '@/components/pets/pet-select'
+import { OrderItemsManager } from './order-items-manager'
 import { Tables, Enums } from '@/types/supabase.types'
 import { orderStatusOptions } from '@/schemas/orders.schema'
 
@@ -120,30 +121,34 @@ export function OrderForm({ mode = 'create', order }: OrderFormProps) {
         </div>
       </div>
 
+      {/* Productos de la orden */}
+      <OrderItemsManager
+        orderId={order?.id}
+        items={[]}
+        onItemsChange={(items) => {
+          // Calcular totales basados en los items
+          const totals = items.reduce(
+            (acc, item) => ({
+              subtotal: acc.subtotal + (item.subtotal || 0),
+              tax: acc.tax + (item.tax || 0),
+              total: acc.total + (item.total || 0),
+            }),
+            { subtotal: 0, tax: 0, total: 0 }
+          )
+          
+          // Actualizar los valores del formulario
+          setValue('subtotal', totals.subtotal)
+          setValue('tax', totals.tax)
+          setValue('total', totals.total)
+        }}
+        currency="PEN"
+        disabled={false}
+      />
+
       {/* Montos */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Montos</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field>
-            <FieldLabel htmlFor="currency">Moneda *</FieldLabel>
-            <FieldContent>
-              <Select
-                value={watch('currency') || 'PEN'}
-                onValueChange={(value) => setValue('currency', value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar moneda..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="PEN">PEN - Sol Peruano</SelectItem>
-                  <SelectItem value="USD">USD - Dólar Americano</SelectItem>
-                  <SelectItem value="EUR">EUR - Euro</SelectItem>
-                </SelectContent>
-              </Select>
-              <FieldError errors={[errors.currency]} />
-            </FieldContent>
-          </Field>
-
           <Field>
             <FieldLabel htmlFor="paid_amount">Monto pagado</FieldLabel>
             <FieldContent>

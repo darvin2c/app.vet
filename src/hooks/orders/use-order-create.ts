@@ -26,7 +26,6 @@ export default function useOrderCreate() {
         pet_id: data.pet_id,
         order_number: orderNumber,
         status: data.status,
-        currency: data.currency,
         subtotal: data.subtotal,
         tax: data.tax,
         total: data.total,

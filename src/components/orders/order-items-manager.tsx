@@ -268,7 +268,7 @@ export function OrderItemsManager({
                       placeholder="Descripción"
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <Input
                       type="number"
                       min="1"
@@ -279,10 +279,10 @@ export function OrderItemsManager({
                           quantity: parseInt(e.target.value) || 1,
                         }))
                       }
-                      className="text-right"
+                      className="text-right w-20"
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <Input
                       type="number"
                       min="0"
@@ -294,10 +294,10 @@ export function OrderItemsManager({
                           unit_price: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="text-right"
+                      className="text-right w-24"
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <Input
                       type="number"
                       min="0"
@@ -309,10 +309,10 @@ export function OrderItemsManager({
                           discount: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="text-right"
+                      className="text-right w-24"
                     />
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <Input
                       type="number"
                       min="0"
@@ -325,38 +325,53 @@ export function OrderItemsManager({
                           tax_rate: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="text-right"
+                      className="text-right w-20"
                     />
                   </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleAddItem}
-                        disabled={!newItem.product_id || newItem.quantity <= 0}
-                      >
-                        ✓
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          setIsAddingItem(false)
-                          setNewItem({
-                            product_id: '',
-                            description: '',
-                            quantity: 1,
-                            unit_price: 0,
-                            discount: 0,
-                            tax_rate: 0,
-                          })
-                        }}
-                      >
-                        ✕
-                      </Button>
-                    </div>
+                  <TableCell className="text-right">
+                    <Badge variant="secondary">
+                      {formatCurrency(
+                        calculateOrderItemTotal({
+                          quantity: newItem.quantity,
+                          unit_price: newItem.unit_price,
+                          discount: newItem.discount,
+                          tax_rate: newItem.tax_rate,
+                        }).total,
+                        currency
+                      )}
+                    </Badge>
                   </TableCell>
+                  {!disabled && (
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={handleAddItem}
+                          disabled={!newItem.product_id || newItem.quantity <= 0}
+                        >
+                          ✓
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            setIsAddingItem(false)
+                            setNewItem({
+                              product_id: '',
+                              description: '',
+                              quantity: 1,
+                              unit_price: 0,
+                              discount: 0,
+                              tax_rate: 0,
+                            })
+                          }}
+                        >
+                          ✕
+                        </Button>
+                      </div>
+                    </TableCell>
+                  )}
                 </TableRow>
               )}
             </TableBody>

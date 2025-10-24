@@ -9,6 +9,7 @@ import {
   LucideIcon,
   PawPrint,
   Handshake,
+  Scale,
 } from 'lucide-react'
 
 import {
@@ -62,6 +63,12 @@ const navigationGroups: NavGroup[] = [
   {
     label: 'Ventas',
     items: [
+      {
+        title: 'Ordenes',
+        href: '/orders',
+        icon: Scale,
+        tooltip: 'Ordenes',
+      },
       {
         title: 'Productos',
         href: '/products',

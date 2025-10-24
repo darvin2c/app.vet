@@ -17,7 +17,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import useProducts from '@/hooks/products/use-products-list'
+import useProductList from '@/hooks/products/use-products-list'
 import { Tables } from '@/types/supabase.types'
 import { ProductCreate } from './product-create'
 import { ProductEdit } from './product-edit'
@@ -44,19 +44,15 @@ export function ProductSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: products = [], isLoading } = useProducts({
+  const { data: products = [], isLoading } = useProductList({
     filters: [
-      {
-        field: 'search',
-        operator: 'ilike',
-        value: searchTerm,
-      },
       {
         field: 'is_active',
         operator: 'eq',
         value: true,
       },
     ],
+    search: searchTerm,
   })
 
   const selectedProduct = products.find(

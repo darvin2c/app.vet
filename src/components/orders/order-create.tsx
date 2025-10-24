@@ -31,7 +31,6 @@ export function OrderCreate({ open, onOpenChange }: OrderCreateProps) {
       pet_id: '',
       order_number: '',
       status: 'draft',
-      currency: 'PEN',
       subtotal: 0,
       tax: 0,
       total: 0,

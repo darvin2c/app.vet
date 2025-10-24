@@ -41,12 +41,10 @@ import {
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
-  ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
   ShoppingCart,
   Clock,
-  CheckCircle,
   XCircle,
   Package,
   DollarSign,
@@ -203,12 +201,11 @@ export function OrderList({
       ),
       cell: ({ row }: { row: Row<Order> }) => {
         const total = row.getValue('total') as number
-        const currency = row.original.currency || 'PEN'
         return (
           <div className="font-medium">
             {new Intl.NumberFormat('es-PE', {
               style: 'currency',
-              currency: currency,
+              currency: 'PEN',
             }).format(total)}
           </div>
         )
@@ -330,7 +327,7 @@ export function OrderList({
                   <DollarSign className="w-4 h-4" />
                   {new Intl.NumberFormat('es-PE', {
                     style: 'currency',
-                    currency: order.currency || 'PEN',
+                    currency: 'PEN',
                   }).format(order.total)}
                 </div>
               </div>
@@ -383,7 +380,7 @@ export function OrderList({
                     <div className="font-medium">
                       {new Intl.NumberFormat('es-PE', {
                         style: 'currency',
-                        currency: order.currency || 'PEN',
+                        currency: 'PEN',
                       }).format(order.total)}
                     </div>
                     <div className="text-xs text-muted-foreground">

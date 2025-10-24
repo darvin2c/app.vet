@@ -52,7 +52,17 @@ export default function useProductList({
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      filters.forEach((filter) => {})
+      filters.forEach((filter) => {
+        if (filter.field === 'search' && filter.value) {
+          query = query.or(
+            `name.ilike.%${filter.value}%,sku.ilike.%${filter.value}%,barcode.ilike.%${filter.value}%`
+          )
+        } else if (filter.field === 'is_active') {
+          query = query.eq('is_active', filter.value)
+        } else {
+          query = query.filter(filter.field, filter.operator, filter.value)
+        }
+      })
 
       // Aplicar ordenamiento
       orders.forEach((order) => {

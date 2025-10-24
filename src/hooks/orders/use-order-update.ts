@@ -32,7 +32,6 @@ export default function useOrderUpdate() {
         pet_id: data.pet_id,
         order_number: data.order_number,
         status: data.status,
-        currency: data.currency,
         subtotal: data.subtotal,
         tax: data.tax,
         total: data.total,

@@ -38,7 +38,6 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
         | 'paid'
         | 'cancelled'
         | 'refunded',
-      currency: order.currency,
       subtotal: order.subtotal,
       tax: order.tax,
       total: order.total,

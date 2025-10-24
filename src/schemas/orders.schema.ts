@@ -7,7 +7,6 @@ export const orderBaseSchema = z.object({
   status: z
     .enum(['draft', 'confirmed', 'paid', 'cancelled', 'refunded'])
     .default('draft'),
-  currency: z.string().default('PEN'),
   subtotal: z
     .number()
     .min(0, 'El subtotal debe ser mayor o igual a 0')
