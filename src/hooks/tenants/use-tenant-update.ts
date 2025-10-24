@@ -9,17 +9,13 @@ export function useTenantUpdate() {
   const { currentTenant, setCurrentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: Omit<TablesUpdate<'tenants'>, 'updated_at' | 'updated_by'>
-    ) => {
+    mutationFn: async (data: Omit<TablesUpdate<'tenants'>, 'tenant_id'>) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const updateData: TablesUpdate<'tenants'> = {
         ...data,
-        updated_at: new Date().toISOString(),
-        updated_by: currentTenant.id, // Assuming current user is updating
       }
 
       const { data: updatedTenant, error } = await supabase
