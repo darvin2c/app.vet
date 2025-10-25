@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
@@ -21,6 +21,7 @@ import {
   type PaymentMethodCreate,
 } from '@/schemas/payment-methods.schema'
 import { usePaymentMethodCreate } from '@/hooks/payment-methods/use-payment-method-create'
+import { Form } from '../ui/form'
 
 interface PaymentMethodCreateProps {
   children?: React.ReactNode
@@ -75,7 +76,7 @@ export function PaymentMethodCreate({
             Completa los datos para crear un nuevo método de pago.
           </DrawerDescription>
         </DrawerHeader>
-        <FormProvider {...form}>
+        <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="px-4">
               <PaymentMethodForm />
@@ -94,7 +95,7 @@ export function PaymentMethodCreate({
               </Button>
             </DrawerFooter>
           </form>
-        </FormProvider>
+        </Form>
       </DrawerContent>
     </Drawer>
   )

@@ -15,6 +15,7 @@ import { PaymentTable } from '@/components/pos/payment-table'
 import { PaymentSummary } from '@/components/pos/payment-summary'
 import { CheckCircle, Calculator, Percent, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface POSPaymentProps {
   onOrderCreated?: () => void
@@ -128,7 +129,7 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <ScrollArea className="flex flex-col h-full">
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
         {/* Payment Summary */}
         <PaymentSummary
@@ -252,6 +253,6 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
           )}
         </Button>
       </div>
-    </div>
+    </ScrollArea>
   )
 }

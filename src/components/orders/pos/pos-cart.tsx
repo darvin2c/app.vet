@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
@@ -64,15 +65,14 @@ export function POSCart() {
       <ScrollArea className="flex-1">
         <ItemGroup>
           {cartItems.map((item, index) => (
-            <>
+            <React.Fragment key={item.product.id}>
               <CartItemCard
-                key={item.product.id}
                 item={item}
                 onUpdateQuantity={updateCartItemQuantity}
                 onRemove={removeFromCart}
               />
               {index < cartItems.length - 1 && <ItemSeparator />}
-            </>
+            </React.Fragment>
           ))}
         </ItemGroup>
       </ScrollArea>

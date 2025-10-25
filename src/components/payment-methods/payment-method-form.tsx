@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Switch } from '@/components/ui/switch'
+import { IsActiveFormField } from '@/components/ui/is-active-field'
 import {
   PaymentMethodCreate,
   PaymentMethodUpdate,
@@ -94,16 +94,7 @@ export function PaymentMethodForm() {
         </FieldContent>
       </Field>
 
-      <Field>
-        <FieldLabel htmlFor="is_active">Estado</FieldLabel>
-        <FieldContent>
-          <div className="flex items-center space-x-2">
-            <Switch id="is_active" {...register('is_active')} />
-            <span className="text-sm text-muted-foreground">Activo</span>
-          </div>
-          <FieldError errors={[errors.is_active]} />
-        </FieldContent>
-      </Field>
+      <IsActiveFormField name="is_active" />
     </div>
   )
 }
