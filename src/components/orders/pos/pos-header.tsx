@@ -14,13 +14,8 @@ interface POSHeaderProps {
 }
 
 export function POSHeader({ onClose }: POSHeaderProps) {
-  const {
-    selectedCustomer,
-    cartItems,
-    currentView,
-    setCurrentView,
-    setIsMobileCartOpen,
-  } = usePOSStore()
+  const { cartItems, currentView, setCurrentView, setIsMobileCartOpen } =
+    usePOSStore()
 
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 

@@ -3,11 +3,19 @@
 import { useState, useMemo } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Search, Plus, Package, Tag, Grid3X3, List, Filter } from 'lucide-react'
+import {
+  Item,
+  ItemMedia,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+  ItemGroup,
+} from '@/components/ui/item'
+import { Plus, Package, Tag } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
@@ -104,17 +112,19 @@ export function POSProductGrid() {
       {/* Products Grid/List */}
       <ScrollArea className="h-[calc(100vh-400px)]">
         <div className="space-y-2">
-          {filteredProducts.map((product) => (
-            <ProductListItem
-              key={product.id}
-              product={product}
-              onAddToCart={handleAddToCart}
-            />
-          ))}
+          <ItemGroup className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+            {filteredProducts.map((product) => (
+              <ProductListItem
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </ItemGroup>
         </div>
 
         {filteredProducts.length === 0 && !isLoadingProducts && (
-          <div className="text-center py-12">
+          <div>
             <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               No se encontraron productos
@@ -141,56 +151,45 @@ function ProductListItem({
   const isLowStock = product.stock <= 5
 
   return (
-    <Card className="group hover:shadow-sm transition-shadow">
-      <CardContent className="p-4">
-        <div className="flex items-center gap-4">
-          {/* Product Image Placeholder */}
-          <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Package className="h-6 w-6 text-gray-400" />
-          </div>
+    <Item variant="outline" className="hover:bg-accent/50 transition-colors">
+      {/* Product Image/Icon */}
+      <ItemMedia variant="icon">
+        <Package className="h-6 w-6 text-muted-foreground" />
+      </ItemMedia>
 
-          {/* Product Info */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between">
-              <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-base truncate">
-                  {product.name}
-                </h4>
-                {product.sku && (
-                  <p className="text-sm text-gray-500">SKU: {product.sku}</p>
-                )}
-                <div className="flex items-center gap-2 mt-1">
-                  <Badge
-                    variant={isLowStock ? 'destructive' : 'secondary'}
-                    className="text-xs"
-                  >
-                    Stock: {product.stock}
-                  </Badge>
-                </div>
-              </div>
+      {/* Product Information */}
+      <ItemContent>
+        <ItemTitle className="text-base font-medium">{product.name}</ItemTitle>
+        <ItemDescription>
+          {product.sku && (
+            <span className="text-muted-foreground">SKU: {product.sku}</span>
+          )}
+          {product.sku && <span className="mx-2">•</span>}
+          <Badge
+            variant={isLowStock ? 'secondary' : 'secondary'}
+            className="text-xs"
+          >
+            Stock: {product.stock}
+          </Badge>
+        </ItemDescription>
+      </ItemContent>
 
-              <div className="flex items-center gap-3 ml-4">
-                <div className="text-right">
-                  <p className="font-semibold text-lg">
-                    S/ {product.price?.toFixed(2) || '0.00'}
-                  </p>
-                </div>
-
-                <Button
-                  size="sm"
-                  onClick={() => onAddToCart(product)}
-                  disabled={product.stock <= 0}
-                  className="min-h-[44px] sm:min-h-[48px] min-w-[100px] sm:min-w-[120px] text-sm sm:text-base"
-                >
-                  <Plus className="h-4 w-4 mr-1" />
-                  Agregar
-                </Button>
-              </div>
-            </div>
-          </div>
+      {/* Price and Add Button */}
+      <ItemActions className="flex-col sm:flex-row gap-2">
+        <div className="text-right">
+          <p className="font-semibold text-lg">
+            S/ {product.price?.toFixed(2) || '0.00'}
+          </p>
         </div>
-      </CardContent>
-    </Card>
+        <Button
+          size="sm"
+          onClick={() => onAddToCart(product)}
+          disabled={product.stock <= 0}
+        >
+          <Plus className="h-4 w-4 mr-1" />
+        </Button>
+      </ItemActions>
+    </Item>
   )
 }
 
@@ -208,17 +207,15 @@ function ProductCatalogSkeleton() {
       </div>
 
       {/* Products Grid Skeleton */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
         {Array.from({ length: 10 }).map((_, i) => (
-          <Card key={i}>
-            <CardContent className="p-3">
-              <Skeleton className="aspect-square mb-3" />
-              <Skeleton className="h-4 mb-2" />
-              <Skeleton className="h-3 w-16 mb-2" />
-              <Skeleton className="h-6 w-20 mb-2" />
-              <Skeleton className="h-10 w-full" />
-            </CardContent>
-          </Card>
+          <Item key={i}>
+            <Skeleton className="aspect-square mb-3" />
+            <Skeleton className="h-4 mb-2" />
+            <Skeleton className="h-3 w-16 mb-2" />
+            <Skeleton className="h-6 w-20 mb-2" />
+            <Skeleton className="h-10 w-full" />
+          </Item>
         ))}
       </div>
     </div>
