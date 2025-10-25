@@ -5,12 +5,22 @@ import { Database } from '@/types/supabase.types'
 
 type Product = Database['public']['Tables']['products']['Row']
 type Customer = Database['public']['Tables']['customers']['Row']
+type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
 
 interface CartItem {
   product: Product
   quantity: number
   price: number
   subtotal: number
+}
+
+interface POSPayment {
+  id: string
+  payment_method_id: string
+  amount: number
+  notes?: string
+  payment_method?: PaymentMethod
+  payment_date: string
 }
 
 interface POSState {
@@ -22,6 +32,12 @@ interface POSState {
 
   // Customer
   selectedCustomer: Customer | null
+
+  // Payments
+  payments: POSPayment[]
+  totalPaid: number
+  remainingAmount: number
+  changeAmount: number
 
   // UI State
   currentView: 'catalog' | 'payment' | 'receipt'
@@ -35,6 +51,12 @@ interface POSState {
   clearCart: () => void
 
   setSelectedCustomer: (customer: Customer | null) => void
+
+  // Payment actions
+  addPayment: (payment: Omit<POSPayment, 'id'>) => void
+  removePayment: (paymentId: string) => void
+  clearPayments: () => void
+  calculatePaymentTotals: () => void
 
   setCurrentView: (view: 'catalog' | 'payment' | 'receipt') => void
   setIsLoading: (loading: boolean) => void
@@ -52,6 +74,10 @@ interface POSState {
     status: 'pending' | 'completed' | 'cancelled'
     notes?: string
   }
+
+  // Payment validation
+  isPaymentComplete: () => boolean
+  canProcessOrder: () => boolean
 }
 
 export const usePOSStore = create<POSState>((set, get) => ({
@@ -61,6 +87,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
   cartSubtotal: 0,
   cartTax: 0,
   selectedCustomer: null,
+  payments: [],
+  totalPaid: 0,
+  remainingAmount: 0,
+  changeAmount: 0,
   currentView: 'catalog',
   isLoading: false,
   isMobileCartOpen: false,
@@ -133,10 +163,57 @@ export const usePOSStore = create<POSState>((set, get) => ({
       cartSubtotal: 0,
       cartTax: 0,
     })
+    // También limpiar pagos cuando se limpia el carrito
+    get().clearPayments()
   },
 
   setSelectedCustomer: (customer) => {
     set({ selectedCustomer: customer })
+  },
+
+  // Payment actions
+  addPayment: (payment) => {
+    const state = get()
+    const newPayment: POSPayment = {
+      ...payment,
+      id: `temp-${Date.now()}-${Math.random()}`, // ID temporal único
+    }
+
+    set({ payments: [...state.payments, newPayment] })
+    get().calculatePaymentTotals()
+  },
+
+  removePayment: (paymentId) => {
+    const state = get()
+    set({
+      payments: state.payments.filter((payment) => payment.id !== paymentId),
+    })
+    get().calculatePaymentTotals()
+  },
+
+  clearPayments: () => {
+    set({
+      payments: [],
+      totalPaid: 0,
+      remainingAmount: 0,
+      changeAmount: 0,
+    })
+  },
+
+  calculatePaymentTotals: () => {
+    const state = get()
+    const totalPaid = state.payments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    )
+    const remainingAmount = Math.max(0, state.cartTotal - totalPaid)
+    const changeAmount = Math.max(0, totalPaid - state.cartTotal)
+
+    set({
+      totalPaid,
+      remainingAmount,
+      changeAmount,
+    })
   },
 
   setCurrentView: (view) => {
@@ -165,6 +242,9 @@ export const usePOSStore = create<POSState>((set, get) => ({
       cartTax: tax,
       cartTotal: total,
     })
+
+    // Recalcular totales de pago cuando cambia el total del carrito
+    get().calculatePaymentTotals()
   },
 
   getOrderData: () => {
@@ -174,9 +254,29 @@ export const usePOSStore = create<POSState>((set, get) => ({
       subtotal: state.cartSubtotal,
       tax: state.cartTax,
       total: state.cartTotal,
-      paid_amount: state.cartTotal, // Asumimos pago completo por defecto
-      status: 'completed' as const,
+      paid_amount: state.totalPaid,
+      status: state.isPaymentComplete()
+        ? ('completed' as const)
+        : ('pending' as const),
       notes: `Venta POS - ${state.cartItems.length} productos`,
     }
   },
+
+  // Payment validation
+  isPaymentComplete: () => {
+    const state = get()
+    return state.totalPaid >= state.cartTotal && state.cartTotal > 0
+  },
+
+  canProcessOrder: () => {
+    const state = get()
+    return (
+      state.cartItems.length > 0 &&
+      state.selectedCustomer !== null &&
+      state.isPaymentComplete()
+    )
+  },
 }))
+
+// Export types for use in components
+export type { POSPayment, CartItem }

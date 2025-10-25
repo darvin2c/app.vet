@@ -13,7 +13,7 @@ import {
   ItemGroup,
   ItemSeparator,
 } from '@/components/ui/item'
-import { Minus, Plus, Trash2, Package, ShoppingCart } from 'lucide-react'
+import { Minus, Plus, Trash2, Package, ShoppingCart, Edit } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
@@ -23,6 +23,8 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Separator } from '@/components/ui/separator'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -102,12 +104,6 @@ function CartItemCard({
   onUpdateQuantity: (productId: string, quantity: number) => void
   onRemove: (productId: string) => void
 }) {
-  const handleQuantityChange = (newQuantity: number) => {
-    if (newQuantity >= 1) {
-      onUpdateQuantity(item.product.id, newQuantity)
-    }
-  }
-
   return (
     <Item size="sm">
       <ItemMedia>
@@ -115,71 +111,42 @@ function CartItemCard({
       </ItemMedia>
 
       <ItemContent>
-        <ItemTitle className="font-medium text-sm line-clamp-2">
-          {item.product.name}
+        <ItemTitle className="text-sm flex justify-between w-full">
+          <div>{item.product.name}</div>
+          <div>
+            <CurrencyDisplay>{item.subtotal}</CurrencyDisplay>
+          </div>
         </ItemTitle>
-        {item.product.sku && (
-          <ItemDescription className="text-xs text-gray-500">
-            SKU: {item.product.sku}
-          </ItemDescription>
-        )}
+        <ItemDescription className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
+          <div>SKU: {item.product.sku}</div>
+          <Separator orientation="vertical" />
+          <div>
+            <CurrencyDisplay>{item.price}</CurrencyDisplay>
+          </div>
+          <Separator orientation="vertical" />
+          <div>Unid {item.quantity}</div>
+        </ItemDescription>
       </ItemContent>
 
       <ItemActions>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onRemove(item.product.id)}
-          className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-        >
-          <Trash2 className="h-4 w-4" />
-        </Button>
+        <ButtonGroup>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onRemove(item.product.id)}
+            className="h-8 w-8 p-0 text-red-400 hover:text-red-500"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-8 w-8 p-0 text-blue-400 hover:text-blue-500"
+          >
+            <Edit className="h-4 w-4" />
+          </Button>
+        </ButtonGroup>
       </ItemActions>
-
-      <ItemFooter className="flex items-center justify-between w-full gap-4">
-        <div className="text-xs grow text-muted-foreground">
-          <CurrencyDisplay>{item.price.toFixed(2)}</CurrencyDisplay> c/u
-        </div>
-
-        {/* Quantity Controls */}
-        <div>
-          <InputGroup>
-            <InputGroupButton
-              variant="ghost"
-              size="sm"
-              onClick={() => handleQuantityChange(item.quantity - 1)}
-              className="h-8 w-8 p-0"
-              disabled={item.quantity <= 1}
-            >
-              <Minus className="h-3 w-3" />
-            </InputGroupButton>
-            <InputGroupInput
-              value={item.quantity}
-              onChange={(e) =>
-                handleQuantityChange(Number(e.target.value) || 1)
-              }
-              className="w-12 text-center"
-            />
-            <InputGroupButton
-              variant="ghost"
-              size="sm"
-              onClick={() => handleQuantityChange(item.quantity + 1)}
-              className="h-8 w-8 p-0"
-              disabled={false}
-            >
-              <Plus className="h-3 w-3" />
-            </InputGroupButton>
-          </InputGroup>
-        </div>
-        {/* Total */}
-        <div className="flex items-center justify-end  mt-2">
-          <div className="text-right">
-            <div className="text-sm font-semibold">
-              S/ {item.subtotal.toFixed(2)}
-            </div>
-          </div>
-        </div>
-      </ItemFooter>
     </Item>
   )
 }

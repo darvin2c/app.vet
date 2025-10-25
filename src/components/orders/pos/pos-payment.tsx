@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
+import { usePaymentCreate } from '@/hooks/payments/use-payment-create'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import useOrderItemCreate from '@/hooks/orders/use-order-item-create'
 import { Button } from '@/components/ui/button'
@@ -9,25 +10,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-import { Badge } from '@/components/ui/badge'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
-import {
-  CreditCard,
-  Banknote,
-  Smartphone,
-  Calculator,
-  Receipt,
-  ArrowLeft,
-  CheckCircle,
-  DollarSign,
-  Percent,
-} from 'lucide-react'
+import { PaymentMethodSelector } from '@/components/pos/payment-method-selector'
+import { PaymentTable } from '@/components/pos/payment-table'
+import { PaymentSummary } from '@/components/pos/payment-summary'
+import { CheckCircle, Calculator, Percent, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface POSPaymentProps {
@@ -36,10 +22,6 @@ interface POSPaymentProps {
 }
 
 export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
-  const [paymentType, setPaymentType] = useState<'cash' | 'card' | 'transfer'>(
-    'cash'
-  )
-  const [amountPaid, setAmountPaid] = useState('')
   const [discount, setDiscount] = useState('')
   const [notes, setNotes] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -50,23 +32,28 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
     cartTotal,
     cartSubtotal,
     cartTax,
+    payments,
+    totalPaid,
+    remainingAmount,
+    changeAmount,
+    removePayment,
     clearCart,
     setCurrentView,
+    isPaymentComplete,
+    canProcessOrder,
   } = usePOSStore()
 
   const orderCreateMutation = useOrderCreate()
   const orderItemCreateMutation = useOrderItemCreate()
+  const paymentCreateMutation = usePaymentCreate()
 
   // Calculate discount amount
   const discountAmount = discount
     ? (cartSubtotal * parseFloat(discount)) / 100
     : 0
   const finalTotal = cartTotal - discountAmount
-  const change = amountPaid
-    ? Math.max(0, parseFloat(amountPaid) - finalTotal)
-    : 0
 
-  const handlePayment = async () => {
+  const handleProcessOrder = async () => {
     if (!selectedCustomer) {
       toast.error('Debe seleccionar un cliente')
       return
@@ -77,8 +64,13 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
       return
     }
 
-    if (!amountPaid || parseFloat(amountPaid) < finalTotal) {
-      toast.error('El monto pagado debe ser mayor o igual al total')
+    if (!isPaymentComplete()) {
+      toast.error('El pago no está completo')
+      return
+    }
+
+    if (payments.length === 0) {
+      toast.error('Debe agregar al menos un método de pago')
       return
     }
 
@@ -92,7 +84,7 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
         subtotal: cartSubtotal,
         tax: cartTax,
         total: finalTotal,
-        paid_amount: parseFloat(amountPaid),
+        paid_amount: totalPaid,
         notes: notes || undefined,
       }
 
@@ -111,6 +103,18 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
         })
       }
 
+      // Create payment records
+      for (const payment of payments) {
+        await paymentCreateMutation.mutateAsync({
+          amount: payment.amount,
+          customer_id: selectedCustomer!.id,
+          order_id: order.id,
+          payment_method_id: payment.payment_method_id,
+          payment_date: payment.payment_date,
+          notes: payment.notes,
+        })
+      }
+
       toast.success('Venta procesada exitosamente')
       clearCart()
       onOrderCreated?.()
@@ -123,148 +127,21 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
     }
   }
 
-  const paymentTypeConfig = {
-    cash: {
-      label: 'Efectivo',
-      icon: Banknote,
-      color: 'bg-green-600',
-    },
-    card: {
-      label: 'Tarjeta',
-      icon: CreditCard,
-      color: 'bg-blue-600',
-    },
-    transfer: {
-      label: 'Transferencia',
-      icon: Smartphone,
-      color: 'bg-purple-600',
-    },
-  }
-
-  const handleQuickAmount = (percentage: number) => {
-    const amount = ((finalTotal * percentage) / 100).toFixed(2)
-    setAmountPaid(amount)
-  }
-
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
         {/* Payment Summary */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Receipt className="h-5 w-5" />
-              Resumen de Pago
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3">
-            <div className="flex justify-between">
-              <span>Subtotal:</span>
-              <span>S/ {cartSubtotal.toFixed(2)}</span>
-            </div>
-            {discountAmount > 0 && (
-              <div className="flex justify-between text-green-600">
-                <span>Descuento ({discount}%):</span>
-                <span>-S/ {discountAmount.toFixed(2)}</span>
-              </div>
-            )}
-            <div className="flex justify-between">
-              <span>Impuestos:</span>
-              <span>S/ {cartTax.toFixed(2)}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between text-lg font-semibold">
-              <span>Total:</span>
-              <span>S/ {finalTotal.toFixed(2)}</span>
-            </div>
-            {change > 0 && (
-              <div className="flex justify-between text-blue-600 font-medium">
-                <span>Vuelto:</span>
-                <span>S/ {change.toFixed(2)}</span>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        <PaymentSummary
+          cartSubtotal={cartSubtotal}
+          cartTax={cartTax}
+          cartTotal={finalTotal}
+          totalPaid={totalPaid}
+          remainingAmount={Math.max(0, finalTotal - totalPaid)}
+          changeAmount={Math.max(0, totalPaid - finalTotal)}
+          paymentsCount={payments.length}
+        />
 
-        {/* Payment Type Selection */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Método de Pago</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-3 gap-3">
-              {Object.entries(paymentTypeConfig).map(([type, config]) => {
-                const Icon = config.icon
-                return (
-                  <Button
-                    key={type}
-                    variant={paymentType === type ? 'default' : 'outline'}
-                    onClick={() => setPaymentType(type as any)}
-                    className="h-20 flex-col gap-2"
-                  >
-                    <Icon className="h-6 w-6" />
-                    <span className="text-sm">{config.label}</span>
-                  </Button>
-                )
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment Amount */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Monto Recibido</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="amount">Monto</Label>
-              <Input
-                id="amount"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={amountPaid}
-                onChange={(e) => setAmountPaid(e.target.value)}
-                className="text-right text-xl h-12"
-              />
-            </div>
-
-            {/* Quick Amount Buttons */}
-            <div className="grid grid-cols-4 gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleQuickAmount(100)}
-              >
-                Exacto
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAmountPaid((finalTotal + 5).toFixed(2))}
-              >
-                +S/5
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAmountPaid((finalTotal + 10).toFixed(2))}
-              >
-                +S/10
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAmountPaid((finalTotal + 20).toFixed(2))}
-              >
-                +S/20
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Discount */}
+        {/* Discount Section */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
@@ -285,12 +162,24 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
                 value={discount}
                 onChange={(e) => setDiscount(e.target.value)}
                 className="text-right"
+                disabled={isProcessing}
               />
+              {discountAmount > 0 && (
+                <div className="text-sm text-green-600">
+                  Descuento aplicado: S/ {discountAmount.toFixed(2)}
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Notes */}
+        {/* Payment Method Selector */}
+        <PaymentMethodSelector />
+
+        {/* Payments Table */}
+        <PaymentTable payments={payments} onRemovePayment={removePayment} />
+
+        {/* Notes Section */}
         <Card>
           <CardHeader>
             <CardTitle>Notas (Opcional)</CardTitle>
@@ -300,18 +189,48 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
               placeholder="Agregar notas sobre la venta..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              disabled={isProcessing}
             />
           </CardContent>
         </Card>
+
+        {/* Validation Messages */}
+        {!canProcessOrder() && (
+          <Card className="border-yellow-200 bg-yellow-50">
+            <CardContent className="pt-6">
+              <div className="flex items-center gap-2 text-yellow-800">
+                <AlertCircle className="h-5 w-5" />
+                <div className="space-y-1">
+                  <p className="font-medium">
+                    Requisitos para procesar la orden:
+                  </p>
+                  <ul className="text-sm space-y-1 ml-4">
+                    {cartItems.length === 0 && (
+                      <li>• Agregar productos al carrito</li>
+                    )}
+                    {!selectedCustomer && <li>• Seleccionar un cliente</li>}
+                    {!isPaymentComplete() && (
+                      <li>
+                        • Completar el pago (faltan S/{' '}
+                        {Math.max(0, finalTotal - totalPaid).toFixed(2)})
+                      </li>
+                    )}
+                    {payments.length === 0 && (
+                      <li>• Agregar al menos un método de pago</li>
+                    )}
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Footer with Process Button */}
       <div className="p-4 border-t bg-gray-50">
         <Button
-          onClick={handlePayment}
-          disabled={
-            isProcessing || !amountPaid || parseFloat(amountPaid) < finalTotal
-          }
+          onClick={handleProcessOrder}
+          disabled={!canProcessOrder() || isProcessing}
           className="w-full h-12 text-lg"
           size="lg"
         >
@@ -323,7 +242,12 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
           ) : (
             <>
               <CheckCircle className="h-5 w-5 mr-2" />
-              Procesar Pago - S/ {finalTotal.toFixed(2)}
+              Procesar Orden - S/ {finalTotal.toFixed(2)}
+              {changeAmount > 0 && (
+                <span className="ml-2 text-sm">
+                  (Vuelto: S/ {changeAmount.toFixed(2)})
+                </span>
+              )}
             </>
           )}
         </Button>

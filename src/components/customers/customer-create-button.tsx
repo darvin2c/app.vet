@@ -11,7 +11,10 @@ interface CustomerCreateButtonProps {
   children?: React.ReactNode
 }
 
-export function CustomerCreateButton({ onSuccess, children }: CustomerCreateButtonProps) {
+export function CustomerCreateButton({
+  onSuccess,
+  children,
+}: CustomerCreateButtonProps) {
   const [showCreate, setShowCreate] = useState(false)
 
   return (
@@ -25,8 +28,8 @@ export function CustomerCreateButton({ onSuccess, children }: CustomerCreateButt
         )}
       </ResponsiveButton>
 
-      <CustomerCreate 
-        open={showCreate} 
+      <CustomerCreate
+        open={showCreate}
         onOpenChange={setShowCreate}
         onCustomerCreated={onSuccess}
       />
