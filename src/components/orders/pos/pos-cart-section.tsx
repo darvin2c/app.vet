@@ -23,8 +23,8 @@ export function POSCartSection() {
   return (
     <>
       {/* Desktop Cart Panel */}
-      <div className="hidden lg:block w-80 xl:w-96 p-4 pl-0">
-        <Card className="h-full flex flex-col">
+      <div className="hidden lg:block w-80 xl:w-96 border border-gray-200 bg-white">
+        <div className="h-full flex flex-col">
           {/* Cart Header */}
           <div className="p-4 border-b">
             <div className="flex items-center justify-between">
@@ -35,6 +35,15 @@ export function POSCartSection() {
               <Badge variant="secondary">
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
               </Badge>
+              {itemCount > 0 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsMobileCartOpen(true)}
+                >
+                  Ver Carrito
+                </Button>
+              )}
             </div>
           </div>
 
@@ -64,7 +73,7 @@ export function POSCartSection() {
               </Button>
             </div>
           </div>
-        </Card>
+        </div>
       </div>
 
       {/* Mobile Bottom Bar */}
