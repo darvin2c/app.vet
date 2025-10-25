@@ -4,15 +4,10 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  X,
-  ShoppingCart,
-  Grid3X3,
-  CreditCard,
-  Receipt,
-} from 'lucide-react'
+import { X, ShoppingCart, Grid3X3, CreditCard, Receipt } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSCustomerSelector } from './pos-customer-selector'
+import { SearchInput } from '@/components/ui/search-input'
 
 interface POSHeaderProps {
   onClose?: () => void
@@ -61,6 +56,12 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           )}
           <h1 className="text-lg font-semibold">Punto de Venta</h1>
         </div>
+        <div className="w-full !max-w-2xl">
+          <SearchInput
+            size="lg"
+            placeholder="Buscar productos por nombre, SKU..."
+          />
+        </div>
 
         {/* Right: Customer selector and cart */}
         <div className="flex items-center gap-3">
@@ -84,7 +85,10 @@ export function POSHeader({ onClose }: POSHeaderProps) {
 
       {/* Navigation tabs */}
       <div className="px-4 pb-4">
-        <Tabs value={currentView} onValueChange={(value) => setCurrentView(value as any)}>
+        <Tabs
+          value={currentView}
+          onValueChange={(value) => setCurrentView(value as any)}
+        >
           <TabsList className="grid w-full grid-cols-3">
             {tabs.map((tab) => {
               const Icon = tab.icon

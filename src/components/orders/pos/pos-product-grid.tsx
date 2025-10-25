@@ -50,7 +50,7 @@ export function POSProductGrid() {
   }
 
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => product.stock > 0)
+    return products
   }, [products])
 
   if (isLoadingProducts && !products.length) {
@@ -61,17 +61,6 @@ export function POSProductGrid() {
     <div className="space-y-4">
       {/* Search and Filters */}
       <div className="space-y-3">
-        {/* Search Bar */}
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            placeholder="Buscar productos por nombre, SKU..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 h-12 text-base"
-          />
-        </div>
-
         {/* Category Filters */}
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           <Button
@@ -109,51 +98,20 @@ export function POSProductGrid() {
           <div className="text-sm text-gray-600">
             {filteredProducts.length} productos disponibles
           </div>
-
-          <div className="flex gap-1">
-            <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="min-h-[40px] min-w-[40px]"
-            >
-              <Grid3X3 className="h-4 w-4" />
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="min-h-[40px] min-w-[40px]"
-            >
-              <List className="h-4 w-4" />
-            </Button>
-          </div>
         </div>
       </div>
 
       {/* Products Grid/List */}
       <ScrollArea className="h-[calc(100vh-400px)]">
-        {viewMode === 'grid' ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-3">
-            {filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {filteredProducts.map((product) => (
-              <ProductListItem
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
-        )}
+        <div className="space-y-2">
+          {filteredProducts.map((product) => (
+            <ProductListItem
+              key={product.id}
+              product={product}
+              onAddToCart={handleAddToCart}
+            />
+          ))}
+        </div>
 
         {filteredProducts.length === 0 && !isLoadingProducts && (
           <div className="text-center py-12">
@@ -170,61 +128,6 @@ export function POSProductGrid() {
         )}
       </ScrollArea>
     </div>
-  )
-}
-
-function ProductCard({
-  product,
-  onAddToCart,
-}: {
-  product: Product
-  onAddToCart: (product: Product) => void
-}) {
-  const isLowStock = product.stock <= 5
-
-  return (
-    <Card className="group hover:shadow-md transition-shadow cursor-pointer">
-      <CardContent className="p-3">
-        {/* Product Image Placeholder */}
-        <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
-          <Package className="h-8 w-8 text-gray-400" />
-        </div>
-
-        {/* Product Info */}
-        <div className="space-y-2">
-          <div>
-            <h4 className="font-medium text-sm sm:text-base line-clamp-2 min-h-[2.5rem]">
-              {product.name}
-            </h4>
-            {product.sku && (
-              <p className="text-xs text-gray-500">SKU: {product.sku}</p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <p className="font-semibold text-base sm:text-lg">
-              S/ {product.price?.toFixed(2) || '0.00'}
-            </p>
-            <Badge
-              variant={isLowStock ? 'destructive' : 'secondary'}
-              className="text-xs w-full justify-center"
-            >
-              Stock: {product.stock}
-            </Badge>
-          </div>
-
-          <Button
-            size="sm"
-            onClick={() => onAddToCart(product)}
-            disabled={product.stock <= 0}
-            className="w-full min-h-[44px] sm:min-h-[48px] text-sm sm:text-base"
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Agregar
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
   )
 }
 
