@@ -50,6 +50,12 @@ export const navigationGroups: NavGroup[] = [
         tooltip: 'Definir unidades de medida',
       },
       {
+        title: 'Métodos de Pago',
+        href: '/references/payment-methods',
+        icon: Briefcase,
+        tooltip: 'Configurar métodos de pago disponibles',
+      },
+      {
         title: 'Especies',
         href: '/references/species',
         icon: Dna,

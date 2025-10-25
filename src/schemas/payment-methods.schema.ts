@@ -19,6 +19,9 @@ export const PaymentMethodCreateSchema = PaymentMethodSchema.omit({
   created_at: true,
   updated_at: true,
   tenant_id: true,
+}).extend({
+  is_active: z.boolean().optional().default(true),
+  sort_order: z.number().nullable().optional(),
 })
 
 export const PaymentMethodUpdateSchema = PaymentMethodCreateSchema.partial()
