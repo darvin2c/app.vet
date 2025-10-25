@@ -3,7 +3,6 @@
 import React from 'react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { POSProductGrid } from './pos-product-grid'
-import { POSCustomerSelector } from './pos-customer-selector'
 
 export function POSProductSection() {
   return (

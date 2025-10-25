@@ -19,29 +19,22 @@ import { Plus, Package, Tag } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import { useDebounce } from '@/hooks/use-debounce'
 import { Tables } from '@/types/supabase.types'
 
 type Product = Tables<'products'>
-type ProductCategory = Tables<'product_categories'>
-
-type ViewMode = 'grid' | 'list'
 
 export function POSProductGrid() {
-  const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('')
-  const [viewMode, setViewMode] = useState<ViewMode>('grid')
 
-  const debouncedSearch = useDebounce(search, 300)
   const { addToCart } = usePOSStore()
 
   // Fetch products using existing hook
   const { data: products = [], isLoading: isLoadingProducts } = useProductList({
-    search: debouncedSearch,
+    search: '',
     filters: selectedCategory
       ? [
           {
-            field: 'product_category_id',
+            field: 'category_id',
             operator: 'eq',
             value: selectedCategory,
           },
@@ -73,11 +66,9 @@ export function POSProductGrid() {
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           <Button
             variant={selectedCategory === '' ? 'default' : 'outline'}
-            size="sm"
             onClick={() => setSelectedCategory('')}
-            className="min-h-[40px] whitespace-nowrap"
           >
-            <Package className="h-4 w-4 mr-2" />
+            <Package className="h-4 w-4" />
             Todos
           </Button>
 
@@ -85,17 +76,9 @@ export function POSProductGrid() {
             <Button
               key={category.id}
               variant={selectedCategory === category.id ? 'default' : 'outline'}
-              size="sm"
               onClick={() => setSelectedCategory(category.id)}
-              className="min-h-[40px] whitespace-nowrap"
-              style={{
-                backgroundColor:
-                  selectedCategory === category.id
-                    ? 'rgb(59 130 246)'
-                    : 'transparent',
-              }}
             >
-              <Tag className="h-4 w-4 mr-2" />
+              <Tag className="h-4 w-4" />
               {category.name}
             </Button>
           ))}
@@ -130,7 +113,7 @@ export function POSProductGrid() {
               No se encontraron productos
             </h3>
             <p className="text-gray-600">
-              {search || selectedCategory
+              {selectedCategory
                 ? 'Intenta ajustar los filtros de búsqueda'
                 : 'No hay productos disponibles en este momento'}
             </p>
