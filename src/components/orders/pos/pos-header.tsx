@@ -40,8 +40,8 @@ export function POSHeader({ onClose }: POSHeaderProps) {
   ]
 
   return (
-    <div className="border-b bg-white">
-      <div className="flex items-center justify-between p-4">
+    <div className="flex flex-col gap-2 border-b bg-white pt-4">
+      <div className="flex items-center justify-between px-4 gap-6">
         {/* Left: Close button */}
         <div className="flex items-center gap-3">
           {onClose && (
@@ -49,9 +49,9 @@ export function POSHeader({ onClose }: POSHeaderProps) {
               <X className="h-4 w-4" />
             </Button>
           )}
-          <h1 className="text-lg font-semibold">Punto de Venta</h1>
+          <h1 className="text-lg font-semibold">POS</h1>
         </div>
-        <div className="w-full !max-w-2xl">
+        <div className="w-full !max-w-2xl hidden lg:block">
           <SearchInput
             size="lg"
             placeholder="Buscar productos por nombre, SKU..."
@@ -67,7 +67,7 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           <Button
             variant="outline"
             size="sm"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setIsMobileCartOpen(true)}
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
@@ -77,7 +77,9 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           </Button>
         </div>
       </div>
-
+      <div className="px-4 block lg:hidden">
+        <SearchInput placeholder="Buscar productos por nombre, SKU..." />
+      </div>
       {/* Navigation tabs */}
       <div className="px-4 pb-4">
         <Tabs
