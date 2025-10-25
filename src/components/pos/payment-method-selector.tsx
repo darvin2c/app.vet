@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -13,6 +13,9 @@ import {
   Smartphone,
   MoreHorizontal,
   Plus,
+  Zap,
+  Calculator,
+  DollarSign,
 } from 'lucide-react'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
@@ -39,6 +42,20 @@ export function PaymentMethodSelector() {
 
   const { data: paymentMethods = [] } = usePaymentMethodList()
   const { addPayment, cartTotal, remainingAmount } = usePOSStore()
+
+  // Auto-seleccionar efectivo por defecto
+  useEffect(() => {
+    if (paymentMethods.length > 0 && !selectedMethodId) {
+      const cashMethod = paymentMethods.find(
+        (method) => method.payment_type === 'cash'
+      )
+      if (cashMethod) {
+        setSelectedMethodId(cashMethod.id)
+      } else {
+        setSelectedMethodId(paymentMethods[0].id)
+      }
+    }
+  }, [paymentMethods, selectedMethodId])
 
   const selectedMethod = paymentMethods.find(
     (method) => method.id === selectedMethodId
@@ -75,32 +92,51 @@ export function PaymentMethodSelector() {
     // Reset form
     setAmount('')
     setNotes('')
-    setSelectedMethodId('')
 
     toast.success('Pago agregado correctamente')
   }
 
-  const quickAmounts = [
-    { label: 'Saldo', value: remainingAmount },
-    { label: 'S/ 10', value: 10 },
-    { label: 'S/ 20', value: 20 },
-    { label: 'S/ 50', value: 50 },
-    { label: 'S/ 100', value: 100 },
-  ]
+  // Quick Actions
+  const handleQuickPayment = (type: 'exact' | 'cash_only' | 'split_half') => {
+    const cashMethod = paymentMethods.find(
+      (method) => method.payment_type === 'cash'
+    )
+
+    switch (type) {
+      case 'exact':
+        if (remainingAmount > 0) {
+          setAmount(remainingAmount.toString())
+          if (cashMethod) setSelectedMethodId(cashMethod.id)
+        }
+        break
+      case 'cash_only':
+        if (cashMethod && cartTotal > 0) {
+          setSelectedMethodId(cashMethod.id)
+          setAmount(cartTotal.toString())
+        }
+        break
+      case 'split_half':
+        if (remainingAmount > 0) {
+          setAmount((remainingAmount / 2).toFixed(2))
+          if (cashMethod) setSelectedMethodId(cashMethod.id)
+        }
+        break
+    }
+  }
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="pb-4">
         <CardTitle className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
           Agregar Método de Pago
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* Payment Method Selection */}
-        <div className="space-y-2">
+      <CardContent className="space-y-6">
+        {/* Payment Method Selection - Touch-First */}
+        <div className="space-y-3">
           <Label>Método de Pago</Label>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {paymentMethods.map((method) => {
               const Icon =
                 paymentTypeIcons[
@@ -112,14 +148,14 @@ export function PaymentMethodSelector() {
                 <Button
                   key={method.id}
                   variant={isSelected ? 'default' : 'outline'}
-                  className="h-auto p-3 justify-start"
+                  className="h-14 p-4 justify-start transition-all duration-200"
                   onClick={() => setSelectedMethodId(method.id)}
                 >
-                  <div className="flex items-center gap-2 w-full">
-                    <Icon className="h-4 w-4" />
-                    <div className="text-left">
+                  <div className="flex items-center gap-3 w-full">
+                    <Icon className="h-5 w-5 flex-shrink-0" />
+                    <div className="text-left flex-1">
                       <div className="font-medium text-sm">{method.name}</div>
-                      <Badge variant="secondary" className="text-xs">
+                      <Badge variant="secondary" className="text-xs mt-1">
                         {paymentTypeLabels[
                           method.payment_type as keyof typeof paymentTypeLabels
                         ] || 'Otros'}
@@ -132,9 +168,9 @@ export function PaymentMethodSelector() {
           </div>
         </div>
 
-        {/* Amount Input */}
-        <div className="space-y-2">
-          <Label htmlFor="amount">Monto</Label>
+        {/* Amount Input - Mejorado */}
+        <div className="space-y-3">
+          <Label htmlFor="amount">Monto a Pagar</Label>
           <Input
             id="amount"
             type="number"
@@ -143,26 +179,11 @@ export function PaymentMethodSelector() {
             placeholder="0.00"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="text-right font-mono"
+            className="text-right font-mono text-lg h-12"
           />
-
-          {/* Quick Amount Buttons */}
-          <div className="flex flex-wrap gap-2">
-            {quickAmounts.map((quickAmount) => (
-              <Button
-                key={quickAmount.label}
-                variant="outline"
-                size="sm"
-                onClick={() => setAmount(quickAmount.value.toString())}
-                disabled={quickAmount.value <= 0}
-              >
-                {quickAmount.label}
-              </Button>
-            ))}
-          </div>
         </div>
 
-        {/* Notes */}
+        {/* Notes - Compacto */}
         <div className="space-y-2">
           <Label htmlFor="notes">Notas (Opcional)</Label>
           <Textarea
@@ -171,18 +192,38 @@ export function PaymentMethodSelector() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
+            className="resize-none"
           />
         </div>
 
-        {/* Add Payment Button */}
+        {/* Add Payment Button - Touch-First */}
         <Button
           onClick={handleAddPayment}
           disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
-          className="w-full"
+          className="w-full h-12 text-base font-medium"
+          size="lg"
         >
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="h-5 w-5 mr-2" />
           Agregar Pago
+          {amount && parseFloat(amount) > 0 && (
+            <span className="ml-2 font-mono">
+              S/ {parseFloat(amount).toFixed(2)}
+            </span>
+          )}
         </Button>
+
+        {/* Validation Messages */}
+        {parseFloat(amount) > remainingAmount && remainingAmount > 0 && (
+          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-center gap-2 text-yellow-800">
+              <Calculator className="h-4 w-4" />
+              <span className="text-sm">
+                El monto excede el saldo pendiente por S/{' '}
+                {(parseFloat(amount) - remainingAmount).toFixed(2)}
+              </span>
+            </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )

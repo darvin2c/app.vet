@@ -17,31 +17,27 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
   const { currentView } = usePOSStore()
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50">
-      {/* Header with Navigation */}
-      <POSHeader onClose={onClose} />
+    <div className="h-screen flex flex-col bg-background">
+      {/* Header */}
+      <POSHeader />
 
-      {/* Main Content Grid */}
+      {/* Main Content */}
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_auto] overflow-hidden">
         {/* Product Section */}
         {currentView === 'catalog' && <POSProductSection />}
         {/* Payment Modal */}
         {currentView === 'payment' && (
           <POSPayment
-            onOrderCreated={onOrderCreated}
-            onClose={() => {
+            onBack={() => {
               const { setCurrentView } = usePOSStore.getState()
               setCurrentView('catalog')
             }}
           />
         )}
 
-        {/* Cart Section */}
-        <POSCartSection />
+        <POSCartSection className="hidden lg:flex" />
+        <POSMobileCartDrawer />
       </div>
-
-      {/* Mobile Cart Drawer */}
-      <POSMobileCartDrawer />
     </div>
   )
 }

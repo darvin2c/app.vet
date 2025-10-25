@@ -1,35 +1,34 @@
 'use client'
 
 import { useState } from 'react'
-import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import { usePaymentCreate } from '@/hooks/payments/use-payment-create'
-import useOrderCreate from '@/hooks/orders/use-order-create'
-import useOrderItemCreate from '@/hooks/orders/use-order-item-create'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  CreditCard,
+  ShoppingCart,
+  CheckCircle,
+  AlertTriangle,
+  ArrowLeft,
+  Loader2,
+} from 'lucide-react'
 import { PaymentMethodSelector } from '@/components/pos/payment-method-selector'
 import { PaymentTable } from '@/components/pos/payment-table'
 import { PaymentSummary } from '@/components/pos/payment-summary'
-import { CheckCircle, Calculator, Percent, AlertCircle } from 'lucide-react'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
+import useOrderCreate from '@/hooks/orders/use-order-create'
 import { toast } from 'sonner'
-import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface POSPaymentProps {
-  onOrderCreated?: () => void
-  onClose?: () => void
+  onBack: () => void
 }
 
-export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
-  const [discount, setDiscount] = useState('')
-  const [notes, setNotes] = useState('')
+export function POSPayment({ onBack }: POSPaymentProps) {
   const [isProcessing, setIsProcessing] = useState(false)
 
   const {
     cartItems,
-    selectedCustomer,
     cartTotal,
     cartSubtotal,
     cartTax,
@@ -37,222 +36,216 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
     totalPaid,
     remainingAmount,
     changeAmount,
-    removePayment,
     clearCart,
-    setCurrentView,
-    isPaymentComplete,
-    canProcessOrder,
+    clearPayments,
   } = usePOSStore()
 
-  const orderCreateMutation = useOrderCreate()
-  const orderItemCreateMutation = useOrderItemCreate()
-  const paymentCreateMutation = usePaymentCreate()
+  const { mutate: createOrder } = useOrderCreate()
 
-  // Calculate discount amount
-  const discountAmount = discount
-    ? (cartSubtotal * parseFloat(discount)) / 100
-    : 0
-  const finalTotal = cartTotal - discountAmount
+  const canCompleteOrder = remainingAmount <= 0 && payments.length > 0
+  const hasOverpayment = remainingAmount < 0
 
-  const handleProcessOrder = async () => {
-    if (!selectedCustomer) {
-      toast.error('Debe seleccionar un cliente')
-      return
-    }
-
-    if (cartItems.length === 0) {
-      toast.error('El carrito está vacío')
-      return
-    }
-
-    if (!isPaymentComplete()) {
-      toast.error('El pago no está completo')
-      return
-    }
-
-    if (payments.length === 0) {
-      toast.error('Debe agregar al menos un método de pago')
+  const handleCompleteOrder = async () => {
+    if (!canCompleteOrder) {
+      toast.error('Completa todos los pagos antes de finalizar la orden')
       return
     }
 
     setIsProcessing(true)
 
     try {
-      // Create order
+      // Preparar datos de la orden
       const orderData = {
-        custumer_id: selectedCustomer!.id,
-        status: 'paid' as const,
+        custumer_id: 'temp-customer-id', // TODO: Implementar selección de cliente
         subtotal: cartSubtotal,
         tax: cartTax,
-        total: finalTotal,
+        total: cartTotal,
         paid_amount: totalPaid,
-        notes: notes || undefined,
+        status: 'paid' as const,
+        notes: 'Orden creada desde POS',
       }
 
-      const order = await orderCreateMutation.mutateAsync(orderData)
-
-      // Create order items
-      for (const item of cartItems) {
-        await orderItemCreateMutation.mutateAsync({
-          order_id: order.id,
-          product_id: item.product.id,
-          description: item.product.name,
-          quantity: item.quantity,
-          unit_price: item.price,
-          discount: 0,
-          tax_rate: item.product.tax_rate || 0,
-        })
-      }
-
-      // Create payment records
-      for (const payment of payments) {
-        await paymentCreateMutation.mutateAsync({
-          amount: payment.amount,
-          customer_id: selectedCustomer!.id,
-          order_id: order.id,
-          payment_method_id: payment.payment_method_id,
-          payment_date: payment.payment_date,
-          notes: payment.notes,
-        })
-      }
-
-      toast.success('Venta procesada exitosamente')
-      clearCart()
-      onOrderCreated?.()
-      setCurrentView('catalog')
+      createOrder(orderData, {
+        onSuccess: () => {
+          toast.success('Orden completada exitosamente')
+          clearCart()
+          clearPayments()
+          onBack()
+        },
+        onError: (error: any) => {
+          console.error('Error creating order:', error)
+          toast.error('Error al crear la orden')
+        },
+      })
     } catch (error) {
-      console.error('Error processing payment:', error)
-      toast.error('Error al procesar el pago')
+      console.error('Error completing order:', error)
+      toast.error('Error al completar la orden')
     } finally {
       setIsProcessing(false)
     }
   }
 
-  return (
-    <ScrollArea className="flex flex-col h-full">
-      <div className="flex-1 p-4 space-y-6 overflow-y-auto">
-        {/* Payment Summary */}
-        <PaymentSummary
-          cartSubtotal={cartSubtotal}
-          cartTax={cartTax}
-          cartTotal={finalTotal}
-          totalPaid={totalPaid}
-          remainingAmount={Math.max(0, finalTotal - totalPaid)}
-          changeAmount={Math.max(0, totalPaid - finalTotal)}
-          paymentsCount={payments.length}
-        />
+  const handleClearPayments = () => {
+    clearPayments()
+    toast.success('Pagos eliminados')
+  }
 
-        {/* Discount Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Percent className="h-5 w-5" />
-              Descuento (Opcional)
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-2">
-              <Label htmlFor="discount">Porcentaje de descuento</Label>
-              <Input
-                id="discount"
-                type="number"
-                step="0.1"
-                min="0"
-                max="100"
-                placeholder="0"
-                value={discount}
-                onChange={(e) => setDiscount(e.target.value)}
-                className="text-right"
-                disabled={isProcessing}
-              />
-              {discountAmount > 0 && (
-                <div className="text-sm text-green-600">
-                  Descuento aplicado: S/ {discountAmount.toFixed(2)}
-                </div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Payment Method Selector */}
-        <PaymentMethodSelector />
-
-        {/* Payments Table */}
-        <PaymentTable payments={payments} onRemovePayment={removePayment} />
-
-        {/* Notes Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Notas (Opcional)</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Input
-              placeholder="Agregar notas sobre la venta..."
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              disabled={isProcessing}
-            />
-          </CardContent>
-        </Card>
-
-        {/* Validation Messages */}
-        {!canProcessOrder() && (
-          <Card className="border-yellow-200 bg-yellow-50">
-            <CardContent className="pt-6">
-              <div className="flex items-center gap-2 text-yellow-800">
-                <AlertCircle className="h-5 w-5" />
-                <div className="space-y-1">
-                  <p className="font-medium">
-                    Requisitos para procesar la orden:
-                  </p>
-                  <ul className="text-sm space-y-1 ml-4">
-                    {cartItems.length === 0 && (
-                      <li>• Agregar productos al carrito</li>
-                    )}
-                    {!selectedCustomer && <li>• Seleccionar un cliente</li>}
-                    {!isPaymentComplete() && (
-                      <li>
-                        • Completar el pago (faltan S/{' '}
-                        {Math.max(0, finalTotal - totalPaid).toFixed(2)})
-                      </li>
-                    )}
-                    {payments.length === 0 && (
-                      <li>• Agregar al menos un método de pago</li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-
-      {/* Footer with Process Button */}
-      <div className="p-4 border-t bg-gray-50">
-        <Button
-          onClick={handleProcessOrder}
-          disabled={!canProcessOrder() || isProcessing}
-          className="w-full h-12 text-lg"
-          size="lg"
-        >
-          {isProcessing ? (
-            <>
-              <Calculator className="h-5 w-5 mr-2 animate-spin" />
-              Procesando...
-            </>
-          ) : (
-            <>
-              <CheckCircle className="h-5 w-5 mr-2" />
-              Procesar Orden - S/ {finalTotal.toFixed(2)}
-              {changeAmount > 0 && (
-                <span className="ml-2 text-sm">
-                  (Vuelto: S/ {changeAmount.toFixed(2)})
-                </span>
-              )}
-            </>
-          )}
+  if (cartItems.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] text-center p-6">
+        <ShoppingCart className="h-16 w-16 text-muted-foreground mb-4" />
+        <h2 className="text-xl font-semibold text-muted-foreground mb-2">
+          Carrito vacío
+        </h2>
+        <p className="text-muted-foreground mb-6">
+          Agrega productos al carrito para proceder con el pago
+        </p>
+        <Button onClick={onBack} variant="outline">
+          <ArrowLeft className="h-4 w-4 mr-2" />
+          Volver al POS
         </Button>
       </div>
-    </ScrollArea>
+    )
+  }
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Main Content - Responsive Layout */}
+      <div className="flex-1 overflow-hidden">
+        <div className="h-full lg:grid lg:grid-cols-12 lg:gap-6 lg:p-6">
+          {/* Left Column - Payment Methods & Table */}
+          <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
+            <ScrollArea className="flex-1">
+              <div className="space-y-6 p-4 lg:p-0">
+                {/* Payment Method Selector */}
+                <PaymentMethodSelector />
+
+                {/* Payment Table */}
+                <PaymentTable />
+
+                {/* Clear Payments Button - Mobile */}
+                {payments.length > 0 && (
+                  <div className="lg:hidden">
+                    <Button
+                      variant="outline"
+                      onClick={handleClearPayments}
+                      className="w-full"
+                    >
+                      Limpiar Pagos
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </div>
+
+          {/* Right Column - Summary & Actions */}
+          <div className="lg:col-span-5 xl:col-span-4 flex flex-col border-t lg:border-t-0 lg:border-l bg-muted/30 lg:bg-transparent">
+            <div className="flex-1 flex flex-col">
+              {/* Payment Summary */}
+              <div className="flex-1 p-4 lg:p-0">
+                <PaymentSummary
+                  cartSubtotal={cartSubtotal}
+                  cartTax={cartTax}
+                  cartTotal={cartTotal}
+                  totalPaid={totalPaid}
+                  remainingAmount={Math.max(0, remainingAmount)}
+                  changeAmount={Math.max(0, changeAmount)}
+                  paymentsCount={payments.length}
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex-shrink-0 p-4 lg:p-0 space-y-3">
+                {/* Clear Payments - Desktop */}
+                {payments.length > 0 && (
+                  <Button
+                    variant="outline"
+                    onClick={handleClearPayments}
+                    className="w-full hidden lg:flex"
+                  >
+                    Limpiar Pagos
+                  </Button>
+                )}
+
+                <Separator className="hidden lg:block" />
+
+                {/* Complete Order Button */}
+                <Button
+                  onClick={handleCompleteOrder}
+                  disabled={!canCompleteOrder || isProcessing}
+                  className="w-full h-12 lg:h-14 text-base lg:text-lg font-semibold"
+                  size="lg"
+                >
+                  {isProcessing ? (
+                    <>
+                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                      Procesando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle className="h-5 w-5 mr-2" />
+                      Completar Orden
+                      {hasOverpayment && (
+                        <span className="ml-2 text-sm opacity-90">
+                          (Cambio: S/ {Math.abs(remainingAmount).toFixed(2)})
+                        </span>
+                      )}
+                    </>
+                  )}
+                </Button>
+
+                {/* Help Text */}
+                {!canCompleteOrder && (
+                  <p className="text-xs text-center text-muted-foreground">
+                    {payments.length === 0
+                      ? 'Agrega al menos un método de pago'
+                      : `Saldo pendiente: S/ ${remainingAmount.toFixed(2)}`}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile Bottom Actions - Fixed */}
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t p-4 space-y-3">
+          <Button
+            onClick={handleCompleteOrder}
+            disabled={!canCompleteOrder || isProcessing}
+            className="w-full h-12 text-base font-semibold"
+            size="lg"
+          >
+            {isProcessing ? (
+              <>
+                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                Procesando...
+              </>
+            ) : (
+              <>
+                <CheckCircle className="h-5 w-5 mr-2" />
+                Completar Orden
+                {hasOverpayment && (
+                  <span className="ml-2 text-sm opacity-90">
+                    (Cambio: S/ {Math.abs(remainingAmount).toFixed(2)})
+                  </span>
+                )}
+              </>
+            )}
+          </Button>
+
+          {!canCompleteOrder && (
+            <p className="text-xs text-center text-muted-foreground">
+              {payments.length === 0
+                ? 'Agrega al menos un método de pago'
+                : `Saldo pendiente: S/ ${remainingAmount.toFixed(2)}`}
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* Mobile Bottom Padding */}
+      <div className="lg:hidden h-24"></div>
+    </div>
   )
 }
