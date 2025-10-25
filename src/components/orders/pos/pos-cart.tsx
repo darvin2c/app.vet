@@ -10,20 +10,13 @@ import {
   ItemTitle,
   ItemDescription,
   ItemActions,
-  ItemFooter,
   ItemGroup,
   ItemSeparator,
 } from '@/components/ui/item'
-import { Minus, Plus, Trash2, Package, ShoppingCart, Edit } from 'lucide-react'
+import { Trash2, Package, ShoppingCart, Edit } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from '@/components/ui/input-group'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 
@@ -118,13 +111,13 @@ function CartItemCard({
           </div>
         </ItemTitle>
         <ItemDescription className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
-          <div>SKU: {item.product.sku}</div>
+          <span>SKU: {item.product.sku}</span>
           <Separator orientation="vertical" />
-          <div>
+          <span>
             <CurrencyDisplay>{item.price}</CurrencyDisplay>
-          </div>
+          </span>
           <Separator orientation="vertical" />
-          <div>Unid {item.quantity}</div>
+          <span>Unid {item.quantity}</span>
         </ItemDescription>
       </ItemContent>
 
