@@ -1,16 +1,10 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import {
-  Receipt,
-  DollarSign,
-  AlertCircle,
-  CheckCircle,
-  Clock,
-  TrendingUp,
-} from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { AlertCircle, CheckCircle, Clock, DollarSign, Receipt } from 'lucide-react'
 
 interface PaymentSummaryProps {
   cartSubtotal: number
@@ -31,7 +25,7 @@ export function PaymentSummary({
   changeAmount,
   paymentsCount,
 }: PaymentSummaryProps) {
-  const isPaymentComplete = remainingAmount === 0 && cartTotal > 0
+  const isPaymentComplete = remainingAmount === 0 && totalPaid > 0
   const isOverpaid = changeAmount > 0
   const isUnderpaid = remainingAmount > 0
 
@@ -39,36 +33,40 @@ export function PaymentSummary({
     if (isPaymentComplete && !isOverpaid) {
       return {
         icon: CheckCircle,
-        label: 'Pago Completo',
-        color: 'bg-green-100 text-green-800 border-green-200',
+        label: 'Completo',
+        color: 'bg-green-100 text-green-800',
         iconColor: 'text-green-600',
         bgColor: 'bg-green-50',
+        progressColor: 'bg-green-500',
       }
     }
     if (isOverpaid) {
       return {
         icon: DollarSign,
         label: 'Sobrepago',
-        color: 'bg-blue-100 text-blue-800 border-blue-200',
+        color: 'bg-blue-100 text-blue-800',
         iconColor: 'text-blue-600',
         bgColor: 'bg-blue-50',
+        progressColor: 'bg-blue-500',
       }
     }
     if (isUnderpaid) {
       return {
         icon: Clock,
-        label: 'Pago Pendiente',
-        color: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+        label: 'Pendiente',
+        color: 'bg-yellow-100 text-yellow-800',
         iconColor: 'text-yellow-600',
         bgColor: 'bg-yellow-50',
+        progressColor: 'bg-yellow-500',
       }
     }
     return {
       icon: AlertCircle,
       label: 'Sin Pagos',
-      color: 'bg-gray-100 text-gray-800 border-gray-200',
+      color: 'bg-gray-100 text-gray-800',
       iconColor: 'text-gray-600',
       bgColor: 'bg-gray-50',
+      progressColor: 'bg-gray-400',
     }
   }
 
@@ -77,164 +75,157 @@ export function PaymentSummary({
   const progressPercentage = cartTotal > 0 ? Math.min(100, (totalPaid / cartTotal) * 100) : 0
 
   return (
-    <div className="space-y-4">
-      {/* Status Card - Prominente */}
-      <Card className={`border-2 ${status.color.includes('border') ? status.color : 'border-gray-200'} ${status.bgColor}`}>
-        <CardContent className="p-4 md:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <StatusIcon className={`h-6 w-6 md:h-8 md:w-8 ${status.iconColor}`} />
+    <Card className="border-b rounded-none shadow-sm">
+      <CardContent className="p-3 md:p-4">
+        {/* Mobile Layout - Stack Vertical */}
+        <div className="md:hidden space-y-3">
+          {/* Primera fila: Total y Estado */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <StatusIcon className={`h-5 w-5 ${status.iconColor}`} />
               <div>
-                <h3 className="text-lg md:text-xl font-bold">{status.label}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {paymentsCount} pago{paymentsCount !== 1 ? 's' : ''} agregado{paymentsCount !== 1 ? 's' : ''}
-                </p>
+                <div className="text-xl font-bold">S/ {cartTotal.toFixed(2)}</div>
+                <div className="text-xs text-muted-foreground">Total</div>
               </div>
             </div>
-            <div className="text-right">
-              <div className="text-2xl md:text-3xl font-bold">
-                S/ {cartTotal.toFixed(2)}
-              </div>
-              <div className="text-sm text-muted-foreground">Total</div>
-            </div>
+            <Badge variant="secondary" className={status.color}>
+              {status.label}
+            </Badge>
           </div>
 
-          {/* Progress Bar - Más prominente */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm font-medium">
-              <span>Progreso del Pago</span>
-              <span>{progressPercentage.toFixed(1)}%</span>
+          {/* Segunda fila: Progreso */}
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs">
+              <span>Pagado: S/ {totalPaid.toFixed(2)}</span>
+              <span>{progressPercentage.toFixed(0)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-3 md:h-4">
+            <div className="w-full bg-gray-200 rounded-full h-2">
               <div
-                className={`h-3 md:h-4 rounded-full transition-all duration-500 ease-out ${
-                  isPaymentComplete
-                    ? 'bg-green-500'
-                    : isOverpaid
-                      ? 'bg-blue-500'
-                      : 'bg-yellow-500'
-                }`}
-                style={{
-                  width: `${progressPercentage}%`,
-                }}
+                className={`h-2 rounded-full transition-all duration-300 ${status.progressColor}`}
+                style={{ width: `${progressPercentage}%` }}
               />
             </div>
           </div>
 
-          {/* Amounts - Layout responsivo */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-            <div className="text-center md:text-left">
-              <div className="text-lg md:text-xl font-bold text-green-600">
+          {/* Tercera fila: Montos adicionales */}
+          <div className="flex justify-between text-sm">
+            {remainingAmount > 0 && (
+              <div className="text-yellow-600 font-medium">
+                Pendiente: S/ {remainingAmount.toFixed(2)}
+              </div>
+            )}
+            {changeAmount > 0 && (
+              <div className="text-blue-600 font-medium">
+                Vuelto: S/ {changeAmount.toFixed(2)}
+              </div>
+            )}
+            {paymentsCount > 0 && (
+              <div className="text-muted-foreground text-xs">
+                {paymentsCount} pago{paymentsCount !== 1 ? 's' : ''}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Desktop Layout - Horizontal */}
+        <div className="hidden md:flex items-center justify-between gap-6">
+          {/* Izquierda: Estado y Total */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <StatusIcon className={`h-6 w-6 ${status.iconColor}`} />
+              <Badge variant="secondary" className={status.color}>
+                {status.label}
+              </Badge>
+            </div>
+            <Separator orientation="vertical" className="h-8" />
+            <div>
+              <div className="text-2xl font-bold">S/ {cartTotal.toFixed(2)}</div>
+              <div className="text-sm text-muted-foreground">Total de la orden</div>
+            </div>
+          </div>
+
+          {/* Centro: Progreso */}
+          <div className="flex-1 max-w-xs space-y-1">
+            <div className="flex justify-between text-sm">
+              <span>Progreso</span>
+              <span>{progressPercentage.toFixed(0)}%</span>
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div
+                className={`h-2 rounded-full transition-all duration-300 ${status.progressColor}`}
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Derecha: Montos */}
+          <div className="flex items-center gap-6">
+            <div className="text-center">
+              <div className="text-lg font-bold text-green-600">
                 S/ {totalPaid.toFixed(2)}
               </div>
-              <div className="text-sm text-muted-foreground">Pagado</div>
+              <div className="text-xs text-muted-foreground">Pagado</div>
             </div>
-            
+
             {remainingAmount > 0 && (
-              <div className="text-center md:text-left">
-                <div className="text-lg md:text-xl font-bold text-yellow-600">
-                  S/ {remainingAmount.toFixed(2)}
+              <>
+                <Separator orientation="vertical" className="h-8" />
+                <div className="text-center">
+                  <div className="text-lg font-bold text-yellow-600">
+                    S/ {remainingAmount.toFixed(2)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Pendiente</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Pendiente</div>
-              </div>
+              </>
             )}
-            
+
             {changeAmount > 0 && (
-              <div className="text-center md:text-left">
-                <div className="text-lg md:text-xl font-bold text-blue-600">
-                  S/ {changeAmount.toFixed(2)}
+              <>
+                <Separator orientation="vertical" className="h-8" />
+                <div className="text-center">
+                  <div className="text-lg font-bold text-blue-600">
+                    S/ {changeAmount.toFixed(2)}
+                  </div>
+                  <div className="text-xs text-muted-foreground">Vuelto</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Vuelto</div>
-              </div>
+              </>
             )}
+
+            {/* Tooltip con desglose */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="cursor-help">
+                    <Receipt className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="p-3">
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between gap-4">
+                      <span>Subtotal:</span>
+                      <span>S/ {cartSubtotal.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between gap-4">
+                      <span>IGV (18%):</span>
+                      <span>S/ {cartTax.toFixed(2)}</span>
+                    </div>
+                    <Separator />
+                    <div className="flex justify-between gap-4 font-semibold">
+                      <span>Total:</span>
+                      <span>S/ {cartTotal.toFixed(2)}</span>
+                    </div>
+                    {paymentsCount > 0 && (
+                      <div className="text-xs text-muted-foreground pt-1">
+                        {paymentsCount} pago{paymentsCount !== 1 ? 's' : ''} agregado{paymentsCount !== 1 ? 's' : ''}
+                      </div>
+                    )}
+                  </div>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Detalles - Colapsible en móvil */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Receipt className="h-4 w-4" />
-            Desglose
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-3">
-          {/* Layout compacto para móvil */}
-          <div className="grid grid-cols-2 gap-2 text-sm">
-            <div className="flex justify-between">
-              <span>Subtotal:</span>
-              <span>S/ {cartSubtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span>IGV (18%):</span>
-              <span>S/ {cartTax.toFixed(2)}</span>
-            </div>
-          </div>
-          
-          <Separator />
-          
-          <div className="flex justify-between font-semibold">
-            <span>Total:</span>
-            <span>S/ {cartTotal.toFixed(2)}</span>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Mensajes de Estado - Más prominentes */}
-      {isUnderpaid && (
-        <Card className="border-yellow-300 bg-yellow-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <Clock className="h-5 w-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-semibold text-yellow-800">
-                  Faltan S/ {remainingAmount.toFixed(2)}
-                </p>
-                <p className="text-sm text-yellow-700">
-                  Agregue más pagos para completar la orden
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {isOverpaid && (
-        <Card className="border-blue-300 bg-blue-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <DollarSign className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-semibold text-blue-800">
-                  Vuelto: S/ {changeAmount.toFixed(2)}
-                </p>
-                <p className="text-sm text-blue-700">
-                  Recuerde entregar el vuelto al cliente
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      {isPaymentComplete && !isOverpaid && (
-        <Card className="border-green-300 bg-green-50">
-          <CardContent className="p-4">
-            <div className="flex items-start gap-3">
-              <CheckCircle className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
-              <div>
-                <p className="font-semibold text-green-800">
-                  ¡Pago Completo!
-                </p>
-                <p className="text-sm text-green-700">
-                  Listo para procesar la orden
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

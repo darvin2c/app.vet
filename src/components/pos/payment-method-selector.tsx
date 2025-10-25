@@ -96,43 +96,15 @@ export function PaymentMethodSelector() {
     toast.success('Pago agregado correctamente')
   }
 
-  // Quick Actions
-  const handleQuickPayment = (type: 'exact' | 'cash_only' | 'split_half') => {
-    const cashMethod = paymentMethods.find(
-      (method) => method.payment_type === 'cash'
-    )
-
-    switch (type) {
-      case 'exact':
-        if (remainingAmount > 0) {
-          setAmount(remainingAmount.toString())
-          if (cashMethod) setSelectedMethodId(cashMethod.id)
-        }
-        break
-      case 'cash_only':
-        if (cashMethod && cartTotal > 0) {
-          setSelectedMethodId(cashMethod.id)
-          setAmount(cartTotal.toString())
-        }
-        break
-      case 'split_half':
-        if (remainingAmount > 0) {
-          setAmount((remainingAmount / 2).toFixed(2))
-          if (cashMethod) setSelectedMethodId(cashMethod.id)
-        }
-        break
-    }
-  }
-
   return (
-    <Card>
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2">
+    <div>
+      <div className="pb-4">
+        <div className="flex items-center gap-2">
           <CreditCard className="h-5 w-5" />
           Agregar Método de Pago
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
+        </div>
+      </div>
+      <div className="space-y-6">
         {/* Payment Method Selection - Touch-First */}
         <div className="space-y-3">
           <Label>Método de Pago</Label>
@@ -224,7 +196,7 @@ export function PaymentMethodSelector() {
             </div>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

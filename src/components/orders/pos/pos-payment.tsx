@@ -111,141 +111,45 @@ export function POSPayment({ onBack }: POSPaymentProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Main Content - Responsive Layout */}
+      <div>
+        <PaymentSummary
+          cartSubtotal={cartSubtotal}
+          cartTax={cartTax}
+          cartTotal={cartTotal}
+          totalPaid={totalPaid}
+          remainingAmount={remainingAmount}
+          changeAmount={changeAmount}
+          paymentsCount={payments.length}
+        />
+      </div>
       <div className="flex-1 overflow-hidden">
         <div className="h-full lg:grid lg:grid-cols-12 lg:gap-6 lg:p-6">
           {/* Left Column - Payment Methods & Table */}
-          <div className="lg:col-span-7 xl:col-span-8 flex flex-col">
-            <ScrollArea className="flex-1">
-              <div className="space-y-6 p-4 lg:p-0">
-                {/* Payment Method Selector */}
-                <PaymentMethodSelector />
+          <div className="lg:col-span-6 xl:col-span-7 flex flex-col">
+            <div className="space-y-6 p-4 lg:p-0">
+              {/* Payment Table */}
+              <PaymentTable />
 
-                {/* Payment Table */}
-                <PaymentTable />
-
-                {/* Clear Payments Button - Mobile */}
-                {payments.length > 0 && (
-                  <div className="lg:hidden">
-                    <Button
-                      variant="outline"
-                      onClick={handleClearPayments}
-                      className="w-full"
-                    >
-                      Limpiar Pagos
-                    </Button>
-                  </div>
-                )}
-              </div>
-            </ScrollArea>
-          </div>
-
-          {/* Right Column - Summary & Actions */}
-          <div className="lg:col-span-5 xl:col-span-4 flex flex-col border-t lg:border-t-0 lg:border-l bg-muted/30 lg:bg-transparent">
-            <div className="flex-1 flex flex-col">
-              {/* Payment Summary */}
-              <div className="flex-1 p-4 lg:p-0">
-                <PaymentSummary
-                  cartSubtotal={cartSubtotal}
-                  cartTax={cartTax}
-                  cartTotal={cartTotal}
-                  totalPaid={totalPaid}
-                  remainingAmount={Math.max(0, remainingAmount)}
-                  changeAmount={Math.max(0, changeAmount)}
-                  paymentsCount={payments.length}
-                />
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex-shrink-0 p-4 lg:p-0 space-y-3">
-                {/* Clear Payments - Desktop */}
-                {payments.length > 0 && (
+              {/* Clear Payments Button - Mobile */}
+              {payments.length > 0 && (
+                <div className="lg:hidden">
                   <Button
                     variant="outline"
                     onClick={handleClearPayments}
-                    className="w-full hidden lg:flex"
+                    className="w-full"
                   >
                     Limpiar Pagos
                   </Button>
-                )}
-
-                <Separator className="hidden lg:block" />
-
-                {/* Complete Order Button */}
-                <Button
-                  onClick={handleCompleteOrder}
-                  disabled={!canCompleteOrder || isProcessing}
-                  className="w-full h-12 lg:h-14 text-base lg:text-lg font-semibold"
-                  size="lg"
-                >
-                  {isProcessing ? (
-                    <>
-                      <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                      Procesando...
-                    </>
-                  ) : (
-                    <>
-                      <CheckCircle className="h-5 w-5 mr-2" />
-                      Completar Orden
-                      {hasOverpayment && (
-                        <span className="ml-2 text-sm opacity-90">
-                          (Cambio: S/ {Math.abs(remainingAmount).toFixed(2)})
-                        </span>
-                      )}
-                    </>
-                  )}
-                </Button>
-
-                {/* Help Text */}
-                {!canCompleteOrder && (
-                  <p className="text-xs text-center text-muted-foreground">
-                    {payments.length === 0
-                      ? 'Agrega al menos un método de pago'
-                      : `Saldo pendiente: S/ ${remainingAmount.toFixed(2)}`}
-                  </p>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        {/* Mobile Bottom Actions - Fixed */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-background border-t p-4 space-y-3">
-          <Button
-            onClick={handleCompleteOrder}
-            disabled={!canCompleteOrder || isProcessing}
-            className="w-full h-12 text-base font-semibold"
-            size="lg"
-          >
-            {isProcessing ? (
-              <>
-                <Loader2 className="h-5 w-5 mr-2 animate-spin" />
-                Procesando...
-              </>
-            ) : (
-              <>
-                <CheckCircle className="h-5 w-5 mr-2" />
-                Completar Orden
-                {hasOverpayment && (
-                  <span className="ml-2 text-sm opacity-90">
-                    (Cambio: S/ {Math.abs(remainingAmount).toFixed(2)})
-                  </span>
-                )}
-              </>
-            )}
-          </Button>
-
-          {!canCompleteOrder && (
-            <p className="text-xs text-center text-muted-foreground">
-              {payments.length === 0
-                ? 'Agrega al menos un método de pago'
-                : `Saldo pendiente: S/ ${remainingAmount.toFixed(2)}`}
-            </p>
-          )}
+          <div className="lg:col-span-6 xl:col-span-5 flex flex-col">
+            {/* Payment Method Selector */}
+            <PaymentMethodSelector />
+          </div>
         </div>
       </div>
-
-      {/* Mobile Bottom Padding */}
-      <div className="lg:hidden h-24"></div>
     </div>
   )
 }
