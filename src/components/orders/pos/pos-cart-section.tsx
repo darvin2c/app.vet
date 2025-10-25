@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { ShoppingCart, CreditCard } from 'lucide-react'
+import { ShoppingCart, CreditCard, Trash } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSCart } from './pos-cart'
 
@@ -16,6 +16,7 @@ export function POSCartSection() {
     selectedCustomer,
     setCurrentView,
     setIsMobileCartOpen,
+    clearCart,
   } = usePOSStore()
 
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
@@ -36,12 +37,9 @@ export function POSCartSection() {
                 {itemCount} {itemCount === 1 ? 'item' : 'items'}
               </Badge>
               {itemCount > 0 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsMobileCartOpen(true)}
-                >
-                  Ver Carrito
+                <Button variant="ghost" size="sm" onClick={() => clearCart()}>
+                  <Trash className="h-4 w-4" />
+                  Limpiar
                 </Button>
               )}
             </div>

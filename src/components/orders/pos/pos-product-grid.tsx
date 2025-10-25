@@ -26,8 +26,6 @@ type Product = Tables<'products'>
 export function POSProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
 
-  const { addToCart } = usePOSStore()
-
   // Fetch products using existing hook
   const { data: products = [], isLoading: isLoadingProducts } = useProductList({
     search: '',
@@ -45,10 +43,6 @@ export function POSProductGrid() {
   // Fetch categories using existing hook
   const { data: categories = [], isLoading: isLoadingCategories } =
     useProductCategoryList({})
-
-  const handleAddToCart = (product: Product) => {
-    addToCart(product, 1)
-  }
 
   const filteredProducts = useMemo(() => {
     return products
@@ -97,11 +91,7 @@ export function POSProductGrid() {
         <div className="space-y-2">
           <ItemGroup className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
             {filteredProducts.map((product) => (
-              <ProductListItem
-                key={product.id}
-                product={product}
-                onAddToCart={handleAddToCart}
-              />
+              <ProductListItem key={product.id} product={product} />
             ))}
           </ItemGroup>
         </div>
@@ -129,9 +119,10 @@ function ProductListItem({
   onAddToCart,
 }: {
   product: Product
-  onAddToCart: (product: Product) => void
+  onAddToCart?: (product: Product) => void
 }) {
   const isLowStock = product.stock <= 5
+  const { addToCart } = usePOSStore()
 
   return (
     <Item variant="outline" className="hover:bg-accent/50 transition-colors">
@@ -164,11 +155,7 @@ function ProductListItem({
             S/ {product.price?.toFixed(2) || '0.00'}
           </p>
         </div>
-        <Button
-          size="sm"
-          onClick={() => onAddToCart(product)}
-          disabled={product.stock <= 0}
-        >
+        <Button size="sm" onClick={() => addToCart(product)}>
           <Plus className="h-4 w-4 mr-1" />
         </Button>
       </ItemActions>

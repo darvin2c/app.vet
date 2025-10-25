@@ -25,17 +25,8 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-[1fr_auto] overflow-hidden">
         {/* Product Section */}
         {currentView === 'catalog' && <POSProductSection />}
-
-        {/* Cart Section */}
-        <POSCartSection />
-      </div>
-
-      {/* Mobile Cart Drawer */}
-      <POSMobileCartDrawer />
-
-      {/* Payment Modal */}
-      {currentView === 'payment' && (
-        <div className="fixed inset-0 z-50 bg-white">
+        {/* Payment Modal */}
+        {currentView === 'payment' && (
           <POSPayment
             onOrderCreated={onOrderCreated}
             onClose={() => {
@@ -43,8 +34,14 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
               setCurrentView('catalog')
             }}
           />
-        </div>
-      )}
+        )}
+
+        {/* Cart Section */}
+        <POSCartSection />
+      </div>
+
+      {/* Mobile Cart Drawer */}
+      <POSMobileCartDrawer />
     </div>
   )
 }

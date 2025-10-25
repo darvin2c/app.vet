@@ -146,28 +146,8 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
     setAmountPaid(amount)
   }
 
-  const handleBackToCatalog = () => {
-    setCurrentView('catalog')
-    onClose?.()
-  }
-
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleBackToCatalog}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Volver
-        </Button>
-        <h2 className="text-lg font-semibold">Procesar Pago</h2>
-        <div className="w-16" /> {/* Spacer */}
-      </div>
-
       <div className="flex-1 p-4 space-y-6 overflow-y-auto">
         {/* Payment Summary */}
         <Card>
