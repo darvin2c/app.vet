@@ -7,7 +7,6 @@ import { AppliedSort } from '@/types/order-by.types'
 
 type Order = Tables<'orders'> & {
   customers: Tables<'customers'> | null
-  pets: Tables<'pets'> | null
   order_items: Array<
     Tables<'order_items'> & {
       products: Tables<'products'> | null
@@ -45,7 +44,6 @@ export default function useOrderList({
           `
           *,
           customers (*),
-          pets (*),
           order_items (
             *,
             products (*)
@@ -61,9 +59,6 @@ export default function useOrderList({
         }
         if (filter.field === 'custumer_id' && filter.value) {
           query = query.eq('custumer_id', filter.value)
-        }
-        if (filter.field === 'pet_id' && filter.value) {
-          query = query.eq('pet_id', filter.value)
         }
         if (filter.field === 'created_from' && filter.value) {
           query = query.gte('created_at', filter.value)

@@ -26,7 +26,11 @@ interface CustomerCreateProps {
   onCustomerCreated?: (customer: Tables<'customers'>) => void
 }
 
-export function CustomerCreate({ open, onOpenChange, onCustomerCreated }: CustomerCreateProps) {
+export function CustomerCreate({
+  open,
+  onOpenChange,
+  onCustomerCreated,
+}: CustomerCreateProps) {
   const createCustomer = useCustomerCreate()
 
   const form = useForm<CreateCustomerSchema>({

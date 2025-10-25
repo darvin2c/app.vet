@@ -7,15 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
-import { 
-  Search, 
-  Plus, 
-  Package, 
-  Tag,
-  Grid3X3,
-  List,
-  Filter
-} from 'lucide-react'
+import { Search, Plus, Package, Tag, Grid3X3, List, Filter } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
@@ -31,25 +23,34 @@ export function POSProductGrid() {
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const [viewMode, setViewMode] = useState<ViewMode>('grid')
-  
+
   const debouncedSearch = useDebounce(search, 300)
   const { addToCart } = usePOSStore()
-  
+
   // Fetch products using existing hook
   const { data: products = [], isLoading: isLoadingProducts } = useProductList({
     search: debouncedSearch,
-    filters: selectedCategory ? [{ field: 'product_category_id', operator: 'eq', value: selectedCategory }] : [],
+    filters: selectedCategory
+      ? [
+          {
+            field: 'product_category_id',
+            operator: 'eq',
+            value: selectedCategory,
+          },
+        ]
+      : [],
   })
-  
+
   // Fetch categories using existing hook
-  const { data: categories = [], isLoading: isLoadingCategories } = useProductCategoryList({})
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    useProductCategoryList({})
 
   const handleAddToCart = (product: Product) => {
     addToCart(product, 1)
   }
 
   const filteredProducts = useMemo(() => {
-    return products.filter(product => product.stock > 0)
+    return products.filter((product) => product.stock > 0)
   }, [products])
 
   if (isLoadingProducts && !products.length) {
@@ -82,7 +83,7 @@ export function POSProductGrid() {
             <Package className="h-4 w-4 mr-2" />
             Todos
           </Button>
-          
+
           {categories.map((category) => (
             <Button
               key={category.id}
@@ -91,9 +92,10 @@ export function POSProductGrid() {
               onClick={() => setSelectedCategory(category.id)}
               className="min-h-[40px] whitespace-nowrap"
               style={{
-                backgroundColor: selectedCategory === category.id
-                  ? 'rgb(59 130 246)'
-                  : 'transparent',
+                backgroundColor:
+                  selectedCategory === category.id
+                    ? 'rgb(59 130 246)'
+                    : 'transparent',
               }}
             >
               <Tag className="h-4 w-4 mr-2" />
@@ -107,7 +109,7 @@ export function POSProductGrid() {
           <div className="text-sm text-gray-600">
             {filteredProducts.length} productos disponibles
           </div>
-          
+
           <div className="flex gap-1">
             <Button
               variant={viewMode === 'grid' ? 'default' : 'outline'}
@@ -152,7 +154,7 @@ export function POSProductGrid() {
             ))}
           </div>
         )}
-        
+
         {filteredProducts.length === 0 && !isLoadingProducts && (
           <div className="text-center py-12">
             <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -160,10 +162,9 @@ export function POSProductGrid() {
               No se encontraron productos
             </h3>
             <p className="text-gray-600">
-              {search || selectedCategory 
+              {search || selectedCategory
                 ? 'Intenta ajustar los filtros de búsqueda'
-                : 'No hay productos disponibles en este momento'
-              }
+                : 'No hay productos disponibles en este momento'}
             </p>
           </div>
         )}
@@ -172,12 +173,12 @@ export function POSProductGrid() {
   )
 }
 
-function ProductCard({ 
-  product, 
-  onAddToCart 
-}: { 
+function ProductCard({
+  product,
+  onAddToCart,
+}: {
   product: Product
-  onAddToCart: (product: Product) => void 
+  onAddToCart: (product: Product) => void
 }) {
   const isLowStock = product.stock <= 5
 
@@ -188,7 +189,7 @@ function ProductCard({
         <div className="aspect-square bg-gray-100 rounded-lg mb-3 flex items-center justify-center">
           <Package className="h-8 w-8 text-gray-400" />
         </div>
-        
+
         {/* Product Info */}
         <div className="space-y-2">
           <div>
@@ -199,19 +200,19 @@ function ProductCard({
               <p className="text-xs text-gray-500">SKU: {product.sku}</p>
             )}
           </div>
-          
+
           <div className="space-y-2">
             <p className="font-semibold text-base sm:text-lg">
               S/ {product.price?.toFixed(2) || '0.00'}
             </p>
-            <Badge 
+            <Badge
               variant={isLowStock ? 'destructive' : 'secondary'}
               className="text-xs w-full justify-center"
             >
               Stock: {product.stock}
             </Badge>
           </div>
-          
+
           <Button
             size="sm"
             onClick={() => onAddToCart(product)}
@@ -227,12 +228,12 @@ function ProductCard({
   )
 }
 
-function ProductListItem({ 
-  product, 
-  onAddToCart 
-}: { 
+function ProductListItem({
+  product,
+  onAddToCart,
+}: {
   product: Product
-  onAddToCart: (product: Product) => void 
+  onAddToCart: (product: Product) => void
 }) {
   const isLowStock = product.stock <= 5
 
@@ -244,7 +245,7 @@ function ProductListItem({
           <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
             <Package className="h-6 w-6 text-gray-400" />
           </div>
-          
+
           {/* Product Info */}
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
@@ -256,7 +257,7 @@ function ProductListItem({
                   <p className="text-sm text-gray-500">SKU: {product.sku}</p>
                 )}
                 <div className="flex items-center gap-2 mt-1">
-                  <Badge 
+                  <Badge
                     variant={isLowStock ? 'destructive' : 'secondary'}
                     className="text-xs"
                   >
@@ -264,14 +265,14 @@ function ProductListItem({
                   </Badge>
                 </div>
               </div>
-              
+
               <div className="flex items-center gap-3 ml-4">
                 <div className="text-right">
                   <p className="font-semibold text-lg">
                     S/ {product.price?.toFixed(2) || '0.00'}
                   </p>
                 </div>
-                
+
                 <Button
                   size="sm"
                   onClick={() => onAddToCart(product)}
@@ -295,14 +296,14 @@ function ProductCatalogSkeleton() {
     <div className="space-y-4">
       {/* Search Skeleton */}
       <Skeleton className="h-12 w-full" />
-      
+
       {/* Category Filters Skeleton */}
       <div className="flex gap-2">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-10 w-20" />
         ))}
       </div>
-      
+
       {/* Products Grid Skeleton */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {Array.from({ length: 10 }).map((_, i) => (

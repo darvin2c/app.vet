@@ -629,7 +629,6 @@ export type Database = {
           notes: string | null
           order_number: string | null
           paid_amount: number
-          pet_id: string | null
           status: Database["public"]["Enums"]["order_status"]
           subtotal: number
           tax: number
@@ -647,7 +646,6 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
-          pet_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           tax?: number
@@ -665,7 +663,6 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
-          pet_id?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           tax?: number
@@ -687,13 +684,6 @@ export type Database = {
             columns: ["custumer_id"]
             isOneToOne: false
             referencedRelation: "customers"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "orders_pet_id_fkey"
-            columns: ["pet_id"]
-            isOneToOne: false
-            referencedRelation: "pets"
             referencedColumns: ["id"]
           },
           {

@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { CustomerSelect } from '@/components/customers/customer-select'
-import { PetSelect } from '@/components/pets/pet-select'
+
 import { OrderItemsManager } from './order-items-manager'
 import { Tables, Enums } from '@/types/supabase.types'
 import { orderStatusOptions } from '@/schemas/orders.schema'
@@ -37,7 +37,6 @@ export function OrderForm({ mode = 'create', order }: OrderFormProps) {
   } = useFormContext<CreateOrderSchema>()
 
   const selectedCustomerId = watch('custumer_id')
-  const selectedPetId = watch('pet_id')
 
   return (
     <div className="space-y-6">
@@ -85,37 +84,19 @@ export function OrderForm({ mode = 'create', order }: OrderFormProps) {
         </div>
       </div>
 
-      {/* Cliente y mascota */}
+      {/* Cliente */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium">Cliente y mascota</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h3 className="text-lg font-medium">Cliente</h3>
+        <div className="grid grid-cols-1 gap-4">
           <Field>
             <FieldLabel htmlFor="custumer_id">Cliente *</FieldLabel>
             <FieldContent>
               <CustomerSelect
                 value={watch('custumer_id') || ''}
-                onValueChange={(value) => {
-                  setValue('custumer_id', value)
-                  // Limpiar mascota cuando cambie el cliente
-                  setValue('pet_id', '')
-                }}
+                onValueChange={(value) => setValue('custumer_id', value)}
                 placeholder="Seleccionar cliente..."
               />
               <FieldError errors={[errors.custumer_id]} />
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="pet_id">Mascota</FieldLabel>
-            <FieldContent>
-              <PetSelect
-                customerId={selectedCustomerId}
-                value={watch('pet_id') || ''}
-                onValueChange={(value) => setValue('pet_id', value)}
-                placeholder="Seleccionar mascota..."
-                disabled={!selectedCustomerId}
-              />
-              <FieldError errors={[errors.pet_id]} />
             </FieldContent>
           </Field>
         </div>
@@ -135,7 +116,7 @@ export function OrderForm({ mode = 'create', order }: OrderFormProps) {
             }),
             { subtotal: 0, tax: 0, total: 0 }
           )
-          
+
           // Actualizar los valores del formulario
           setValue('subtotal', totals.subtotal)
           setValue('tax', totals.tax)

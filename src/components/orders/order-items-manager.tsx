@@ -348,7 +348,9 @@ export function OrderItemsManager({
                           variant="ghost"
                           size="sm"
                           onClick={handleAddItem}
-                          disabled={!newItem.product_id || newItem.quantity <= 0}
+                          disabled={
+                            !newItem.product_id || newItem.quantity <= 0
+                          }
                         >
                           ✓
                         </Button>

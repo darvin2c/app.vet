@@ -30,7 +30,6 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
     resolver: zodResolver(updateOrderSchema),
     defaultValues: {
       custumer_id: order.custumer_id,
-      pet_id: order.pet_id ?? '',
       order_number: order.order_number ?? '',
       status: order.status as
         | 'draft'

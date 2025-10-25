@@ -23,7 +23,6 @@ export default function useOrderCreate() {
 
       const orderData: TablesInsert<'orders'> = {
         custumer_id: data.custumer_id,
-        pet_id: data.pet_id,
         order_number: orderNumber,
         status: data.status,
         subtotal: data.subtotal,

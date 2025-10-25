@@ -47,7 +47,6 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
   const {
     cartItems,
     selectedCustomer,
-    selectedPet,
     cartTotal,
     cartSubtotal,
     cartTax,
@@ -59,9 +58,13 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
   const orderItemCreateMutation = useOrderItemCreate()
 
   // Calculate discount amount
-  const discountAmount = discount ? (cartSubtotal * parseFloat(discount)) / 100 : 0
+  const discountAmount = discount
+    ? (cartSubtotal * parseFloat(discount)) / 100
+    : 0
   const finalTotal = cartTotal - discountAmount
-  const change = amountPaid ? Math.max(0, parseFloat(amountPaid) - finalTotal) : 0
+  const change = amountPaid
+    ? Math.max(0, parseFloat(amountPaid) - finalTotal)
+    : 0
 
   const handlePayment = async () => {
     if (!selectedCustomer) {
@@ -85,7 +88,6 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
       // Create order
       const orderData = {
         custumer_id: selectedCustomer!.id,
-        pet_id: selectedPet?.id || undefined,
         status: 'paid' as const,
         subtotal: cartSubtotal,
         tax: cartTax,
@@ -327,7 +329,9 @@ export function POSPayment({ onOrderCreated, onClose }: POSPaymentProps) {
       <div className="p-4 border-t bg-gray-50">
         <Button
           onClick={handlePayment}
-          disabled={isProcessing || !amountPaid || parseFloat(amountPaid) < finalTotal}
+          disabled={
+            isProcessing || !amountPaid || parseFloat(amountPaid) < finalTotal
+          }
           className="w-full h-12 text-lg"
           size="lg"
         >

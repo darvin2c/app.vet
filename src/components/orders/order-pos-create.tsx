@@ -22,10 +22,7 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
 
   return (
     <div className="fixed inset-0 z-50 bg-white">
-      <POSInterface
-        onOrderCreated={handleOrderCreated}
-        onClose={handleClose}
-      />
+      <POSInterface onOrderCreated={handleOrderCreated} onClose={handleClose} />
     </div>
   )
 }

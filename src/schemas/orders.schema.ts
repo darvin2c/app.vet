@@ -2,7 +2,6 @@ import { z } from 'zod'
 
 export const orderBaseSchema = z.object({
   custumer_id: z.string().nonempty('El cliente es requerido'),
-  pet_id: z.string().optional().or(z.literal('')),
   order_number: z.string().optional(),
   status: z
     .enum(['draft', 'confirmed', 'paid', 'cancelled', 'refunded'])
@@ -33,7 +32,6 @@ export const orderFiltersSchema = z.object({
     .enum(['draft', 'confirmed', 'paid', 'cancelled', 'refunded'])
     .optional(),
   custumer_id: z.string().optional(),
-  pet_id: z.string().optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
   total_from: z.number().min(0).optional(),

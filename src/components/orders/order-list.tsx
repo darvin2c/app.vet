@@ -68,7 +68,6 @@ import { es } from 'date-fns/locale'
 
 type Order = Tables<'orders'> & {
   customers: Tables<'customers'> | null
-  pets: Tables<'pets'> | null
   order_items: Array<
     Tables<'order_items'> & {
       products: Tables<'products'> | null
@@ -157,22 +156,7 @@ export function OrderList({
         )
       },
     },
-    {
-      accessorKey: 'pets',
-      header: ({ header }) => (
-        <OrderByTableHeader field="pet_id" orderByHook={orderByHook}>
-          Mascota
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Order> }) => {
-        const pet = row.original.pets
-        return (
-          <div className="text-sm text-muted-foreground">
-            {pet ? pet.name : 'Sin mascota'}
-          </div>
-        )
-      },
-    },
+
     {
       accessorKey: 'status',
       header: ({ header }) => (
@@ -289,7 +273,6 @@ export function OrderList({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {orders.map((order) => {
         const customer = order.customers
-        const pet = order.pets
         const status = getOrderStatus(order.status)
         const itemCount = order.order_items?.length || 0
 
@@ -304,11 +287,6 @@ export function OrderList({
                       ? `${customer.first_name} ${customer.last_name}`
                       : 'Sin cliente'}
                   </p>
-                  {pet && (
-                    <p className="text-xs text-muted-foreground">
-                      Mascota: {pet.name}
-                    </p>
-                  )}
                 </div>
                 <Badge variant={getStatusBadgeVariant(order.status)}>
                   <div className="flex items-center gap-1">
@@ -351,7 +329,6 @@ export function OrderList({
     <ItemGroup className="space-y-2">
       {orders.map((order) => {
         const customer = order.customers
-        const pet = order.pets
         const status = getOrderStatus(order.status)
         const itemCount = order.order_items?.length || 0
 
@@ -365,7 +342,6 @@ export function OrderList({
                     {customer
                       ? `${customer.first_name} ${customer.last_name}`
                       : 'Sin cliente'}
-                    {pet && ` • ${pet.name}`}
                     {` • ${itemCount} ${itemCount === 1 ? 'item' : 'items'}`}
                   </ItemDescription>
                 </div>

@@ -28,7 +28,6 @@ export function OrderCreate({ open, onOpenChange }: OrderCreateProps) {
     resolver: zodResolver(createOrderSchema),
     defaultValues: {
       custumer_id: '',
-      pet_id: '',
       order_number: '',
       status: 'draft',
       subtotal: 0,
