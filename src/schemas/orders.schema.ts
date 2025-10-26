@@ -61,7 +61,6 @@ export const orderFiltersSchema = z.object({
 })
 
 export type OrderBaseSchema = z.infer<typeof orderBaseSchema>
-export type CreateOrderSchema = z.infer<typeof createOrderSchema>
 export type UpdateOrderSchema = z.infer<typeof updateOrderSchema>
 export type PaymentSchema = z.infer<typeof paymentSchema>
 export type OrderFiltersSchema = z.infer<typeof orderFiltersSchema>

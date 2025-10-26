@@ -1,13 +1,15 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  CreateOrderSchema,
-  calculateBalance,
-  getOrderStatusFromPayment,
-} from '@/schemas/orders.schema'
+import { getOrderStatusFromPayment } from '@/schemas/orders.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+
+type CreateOrderSchema = {
+  order: Omit<TablesInsert<'orders'>, 'tenant_id'>
+  items: TablesInsert<'order_items'>[]
+  payments: TablesInsert<'payments'>[]
+}
 
 export default function useOrderCreate() {
   const queryClient = useQueryClient()
@@ -19,27 +21,20 @@ export default function useOrderCreate() {
         throw new Error('No hay tenant seleccionado')
       }
 
-      // Generar número de orden automático si no se proporciona
-      const orderNumber = data.order_number || `ORD-${Date.now()}`
+      const { order, items, payments } = data
 
       // Determinar el estado basado en el pago si no se proporciona
       const status =
-        data.status || getOrderStatusFromPayment(data.paid_amount, data.total)
+        order.status ||
+        getOrderStatusFromPayment(order.paid_amount || 0, order.total || 0)
 
       const orderData: TablesInsert<'orders'> = {
-        custumer_id: data.custumer_id,
-        order_number: orderNumber,
+        ...order,
         status: status,
-        subtotal: data.subtotal,
-        tax: data.tax,
-        total: data.total,
-        paid_amount: data.paid_amount,
-        // balance se calcula automáticamente por la base de datos
-        notes: data.notes,
         tenant_id: currentTenant.id,
       }
 
-      const { data: order, error } = await supabase
+      const { data: createdOrder, error } = await supabase
         .from('orders')
         .insert(orderData)
         .select()
@@ -49,7 +44,35 @@ export default function useOrderCreate() {
         throw new Error(`Error al crear orden: ${error.message}`)
       }
 
-      return order
+      // Insertar los ítems de la orden
+      items.forEach((item) => {
+        item.order_id = createdOrder.id
+      })
+      const { error: itemsError } = await supabase
+        .from('order_items')
+        .insert(items)
+
+      if (itemsError) {
+        throw new Error(
+          `Error al crear ítems de la orden: ${itemsError.message}`
+        )
+      }
+
+      // Insertar los pagos de la orden
+      payments.forEach((payment) => {
+        payment.order_id = createdOrder.id
+      })
+      const { error: paymentsError } = await supabase
+        .from('payments')
+        .insert(payments)
+
+      if (paymentsError) {
+        throw new Error(
+          `Error al crear pagos de la orden: ${paymentsError.message}`
+        )
+      }
+
+      return createdOrder
     },
     onSuccess: () => {
       // Invalidar las consultas relacionadas
