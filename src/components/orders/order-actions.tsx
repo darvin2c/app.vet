@@ -23,8 +23,8 @@ import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEditSheet } from './order-edit-sheet'
 import { OrderPaymentSheet } from './order-payment-sheet'
-import { OrderPrintSheet } from './order-print-sheet'
-import { printDocument, downloadPDF } from '@/lib/print-utils'
+
+import { downloadPDF, previewDocument } from '@/lib/print-utils'
 
 interface OrderActionsProps {
   order: Tables<'orders'>
@@ -34,85 +34,34 @@ export function OrderActions({ order }: OrderActionsProps) {
   const [showEditSheet, setShowEditSheet] = useState(false)
   const [showPaymentSheet, setShowPaymentSheet] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
-  const [showViewSheet, setShowViewSheet] = useState(false)
-  const [isDownloading, setIsDownloading] = useState(false)
 
-  // Handler para ver la orden (abre modal con vista previa)
-  const handleViewOrder = () => {
-    setShowViewSheet(true)
-  }
+  const [isDownloading, setIsDownloading] = useState(false)
 
   // Handler para imprimir directamente
   const handleDirectPrint = () => {
-    // Crear un elemento temporal con el contenido de la orden
-    const tempDiv = document.createElement('div')
-    tempDiv.id = 'temp-order-print'
-    tempDiv.style.position = 'absolute'
-    tempDiv.style.left = '-9999px'
-    tempDiv.style.top = '-9999px'
+    // Abrir la página de impresión y usar la función de impresión del navegador
+    const printURL = `/orders/${order.id}/print`
+    const printWindow = window.open(printURL, '_blank')
 
-    // Importar dinámicamente el componente OrderPrint
-    import('./order-print').then(({ OrderPrint }) => {
-      const React = require('react')
-      const ReactDOM = require('react-dom/client')
-
-      document.body.appendChild(tempDiv)
-      const root = ReactDOM.createRoot(tempDiv)
-
-      root.render(React.createElement(OrderPrint, { order }))
-
-      // Esperar un momento para que se renderice
-      setTimeout(() => {
-        printDocument('temp-order-print')
-        // Limpiar después de imprimir
-        setTimeout(() => {
-          document.body.removeChild(tempDiv)
-        }, 1000)
-      }, 100)
-    })
+    if (printWindow) {
+      printWindow.onload = () => {
+        printWindow.print()
+      }
+    }
   }
 
   // Handler para descargar PDF directamente
-  const handleDownloadPDF = async () => {
+  const handleDirectDownloadPDF = async () => {
     if (isDownloading) return
 
     setIsDownloading(true)
     try {
-      // Crear un elemento temporal con el contenido de la orden
-      const tempDiv = document.createElement('div')
-      tempDiv.id = 'temp-order-pdf'
-      tempDiv.style.position = 'absolute'
-      tempDiv.style.left = '-9999px'
-      tempDiv.style.top = '-9999px'
-
-      // Importar dinámicamente el componente OrderPrint
-      const { OrderPrint } = await import('./order-print')
-      const React = require('react')
-      const ReactDOM = require('react-dom/client')
-
-      document.body.appendChild(tempDiv)
-      const root = ReactDOM.createRoot(tempDiv)
-
-      root.render(React.createElement(OrderPrint, { order }))
-
-      // Esperar un momento para que se renderice
-      setTimeout(async () => {
-        try {
-          await downloadPDF('temp-order-pdf', {
-            filename: `orden-${order.order_number || order.id}.pdf`,
-            format: 'a4',
-            orientation: 'portrait',
-          })
-        } catch (error) {
-          console.error('Error al descargar PDF:', error)
-        } finally {
-          // Limpiar después de descargar
-          document.body.removeChild(tempDiv)
-          setIsDownloading(false)
-        }
-      }, 100)
+      await downloadPDF(order.id, {
+        filename: `orden-${order.order_number || order.id}.pdf`,
+      })
     } catch (error) {
-      console.error('Error al preparar descarga PDF:', error)
+      console.error('Error al descargar PDF:', error)
+    } finally {
       setIsDownloading(false)
     }
   }
@@ -136,16 +85,16 @@ export function OrderActions({ order }: OrderActionsProps) {
             Pagar
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleViewOrder}>
+          <DropdownMenuItem onClick={() => previewDocument(order.id)}>
             <Eye className="mr-2 h-4 w-4" />
-            Ver Orden
+            Ver
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleDirectPrint}>
             <Printer className="mr-2 h-4 w-4" />
             Imprimir
           </DropdownMenuItem>
           <DropdownMenuItem
-            onClick={handleDownloadPDF}
+            onClick={handleDirectDownloadPDF}
             disabled={isDownloading}
           >
             <Download className="mr-2 h-4 w-4" />
@@ -179,11 +128,6 @@ export function OrderActions({ order }: OrderActionsProps) {
         order={order}
         open={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
-      />
-      <OrderPrintSheet
-        order={order}
-        open={showViewSheet}
-        onOpenChange={setShowViewSheet}
       />
     </>
   )

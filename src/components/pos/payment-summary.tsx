@@ -3,8 +3,19 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
-import { AlertCircle, CheckCircle, Clock, DollarSign, Receipt } from 'lucide-react'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import {
+  AlertCircle,
+  CheckCircle,
+  Clock,
+  DollarSign,
+  Receipt,
+} from 'lucide-react'
 
 interface PaymentSummaryProps {
   cartSubtotal: number
@@ -72,7 +83,8 @@ export function PaymentSummary({
 
   const status = getPaymentStatus()
   const StatusIcon = status.icon
-  const progressPercentage = cartTotal > 0 ? Math.min(100, (totalPaid / cartTotal) * 100) : 0
+  const progressPercentage =
+    cartTotal > 0 ? Math.min(100, (totalPaid / cartTotal) * 100) : 0
 
   return (
     <Card className="border-b rounded-none shadow-sm">
@@ -84,7 +96,9 @@ export function PaymentSummary({
             <div className="flex items-center gap-2">
               <StatusIcon className={`h-5 w-5 ${status.iconColor}`} />
               <div>
-                <div className="text-xl font-bold">S/ {cartTotal.toFixed(2)}</div>
+                <div className="text-xl font-bold">
+                  S/ {cartTotal.toFixed(2)}
+                </div>
                 <div className="text-xs text-muted-foreground">Total</div>
               </div>
             </div>
@@ -139,8 +153,12 @@ export function PaymentSummary({
             </div>
             <Separator orientation="vertical" className="h-8" />
             <div>
-              <div className="text-2xl font-bold">S/ {cartTotal.toFixed(2)}</div>
-              <div className="text-sm text-muted-foreground">Total de la orden</div>
+              <div className="text-2xl font-bold">
+                S/ {cartTotal.toFixed(2)}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                Total de la orden
+              </div>
             </div>
           </div>
 
@@ -216,7 +234,8 @@ export function PaymentSummary({
                     </div>
                     {paymentsCount > 0 && (
                       <div className="text-xs text-muted-foreground pt-1">
-                        {paymentsCount} pago{paymentsCount !== 1 ? 's' : ''} agregado{paymentsCount !== 1 ? 's' : ''}
+                        {paymentsCount} pago{paymentsCount !== 1 ? 's' : ''}{' '}
+                        agregado{paymentsCount !== 1 ? 's' : ''}
                       </div>
                     )}
                   </div>

@@ -160,12 +160,14 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             <h2 className="text-lg font-semibold">Procesar Pago</h2>
           </div>
           {/* Indicador de estado de pago */}
-          <Badge 
+          <Badge
             variant={paymentStatusInfo.statusOption?.variant || 'secondary'}
             className="ml-2"
           >
             {paymentStatusInfo.statusOption?.icon}
-            <span className="ml-1">{paymentStatusInfo.statusOption?.label}</span>
+            <span className="ml-1">
+              {paymentStatusInfo.statusOption?.label}
+            </span>
           </Badge>
         </div>
         <div className="text-sm text-muted-foreground">
@@ -199,10 +201,10 @@ export function POSPayment({ onBack }: POSPaymentProps) {
               )}
             </div>
             <div className="border rounded-lg overflow-hidden">
-               <ScrollArea className="h-[400px]">
-                 <PaymentTable />
-               </ScrollArea>
-             </div>
+              <ScrollArea className="h-[400px]">
+                <PaymentTable />
+              </ScrollArea>
+            </div>
           </div>
 
           {/* Right Column: Payment Method Selector (Desktop/Tablet only) */}

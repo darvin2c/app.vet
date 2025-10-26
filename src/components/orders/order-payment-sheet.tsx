@@ -17,14 +17,18 @@ interface OrderPaymentSheetProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function OrderPaymentSheet({ order, open, onOpenChange }: OrderPaymentSheetProps) {
+export function OrderPaymentSheet({
+  order,
+  open,
+  onOpenChange,
+}: OrderPaymentSheetProps) {
   const { clearCart } = usePOSStore()
 
   useEffect(() => {
     if (open && order) {
       // Limpiar el carrito actual
       clearCart()
-      
+
       // TODO: Cargar datos de la orden existente para pagos adicionales
       // Esto requeriría modificar el store POS para manejar órdenes existentes
       console.log('Cargando orden para pago:', order)
@@ -49,9 +53,7 @@ export function OrderPaymentSheet({ order, open, onOpenChange }: OrderPaymentShe
           <SheetTitle>Pagar Orden {order.order_number}</SheetTitle>
         </SheetHeader>
         <div className="h-full">
-          <POSPayment 
-            onBack={handleClose}
-          />
+          <POSPayment onBack={handleClose} />
         </div>
       </SheetContent>
     </Sheet>

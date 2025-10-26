@@ -35,9 +35,11 @@ export const orderWithPaymentValidationSchema = orderBaseSchema.refine(
 
 export const createOrderSchema = orderWithPaymentValidationSchema
 
-export const updateOrderSchema = orderWithPaymentValidationSchema.partial().extend({
-  id: z.string().uuid('ID de orden inválido'),
-})
+export const updateOrderSchema = orderWithPaymentValidationSchema
+  .partial()
+  .extend({
+    id: z.string().uuid('ID de orden inválido'),
+  })
 
 // Schema específico para pagos
 export const paymentSchema = z.object({
@@ -80,31 +82,46 @@ export const paymentStatusOptions = [
 ] as const
 
 // Funciones de utilidad para estados de pago
-export const getPaymentStatus = (paid_amount: number, total: number): 'pending' | 'partial' | 'completed' => {
+export const getPaymentStatus = (
+  paid_amount: number,
+  total: number
+): 'pending' | 'partial' | 'completed' => {
   if (paid_amount === 0) return 'pending'
   if (paid_amount >= total) return 'completed'
   return 'partial'
 }
 
-export const calculateBalance = (total: number, paid_amount: number): number => {
+export const calculateBalance = (
+  total: number,
+  paid_amount: number
+): number => {
   return Math.max(0, total - paid_amount)
 }
 
-export const getOrderStatusFromPayment = (paid_amount: number, total: number): Enums<'order_status'> => {
+export const getOrderStatusFromPayment = (
+  paid_amount: number,
+  total: number
+): Enums<'order_status'> => {
   if (paid_amount === 0) return 'confirmed'
   if (paid_amount >= total) return 'paid'
   return 'confirmed' // Para pagos parciales mantenemos como confirmado
 }
 
-export const canAddPayment = (paid_amount: number, total: number, new_payment: number): boolean => {
-  return (paid_amount + new_payment) <= total
+export const canAddPayment = (
+  paid_amount: number,
+  total: number,
+  new_payment: number
+): boolean => {
+  return paid_amount + new_payment <= total
 }
 
 export const getPaymentStatusInfo = (paid_amount: number, total: number) => {
   const status = getPaymentStatus(paid_amount, total)
   const balance = calculateBalance(total, paid_amount)
-  const statusOption = paymentStatusOptions.find(option => option.value === status)
-  
+  const statusOption = paymentStatusOptions.find(
+    (option) => option.value === status
+  )
+
   return {
     status,
     balance,

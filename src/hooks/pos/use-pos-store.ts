@@ -2,12 +2,12 @@
 
 import { create } from 'zustand'
 import { Database, Enums } from '@/types/supabase.types'
-import { 
-  getPaymentStatus, 
-  calculateBalance, 
-  getOrderStatusFromPayment, 
+import {
+  getPaymentStatus,
+  calculateBalance,
+  getOrderStatusFromPayment,
   canAddPayment,
-  getPaymentStatusInfo 
+  getPaymentStatusInfo,
 } from '@/schemas/orders.schema'
 
 type Product = Database['public']['Tables']['products']['Row']
@@ -99,7 +99,7 @@ interface POSState {
     statusOption: any
     percentage: number
   }
-  
+
   // Funciones para diferentes tipos de guardado
   canSaveWithoutPayment: () => boolean
   canSaveWithPartialPayment: () => boolean
@@ -216,7 +216,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
   // Payment actions
   addPayment: (payment) => {
     const state = get()
-    
+
     // Validar que no se exceda el total
     if (!get().canAddPaymentAmount(payment.amount)) {
       throw new Error('El pago excede el monto pendiente')
@@ -255,7 +255,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
       (sum, payment) => sum + payment.amount,
       0
     )
-    
+
     // Usar funciones del schema para cálculos consistentes
     const balance = calculateBalance(state.cartTotal, totalPaid)
     const paymentStatus = getPaymentStatus(totalPaid, state.cartTotal)
@@ -304,8 +304,11 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   getOrderData: () => {
     const state = get()
-    const orderStatus = getOrderStatusFromPayment(state.totalPaid, state.cartTotal)
-    
+    const orderStatus = getOrderStatusFromPayment(
+      state.totalPaid,
+      state.cartTotal
+    )
+
     return {
       custumer_id: state.selectedCustomer?.id || '',
       subtotal: state.cartSubtotal,
@@ -326,10 +329,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   canProcessOrder: () => {
     const state = get()
-    return (
-      state.cartItems.length > 0 &&
-      state.selectedCustomer !== null
-    )
+    return state.cartItems.length > 0 && state.selectedCustomer !== null
   },
 
   canAddPaymentAmount: (amount: number) => {
@@ -345,10 +345,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
   // Funciones para diferentes tipos de guardado
   canSaveWithoutPayment: () => {
     const state = get()
-    return (
-      state.cartItems.length > 0 &&
-      state.selectedCustomer !== null
-    )
+    return state.cartItems.length > 0 && state.selectedCustomer !== null
   },
 
   canSaveWithPartialPayment: () => {

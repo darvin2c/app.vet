@@ -1,6 +1,10 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { UpdateOrderSchema, calculateBalance, getOrderStatusFromPayment } from '@/schemas/orders.schema'
+import {
+  UpdateOrderSchema,
+  calculateBalance,
+  getOrderStatusFromPayment,
+} from '@/schemas/orders.schema'
 import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
@@ -29,7 +33,11 @@ export default function useOrderUpdate() {
 
       // Determinar el estado basado en el pago si no se proporciona pero hay datos de pago
       let status = data.status
-      if (!status && data.total !== undefined && data.paid_amount !== undefined) {
+      if (
+        !status &&
+        data.total !== undefined &&
+        data.paid_amount !== undefined
+      ) {
         status = getOrderStatusFromPayment(data.paid_amount, data.total)
       }
 

@@ -105,7 +105,7 @@ export function CartItemEditDialog({
         total,
       }
     }
-    
+
     return {
       subtotal: 0,
       discountAmount: 0,
@@ -127,7 +127,7 @@ export function CartItemEditDialog({
 
     // Actualizar en el store
     updateCartItemQuantity(item.product.id, data.quantity)
-    
+
     // Si el precio cambió, necesitamos actualizar el store manualmente
     if (data.unit_price !== item.price) {
       const currentCartItems = usePOSStore.getState().cartItems
@@ -140,7 +140,7 @@ export function CartItemEditDialog({
             }
           : cartItem
       )
-      
+
       // Actualizar el store directamente
       usePOSStore.setState({ cartItems: updatedCartItems })
       usePOSStore.getState().calculateTotals()
@@ -300,9 +300,7 @@ export function CartItemEditDialog({
               <Button type="button" variant="outline" onClick={handleCancel}>
                 Cancelar
               </Button>
-              <Button type="submit">
-                Guardar cambios
-              </Button>
+              <Button type="submit">Guardar cambios</Button>
             </DialogFooter>
           </form>
         </Form>
