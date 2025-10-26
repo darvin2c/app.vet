@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Item,
@@ -13,13 +14,14 @@ import {
   ItemGroup,
   ItemSeparator,
 } from '@/components/ui/item'
-import { Trash2, Package, ShoppingCart, Edit } from 'lucide-react'
+import { Trash2, Package, ShoppingCart, Edit, CreditCard, Trash } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/pos/cart-item-edit-dialog'
+import { cn } from '@/lib/utils'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -30,13 +32,23 @@ interface CartItem {
   subtotal: number
 }
 
-export function POSCart() {
+interface POSCartProps {
+  className?: string
+  showHeader?: boolean
+  showFooter?: boolean
+}
+
+export function POSCart({ className, showHeader = true, showFooter = true }: POSCartProps) {
   const {
     cartItems,
     cartSubtotal,
     cartTax,
+    cartTotal,
+    selectedCustomer,
     updateCartItemQuantity,
     removeFromCart,
+    clearCart,
+    setCurrentView,
   } = usePOSStore()
 
   const [editingItem, setEditingItem] = useState<CartItem | null>(null)
@@ -47,53 +59,111 @@ export function POSCart() {
     setIsEditDialogOpen(true)
   }
 
-  if (cartItems.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-full p-6">
-        <ShoppingCart className="h-16 w-16 text-gray-300 mb-4" />
-        <h3 className="text-lg font-medium text-gray-600 mb-2">
-          Carrito vacío
-        </h3>
-        <p className="text-sm text-gray-500">
-          Agrega productos desde el catálogo para comenzar
-        </p>
-      </div>
-    )
+  const handleProceedToPayment = () => {
+    setCurrentView('payment')
   }
 
+  const handleClearCart = () => {
+    clearCart()
+  }
+
+  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+
   return (
-    <div className="flex flex-col h-full">
-      {/* Cart Items */}
-      <ScrollArea className="flex-1">
-        <ItemGroup>
-          {cartItems.map((item, index) => (
-            <React.Fragment key={item.product.id}>
-              <CartItemCard
-                item={item}
-                onUpdateQuantity={updateCartItemQuantity}
-                onRemove={removeFromCart}
-                onEdit={handleEditItem}
-              />
-              {index < cartItems.length - 1 && <ItemSeparator />}
-            </React.Fragment>
-          ))}
-        </ItemGroup>
-      </ScrollArea>
-
-      {/* Cart Summary */}
-      <div className="p-4 border-t bg-gray-50">
-        <div className="space-y-2">
-          <div className="flex justify-between text-sm">
-            <span>Subtotal:</span>
-            <span>S/ {cartSubtotal.toFixed(2)}</span>
-          </div>
-
-          <div className="flex justify-between text-sm">
-            <span>IGV (18%):</span>
-            <span>S/ {cartTax.toFixed(2)}</span>
+    <div className={cn('flex flex-col h-full w-full lg:w-96 border-l bg-muted/30', className)}>
+      {/* Cart Header */}
+      {showHeader && (
+        <div className="p-4 border-b bg-background">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <ShoppingCart className="h-5 w-5" />
+              <h2 className="font-semibold">Carrito</h2>
+              {cartItems.length > 0 && (
+                <Badge variant="secondary" className="ml-2">
+                  {cartItems.length}
+                </Badge>
+              )}
+            </div>
+            {cartItems.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleClearCart}
+                className="text-destructive hover:text-destructive"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* Cart Content */}
+      {cartItems.length === 0 ? (
+        <div className="flex flex-col items-center justify-center h-full p-6">
+          <ShoppingCart className="h-16 w-16 text-gray-300 mb-4" />
+          <h3 className="text-lg font-medium text-gray-600 mb-2">
+            Carrito vacío
+          </h3>
+          <p className="text-sm text-gray-500">
+            Agrega productos desde el catálogo para comenzar
+          </p>
+        </div>
+      ) : (
+        <>
+          {/* Cart Items */}
+          <ScrollArea className="flex-1">
+            <ItemGroup>
+              {cartItems.map((item, index) => (
+                <React.Fragment key={item.product.id}>
+                  <CartItemCard
+                    item={item}
+                    onUpdateQuantity={updateCartItemQuantity}
+                    onRemove={removeFromCart}
+                    onEdit={handleEditItem}
+                  />
+                  {index < cartItems.length - 1 && <ItemSeparator />}
+                </React.Fragment>
+              ))}
+            </ItemGroup>
+          </ScrollArea>
+
+          {/* Cart Summary */}
+          <div className="p-4 border-t bg-gray-50">
+            <div className="space-y-2">
+              <div className="flex justify-between text-sm">
+                <span>Subtotal:</span>
+                <span>S/ {cartSubtotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between text-sm">
+                <span>IGV (18%):</span>
+                <span>S/ {cartTax.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between items-center text-lg font-semibold">
+                <span>Total:</span>
+                <span>S/ {cartTotal.toFixed(2)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Cart Footer */}
+          {showFooter && (
+            <div className="p-4">
+              <Button
+                onClick={handleProceedToPayment}
+                className="w-full h-12 text-base font-semibold"
+                size="lg"
+                disabled={itemCount === 0 || !selectedCustomer}
+              >
+                <CreditCard className="h-5 w-5 mr-2" />
+                Procesar Pago
+              </Button>
+            </div>
+          )}
+        </>
+      )}
 
       {/* Dialog para editar item */}
       <CartItemEditDialog

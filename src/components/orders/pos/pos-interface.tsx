@@ -4,9 +4,9 @@ import React from 'react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSHeader } from './pos-header'
 import { POSProductSection } from './pos-product-section'
-import { POSCartSection } from './pos-cart-section'
-import { POSMobileCartDrawer } from './pos-mobile-cart-drawer'
+import { POSCart } from './pos-cart'
 import { POSPayment } from './pos-payment'
+import { POSCartMobile } from './pos-cart-mobile'
 
 interface POSInterfaceProps {
   onOrderCreated?: () => void
@@ -35,8 +35,8 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
           />
         )}
 
-        <POSCartSection className="hidden lg:flex" />
-        <POSMobileCartDrawer />
+        <POSCart className="hidden lg:flex" />
+        <POSCartMobile />
       </div>
     </div>
   )
