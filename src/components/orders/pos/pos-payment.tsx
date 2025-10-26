@@ -14,9 +14,9 @@ import {
   Clock,
   AlertCircle,
 } from 'lucide-react'
-import { PaymentMethodSelector } from '@/components/pos/payment-method-selector'
-import { PaymentTable } from '@/components/pos/payment-table'
-import { PaymentSummary } from '@/components/pos/payment-summary'
+import { PaymentMethodSelector } from '@/components/orders/pos/payment-method-selector'
+import { PaymentTable } from '@/components/orders/pos/payment-table'
+import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import { toast } from 'sonner'

@@ -26,7 +26,7 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '../ui/empty'
+} from '../../ui/empty'
 
 const paymentTypeIcons = {
   cash: Banknote,

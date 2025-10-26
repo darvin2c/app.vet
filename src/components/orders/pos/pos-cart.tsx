@@ -27,7 +27,7 @@ import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
-import { CartItemEditDialog } from '@/components/pos/cart-item-edit-dialog'
+import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
 
 type Product = Database['public']['Tables']['products']['Row']
