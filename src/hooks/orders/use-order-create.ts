@@ -22,9 +22,6 @@ export default function useOrderCreate() {
       // Generar número de orden automático si no se proporciona
       const orderNumber = data.order_number || `ORD-${Date.now()}`
 
-      // Calcular balance usando la función del schema
-      const balance = calculateBalance(data.total, data.paid_amount)
-
       // Determinar el estado basado en el pago si no se proporciona
       const status =
         data.status || getOrderStatusFromPayment(data.paid_amount, data.total)
@@ -37,7 +34,7 @@ export default function useOrderCreate() {
         tax: data.tax,
         total: data.total,
         paid_amount: data.paid_amount,
-        balance: balance,
+        // balance se calcula automáticamente por la base de datos
         notes: data.notes,
         tenant_id: currentTenant.id,
       }
