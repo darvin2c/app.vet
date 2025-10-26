@@ -14,7 +14,14 @@ import {
   ItemGroup,
   ItemSeparator,
 } from '@/components/ui/item'
-import { Trash2, Package, ShoppingCart, Edit, CreditCard, Trash } from 'lucide-react'
+import {
+  Trash2,
+  Package,
+  ShoppingCart,
+  Edit,
+  CreditCard,
+  Trash,
+} from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
@@ -38,7 +45,11 @@ interface POSCartProps {
   showFooter?: boolean
 }
 
-export function POSCart({ className, showHeader = true, showFooter = true }: POSCartProps) {
+export function POSCart({
+  className,
+  showHeader = true,
+  showFooter = true,
+}: POSCartProps) {
   const {
     cartItems,
     cartSubtotal,
@@ -70,11 +81,16 @@ export function POSCart({ className, showHeader = true, showFooter = true }: POS
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className={cn('flex flex-col h-full w-full lg:w-96 border-l bg-muted/30', className)}>
+    <div
+      className={cn(
+        'flex flex-col h-full w-full lg:w-96 border-l bg-muted/30',
+        className
+      )}
+    >
       {/* Cart Header */}
       {showHeader && (
         <div className="p-4 border-b bg-background">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               <ShoppingCart className="h-5 w-5" />
               <h2 className="font-semibold">Carrito</h2>
@@ -92,6 +108,7 @@ export function POSCart({ className, showHeader = true, showFooter = true }: POS
                 className="text-destructive hover:text-destructive"
               >
                 <Trash className="h-4 w-4" />
+                Limpiar carrito
               </Button>
             )}
           </div>
