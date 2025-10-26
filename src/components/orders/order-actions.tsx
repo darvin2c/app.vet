@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2, Eye } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, CreditCard, Printer } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -10,7 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tables } from '@/types/supabase.types'
-import { OrderEdit } from './order-edit'
 import { OrderDelete } from './order-delete'
 
 interface OrderActionsProps {
@@ -35,6 +34,14 @@ export function OrderActions({ order }: OrderActionsProps) {
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+            <CreditCard className="mr-2 h-4 w-4" />
+            Pagar
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+            <Printer className="mr-2 h-4 w-4" />
+            Imprimir
+          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={() => setShowDeleteDialog(true)}
             className="text-destructive"
@@ -45,12 +52,6 @@ export function OrderActions({ order }: OrderActionsProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      <OrderEdit
-        order={order}
-        open={showEditDialog}
-        onOpenChange={setShowEditDialog}
-      />
 
       <OrderDelete
         order={order}

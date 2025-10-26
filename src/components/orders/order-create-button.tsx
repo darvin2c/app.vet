@@ -22,7 +22,7 @@ export function OrderCreateButton({
         onClick={() => setOpen(true)}
         {...props}
       >
-        {children || 'Nueva Orden'}
+        {children || 'Nueva'}
       </ResponsiveButton>
 
       <OrderPosCreate open={open} onOpenChange={setOpen} />
