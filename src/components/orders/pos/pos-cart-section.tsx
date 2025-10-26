@@ -64,36 +64,7 @@ export function POSCartSection({ className }: POSCartSectionProps) {
 
       {/* Cart Footer */}
       {cartItems.length > 0 && (
-        <div className="p-4 border-t bg-background space-y-4">
-          {/* Customer Selection */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Cliente</label>
-            <div className="text-sm text-muted-foreground">
-              {selectedCustomer
-                ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-                : 'Cliente general'}
-            </div>
-          </div>
-
-          <Separator />
-
-          {/* Total */}
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span>Subtotal:</span>
-              <span>S/ {(cartTotal / 1.18).toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span>IGV (18%):</span>
-              <span>S/ {(cartTotal - cartTotal / 1.18).toFixed(2)}</span>
-            </div>
-            <Separator />
-            <div className="flex justify-between font-semibold text-lg">
-              <span>Total:</span>
-              <span>S/ {cartTotal.toFixed(2)}</span>
-            </div>
-          </div>
-
+        <div>
           {/* Proceed Button */}
           <Button
             onClick={handleProceedToPayment}
