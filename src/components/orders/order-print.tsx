@@ -1,14 +1,16 @@
 'use client'
 
-import { Tables } from '@/types/supabase.types'
+import useOrderDetail from '@/hooks/orders/use-order-detail'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
-interface OrderPrintProps {
-  order: Tables<'orders'>
-}
+export function OrderPrint({ orderId }: { orderId: string }) {
+  const { data: order } = useOrderDetail(orderId)
 
-export function OrderPrint({ order }: OrderPrintProps) {
+  if (!order) {
+    return null
+  }
+
   return (
     <div className="order-print font-sans text-xs leading-relaxed text-black bg-white">
       <style

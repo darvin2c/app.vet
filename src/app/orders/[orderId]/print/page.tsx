@@ -1,73 +1,8 @@
-'use client'
-
-import { use, useEffect, useState } from 'react'
 import { OrderPrint } from '@/components/orders/order-print'
-import { Tables } from '@/types/supabase.types'
-import { supabase } from '@/lib/supabase/client'
+import { use } from 'react'
 
-interface PrintPageProps {
-  params: Promise<{
-    orderId: string
-  }>
-}
-
-export default function PrintPage({ params }: PrintPageProps) {
-  // Usar React.use() para unwrap la Promise de params en Next.js 15
+export default function PrintPage({ params }: { params: Promise<{ orderId: string }> }) {
   const { orderId } = use(params)
-  
-  const [order, setOrder] = useState<Tables<'orders'> | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function fetchOrder() {
-      try {
-        const { data, error } = await supabase
-          .from('orders')
-          .select('*')
-          .eq('id', orderId)
-          .single()
-
-        if (error) {
-          setError('Error al cargar la orden')
-          console.error('Error fetching order:', error)
-          return
-        }
-
-        setOrder(data)
-      } catch (err) {
-        setError('Error al cargar la orden')
-        console.error('Error:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchOrder()
-  }, [orderId])
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-4"></div>
-          <p>Cargando orden...</p>
-        </div>
-      </div>
-    )
-  }
-
-  if (error || !order) {
-    return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">{error || 'Orden no encontrada'}</p>
-          <p className="text-gray-600">ID de orden: {orderId}</p>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="min-h-screen bg-white">
       <style
@@ -79,7 +14,7 @@ export default function PrintPage({ params }: PrintPageProps) {
                 margin: 0.5in;
               }
               
-              body {
+              body {    
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
                 margin: 0;
@@ -105,7 +40,7 @@ export default function PrintPage({ params }: PrintPageProps) {
       />
 
       <div className="print-page">
-        <OrderPrint order={order} />
+        <OrderPrint orderId={orderId} />
       </div>
     </div>
   )

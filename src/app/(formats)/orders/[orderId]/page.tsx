@@ -1,17 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, use } from 'react'
 import { OrderPrint } from '@/components/orders/order-print'
 import { Tables } from '@/types/supabase.types'
 import { supabase } from '@/lib/supabase/client'
 
 interface PrintPageProps {
-  params: {
+  params: Promise<{
     orderId: string
-  }
+  }>
 }
 
 export default function PrintPage({ params }: PrintPageProps) {
+  const { orderId } = use(params)
   const [order, setOrder] = useState<Tables<'orders'> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -22,7 +23,7 @@ export default function PrintPage({ params }: PrintPageProps) {
         const { data, error } = await supabase
           .from('orders')
           .select('*')
-          .eq('id', params.orderId)
+          .eq('id', orderId)
           .single()
 
         if (error) {
@@ -41,7 +42,7 @@ export default function PrintPage({ params }: PrintPageProps) {
     }
 
     fetchOrder()
-  }, [params.orderId])
+  }, [orderId])
 
   if (loading) {
     return (
@@ -59,7 +60,7 @@ export default function PrintPage({ params }: PrintPageProps) {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">{error || 'Orden no encontrada'}</p>
-          <p className="text-gray-600">ID de orden: {params.orderId}</p>
+          <p className="text-gray-600">ID de orden: {orderId}</p>
         </div>
       </div>
     )
@@ -102,7 +103,7 @@ export default function PrintPage({ params }: PrintPageProps) {
       />
 
       <div className="print-page">
-        <OrderPrint order={order} />
+        <OrderPrint orderId={orderId} />
       </div>
     </div>
   )
