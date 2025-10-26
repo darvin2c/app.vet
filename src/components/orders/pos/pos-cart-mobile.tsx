@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import {
   Sheet,
   SheetContent,
+  SheetHeader,
+  SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
 import { ShoppingCart } from 'lucide-react'
@@ -44,6 +46,9 @@ export function POSCartMobile() {
           </Button>
         </SheetTrigger>
         <SheetContent side="right" className="w-full sm:max-w-md p-0">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Carrito de Compras</SheetTitle>
+          </SheetHeader>
           <POSCart 
             className="h-full border-0 bg-background"
             showHeader={true}
