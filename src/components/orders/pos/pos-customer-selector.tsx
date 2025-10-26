@@ -9,7 +9,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { User, Plus, Search } from 'lucide-react'
+import { User, Plus, Search, X } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useCustomerList from '@/hooks/customers/use-customer-list'
 import {
@@ -49,14 +49,28 @@ export function POSCustomerSelector() {
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" className="justify-start gap-2 h-10">
+      <InputGroup className="h-12">
+        <InputGroupAddon>
           <User className="h-4 w-4" />
-          {selectedCustomer
-            ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
-            : 'Seleccionar Cliente'}
-        </Button>
-      </SheetTrigger>
+        </InputGroupAddon>
+        <SheetTrigger asChild>
+          <InputGroupButton className="h-full">
+            {selectedCustomer
+              ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
+              : 'Seleccionar Cliente'}
+          </InputGroupButton>
+        </SheetTrigger>
+        {selectedCustomer && (
+          <InputGroupButton
+            variant="ghost"
+            onClick={() => setSelectedCustomer(null)}
+            aria-label="Crear nuevo cliente"
+            className="h-full"
+          >
+            <X className="h-8 w-8" />
+          </InputGroupButton>
+        )}
+      </InputGroup>
 
       <SheetContent side="right" className="w-full !max-w-2xl">
         <SheetHeader>

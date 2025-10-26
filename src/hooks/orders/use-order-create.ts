@@ -1,6 +1,10 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CreateOrderSchema, calculateBalance, getOrderStatusFromPayment } from '@/schemas/orders.schema'
+import {
+  CreateOrderSchema,
+  calculateBalance,
+  getOrderStatusFromPayment,
+} from '@/schemas/orders.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
@@ -22,7 +26,8 @@ export default function useOrderCreate() {
       const balance = calculateBalance(data.total, data.paid_amount)
 
       // Determinar el estado basado en el pago si no se proporciona
-      const status = data.status || getOrderStatusFromPayment(data.paid_amount, data.total)
+      const status =
+        data.status || getOrderStatusFromPayment(data.paid_amount, data.total)
 
       const orderData: TablesInsert<'orders'> = {
         custumer_id: data.custumer_id,
