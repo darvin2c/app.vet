@@ -216,7 +216,7 @@ function CartItemCard({
             <CurrencyDisplay>{item.subtotal}</CurrencyDisplay>
           </div>
         </ItemTitle>
-        <ItemDescription className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
+        <div className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
           <span>SKU: {item.product.sku}</span>
           <Separator orientation="vertical" />
           <span>
@@ -224,7 +224,7 @@ function CartItemCard({
           </span>
           <Separator orientation="vertical" />
           <span>Unid {item.quantity}</span>
-        </ItemDescription>
+        </div>
       </ItemContent>
 
       <ItemActions>
