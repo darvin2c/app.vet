@@ -21,11 +21,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
-import { OrderEditSheet } from './order-edit-sheet'
+import { OrderEdit } from './order-edit'
 import { OrderPaymentSheet } from './order-payment-sheet'
 
 import { downloadPDF, previewDocument } from '@/lib/print-utils'
-
 interface OrderActionsProps {
   order: Tables<'orders'>
 }
@@ -112,7 +111,7 @@ export function OrderActions({ order }: OrderActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      <OrderEditSheet
+      <OrderEdit
         order={order}
         open={showEditSheet}
         onOpenChange={setShowEditSheet}

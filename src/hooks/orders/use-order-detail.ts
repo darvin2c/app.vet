@@ -7,7 +7,7 @@ export default function useOrderDetail(orderId: string) {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('orders')
-        .select('*, customer:custumer_id(*), payments(*), items:order_items(*)')
+        .select('*, customer:custumer_id(*), payments(*), items:order_items(*, products(*))')
         .eq('id', orderId)
         .single()
 
