@@ -131,7 +131,7 @@ export function OrderList({
       accessorKey: 'order_number',
       header: ({ header }) => (
         <OrderByTableHeader field="order_number" orderByHook={orderByHook}>
-          Número de orden
+          Número
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<Order> }) => (

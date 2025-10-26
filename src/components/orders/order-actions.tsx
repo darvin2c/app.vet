@@ -11,14 +11,19 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
+import { OrderEditSheet } from './order-edit-sheet'
+import { OrderPaymentSheet } from './order-payment-sheet'
+import { OrderPrintSheet } from './order-print-sheet'
 
 interface OrderActionsProps {
   order: Tables<'orders'>
 }
 
 export function OrderActions({ order }: OrderActionsProps) {
-  const [showEditDialog, setShowEditDialog] = useState(false)
+  const [showEditSheet, setShowEditSheet] = useState(false)
+  const [showPaymentSheet, setShowPaymentSheet] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showPrintSheet, setShowPrintSheet] = useState(false)
 
   return (
     <>
@@ -30,15 +35,15 @@ export function OrderActions({ order }: OrderActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+          <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+          <DropdownMenuItem onClick={() => setShowPaymentSheet(true)}>
             <CreditCard className="mr-2 h-4 w-4" />
             Pagar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowDeleteDialog(true)}>
+          <DropdownMenuItem onClick={() => setShowPrintSheet(true)}>
             <Printer className="mr-2 h-4 w-4" />
             Imprimir
           </DropdownMenuItem>
@@ -52,6 +57,18 @@ export function OrderActions({ order }: OrderActionsProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <OrderEditSheet
+        order={order}
+        open={showEditSheet}
+        onOpenChange={setShowEditSheet}
+      />
+
+      <OrderPaymentSheet
+        order={order}
+        open={showPaymentSheet}
+        onOpenChange={setShowPaymentSheet}
+      />
 
       <OrderDelete
         order={order}
