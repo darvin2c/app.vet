@@ -66,7 +66,6 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           {/* Mobile cart button */}
           <Button
             variant="outline"
-            size="sm"
             className="lg:hidden"
             onClick={() => setIsMobileCartOpen(true)}
           >
