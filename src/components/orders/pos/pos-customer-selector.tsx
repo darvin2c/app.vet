@@ -9,11 +9,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { SearchInput } from '@/components/ui/search-input'
 import { User, Plus, Search } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useCustomerList from '@/hooks/customers/use-customer-list'
-import { CustomerCreateButton } from '@/components/customers/customer-create-button'
 import {
   Item,
   ItemGroup,
@@ -45,11 +43,6 @@ export function POSCustomerSelector() {
   })
 
   const handleSelectCustomer = (customer: Tables<'customers'>) => {
-    setSelectedCustomer(customer)
-    setOpen(false)
-  }
-
-  const handleCustomerCreated = (customer: Tables<'customers'>) => {
     setSelectedCustomer(customer)
     setOpen(false)
   }
