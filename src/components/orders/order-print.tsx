@@ -17,115 +17,158 @@ export function OrderPrint({ orderId }: { orderId: string }) {
         dangerouslySetInnerHTML={{
           __html: `
           .order-print {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            line-height: 1.4;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
             color: #000;
             background: white;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 40px;
           }
           
           .order-print .header {
             text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #000;
-            padding-bottom: 10px;
+            margin-bottom: 60px;
           }
           
           .order-print .header h1 {
-            font-size: 24px;
-            font-weight: bold;
-            margin: 0 0 5px 0;
+            font-size: 28px;
+            font-weight: 400;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.5px;
           }
           
           .order-print .header p {
-            font-size: 18px;
+            font-size: 16px;
             margin: 0;
+            font-weight: 300;
+            color: #666;
           }
           
-          .order-print .order-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
+          .order-print .divider {
+            height: 1px;
+            background: #e5e5e5;
+            margin: 40px 0;
           }
           
-          .order-print .order-info h3 {
-            font-weight: 600;
-            margin-bottom: 8px;
+          .order-print .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-bottom: 60px;
+          }
+          
+          .order-print .info-section h3 {
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 20px 0;
+            color: #000;
+          }
+          
+          .order-print .info-section p {
+            margin: 8px 0;
             font-size: 14px;
+            color: #333;
           }
           
-          .order-print .order-info p {
-            margin: 4px 0;
-            font-size: 12px;
+          .order-print .info-section strong {
+            font-weight: 500;
+            color: #000;
           }
           
           .order-print .items-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-          }
-          
-          .order-print .items-table th,
-          .order-print .items-table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+            margin-bottom: 60px;
           }
           
           .order-print .items-table th {
-            background-color: #f5f5f5;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 16px 0;
+            text-align: left;
+            border-bottom: 1px solid #e5e5e5;
+            color: #000;
+          }
+          
+          .order-print .items-table td {
+            padding: 16px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #f5f5f5;
+            color: #333;
           }
           
           .order-print .items-table td.text-center {
             text-align: center;
-            color: #666;
-            font-style: italic;
+            color: #999;
+            font-style: normal;
           }
           
           .order-print .totals {
             margin-left: auto;
-            width: 300px;
+            width: 280px;
           }
           
           .order-print .total-row {
             display: flex;
             justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #eee;
+            padding: 12px 0;
+            font-size: 14px;
+          }
+          
+          .order-print .total-row:not(:last-child) {
+            border-bottom: 1px solid #f5f5f5;
           }
           
           .order-print .total-row.final {
-            border-top: 2px solid #000;
-            border-bottom: 2px solid #000;
-            font-weight: bold;
-            font-size: 14px;
-            margin-top: 5px;
+            border-top: 1px solid #e5e5e5;
+            margin-top: 8px;
+            padding-top: 16px;
+            font-weight: 500;
+            font-size: 16px;
           }
           
           .order-print .notes {
-            margin-top: 24px;
+            margin-top: 60px;
           }
           
           .order-print .notes h3 {
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            margin: 0 0 16px 0;
+            color: #000;
           }
           
           .order-print .notes p {
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
           }
           
           @media print {
             .order-print {
-              font-size: 11px;
+              font-size: 12px;
+              padding: 40px 20px;
+            }
+            
+            .order-print .header h1 {
+              font-size: 24px;
+            }
+            
+            .order-print .info-section h3,
+            .order-print .notes h3 {
+              font-size: 14px;
+            }
+            
+            .order-print .total-row.final {
+              font-size: 14px;
             }
             
             @page {
               size: A4;
-              margin: 2cm;
+              margin: 15mm;
             }
           }
         `,
@@ -137,8 +180,10 @@ export function OrderPrint({ orderId }: { orderId: string }) {
         <p>#{order.order_number}</p>
       </div>
 
-      <div className="order-info">
-        <div>
+      <div className="divider"></div>
+
+      <div className="info-grid">
+        <div className="info-section">
           <h3>Información de la Orden</h3>
           <p>
             <strong>Fecha:</strong>{' '}
@@ -155,7 +200,7 @@ export function OrderPrint({ orderId }: { orderId: string }) {
             </p>
           )}
         </div>
-        <div>
+        <div className="info-section">
           <h3>Detalles Financieros</h3>
           <p>
             <strong>Subtotal:</strong> S/ {(order.subtotal || 0).toFixed(2)}
