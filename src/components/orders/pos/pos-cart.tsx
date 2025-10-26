@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
@@ -19,6 +19,7 @@ import { Database } from '@/types/supabase.types'
 import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
+import { CartItemEditDialog } from '@/components/pos/cart-item-edit-dialog'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -37,6 +38,14 @@ export function POSCart() {
     updateCartItemQuantity,
     removeFromCart,
   } = usePOSStore()
+
+  const [editingItem, setEditingItem] = useState<CartItem | null>(null)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+
+  const handleEditItem = (item: CartItem) => {
+    setEditingItem(item)
+    setIsEditDialogOpen(true)
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -63,6 +72,7 @@ export function POSCart() {
                 item={item}
                 onUpdateQuantity={updateCartItemQuantity}
                 onRemove={removeFromCart}
+                onEdit={handleEditItem}
               />
               {index < cartItems.length - 1 && <ItemSeparator />}
             </React.Fragment>
@@ -84,6 +94,13 @@ export function POSCart() {
           </div>
         </div>
       </div>
+
+      {/* Dialog para editar item */}
+      <CartItemEditDialog
+        item={editingItem}
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+      />
     </div>
   )
 }
@@ -92,10 +109,12 @@ function CartItemCard({
   item,
   onUpdateQuantity,
   onRemove,
+  onEdit,
 }: {
   item: CartItem
   onUpdateQuantity: (productId: string, quantity: number) => void
   onRemove: (productId: string) => void
+  onEdit: (item: CartItem) => void
 }) {
   return (
     <Item size="sm">
@@ -122,7 +141,7 @@ function CartItemCard({
       </ItemContent>
 
       <ItemActions>
-        <ButtonGroup>
+        <ButtonGroup orientation="vertical">
           <Button
             variant="ghost"
             size="sm"
@@ -134,6 +153,7 @@ function CartItemCard({
           <Button
             variant="ghost"
             size="sm"
+            onClick={() => onEdit(item)}
             className="h-8 w-8 p-0 text-blue-400 hover:text-blue-500"
           >
             <Edit className="h-4 w-4" />
