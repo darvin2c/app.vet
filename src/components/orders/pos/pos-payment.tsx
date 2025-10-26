@@ -51,95 +51,101 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     toast.success('Pago agregado correctamente')
   }
 
-  // Función para guardar sin pago (estado draft)
-  const handleSaveWithoutPayment = () => {
-    if (!canSaveWithoutPayment()) {
-      toast.error('No se puede guardar la orden sin productos o cliente')
-      return
-    }
-
+  // Función unificada para guardar orden
+  const handleSaveOrder = (saveType: 'draft' | 'partial' | 'complete') => {
+    // Validación común de cliente
     if (!selectedCustomer?.id) {
       toast.error('Debe seleccionar un cliente')
       return
     }
 
-    const orderData = {
-      ...getOrderData(),
-      custumer_id: selectedCustomer.id,
-      status: 'draft' as const,
+    // Validaciones específicas según el tipo de guardado
+    let status: 'draft' | 'confirmed' | 'paid'
+    let successMessage: string
+    let errorMessage: string
+
+    switch (saveType) {
+      case 'draft':
+        if (!canSaveWithoutPayment()) {
+          toast.error('No se puede guardar la orden sin productos o cliente')
+          return
+        }
+        status = 'draft'
+        successMessage = 'Orden guardada como borrador'
+        errorMessage = 'Error al guardar la orden'
+        break
+
+      case 'partial':
+        if (!canSaveWithPartialPayment()) {
+          toast.error('No hay pagos parciales para guardar')
+          return
+        }
+        status = 'confirmed'
+        successMessage = 'Orden guardada con pago parcial'
+        errorMessage = 'Error al guardar la orden'
+        break
+
+      case 'complete':
+        if (!canSaveWithFullPayment()) {
+          toast.error('Debe completar el pago antes de finalizar la orden')
+          return
+        }
+        status = 'paid'
+        successMessage = 'Orden completada exitosamente'
+        errorMessage = 'Error al crear la orden'
+        break
+
+      default:
+        return
     }
 
-    createOrder(orderData, {
+    // Crear datos de la orden
+    const orderData = getOrderData()
+    
+    // Preparar items de la orden (sin order_id y tenant_id, se agregan en el hook)
+    const orderItems = cartItems.map((item) => ({
+      product_id: item.product.id,
+      description: item.product.name,
+      quantity: item.quantity,
+      unit_price: item.price,
+      discount: 0,
+      tax_rate: 0.18,
+      total: item.subtotal,
+      order_id: '', // Se asignará en el hook
+      tenant_id: '', // Se asignará en el hook
+    }))
+
+    // Preparar pagos de la orden (sin order_id y tenant_id, se agregan en el hook)
+    const orderPayments = payments.map((payment) => ({
+      amount: payment.amount,
+      customer_id: selectedCustomer.id,
+      payment_method_id: payment.payment_method_id,
+      payment_date: payment.payment_date,
+      notes: payment.notes,
+      order_id: '', // Se asignará en el hook
+      tenant_id: '', // Se asignará en el hook
+    }))
+
+    const createOrderData = {
+      order: {
+        ...orderData,
+        custumer_id: selectedCustomer.id,
+        status,
+      },
+      items: orderItems,
+      payments: orderPayments,
+    }
+
+    // Ejecutar la creación de la orden
+    createOrder(createOrderData, {
       onSuccess: () => {
-        toast.success('Orden guardada como borrador')
+        toast.success(successMessage)
         clearCart()
         onBack()
       },
       onError: (error) => {
         console.error('Error creating order:', error)
-        toast.error('Error al guardar la orden')
-      },
-    })
-  }
-
-  // Función para guardar con pago parcial (estado confirmed)
-  const handleSaveWithPartialPayment = () => {
-    if (!canSaveWithPartialPayment()) {
-      toast.error('No hay pagos parciales para guardar')
-      return
-    }
-
-    if (!selectedCustomer?.id) {
-      toast.error('Debe seleccionar un cliente')
-      return
-    }
-
-    const orderData = {
-      ...getOrderData(),
-      custumer_id: selectedCustomer.id,
-      status: 'confirmed' as const,
-    }
-
-    createOrder(orderData, {
-      onSuccess: () => {
-        toast.success('Orden guardada con pago parcial')
-        clearCart()
-        onBack()
-      },
-      onError: (error) => {
-        console.error('Error creating order:', error)
-        toast.error('Error al guardar la orden')
-      },
-    })
-  }
-
-  // Función para completar orden (estado paid)
-  const handleCompleteOrder = () => {
-    if (!canSaveWithFullPayment()) {
-      toast.error('Debe completar el pago antes de finalizar la orden')
-      return
-    }
-
-    if (!selectedCustomer?.id) {
-      toast.error('Debe seleccionar un cliente')
-      return
-    }
-
-    const orderData = {
-      ...getOrderData(),
-      custumer_id: selectedCustomer.id,
-      status: 'paid' as const,
-    }
-
-    createOrder(orderData, {
-      onSuccess: () => {
-        toast.success('Orden completada exitosamente')
-        clearCart()
-        onBack()
-      },
-      onError: (error) => {
-        console.error('Error creating order:', error)
-        toast.error('Error al crear la orden')
+        toast.error(errorMessage)
       },
     })
   }
@@ -220,7 +226,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           {/* Guardar sin pago */}
           <Button
             variant="outline"
-            onClick={handleSaveWithoutPayment}
+            onClick={() => handleSaveOrder('draft')}
             disabled={!canSaveWithoutPayment() || isPending}
             className="flex-1 h-12"
             size="lg"
@@ -233,7 +239,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           {canSaveWithPartialPayment() && (
             <Button
               variant="secondary"
-              onClick={handleSaveWithPartialPayment}
+              onClick={() => handleSaveOrder('partial')}
               disabled={isPending}
               className="flex-1 h-12"
               size="lg"
@@ -245,7 +251,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
           {/* Completar orden */}
           <Button
-            onClick={handleCompleteOrder}
+            onClick={() => handleSaveOrder('complete')}
             disabled={!canSaveWithFullPayment() || isPending}
             className="flex-1 h-12"
             size="lg"
@@ -286,7 +292,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             {/* Guardar sin pago */}
             <Button
               variant="outline"
-              onClick={handleSaveWithoutPayment}
+              onClick={() => handleSaveOrder('draft')}
               disabled={!canSaveWithoutPayment() || isPending}
               size="lg"
             >
@@ -298,7 +304,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             {canSaveWithPartialPayment() && (
               <Button
                 variant="secondary"
-                onClick={handleSaveWithPartialPayment}
+                onClick={() => handleSaveOrder('partial')}
                 disabled={isPending}
                 size="lg"
               >
@@ -309,7 +315,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
             {/* Completar orden */}
             <Button
-              onClick={handleCompleteOrder}
+              onClick={() => handleSaveOrder('complete')}
               disabled={!canSaveWithFullPayment() || isPending}
               size="lg"
               className="min-w-[200px]"
