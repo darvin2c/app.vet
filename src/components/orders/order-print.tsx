@@ -11,8 +11,9 @@ interface OrderPrintProps {
 export function OrderPrint({ order }: OrderPrintProps) {
   return (
     <div className="order-print font-sans text-xs leading-relaxed text-black bg-white">
-      <style dangerouslySetInnerHTML={{
-        __html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
           .order-print {
             font-family: Arial, sans-serif;
             font-size: 12px;
@@ -125,8 +126,9 @@ export function OrderPrint({ order }: OrderPrintProps) {
               margin: 2cm;
             }
           }
-        `
-      }} />
+        `,
+        }}
+      />
 
       <div className="header">
         <h1>ORDEN DE SERVICIO</h1>

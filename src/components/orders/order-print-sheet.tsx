@@ -10,18 +10,31 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { Printer, Eye } from 'lucide-react'
+import { Printer, Eye, Download } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
 import { OrderPrint } from './order-print'
+import { downloadPDF } from '@/lib/print-utils'
 
 interface OrderPrintSheetProps {
   order: Tables<'orders'>
   trigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
-export function OrderPrintSheet({ order, trigger }: OrderPrintSheetProps) {
-  const [isOpen, setIsOpen] = useState(false)
+export function OrderPrintSheet({
+  order,
+  trigger,
+  open,
+  onOpenChange,
+}: OrderPrintSheetProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
+
+  // Usar el estado controlado si se proporciona, sino usar el estado interno
+  const isOpen = open !== undefined ? open : internalOpen
+  const setIsOpen = onOpenChange || setInternalOpen
 
   const handlePrint = () => {
     setIsLoading(true)
@@ -150,16 +163,25 @@ export function OrderPrintSheet({ order, trigger }: OrderPrintSheetProps) {
     previewWindow.document.close()
   }
 
+  const handleDownloadPDF = async () => {
+    if (isDownloading) return
+
+    setIsDownloading(true)
+    try {
+      await downloadPDF('order-print-content', {
+        filename: `orden-${order.order_number || order.id}.pdf`,
+        format: 'a4',
+        orientation: 'portrait',
+      })
+    } catch (error) {
+      console.error('Error al descargar PDF:', error)
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetTrigger asChild>
-        {trigger || (
-          <Button variant="outline" size="sm">
-            <Printer className="h-4 w-4 mr-2" />
-            Imprimir
-          </Button>
-        )}
-      </SheetTrigger>
       <SheetContent className="w-full max-w-4xl">
         <SheetHeader>
           <SheetTitle>Imprimir Orden #{order.order_number}</SheetTitle>
@@ -177,6 +199,14 @@ export function OrderPrintSheet({ order, trigger }: OrderPrintSheetProps) {
             <Button onClick={handlePrint} disabled={isLoading}>
               <Printer className="h-4 w-4 mr-2" />
               {isLoading ? 'Imprimiendo...' : 'Imprimir'}
+            </Button>
+            <Button
+              onClick={handleDownloadPDF}
+              disabled={isDownloading}
+              variant="outline"
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {isDownloading ? 'Descargando...' : 'Descargar PDF'}
             </Button>
           </div>
 
