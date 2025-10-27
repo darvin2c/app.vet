@@ -9,15 +9,14 @@ import {
   CheckCircle,
   Loader2,
   Save,
-  Clock,
   AlertCircle,
+  CreditCard,
 } from 'lucide-react'
 import { PaymentMethodSelector } from '@/components/orders/pos/payment-method-selector'
 import { PaymentTable } from '@/components/orders/pos/payment-table'
 import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
-import { toast } from 'sonner'
 import { Separator } from '@/components/ui/separator'
 
 interface POSPaymentProps {
@@ -92,6 +91,38 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     })
   }
 
+  // Determinar el estado del botón según el pago
+  const getButtonConfig = () => {
+    if (totalPaid === 0) {
+      return {
+        text: 'Guardar sin Pago',
+        icon: Save,
+        variant: 'outline' as const,
+        className: 'border-amber-200 text-amber-700 hover:bg-amber-50',
+        canSave: canSaveWithoutPayment(),
+      }
+    } else if (totalPaid > 0 && totalPaid < cartTotal) {
+      return {
+        text: 'Guardar con Pago Parcial',
+        icon: CreditCard,
+        variant: 'default' as const,
+        className: 'bg-orange-600 hover:bg-orange-700',
+        canSave: canSaveWithPartialPayment(),
+      }
+    } else {
+      return {
+        text: 'Completar Orden',
+        icon: CheckCircle,
+        variant: 'default' as const,
+        className: 'bg-green-600 hover:bg-green-700',
+        canSave: canSaveWithFullPayment(),
+      }
+    }
+  }
+
+  const buttonConfig = getButtonConfig()
+  const ButtonIcon = buttonConfig.icon
+
   return (
     <div className="flex flex-col h-full">
       {/* Payment Summary - Compact Header */}
@@ -136,15 +167,19 @@ export function POSPayment({ onBack }: POSPaymentProps) {
       {/* Mobile: Bottom Action Bar */}
       <div className="lg:hidden border-t bg-background p-4">
         <div className="flex gap-2">
-          {/* Guardar sin pago */}
           <Button
-            variant="outline"
+            variant={buttonConfig.variant}
             onClick={() => handleSaveOrder()}
-            className="flex-1 h-12"
+            disabled={isPending || !buttonConfig.canSave}
+            className={`flex-1 h-12 ${buttonConfig.className}`}
             size="lg"
           >
-            <Save className="h-4 w-4 mr-2" />
-            Guardar
+            {isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+            ) : (
+              <ButtonIcon className="h-4 w-4 mr-2" />
+            )}
+            {buttonConfig.text}
           </Button>
         </div>
       </div>
@@ -170,21 +205,21 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             )}
           </div>
 
-          {/* Botones de acción */}
+          {/* Botón de acción único */}
           <div className="flex gap-3">
-            {/* Completar orden */}
             <Button
+              variant={buttonConfig.variant}
               onClick={() => handleSaveOrder()}
-              disabled={isPending}
+              disabled={isPending || !buttonConfig.canSave}
               size="lg"
-              className="min-w-[200px]"
+              className={`min-w-[200px] ${buttonConfig.className}`}
             >
               {isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (
-                <CheckCircle className="h-4 w-4 mr-2" />
+                <ButtonIcon className="h-4 w-4 mr-2" />
               )}
-              Guardar Orden
+              {buttonConfig.text}
             </Button>
           </div>
         </div>

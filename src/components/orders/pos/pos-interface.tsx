@@ -26,18 +26,18 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
         {/* Product Section */}
         {currentView === 'catalog' && <POSProductSection />}
         {/* Payment Modal */}
-        {currentView === 'payment' && (
-          <POSPayment
-            onBack={() => {
-              const { setCurrentView } = usePOSStore.getState()
-              setCurrentView('catalog')
-            }}
-          />
-        )}
 
         <POSCart className="hidden lg:flex" />
         <POSCartMobile />
       </div>
+      {currentView === 'payment' && (
+        <POSPayment
+          onBack={() => {
+            const { setCurrentView } = usePOSStore.getState()
+            setCurrentView('catalog')
+          }}
+        />
+      )}
     </div>
   )
 }

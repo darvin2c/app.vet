@@ -55,6 +55,7 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           <SearchInput
             size="lg"
             placeholder="Buscar productos por nombre, SKU..."
+            urlParamName="item"
           />
         </div>
 

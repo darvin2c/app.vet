@@ -345,7 +345,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
   // Funciones para diferentes tipos de guardado
   canSaveWithoutPayment: () => {
     const state = get()
-    return state.cartItems.length > 0 && state.selectedCustomer !== null
+    return state.cartItems.length > 0
   },
 
   canSaveWithPartialPayment: () => {
