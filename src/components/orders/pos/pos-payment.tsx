@@ -5,10 +5,8 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import {
-  CreditCard,
   ShoppingCart,
   CheckCircle,
-  ArrowLeft,
   Loader2,
   Save,
   Clock,
@@ -54,52 +52,6 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
   // Función unificada para guardar orden
   const handleSaveOrder = (saveType: 'draft' | 'partial' | 'complete') => {
-    // Validación común de cliente
-    if (!selectedCustomer?.id) {
-      toast.error('Debe seleccionar un cliente')
-      return
-    }
-
-    // Validaciones específicas según el tipo de guardado
-    let status: 'draft' | 'confirmed' | 'paid'
-    let successMessage: string
-    let errorMessage: string
-
-    switch (saveType) {
-      case 'draft':
-        if (!canSaveWithoutPayment()) {
-          toast.error('No se puede guardar la orden sin productos o cliente')
-          return
-        }
-        status = 'draft'
-        successMessage = 'Orden guardada como borrador'
-        errorMessage = 'Error al guardar la orden'
-        break
-
-      case 'partial':
-        if (!canSaveWithPartialPayment()) {
-          toast.error('No hay pagos parciales para guardar')
-          return
-        }
-        status = 'confirmed'
-        successMessage = 'Orden guardada con pago parcial'
-        errorMessage = 'Error al guardar la orden'
-        break
-
-      case 'complete':
-        if (!canSaveWithFullPayment()) {
-          toast.error('Debe completar el pago antes de finalizar la orden')
-          return
-        }
-        status = 'paid'
-        successMessage = 'Orden completada exitosamente'
-        errorMessage = 'Error al crear la orden'
-        break
-
-      default:
-        return
-    }
-
     // Crear datos de la orden
     const orderData = getOrderData()
 
@@ -119,7 +71,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     // Preparar pagos de la orden (sin order_id y tenant_id, se agregan en el hook)
     const orderPayments = payments.map((payment) => ({
       amount: payment.amount,
-      customer_id: selectedCustomer.id,
+      customer_id: selectedCustomer?.id,
       payment_method_id: payment.payment_method_id,
       payment_date: payment.payment_date,
       notes: payment.notes,
@@ -130,8 +82,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     const createOrderData = {
       order: {
         ...orderData,
-        custumer_id: selectedCustomer.id,
-        status,
+        custumer_id: selectedCustomer?.id || null,
       },
       items: orderItems,
       payments: orderPayments,
@@ -140,13 +91,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     // Ejecutar la creación de la orden
     createOrder(createOrderData, {
       onSuccess: () => {
-        toast.success(successMessage)
         clearCart()
         onBack()
-      },
-      onError: (error) => {
-        console.error('Error creating order:', error)
-        toast.error(errorMessage)
       },
     })
   }
