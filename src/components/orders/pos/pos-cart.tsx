@@ -9,7 +9,6 @@ import {
   ItemMedia,
   ItemContent,
   ItemTitle,
-  ItemDescription,
   ItemActions,
   ItemGroup,
   ItemSeparator,
@@ -41,22 +40,15 @@ interface CartItem {
 
 interface POSCartProps {
   className?: string
-  showHeader?: boolean
-  showFooter?: boolean
 }
 
-export function POSCart({
-  className,
-  showHeader = true,
-  showFooter = true,
-}: POSCartProps) {
+export function POSCart({ className }: POSCartProps) {
   const {
     cartItems,
     cartSubtotal,
     cartTax,
     cartTotal,
     selectedCustomer,
-    updateCartItemQuantity,
     removeFromCart,
     clearCart,
     setCurrentView,
@@ -88,32 +80,30 @@ export function POSCart({
       )}
     >
       {/* Cart Header */}
-      {showHeader && (
-        <div className="p-4 border-b bg-background">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <ShoppingCart className="h-5 w-5" />
-              <h2 className="font-semibold">Carrito</h2>
-              {cartItems.length > 0 && (
-                <Badge variant="secondary" className="ml-2">
-                  {cartItems.length}
-                </Badge>
-              )}
-            </div>
+      <div className="p-4 border-b bg-background">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ShoppingCart className="h-5 w-5" />
+            <h2 className="font-semibold">Carrito</h2>
             {cartItems.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleClearCart}
-                className="text-destructive hover:text-destructive"
-              >
-                <Trash className="h-4 w-4" />
-                Limpiar carrito
-              </Button>
+              <Badge variant="secondary" className="ml-2">
+                {cartItems.length}
+              </Badge>
             )}
           </div>
+          {cartItems.length > 0 && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleClearCart}
+              className="text-destructive hover:text-destructive"
+            >
+              <Trash className="h-4 w-4" />
+              Limpiar carrito
+            </Button>
+          )}
         </div>
-      )}
+      </div>
 
       {/* Cart Content */}
       {cartItems.length === 0 ? (
@@ -135,7 +125,6 @@ export function POSCart({
                 <React.Fragment key={item.product.id}>
                   <CartItemCard
                     item={item}
-                    onUpdateQuantity={updateCartItemQuantity}
                     onRemove={removeFromCart}
                     onEdit={handleEditItem}
                   />
@@ -166,19 +155,17 @@ export function POSCart({
           </div>
 
           {/* Cart Footer */}
-          {showFooter && (
-            <div className="p-4">
-              <Button
-                onClick={handleProceedToPayment}
-                className="w-full h-12 text-base font-semibold"
-                size="lg"
-                disabled={itemCount === 0 || !selectedCustomer}
-              >
-                <CreditCard className="h-5 w-5 mr-2" />
-                Procesar Pago
-              </Button>
-            </div>
-          )}
+          <div className="p-4">
+            <Button
+              onClick={handleProceedToPayment}
+              className="w-full h-12 text-base font-semibold"
+              size="lg"
+              disabled={itemCount === 0}
+            >
+              <CreditCard className="h-5 w-5 mr-2" />
+              Procesar Pago
+            </Button>
+          </div>
         </>
       )}
 
@@ -194,12 +181,10 @@ export function POSCart({
 
 function CartItemCard({
   item,
-  onUpdateQuantity,
   onRemove,
   onEdit,
 }: {
   item: CartItem
-  onUpdateQuantity: (productId: string, quantity: number) => void
   onRemove: (productId: string) => void
   onEdit: (item: CartItem) => void
 }) {

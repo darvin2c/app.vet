@@ -87,8 +87,8 @@ export function PaymentSummary({
     cartTotal > 0 ? Math.min(100, (totalPaid / cartTotal) * 100) : 0
 
   return (
-    <Card className="border-b rounded-none shadow-sm">
-      <CardContent className="p-3 md:p-4">
+    <div>
+      <div className="p-3 md:p-4">
         {/* Mobile Layout - Stack Vertical */}
         <div className="md:hidden space-y-3">
           {/* Primera fila: Total y Estado */}
@@ -244,7 +244,7 @@ export function PaymentSummary({
             </TooltipProvider>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

@@ -20,6 +20,7 @@ import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import { toast } from 'sonner'
+import { Separator } from '@/components/ui/separator'
 
 interface POSPaymentProps {
   onBack: () => void
@@ -101,7 +102,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
     // Crear datos de la orden
     const orderData = getOrderData()
-    
+
     // Preparar items de la orden (sin order_id y tenant_id, se agregan en el hook)
     const orderItems = cartItems.map((item) => ({
       product_id: item.product.id,
@@ -150,37 +151,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     })
   }
 
-  // Obtener información del estado de pago para mostrar indicadores
-  const paymentStatusInfo = getPaymentStatusInfo()
-
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <div className="flex items-center gap-2">
-            <CreditCard className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">Procesar Pago</h2>
-          </div>
-          {/* Indicador de estado de pago */}
-          <Badge
-            variant={paymentStatusInfo.statusOption?.variant || 'secondary'}
-            className="ml-2"
-          >
-            {paymentStatusInfo.statusOption?.icon}
-            <span className="ml-1">
-              {paymentStatusInfo.statusOption?.label}
-            </span>
-          </Badge>
-        </div>
-        <div className="text-sm text-muted-foreground">
-          {cartItems.length} productos
-        </div>
-      </div>
-
       {/* Payment Summary - Compact Header */}
       <PaymentSummary
         cartSubtotal={cartTotal}
@@ -191,7 +163,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
         changeAmount={remainingAmount < 0 ? Math.abs(remainingAmount) : 0}
         paymentsCount={payments.length}
       />
-
+      <Separator />
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 h-full">
@@ -289,34 +261,10 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
           {/* Botones de acción */}
           <div className="flex gap-3">
-            {/* Guardar sin pago */}
-            <Button
-              variant="outline"
-              onClick={() => handleSaveOrder('draft')}
-              disabled={!canSaveWithoutPayment() || isPending}
-              size="lg"
-            >
-              <Save className="h-4 w-4 mr-2" />
-              Guardar sin Pago
-            </Button>
-
-            {/* Pago parcial (solo si hay pagos) */}
-            {canSaveWithPartialPayment() && (
-              <Button
-                variant="secondary"
-                onClick={() => handleSaveOrder('partial')}
-                disabled={isPending}
-                size="lg"
-              >
-                <Clock className="h-4 w-4 mr-2" />
-                Guardar Pago Parcial
-              </Button>
-            )}
-
             {/* Completar orden */}
             <Button
               onClick={() => handleSaveOrder('complete')}
-              disabled={!canSaveWithFullPayment() || isPending}
+              disabled={isPending}
               size="lg"
               className="min-w-[200px]"
             >

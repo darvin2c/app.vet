@@ -22,11 +22,7 @@ export function POSCartMobile() {
           <SheetHeader className="sr-only">
             <SheetTitle>Carrito de Compras</SheetTitle>
           </SheetHeader>
-          <POSCart
-            className="h-full border-0 bg-background"
-            showHeader={true}
-            showFooter={true}
-          />
+          <POSCart className="h-full border-0 bg-background" />
         </SheetContent>
       </Sheet>
     </div>
