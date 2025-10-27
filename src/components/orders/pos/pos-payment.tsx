@@ -45,13 +45,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
   const { mutate: createOrder, isPending } = useOrderCreate()
 
-  const handlePaymentAdded = () => {
-    setIsSheetOpen(false)
-    toast.success('Pago agregado correctamente')
-  }
-
   // Función unificada para guardar orden
-  const handleSaveOrder = (saveType: 'draft' | 'partial' | 'complete') => {
+  const handleSaveOrder = () => {
     // Crear datos de la orden
     const orderData = getOrderData()
 
@@ -144,42 +139,12 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           {/* Guardar sin pago */}
           <Button
             variant="outline"
-            onClick={() => handleSaveOrder('draft')}
-            disabled={!canSaveWithoutPayment() || isPending}
+            onClick={() => handleSaveOrder()}
             className="flex-1 h-12"
             size="lg"
           >
             <Save className="h-4 w-4 mr-2" />
             Guardar
-          </Button>
-
-          {/* Pago parcial (solo si hay pagos) */}
-          {canSaveWithPartialPayment() && (
-            <Button
-              variant="secondary"
-              onClick={() => handleSaveOrder('partial')}
-              disabled={isPending}
-              className="flex-1 h-12"
-              size="lg"
-            >
-              <Clock className="h-4 w-4 mr-2" />
-              Parcial
-            </Button>
-          )}
-
-          {/* Completar orden */}
-          <Button
-            onClick={() => handleSaveOrder('complete')}
-            disabled={!canSaveWithFullPayment() || isPending}
-            className="flex-1 h-12"
-            size="lg"
-          >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <CheckCircle className="h-4 w-4 mr-2" />
-            )}
-            Completar
           </Button>
         </div>
       </div>
@@ -209,7 +174,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           <div className="flex gap-3">
             {/* Completar orden */}
             <Button
-              onClick={() => handleSaveOrder('complete')}
+              onClick={() => handleSaveOrder()}
               disabled={isPending}
               size="lg"
               className="min-w-[200px]"
@@ -219,7 +184,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
               ) : (
                 <CheckCircle className="h-4 w-4 mr-2" />
               )}
-              Completar Orden
+              Guardar Orden
             </Button>
           </div>
         </div>
