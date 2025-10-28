@@ -58,8 +58,8 @@ export function POSHeader({ onClose }: POSHeaderProps) {
   ]
 
   return (
-    <div className="flex flex-col gap-2 border-b bg-white pt-4">
-      <div className="flex items-center justify-between px-4 gap-6">
+    <div className="flex flex-col gap-2 border-b pt-4">
+      <div className="flex items-center  px-4 gap-6">
         {/* Left: Close button */}
         <div className="flex items-center gap-3">
           {onClose && (

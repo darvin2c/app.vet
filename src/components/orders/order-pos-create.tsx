@@ -1,6 +1,13 @@
 'use client'
 
+import { useIsMobile } from '@/hooks/use-mobile'
 import { POSInterface } from './pos/pos-interface'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 
 interface OrderPosCreateProps {
   open: boolean
@@ -8,6 +15,7 @@ interface OrderPosCreateProps {
 }
 
 export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
+  const isMobile = useIsMobile()
   const handleOrderCreated = () => {
     // Cerrar el modal POS cuando se crea la orden
     onOpenChange(false)
@@ -18,11 +26,20 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
     onOpenChange(false)
   }
 
-  if (!open) return null
-
   return (
-    <div className="fixed inset-0 z-50 bg-white">
-      <POSInterface onOrderCreated={handleOrderCreated} onClose={handleClose} />
-    </div>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={isMobile ? 'bottom' : 'right'}
+        className="!h-screen !max-w-full !w-full p-0 border-0"
+      >
+        <SheetHeader className="sr-only">
+          <SheetTitle>Punto de Venta</SheetTitle>
+        </SheetHeader>
+        <POSInterface
+          onOrderCreated={handleOrderCreated}
+          onClose={handleClose}
+        />
+      </SheetContent>
+    </Sheet>
   )
 }
