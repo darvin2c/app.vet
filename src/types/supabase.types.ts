@@ -557,43 +557,37 @@ export type Database = {
       }
       order_items: {
         Row: {
-          created_at: string
           description: string
           discount: number
           id: string
           order_id: string
-          product_id: string | null
+          price_base: number
+          product_id: string
           quantity: number
-          tax_rate: number
-          tenant_id: string
           total: number | null
-          unit_price: number
+          unit_price: number | null
         }
         Insert: {
-          created_at?: string
           description: string
           discount?: number
           id?: string
           order_id: string
-          product_id?: string | null
-          quantity: number
-          tax_rate?: number
-          tenant_id: string
+          price_base: number
+          product_id: string
+          quantity?: number
           total?: number | null
-          unit_price: number
+          unit_price?: number | null
         }
         Update: {
-          created_at?: string
           description?: string
           discount?: number
           id?: string
           order_id?: string
-          product_id?: string | null
+          price_base?: number
+          product_id?: string
           quantity?: number
-          tax_rate?: number
-          tenant_id?: string
           total?: number | null
-          unit_price?: number
+          unit_price?: number | null
         }
         Relationships: [
           {
@@ -610,13 +604,6 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "order_items_tenant_id_fkey"
-            columns: ["tenant_id"]
-            isOneToOne: false
-            referencedRelation: "tenants"
-            referencedColumns: ["id"]
-          },
         ]
       }
       orders: {
@@ -624,14 +611,15 @@ export type Database = {
           balance: number | null
           created_at: string
           created_by: string | null
-          custumer_id: string | null
+          customer_id: string | null
           id: string
           notes: string | null
           order_number: string | null
           paid_amount: number
           status: Database["public"]["Enums"]["order_status"]
-          subtotal: number
+          subtotal: number | null
           tax: number
+          tax_amount: number | null
           tenant_id: string
           total: number
           updated_at: string
@@ -641,14 +629,15 @@ export type Database = {
           balance?: number | null
           created_at?: string
           created_by?: string | null
-          custumer_id?: string | null
+          customer_id?: string | null
           id?: string
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
-          status?: Database["public"]["Enums"]["order_status"]
-          subtotal?: number
+          status: Database["public"]["Enums"]["order_status"]
+          subtotal?: number | null
           tax?: number
+          tax_amount?: number | null
           tenant_id: string
           total?: number
           updated_at?: string
@@ -658,14 +647,15 @@ export type Database = {
           balance?: number | null
           created_at?: string
           created_by?: string | null
-          custumer_id?: string | null
+          customer_id?: string | null
           id?: string
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
           status?: Database["public"]["Enums"]["order_status"]
-          subtotal?: number
+          subtotal?: number | null
           tax?: number
+          tax_amount?: number | null
           tenant_id?: string
           total?: number
           updated_at?: string
@@ -680,8 +670,8 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "orders_custumer_id_fkey"
-            columns: ["custumer_id"]
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
             referencedColumns: ["id"]
@@ -1159,7 +1149,6 @@ export type Database = {
           price: number
           sku: string | null
           stock: number
-          tax_rate: number | null
           tenant_id: string
           unit_id: string | null
           updated_at: string
@@ -1182,7 +1171,6 @@ export type Database = {
           price?: number
           sku?: string | null
           stock?: number
-          tax_rate?: number | null
           tenant_id: string
           unit_id?: string | null
           updated_at?: string
@@ -1205,7 +1193,6 @@ export type Database = {
           price?: number
           sku?: string | null
           stock?: number
-          tax_rate?: number | null
           tenant_id?: string
           unit_id?: string | null
           updated_at?: string
@@ -1791,7 +1778,7 @@ export type Database = {
           owner_id: string
           phone: string | null
           subdomain: string | null
-          tax_id: string | null
+          tax: number | null
           timezone: string | null
           updated_at: string
           updated_by: string
@@ -1810,7 +1797,7 @@ export type Database = {
           owner_id?: string
           phone?: string | null
           subdomain?: string | null
-          tax_id?: string | null
+          tax?: number | null
           timezone?: string | null
           updated_at?: string
           updated_by?: string
@@ -1829,7 +1816,7 @@ export type Database = {
           owner_id?: string
           phone?: string | null
           subdomain?: string | null
-          tax_id?: string | null
+          tax?: number | null
           timezone?: string | null
           updated_at?: string
           updated_by?: string
@@ -1959,7 +1946,12 @@ export type Database = {
         | "completed"
         | "cancelled"
         | "no_show"
-      order_status: "draft" | "confirmed" | "paid" | "cancelled" | "refunded"
+      order_status:
+        | "partial_payment"
+        | "confirmed"
+        | "paid"
+        | "cancelled"
+        | "refunded"
       payment_type: "cash" | "app" | "credit" | "others"
       pet_sex: "M" | "F"
       record_type:
@@ -2113,7 +2105,13 @@ export const Constants = {
         "cancelled",
         "no_show",
       ],
-      order_status: ["draft", "confirmed", "paid", "cancelled", "refunded"],
+      order_status: [
+        "partial_payment",
+        "confirmed",
+        "paid",
+        "cancelled",
+        "refunded",
+      ],
       payment_type: ["cash", "app", "credit", "others"],
       pet_sex: ["M", "F"],
       record_type: [
