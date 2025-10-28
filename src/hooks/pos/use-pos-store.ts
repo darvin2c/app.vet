@@ -83,7 +83,7 @@ interface POSState {
 
   // Order creation data
   getOrderData: () => {
-    custumer_id: string
+    customer_id: string
     subtotal: number
     tax: number
     total: number
@@ -319,7 +319,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
     )
 
     return {
-      custumer_id: state.selectedCustomer?.id || '',
+      customer_id: state.selectedCustomer?.id || '',
       subtotal: state.cartSubtotal,
       tax: state.cartTax,
       total: state.cartTotal,

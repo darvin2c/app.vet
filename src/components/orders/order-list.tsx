@@ -141,7 +141,7 @@ export function OrderList({
     {
       accessorKey: 'customers',
       header: ({ header }) => (
-        <OrderByTableHeader field="custumer_id" orderByHook={orderByHook}>
+        <OrderByTableHeader field="customer_id" orderByHook={orderByHook}>
           Cliente
         </OrderByTableHeader>
       ),

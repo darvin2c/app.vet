@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { Enums } from '@/types/supabase.types'
 
 export const orderBaseSchema = z.object({
-  custumer_id: z.string().nonempty('El cliente es requerido'),
+  customer_id: z.string(),
   order_number: z.string().optional(),
   status: z
     .enum(['partial_payment', 'confirmed', 'paid', 'cancelled', 'refunded'])
@@ -52,7 +52,7 @@ export const orderFiltersSchema = z.object({
   status: z
     .enum(['partial_payment', 'confirmed', 'paid', 'cancelled', 'refunded'])
     .optional(),
-  custumer_id: z.string().optional(),
+  customer_id: z.string().optional(),
   created_from: z.string().optional(),
   created_to: z.string().optional(),
   total_from: z.number().min(0).optional(),
@@ -116,7 +116,9 @@ export const canAddPayment = (
 
 export const getPaymentStatusInfo = (paid_amount: number, total: number) => {
   const status = getPaymentStatus(paid_amount, total)
-  const statusInfo = paymentStatusOptions.find((option) => option.value === status)
+  const statusInfo = paymentStatusOptions.find(
+    (option) => option.value === status
+  )
   return {
     status,
     label: statusInfo?.label || 'Desconocido',

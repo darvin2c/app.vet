@@ -1,6 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database, Tables } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
@@ -54,24 +54,7 @@ export default function useOrderList({
 
       // Aplicar filtros
       filters.forEach((filter) => {
-        if (filter.field === 'status' && filter.value) {
-          query = query.eq('status', filter.value)
-        }
-        if (filter.field === 'custumer_id' && filter.value) {
-          query = query.eq('custumer_id', filter.value)
-        }
-        if (filter.field === 'created_from' && filter.value) {
-          query = query.gte('created_at', filter.value)
-        }
-        if (filter.field === 'created_to' && filter.value) {
-          query = query.lte('created_at', filter.value)
-        }
-        if (filter.field === 'total_from' && filter.value) {
-          query = query.gte('total', filter.value)
-        }
-        if (filter.field === 'total_to' && filter.value) {
-          query = query.lte('total', filter.value)
-        }
+        query = query.filter(filter.field, filter.operator, filter.value)
       })
 
       // Aplicar ordenamiento

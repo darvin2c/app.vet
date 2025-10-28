@@ -29,8 +29,8 @@ export default function OrdersPage() {
       ],
     },
     {
-      key: 'custumer_id',
-      field: 'custumer_id',
+      key: 'customer_id',
+      field: 'customer_id',
       type: 'custom',
       label: 'Cliente',
       operator: 'eq',

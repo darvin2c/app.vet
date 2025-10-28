@@ -42,7 +42,7 @@ export default function useOrderUpdate() {
       }
 
       const orderData: TablesUpdate<'orders'> = {
-        customer_id: data.custumer_id,
+        customer_id: data.customer_id,
         order_number: data.order_number,
         status: status,
         subtotal: data.subtotal,
