@@ -45,6 +45,122 @@ interface PaymentMethodSelectorProps {
   onPaymentAdded?: () => void
 }
 
+interface PaymentSelectorContentProps {
+  paymentMethods: any[]
+  selectedMethodId: string
+  amount: string
+  notes: string
+  remainingAmount: number
+  handleMethodSelect: (methodId: string) => void
+  handleAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleNotesChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
+  handleAddPayment: () => void
+}
+
+function PaymentSelectorContent({
+  paymentMethods,
+  selectedMethodId,
+  amount,
+  notes,
+  remainingAmount,
+  handleMethodSelect,
+  handleAmountChange,
+  handleNotesChange,
+  handleAddPayment,
+}: PaymentSelectorContentProps) {
+  return (
+    <div className="space-y-6">
+      {/* Payment Method Selection - Touch-First */}
+      <div className="space-y-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {paymentMethods.map((method) => {
+            const Icon =
+              paymentTypeIcons[
+                method.payment_type as keyof typeof paymentTypeIcons
+              ] || MoreHorizontal
+            const isSelected = selectedMethodId === method.id
+
+            return (
+              <Button
+                key={method.id}
+                variant={isSelected ? 'default' : 'outline'}
+                className="h-14 p-4 justify-start transition-all duration-200"
+                onClick={() => handleMethodSelect(method.id)}
+              >
+                <div className="flex items-center gap-3 w-full">
+                  <Icon className="h-5 w-5 flex-shrink-0" />
+                  <div className="text-left flex-1">
+                    <div className="font-medium text-sm">{method.name}</div>
+                    <Badge variant="secondary" className="text-xs mt-1">
+                      {paymentTypeLabels[
+                        method.payment_type as keyof typeof paymentTypeLabels
+                      ] || 'Otros'}
+                    </Badge>
+                  </div>
+                </div>
+              </Button>
+            )
+          })}
+        </div>
+      </div>
+
+      {/* Amount Input - Mejorado */}
+      <div className="space-y-3">
+        <Label htmlFor="amount">Monto a Pagar</Label>
+        <Input
+          id="amount"
+          placeholder="0.00"
+          value={amount}
+          onChange={handleAmountChange}
+        />
+      </div>
+
+      {/* Notes - Compacto */}
+      <div className="space-y-2">
+        <Label htmlFor="notes">Notas (Opcional)</Label>
+        <Textarea
+          id="notes"
+          placeholder="Agregar notas sobre este pago..."
+          value={notes}
+          onChange={handleNotesChange}
+          rows={2}
+          className="resize-none"
+        />
+      </div>
+
+      {/* Add Payment Button - Touch-First */}
+      <div className="flex justify-end">
+        <Button
+          onClick={handleAddPayment}
+          disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
+          size="lg"
+        >
+          <Plus className="h-5 w-5 mr-2" />
+          Agregar Pago
+          {amount && parseFloat(amount) > 0 && (
+            <span className="ml-2 font-mono">
+              S/ {parseFloat(amount).toFixed(2)}
+            </span>
+          )}
+        </Button>
+      </div>
+
+      {/* Validation Messages */}
+      {parseFloat(amount) > remainingAmount && remainingAmount > 0 && (
+        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+          <div className="flex items-center gap-2 text-yellow-800">
+            <Calculator className="h-4 w-4" />
+            <span className="text-sm">
+              El monto excede el saldo pendiente por S/{' '}
+              {(parseFloat(amount) - remainingAmount).toFixed(2)}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export function PaymentMethodSelector({
   onPaymentAdded,
 }: PaymentMethodSelectorProps) {
@@ -152,111 +268,6 @@ export function PaymentMethodSelector({
   ])
 
   // Memoizar el contenido del selector para evitar re-renders innecesarios
-  const PaymentSelectorContent = useMemo(
-    () => () => (
-      <div className="space-y-6">
-        {/* Payment Method Selection - Touch-First */}
-        <div className="space-y-3">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {paymentMethods.map((method) => {
-              const Icon =
-                paymentTypeIcons[
-                  method.payment_type as keyof typeof paymentTypeIcons
-                ] || MoreHorizontal
-              const isSelected = selectedMethodId === method.id
-
-              return (
-                <Button
-                  key={method.id}
-                  variant={isSelected ? 'default' : 'outline'}
-                  className="h-14 p-4 justify-start transition-all duration-200"
-                  onClick={() => handleMethodSelect(method.id)}
-                >
-                  <div className="flex items-center gap-3 w-full">
-                    <Icon className="h-5 w-5 flex-shrink-0" />
-                    <div className="text-left flex-1">
-                      <div className="font-medium text-sm">{method.name}</div>
-                      <Badge variant="secondary" className="text-xs mt-1">
-                        {paymentTypeLabels[
-                          method.payment_type as keyof typeof paymentTypeLabels
-                        ] || 'Otros'}
-                      </Badge>
-                    </div>
-                  </div>
-                </Button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Amount Input - Mejorado */}
-        <div className="space-y-3">
-          <Label htmlFor="amount">Monto a Pagar</Label>
-          <Input
-            id="amount"
-            placeholder="0.00"
-            value={amount}
-            onChange={handleAmountChange}
-            className="text-right font-mono text-lg h-12"
-          />
-        </div>
-
-        {/* Notes - Compacto */}
-        <div className="space-y-2">
-          <Label htmlFor="notes">Notas (Opcional)</Label>
-          <Textarea
-            id="notes"
-            placeholder="Agregar notas sobre este pago..."
-            value={notes}
-            onChange={handleNotesChange}
-            rows={2}
-            className="resize-none"
-          />
-        </div>
-
-        {/* Add Payment Button - Touch-First */}
-        <div className="flex justify-end">
-          <Button
-            onClick={handleAddPayment}
-            disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
-            size="lg"
-          >
-            <Plus className="h-5 w-5 mr-2" />
-            Agregar Pago
-            {amount && parseFloat(amount) > 0 && (
-              <span className="ml-2 font-mono">
-                S/ {parseFloat(amount).toFixed(2)}
-              </span>
-            )}
-          </Button>
-        </div>
-
-        {/* Validation Messages */}
-        {parseFloat(amount) > remainingAmount && remainingAmount > 0 && (
-          <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <div className="flex items-center gap-2 text-yellow-800">
-              <Calculator className="h-4 w-4" />
-              <span className="text-sm">
-                El monto excede el saldo pendiente por S/{' '}
-                {(parseFloat(amount) - remainingAmount).toFixed(2)}
-              </span>
-            </div>
-          </div>
-        )}
-      </div>
-    ),
-    [
-      paymentMethods,
-      selectedMethodId,
-      amount,
-      notes,
-      remainingAmount,
-      handleMethodSelect,
-      handleAmountChange,
-      handleNotesChange,
-      handleAddPayment,
-    ]
-  )
 
   // Renderizado responsivo
   if (isMobile) {
@@ -275,7 +286,17 @@ export function PaymentMethodSelector({
             <SheetTitle>Agregar Pago</SheetTitle>
           </SheetHeader>
           <div className="mt-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <PaymentSelectorContent />
+            <PaymentSelectorContent
+              paymentMethods={paymentMethods}
+              selectedMethodId={selectedMethodId}
+              amount={amount}
+              notes={notes}
+              remainingAmount={remainingAmount}
+              handleMethodSelect={handleMethodSelect}
+              handleAmountChange={handleAmountChange}
+              handleNotesChange={handleNotesChange}
+              handleAddPayment={handleAddPayment}
+            />
           </div>
         </SheetContent>
       </Sheet>
@@ -293,7 +314,17 @@ export function PaymentMethodSelector({
       </div>
       <Separator />
       <div>
-        <PaymentSelectorContent />
+        <PaymentSelectorContent
+          paymentMethods={paymentMethods}
+          selectedMethodId={selectedMethodId}
+          amount={amount}
+          notes={notes}
+          remainingAmount={remainingAmount}
+          handleMethodSelect={handleMethodSelect}
+          handleAmountChange={handleAmountChange}
+          handleNotesChange={handleNotesChange}
+          handleAddPayment={handleAddPayment}
+        />
       </div>
     </div>
   )

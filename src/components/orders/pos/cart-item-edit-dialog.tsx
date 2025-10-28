@@ -171,7 +171,7 @@ export function CartItemEditDialog({
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSave)} className="space-y-4">
+          <div className="space-y-4">
             {/* Información del producto */}
             <div className="space-y-2">
               <div className="flex items-center justify-between">
@@ -300,9 +300,11 @@ export function CartItemEditDialog({
               <Button type="button" variant="outline" onClick={handleCancel}>
                 Cancelar
               </Button>
-              <Button type="submit">Guardar cambios</Button>
+              <Button type="button" onClick={form.handleSubmit(handleSave)}>
+                Guardar cambios
+              </Button>
             </DialogFooter>
-          </form>
+          </div>
         </Form>
       </DialogContent>
     </Dialog>
