@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Tables } from '@/types/supabase.types'
 import { calculateOrderItemTotal } from '@/schemas/order-items.schema'
 import { formatCurrency } from '@/lib/utils'
+import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 
 type OrderItem = Tables<'order_items'> & {
   products: Tables<'products'> | null
@@ -39,7 +40,6 @@ interface NewOrderItem {
   quantity: number
   unit_price: number
   discount: number
-  tax_rate: number
 }
 
 export function OrderItemsManager({
@@ -57,8 +57,11 @@ export function OrderItemsManager({
     quantity: 1,
     unit_price: 0,
     discount: 0,
-    tax_rate: 0,
   })
+
+  // Obtener el tax rate del tenant
+  const { data: tenant } = useTenantDetail()
+  const tenantTaxRate = tenant?.tax || 0
 
   // Calcular totales
   const totals = useMemo(() => {
@@ -66,9 +69,9 @@ export function OrderItemsManager({
       (acc, item) => {
         const itemTotal = calculateOrderItemTotal({
           quantity: item.quantity,
-          unit_price: item.unit_price,
+          unit_price: item.unit_price || 0,
           discount: item.discount,
-          tax_rate: item.tax_rate,
+          tax_rate: tenantTaxRate,
         })
 
         return {
@@ -79,7 +82,7 @@ export function OrderItemsManager({
       },
       { subtotal: 0, tax: 0, total: 0 }
     )
-  }, [items])
+  }, [items, tenantTaxRate])
 
   const handleAddItem = useCallback(() => {
     if (!newItem.product_id || newItem.quantity <= 0) return
@@ -88,24 +91,20 @@ export function OrderItemsManager({
       quantity: newItem.quantity,
       unit_price: newItem.unit_price,
       discount: newItem.discount,
-      tax_rate: newItem.tax_rate,
+      tax_rate: tenantTaxRate,
     })
 
     const orderItem: OrderItem = {
       id: `temp-${Date.now()}`,
       order_id: orderId || '',
-      product_id: newItem.product_id,
+      product_id: newItem.product_id || '',
       description: newItem.description,
       quantity: newItem.quantity,
       unit_price: newItem.unit_price,
       discount: newItem.discount,
-      tax_rate: newItem.tax_rate,
-      subtotal: itemTotal.subtotal,
-      tax: itemTotal.tax,
       total: itemTotal.total,
-      created_at: new Date().toISOString(),
-      tenant_id: '', // Se llenará cuando se guarde
-      products: null, // Se llenará cuando se seleccione el producto
+      price_base: newItem.unit_price,
+      products: null,
     }
 
     onItemsChange([...items, orderItem])
@@ -115,52 +114,60 @@ export function OrderItemsManager({
       quantity: 1,
       unit_price: 0,
       discount: 0,
-      tax_rate: 0,
     })
     setIsAddingItem(false)
-  }, [newItem, items, onItemsChange, orderId])
-
-  const handleRemoveItem = useCallback(
-    (itemId: string) => {
-      onItemsChange(items.filter((item) => item.id !== itemId))
-    },
-    [items, onItemsChange]
-  )
+  }, [newItem, items, onItemsChange, orderId, tenantTaxRate])
 
   const handleUpdateItem = useCallback(
-    (itemId: string, updates: Partial<OrderItem>) => {
+    (itemId: string, updatedItem: Partial<OrderItem>) => {
       const updatedItems = items.map((item) => {
         if (item.id === itemId) {
-          const updatedItem = { ...item, ...updates }
+          const updated = { ...item, ...updatedItem }
 
-          // Recalcular totales si cambian los valores relevantes
+          // Recalcular totales si se actualizan campos relevantes
           if (
-            'quantity' in updates ||
-            'unit_price' in updates ||
-            'discount' in updates ||
-            'tax_rate' in updates
+            updatedItem.quantity !== undefined ||
+            updatedItem.unit_price !== undefined ||
+            updatedItem.discount !== undefined
           ) {
             const itemTotal = calculateOrderItemTotal({
-              quantity: updatedItem.quantity,
-              unit_price: updatedItem.unit_price,
-              discount: updatedItem.discount,
-              tax_rate: updatedItem.tax_rate,
+              quantity: updated.quantity,
+              unit_price: updated.unit_price || 0,
+              discount: updated.discount,
+              tax_rate: tenantTaxRate,
             })
 
-            updatedItem.subtotal = itemTotal.subtotal
-            updatedItem.tax = itemTotal.tax
-            updatedItem.total = itemTotal.total
+            updated.total = itemTotal.total
+            updated.subtotal = itemTotal.subtotal
+            updated.tax = itemTotal.tax
           }
 
-          return updatedItem
+          return updated
         }
         return item
       })
+      onItemsChange(updatedItems)
+      setEditingItemId(null)
+    },
+    [items, onItemsChange, tenantTaxRate]
+  )
 
+  const handleRemoveItem = useCallback(
+    (itemId: string) => {
+      const updatedItems = items.filter((item) => item.id !== itemId)
       onItemsChange(updatedItems)
     },
     [items, onItemsChange]
   )
+
+  const handleProductSelect = useCallback((productId: string) => {
+    // Find the product by ID
+    // For now, just set the product_id
+    setNewItem((prev) => ({
+      ...prev,
+      product_id: productId,
+    }))
+  }, [])
 
   return (
     <Card>
@@ -168,33 +175,33 @@ export function OrderItemsManager({
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2">
             <Package className="h-5 w-5" />
-            Productos de la Orden
+            Items de la Orden
           </CardTitle>
           {!disabled && (
             <Button
-              variant="outline"
-              size="sm"
               onClick={() => setIsAddingItem(true)}
+              size="sm"
               disabled={isAddingItem}
             >
               <Plus className="h-4 w-4 mr-2" />
-              Agregar Producto
+              Agregar Item
             </Button>
           )}
         </div>
       </CardHeader>
       <CardContent>
-        <div className="space-y-4">
-          {/* Tabla de productos */}
+        {/* Tabla de items */}
+        <div className="rounded-md border">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Producto</TableHead>
-                <TableHead>Descripción</TableHead>
                 <TableHead className="text-right">Cantidad</TableHead>
                 <TableHead className="text-right">Precio Unit.</TableHead>
                 <TableHead className="text-right">Descuento</TableHead>
-                <TableHead className="text-right">Impuesto</TableHead>
+                <TableHead className="text-right">
+                  Tax ({(tenantTaxRate * 100).toFixed(0)}%)
+                </TableHead>
                 <TableHead className="text-right">Total</TableHead>
                 {!disabled && (
                   <TableHead className="w-[100px]">Acciones</TableHead>
@@ -202,73 +209,16 @@ export function OrderItemsManager({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {items.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell>
-                    {item.products?.name || 'Producto no encontrado'}
-                  </TableCell>
-                  <TableCell>{item.description}</TableCell>
-                  <TableCell className="text-right">{item.quantity}</TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(item.unit_price, currency)}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {formatCurrency(item.discount, currency)}
-                  </TableCell>
-                  <TableCell className="text-right">{item.tax_rate}%</TableCell>
-                  <TableCell className="text-right">
-                    <Badge variant="secondary">
-                      {formatCurrency(item.total || 0, currency)}
-                    </Badge>
-                  </TableCell>
-                  {!disabled && (
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setEditingItemId(item.id)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveItem(item.id)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
-                    </TableCell>
-                  )}
-                </TableRow>
-              ))}
-
-              {/* Fila para agregar nuevo producto */}
+              {/* Formulario para agregar nuevo item */}
               {isAddingItem && (
                 <TableRow>
                   <TableCell>
                     <ProductSelect
-                      value={newItem.product_id}
-                      onValueChange={(value) =>
-                        setNewItem((prev) => ({ ...prev, product_id: value }))
-                      }
-                      placeholder="Seleccionar producto"
+                      onValueChange={handleProductSelect}
+                      placeholder="Seleccionar producto..."
                     />
                   </TableCell>
                   <TableCell>
-                    <Input
-                      value={newItem.description}
-                      onChange={(e) =>
-                        setNewItem((prev) => ({
-                          ...prev,
-                          description: e.target.value,
-                        }))
-                      }
-                      placeholder="Descripción"
-                    />
-                  </TableCell>
-                  <TableCell className="text-right">
                     <Input
                       type="number"
                       min="1"
@@ -279,10 +229,10 @@ export function OrderItemsManager({
                           quantity: parseInt(e.target.value) || 1,
                         }))
                       }
-                      className="text-right w-20"
+                      className="text-right"
                     />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell>
                     <Input
                       type="number"
                       min="0"
@@ -294,13 +244,14 @@ export function OrderItemsManager({
                           unit_price: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="text-right w-24"
+                      className="text-right"
                     />
                   </TableCell>
-                  <TableCell className="text-right">
+                  <TableCell>
                     <Input
                       type="number"
                       min="0"
+                      max="100"
                       step="0.01"
                       value={newItem.discount}
                       onChange={(e) =>
@@ -309,92 +260,129 @@ export function OrderItemsManager({
                           discount: parseFloat(e.target.value) || 0,
                         }))
                       }
-                      className="text-right w-24"
+                      className="text-right"
                     />
                   </TableCell>
                   <TableCell className="text-right">
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.01"
-                      value={newItem.tax_rate}
-                      onChange={(e) =>
-                        setNewItem((prev) => ({
-                          ...prev,
-                          tax_rate: parseFloat(e.target.value) || 0,
-                        }))
-                      }
-                      className="text-right w-20"
-                    />
+                    {(tenantTaxRate * 100).toFixed(0)}%
                   </TableCell>
                   <TableCell className="text-right">
-                    <Badge variant="secondary">
-                      {formatCurrency(
-                        calculateOrderItemTotal({
-                          quantity: newItem.quantity,
-                          unit_price: newItem.unit_price,
-                          discount: newItem.discount,
-                          tax_rate: newItem.tax_rate,
-                        }).total,
-                        currency
+                    {formatCurrency(
+                      calculateOrderItemTotal({
+                        quantity: newItem.quantity,
+                        unit_price: newItem.unit_price,
+                        discount: newItem.discount,
+                        tax_rate: tenantTaxRate,
+                      }).total,
+                      currency
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <div className="flex gap-1">
+                      <Button
+                        size="sm"
+                        onClick={handleAddItem}
+                        disabled={!newItem.product_id}
+                      >
+                        Agregar
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setIsAddingItem(false)
+                          setNewItem({
+                            product_id: '',
+                            description: '',
+                            quantity: 1,
+                            unit_price: 0,
+                            discount: 0,
+                          })
+                        }}
+                      >
+                        Cancelar
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              )}
+
+              {/* Items existentes */}
+              {items.map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell>
+                    <div>
+                      <div className="font-medium">{item.description}</div>
+                      {item.products && (
+                        <div className="text-sm text-muted-foreground">
+                          {item.products.name}
+                        </div>
                       )}
-                    </Badge>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-right">{item.quantity}</TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(item.unit_price || 0, currency)}
+                  </TableCell>
+                  <TableCell className="text-right">{item.discount}%</TableCell>
+                  <TableCell className="text-right">
+                    {(tenantTaxRate * 100).toFixed(0)}%
+                  </TableCell>
+                  <TableCell className="text-right">
+                    {formatCurrency(item.total || 0, currency)}
                   </TableCell>
                   {!disabled && (
                     <TableCell>
-                      <div className="flex items-center gap-1">
+                      <div className="flex gap-1">
                         <Button
-                          variant="ghost"
                           size="sm"
-                          onClick={handleAddItem}
-                          disabled={
-                            !newItem.product_id || newItem.quantity <= 0
-                          }
+                          variant="outline"
+                          onClick={() => setEditingItemId(item.id)}
                         >
-                          ✓
+                          <Edit className="h-3 w-3" />
                         </Button>
                         <Button
-                          variant="ghost"
                           size="sm"
-                          onClick={() => {
-                            setIsAddingItem(false)
-                            setNewItem({
-                              product_id: '',
-                              description: '',
-                              quantity: 1,
-                              unit_price: 0,
-                              discount: 0,
-                              tax_rate: 0,
-                            })
-                          }}
+                          variant="outline"
+                          onClick={() => handleRemoveItem(item.id)}
                         >
-                          ✕
+                          <Trash2 className="h-3 w-3" />
                         </Button>
                       </div>
                     </TableCell>
                   )}
                 </TableRow>
+              ))}
+
+              {items.length === 0 && !isAddingItem && (
+                <TableRow>
+                  <TableCell
+                    colSpan={disabled ? 6 : 7}
+                    className="text-center py-8"
+                  >
+                    <div className="text-muted-foreground">
+                      No hay items en esta orden
+                    </div>
+                  </TableCell>
+                </TableRow>
               )}
             </TableBody>
           </Table>
+        </div>
 
-          {/* Resumen de totales */}
-          <div className="flex justify-end">
-            <div className="w-80 space-y-2">
-              <div className="flex justify-between">
-                <span>Subtotal:</span>
-                <span>{formatCurrency(totals.subtotal, currency)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Impuestos:</span>
-                <span>{formatCurrency(totals.tax, currency)}</span>
-              </div>
-              <div className="flex justify-between font-semibold text-lg border-t pt-2">
-                <span>Total:</span>
-                <span>{formatCurrency(totals.total, currency)}</span>
-              </div>
-            </div>
+        {/* Resumen de totales */}
+        <div className="mt-6 space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Subtotal:</span>
+            <span>{formatCurrency(totals.subtotal, currency)}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span>Impuestos ({(tenantTaxRate * 100).toFixed(0)}%):</span>
+            <span>{formatCurrency(totals.tax, currency)}</span>
+          </div>
+          <div className="flex justify-between font-medium text-lg border-t pt-2">
+            <span>Total:</span>
+            <span>{formatCurrency(totals.total, currency)}</span>
           </div>
         </div>
       </CardContent>

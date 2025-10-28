@@ -15,13 +15,13 @@ interface OrderEditProps {
 export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
   const { data } = useOrderDetail(order.id)
 
-  const { 
-    clearCart, 
+  const {
+    clearCart,
     clearPayments,
-    setSelectedCustomer, 
-    addToCart, 
+    setSelectedCustomer,
+    addToCart,
     addPayment,
-    updateCartItemPrice
+    updateCartItemPrice,
   } = usePOSStore()
 
   // Cargar datos de la orden existente al POS store
@@ -41,12 +41,12 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
         data.items.forEach((item: any) => {
           if (item.products) {
             // Agregar el producto al carrito con la cantidad y precio de la orden
-             addToCart(item.products, item.quantity)
-             
-             // Si el precio es diferente al precio del producto, actualizarlo
-             if (item.unit_price !== item.products.price) {
-               updateCartItemPrice(item.products.id, item.unit_price)
-             }
+            addToCart(item.products, item.quantity)
+
+            // Si el precio es diferente al precio del producto, actualizarlo
+            if (item.unit_price !== item.products.price) {
+              updateCartItemPrice(item.products.id, item.unit_price)
+            }
           }
         })
       }
@@ -63,7 +63,16 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
         })
       }
     }
-  }, [data, open, clearCart, clearPayments, setSelectedCustomer, addToCart, addPayment, updateCartItemPrice])
+  }, [
+    data,
+    open,
+    clearCart,
+    clearPayments,
+    setSelectedCustomer,
+    addToCart,
+    addPayment,
+    updateCartItemPrice,
+  ])
 
   const handleOrderUpdated = () => {
     // Cerrar cuando se actualiza la orden

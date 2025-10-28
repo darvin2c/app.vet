@@ -1,7 +1,11 @@
 import { OrderPrint } from '@/components/orders/order-print'
 import { use } from 'react'
 
-export default function PrintPage({ params }: { params: Promise<{ orderId: string }> }) {
+export default function PrintPage({
+  params,
+}: {
+  params: Promise<{ orderId: string }>
+}) {
   const { orderId } = use(params)
   return (
     <div className="min-h-screen bg-white">

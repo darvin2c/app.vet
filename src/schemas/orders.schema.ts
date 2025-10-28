@@ -5,8 +5,8 @@ export const orderBaseSchema = z.object({
   custumer_id: z.string().nonempty('El cliente es requerido'),
   order_number: z.string().optional(),
   status: z
-    .enum(['draft', 'confirmed', 'paid', 'cancelled', 'refunded'])
-    .default('draft'),
+    .enum(['partial_payment', 'confirmed', 'paid', 'cancelled', 'refunded'])
+    .default('confirmed'),
   subtotal: z
     .number()
     .min(0, 'El subtotal debe ser mayor o igual a 0')
@@ -50,7 +50,7 @@ export const paymentSchema = z.object({
 export const orderFiltersSchema = z.object({
   search: z.string().optional(),
   status: z
-    .enum(['draft', 'confirmed', 'paid', 'cancelled', 'refunded'])
+    .enum(['partial_payment', 'confirmed', 'paid', 'cancelled', 'refunded'])
     .optional(),
   custumer_id: z.string().optional(),
   created_from: z.string().optional(),
@@ -66,11 +66,11 @@ export type PaymentSchema = z.infer<typeof paymentSchema>
 export type OrderFiltersSchema = z.infer<typeof orderFiltersSchema>
 
 export const orderStatusOptions = [
-  { value: 'draft', label: 'Borrador', color: 'gray' },
+  { value: 'partial_payment', label: 'Pago Parcial', color: 'orange' },
   { value: 'confirmed', label: 'Confirmado', color: 'blue' },
   { value: 'paid', label: 'Pagado', color: 'green' },
   { value: 'cancelled', label: 'Cancelado', color: 'red' },
-  { value: 'refunded', label: 'Reembolsado', color: 'orange' },
+  { value: 'refunded', label: 'Reembolsado', color: 'gray' },
 ] as const
 
 // Opciones de estado de pago para filtros y UI
@@ -103,7 +103,7 @@ export const getOrderStatusFromPayment = (
 ): Enums<'order_status'> => {
   if (paid_amount === 0) return 'confirmed'
   if (paid_amount >= total) return 'paid'
-  return 'confirmed' // Para pagos parciales mantenemos como confirmado
+  return 'partial_payment' // Para pagos parciales usamos partial_payment
 }
 
 export const canAddPayment = (
@@ -116,15 +116,18 @@ export const canAddPayment = (
 
 export const getPaymentStatusInfo = (paid_amount: number, total: number) => {
   const status = getPaymentStatus(paid_amount, total)
-  const balance = calculateBalance(total, paid_amount)
-  const statusOption = paymentStatusOptions.find(
-    (option) => option.value === status
-  )
-
+  const statusInfo = paymentStatusOptions.find((option) => option.value === status)
   return {
     status,
-    balance,
-    statusOption,
-    percentage: total > 0 ? Math.round((paid_amount / total) * 100) : 0,
+    label: statusInfo?.label || 'Desconocido',
+    color: statusInfo?.color || 'gray',
+    icon: statusInfo?.icon || '❓',
+    balance: calculateBalance(total, paid_amount),
   }
+}
+
+// Función para validar si una orden puede ser editada
+export const canEditOrder = (status: Enums<'order_status'>): boolean => {
+  // Solo permitir edición para órdenes confirmadas o con pago parcial
+  return status === 'confirmed' || status === 'partial_payment'
 }

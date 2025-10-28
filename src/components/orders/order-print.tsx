@@ -194,9 +194,9 @@ export function OrderPrint({ orderId }: { orderId: string }) {
           <p>
             <strong>Estado:</strong> {order.status}
           </p>
-          {order.custumer_id && (
+          {order.customer_id && (
             <p>
-              <strong>Cliente:</strong> {order.custumer_id}
+              <strong>Cliente:</strong> {order.customer_id}
             </p>
           )}
         </div>

@@ -19,10 +19,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEdit } from './order-edit'
 import { OrderPaymentSheet } from './order-payment-sheet'
+import { canEditOrder } from '@/schemas/orders.schema'
 
 import { downloadPDF, previewDocument } from '@/lib/print-utils'
 interface OrderActionsProps {
@@ -35,6 +42,15 @@ export function OrderActions({ order }: OrderActionsProps) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
   const [isDownloading, setIsDownloading] = useState(false)
+
+  // Verificar si la orden puede ser editada
+  const isEditable = canEditOrder(order.status)
+  const getEditTooltipMessage = () => {
+    if (order.status === 'paid') return 'No se puede editar una orden pagada'
+    if (order.status === 'cancelled') return 'No se puede editar una orden cancelada'
+    if (order.status === 'refunded') return 'No se puede editar una orden reembolsada'
+    return ''
+  }
 
   // Handler para imprimir directamente
   const handleDirectPrint = () => {
@@ -75,10 +91,26 @@ export function OrderActions({ order }: OrderActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
+          {isEditable ? (
+            <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          ) : (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DropdownMenuItem disabled>
+                    <Edit className="mr-2 h-4 w-4" />
+                    Editar
+                  </DropdownMenuItem>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{getEditTooltipMessage()}</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
           <DropdownMenuItem onClick={() => setShowPaymentSheet(true)}>
             <CreditCard className="mr-2 h-4 w-4" />
             Pagar

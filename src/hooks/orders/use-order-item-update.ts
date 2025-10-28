@@ -4,10 +4,12 @@ import { UpdateOrderItemSchema } from '@/schemas/order-items.schema'
 import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+import { useTenantDetail } from '../tenants/use-tenant-detail'
 
 export default function useOrderItemUpdate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
+  const { data: tenant } = useTenantDetail()
 
   return useMutation({
     mutationFn: async ({
@@ -21,13 +23,16 @@ export default function useOrderItemUpdate() {
         throw new Error('No hay tenant seleccionado')
       }
 
+      // Obtener tax rate del tenant
+      const tenantTaxRate = tenant?.tax || 0
+
       // Calcular el total del item si se proporcionan los valores necesarios
       let total: number | undefined
       if (data.quantity !== undefined && data.unit_price !== undefined) {
         const subtotal = data.quantity * data.unit_price
         const discountAmount = (subtotal * (data.discount || 0)) / 100
         const taxableAmount = subtotal - discountAmount
-        const taxAmount = (taxableAmount * (data.tax_rate || 0)) / 100
+        const taxAmount = (taxableAmount * tenantTaxRate) / 100
         total = taxableAmount + taxAmount
       }
 
@@ -37,8 +42,8 @@ export default function useOrderItemUpdate() {
         quantity: data.quantity,
         unit_price: data.unit_price,
         discount: data.discount,
-        tax_rate: data.tax_rate,
         total: total,
+        price_base: data.unit_price,
       }
 
       const { data: orderItem, error } = await supabase

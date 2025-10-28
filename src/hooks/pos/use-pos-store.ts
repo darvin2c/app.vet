@@ -99,9 +99,10 @@ interface POSState {
   canAddPaymentAmount: (amount: number) => boolean
   getPaymentStatusInfo: () => {
     status: PaymentStatus
+    label: string
+    color: string
+    icon: string
     balance: number
-    statusOption: any
-    percentage: number
   }
 
   // Funciones para diferentes tipos de guardado

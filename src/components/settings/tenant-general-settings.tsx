@@ -31,7 +31,7 @@ const GeneralInfoSchema = z.object({
 })
 
 const LegalLocationSchema = z.object({
-  tax_id: z.string().optional(),
+  tax: z.number().optional(),
   street: z.string().optional(),
   city: z.string().optional(),
   state: z.string().optional(),
@@ -184,7 +184,7 @@ function LegalLocationCard() {
   const form = useForm<LegalLocationData>({
     resolver: zodResolver(LegalLocationSchema),
     defaultValues: {
-      tax_id: '',
+      tax: 0,
       street: '',
       city: '',
       state: '',
@@ -197,7 +197,7 @@ function LegalLocationCard() {
     if (tenant) {
       const address = (tenant.address as any) || {}
       form.reset({
-        tax_id: tenant.tax_id || '',
+        tax: tenant.tax || 0,
         street: address.street || '',
         city: address.city || '',
         state: address.state || '',
@@ -210,7 +210,7 @@ function LegalLocationCard() {
   const onSubmit = async (data: LegalLocationData) => {
     try {
       await updateTenant.mutateAsync({
-        tax_id: data.tax_id || null,
+        tax: data.tax || null,
         address: {
           street: data.street || null,
           city: data.city || null,
@@ -254,16 +254,18 @@ function LegalLocationCard() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <Field className="md:col-span-2">
-                <FieldLabel htmlFor="tax_id">
-                  RUC / Número de Identificación Fiscal
-                </FieldLabel>
+                <FieldLabel htmlFor="tax">Impuesto (%)</FieldLabel>
                 <FieldContent>
                   <Input
-                    id="tax_id"
-                    {...form.register('tax_id')}
-                    placeholder="20123456789"
+                    id="tax"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    max="1"
+                    {...form.register('tax', { valueAsNumber: true })}
+                    placeholder="0.18"
                   />
-                  <FieldError errors={[form.formState.errors.tax_id]} />
+                  <FieldError errors={[form.formState.errors.tax]} />
                 </FieldContent>
               </Field>
 

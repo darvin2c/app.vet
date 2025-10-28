@@ -56,8 +56,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
       quantity: item.quantity,
       unit_price: item.price,
       discount: 0,
-      tax_rate: 0.18,
       total: item.subtotal,
+      price_base: item.price,
       order_id: '', // Se asignará en el hook
       tenant_id: '', // Se asignará en el hook
     }))
@@ -76,7 +76,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     const createOrderData = {
       order: {
         ...orderData,
-        custumer_id: selectedCustomer?.id || null,
+        customer_id: selectedCustomer?.id || null,
       },
       items: orderItems,
       payments: orderPayments,
