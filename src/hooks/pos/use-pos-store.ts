@@ -34,6 +34,7 @@ interface POSPayment {
 type PaymentStatus = 'pending' | 'partial' | 'completed'
 
 interface POSState {
+  searchQuery: string
   // Cart
   cartItems: CartItem[]
   cartTotal: number
@@ -55,6 +56,9 @@ interface POSState {
   currentView: 'catalog' | 'payment' | 'receipt'
   isLoading: boolean
   isMobileCartOpen: boolean
+
+  // Search
+  setSearchQuery: (query: string) => void
 
   // Actions
   addToCart: (product: Product, quantity?: number) => void
@@ -107,6 +111,10 @@ interface POSState {
 }
 
 export const usePOSStore = create<POSState>((set, get) => ({
+  // Search
+  searchQuery: '',
+  setSearchQuery: (query) => set({ searchQuery: query }),
+
   // Initial state
   cartItems: [],
   cartTotal: 0,

@@ -4,18 +4,36 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { X, ShoppingCart, Grid3X3, CreditCard, Receipt } from 'lucide-react'
+import {
+  X,
+  ShoppingCart,
+  Grid3X3,
+  CreditCard,
+  Receipt,
+  SearchIcon,
+} from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSCustomerSelector } from './pos-customer-selector'
 import { SearchInput } from '@/components/ui/search-input'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from '@/components/ui/input-group'
 
 interface POSHeaderProps {
   onClose?: () => void
 }
 
 export function POSHeader({ onClose }: POSHeaderProps) {
-  const { cartItems, currentView, setCurrentView, setIsMobileCartOpen } =
-    usePOSStore()
+  const {
+    cartItems,
+    currentView,
+    setCurrentView,
+    setIsMobileCartOpen,
+    searchQuery,
+    setSearchQuery,
+  } = usePOSStore()
 
   const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
@@ -52,11 +70,26 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           <h1 className="text-lg font-semibold">POS</h1>
         </div>
         <div className="w-full !max-w-2xl hidden lg:block">
-          <SearchInput
-            size="lg"
-            placeholder="Buscar productos por nombre, SKU..."
-            urlParamName="item"
-          />
+          <InputGroup className="h-12">
+            <InputGroupAddon align={'inline-start'}>
+              <SearchIcon className="h-8 w-8" />
+            </InputGroupAddon>
+            <InputGroupInput
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="h-full"
+              placeholder="Buscar productos por nombre, SKU..."
+            />
+            {searchQuery && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSearchQuery('')}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+          </InputGroup>
         </div>
 
         {/* Right: Customer selector and cart */}
