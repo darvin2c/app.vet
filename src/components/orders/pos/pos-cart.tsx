@@ -22,21 +22,14 @@ import {
   Trash,
 } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import { Database } from '@/types/supabase.types'
+import { TablesInsert } from '@/types/supabase.types'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
 import { CurrencyDisplay } from '@/components/ui/current-input'
 
-type Product = Database['public']['Tables']['products']['Row']
-
-interface CartItem {
-  product: Product
-  quantity: number
-  price: number
-  subtotal: number
-}
+type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'>
 
 interface POSCartProps {
   className?: string
@@ -44,20 +37,19 @@ interface POSCartProps {
 
 export function POSCart({ className }: POSCartProps) {
   const {
-    cartItems,
-    cartSubtotal,
-    cartTax,
-    cartTotal,
-    selectedCustomer,
-    removeFromCart,
-    clearCart,
+    orderItems,
+    order,
+    customer,
+    removeOrderItem,
     setCurrentView,
+    orderItemCount,
+    clearOrderItems,
   } = usePOSStore()
 
-  const [editingItem, setEditingItem] = useState<CartItem | null>(null)
+  const [editingItem, setEditingItem] = useState<OrderItem | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
-  const handleEditItem = (item: CartItem) => {
+  const handleEditItem = (item: OrderItem) => {
     setEditingItem(item)
     setIsEditDialogOpen(true)
   }
@@ -67,10 +59,12 @@ export function POSCart({ className }: POSCartProps) {
   }
 
   const handleClearCart = () => {
-    clearCart()
+    clearOrderItems()
   }
 
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  const handleRemoveItem = (productId: string) => {
+    removeOrderItem(productId)
+  }
 
   return (
     <div
@@ -85,13 +79,13 @@ export function POSCart({ className }: POSCartProps) {
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
             <h2 className="font-semibold">Carrito</h2>
-            {cartItems.length > 0 && (
+            {orderItemCount() > 0 && (
               <Badge variant="secondary" className="ml-2">
-                {cartItems.length}
+                {orderItemCount()}
               </Badge>
             )}
           </div>
-          {cartItems.length > 0 && (
+          {orderItemCount() > 0 && (
             <Button
               variant="ghost"
               size="sm"
@@ -106,7 +100,7 @@ export function POSCart({ className }: POSCartProps) {
       </div>
 
       {/* Cart Content */}
-      {cartItems.length === 0 ? (
+      {orderItemCount() === 0 ? (
         <div className="flex flex-col items-center justify-center h-full p-6">
           <ShoppingCart className="h-16 w-16 text-gray-300 mb-4" />
           <h3 className="text-lg font-medium text-gray-600 mb-2">
@@ -121,14 +115,14 @@ export function POSCart({ className }: POSCartProps) {
           {/* Cart Items */}
           <ScrollArea className="flex-1">
             <ItemGroup>
-              {cartItems.map((item, index) => (
-                <React.Fragment key={item.product.id}>
+              {orderItems.map((item, index) => (
+                <React.Fragment key={item.id}>
                   <CartItemCard
                     item={item}
-                    onRemove={removeFromCart}
+                    onRemove={handleRemoveItem}
                     onEdit={handleEditItem}
                   />
-                  {index < cartItems.length - 1 && <ItemSeparator />}
+                  {index < orderItems.length - 1 && <ItemSeparator />}
                 </React.Fragment>
               ))}
             </ItemGroup>
@@ -139,17 +133,17 @@ export function POSCart({ className }: POSCartProps) {
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
                 <span>Subtotal:</span>
-                <span>S/ {cartSubtotal.toFixed(2)}</span>
+                <CurrencyDisplay value={order?.subtotal || 0} />
               </div>
 
               <div className="flex justify-between text-sm">
                 <span>IGV (18%):</span>
-                <span>S/ {cartTax.toFixed(2)}</span>
+                <CurrencyDisplay value={order?.tax || 0} />
               </div>
 
               <div className="flex justify-between items-center text-lg font-semibold">
                 <span>Total:</span>
-                <span>S/ {cartTotal.toFixed(2)}</span>
+                <CurrencyDisplay value={order?.total || 0} />
               </div>
             </div>
           </div>
@@ -160,7 +154,7 @@ export function POSCart({ className }: POSCartProps) {
               onClick={handleProceedToPayment}
               className="w-full h-12 text-base font-semibold"
               size="lg"
-              disabled={itemCount === 0}
+              disabled={orderItemCount() === 0}
             >
               <CreditCard className="h-5 w-5 mr-2" />
               Procesar Pago
@@ -184,10 +178,14 @@ function CartItemCard({
   onRemove,
   onEdit,
 }: {
-  item: CartItem
+  item: OrderItem
   onRemove: (productId: string) => void
-  onEdit: (item: CartItem) => void
+  onEdit: (item: OrderItem) => void
 }) {
+  // Calcular subtotal del item
+  const subtotal =
+    (item.unit_price || 0) * (item.quantity || 0) - (item.discount || 0)
+
   return (
     <Item size="sm">
       <ItemMedia>
@@ -196,19 +194,27 @@ function CartItemCard({
 
       <ItemContent>
         <ItemTitle className="text-sm flex justify-between w-full">
-          <div>{item.product.name}</div>
+          <div>{item.description || 'Producto sin nombre'}</div>
           <div>
-            <CurrencyDisplay>{item.subtotal}</CurrencyDisplay>
+            <CurrencyDisplay value={subtotal} />
           </div>
         </ItemTitle>
         <div className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
-          <span>SKU: {item.product.sku}</span>
+          <span>ID: {item.product_id}</span>
           <Separator orientation="vertical" />
           <span>
-            <CurrencyDisplay>{item.price}</CurrencyDisplay>
+            <CurrencyDisplay value={item.unit_price || 0} />
           </span>
           <Separator orientation="vertical" />
-          <span>Unid {item.quantity}</span>
+          <span>Unid {item.quantity || 0}</span>
+          {item.discount && item.discount > 0 && (
+            <>
+              <Separator orientation="vertical" />
+              <span>
+                Desc: <CurrencyDisplay value={item.discount} />
+              </span>
+            </>
+          )}
         </div>
       </ItemContent>
 
@@ -217,7 +223,7 @@ function CartItemCard({
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => onRemove(item.product.id)}
+            onClick={() => onRemove(item.product_id || '')}
             className="h-8 w-8 p-0 text-red-400 hover:text-red-500"
           >
             <Trash2 className="h-4 w-4" />

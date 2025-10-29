@@ -54,13 +54,22 @@ export function CurrencyInput({
 
 CurrencyInput.displayName = 'CurrencyInput'
 
-type CurrencyDisplayProps = React.ComponentProps<'span'>
+type CurrencyDisplayProps = React.ComponentProps<'span'> & {
+  value?: number
+}
 
-export function CurrencyDisplay({ children, ...props }: CurrencyDisplayProps) {
+export function CurrencyDisplay({
+  children,
+  value = 0,
+  ...props
+}: CurrencyDisplayProps) {
   const { currency } = useCurrency()
+  if (isNaN(value)) {
+    return null
+  }
   return (
     <span {...props}>
-      {currency?.symbol} {children}
+      {currency?.symbol} {value.toFixed(2)}
     </span>
   )
 }
