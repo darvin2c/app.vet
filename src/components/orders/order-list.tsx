@@ -65,6 +65,8 @@ import {
 import { orderStatusOptions } from '@/schemas/orders.schema'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { DateDisplay } from '../ui/date-picker'
+import { CurrencyDisplay } from '../ui/current-input'
 
 type Order = Tables<'orders'> & {
   customers: Tables<'customers'> | null
@@ -297,9 +299,7 @@ export function OrderList({
               </div>
 
               <div className="text-xs text-muted-foreground">
-                {format(new Date(order.created_at), 'dd/MM/yyyy HH:mm', {
-                  locale: es,
-                })}
+                <DateDisplay value={order.created_at} />
               </div>
 
               <OrderActions order={order} />
@@ -340,15 +340,13 @@ export function OrderList({
                   </Badge>
                   <div className="text-right">
                     <div className="font-medium">
-                      {new Intl.NumberFormat('es-PE', {
-                        style: 'currency',
-                        currency: 'PEN',
-                      }).format(order.total)}
+                      <CurrencyDisplay
+                        className="text-lg font-bold"
+                        value={order.total}
+                      />
                     </div>
                     <div className="text-xs text-muted-foreground">
-                      {format(new Date(order.created_at), 'dd/MM/yyyy', {
-                        locale: es,
-                      })}
+                      <DateDisplay value={order.created_at} />
                     </div>
                   </div>
                 </div>

@@ -31,72 +31,12 @@ import {
   Plus,
   Calculator,
 } from 'lucide-react'
-import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
-import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { toast } from 'sonner'
 import { Separator } from '@/components/ui/separator'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
-import {
-  InputGroup,
-  InputGroupButton,
-  InputGroupInput,
-} from '@/components/ui/input-group'
+import { InputGroupButton } from '@/components/ui/input-group'
 import { CurrencyInput } from '@/components/ui/current-input'
 
-const paymentTypeIcons = {
-  cash: Banknote,
-  app: Smartphone,
-  credit: CreditCard,
-  others: MoreHorizontal,
-}
-
-const paymentTypeLabels = {
-  cash: 'Efectivo',
-  app: 'App',
-  credit: 'Crédito',
-  others: 'Otros',
-}
-
-interface PaymentMethodSelectorProps {
-  onPaymentAdded?: (payment: any) => void
-  remainingAmount?: number
-}
-
-interface PaymentSelectorContentProps {
-  paymentMethods: any[]
-  selectedMethodId: string
-  amount: string
-  notes: string
-  remainingAmount: number
-  handleMethodSelect: (methodId: string) => void
-  handleAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleNotesChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void
-  handleAddPayment: () => void
-}
-
-function PaymentSelectorContent({
-  paymentMethods,
-  selectedMethodId,
-  amount,
-  notes,
-  remainingAmount,
-  handleMethodSelect,
-  handleAmountChange,
-  handleNotesChange,
-  handleAddPayment,
-}: PaymentSelectorContentProps) {
-  const selectedMethod = paymentMethods.find(
-    (method) => method.id === selectedMethodId
-  )
-
-  const handleQuickAmount = (percentage: number) => {
-    const quickAmount = (remainingAmount * percentage).toFixed(2)
-    handleAmountChange({
-      target: { value: quickAmount },
-    } as React.ChangeEvent<HTMLInputElement>)
-  }
-
+function PaymentSelectorContent() {
   return (
     <div className="space-y-6">
       {/* Payment Methods with Field and RadioGroup */}
@@ -222,139 +162,8 @@ function PaymentSelectorContent({
   )
 }
 
-export function PaymentMethodSelector({
-  onPaymentAdded,
-  remainingAmount: propRemainingAmount,
-}: PaymentMethodSelectorProps) {
-  const [selectedMethodId, setSelectedMethodId] = useState<string>('')
-  const [amount, setAmount] = useState('')
-  const [notes, setNotes] = useState('')
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-
-  const { data: paymentMethods = [] } = usePaymentMethodList()
-
-  // Use POS store if no remainingAmount prop is provided (backward compatibility)
-  const posStore = usePOSStore()
-  const remainingAmount = propRemainingAmount ?? posStore.remainingAmount
-
+export function PaymentMethodSelector() {
   const isMobile = useIsMobile()
-
-  // Memoizar el método de pago por defecto para evitar re-cálculos innecesarios
-  const defaultPaymentMethod = useMemo(() => {
-    if (paymentMethods.length === 0) return null
-
-    const cashMethod = paymentMethods.find(
-      (method) => method.payment_type === 'cash'
-    )
-    return cashMethod || paymentMethods[0]
-  }, [paymentMethods])
-
-  // Auto-seleccionar efectivo por defecto - optimizado para evitar re-renders
-  useEffect(() => {
-    if (defaultPaymentMethod && !selectedMethodId) {
-      setSelectedMethodId(defaultPaymentMethod.id)
-    }
-  }, [defaultPaymentMethod, selectedMethodId])
-
-  // Memoizar el método seleccionado
-  const selectedMethod = useMemo(
-    () => paymentMethods.find((method) => method.id === selectedMethodId),
-    [paymentMethods, selectedMethodId]
-  )
-
-  // Memoizar handlers para evitar re-renders
-  const handleAmountChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setAmount(e.target.value)
-    },
-    []
-  )
-
-  const handleNotesChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setNotes(e.target.value)
-    },
-    []
-  )
-
-  const handleMethodSelect = useCallback((methodId: string) => {
-    setSelectedMethodId(methodId)
-  }, [])
-
-  const handleAddPayment = useCallback(() => {
-    if (!selectedMethodId) {
-      toast.error('Selecciona un método de pago')
-      return
-    }
-
-    if (!amount || parseFloat(amount) <= 0) {
-      toast.error('Ingresa un monto válido')
-      return
-    }
-
-    const paymentAmount = parseFloat(amount)
-
-    if (paymentAmount > remainingAmount && remainingAmount > 0) {
-      toast.error(
-        `El monto no puede ser mayor al saldo pendiente (S/ ${remainingAmount.toFixed(2)})`
-      )
-      return
-    }
-
-    const payment = {
-      payment_method_id: selectedMethodId,
-      amount: paymentAmount,
-      notes: notes || undefined,
-      payment_method: selectedMethod,
-      payment_date: new Date().toISOString(),
-    }
-
-    // Use custom callback if provided, otherwise use POS store
-    if (onPaymentAdded) {
-      onPaymentAdded(payment)
-    } else {
-      posStore.addPayment(payment)
-    }
-
-    // Reset form
-    setAmount('')
-    setNotes('')
-
-    toast.success('Pago agregado correctamente')
-
-    // Close sheet on mobile
-    if (isMobile) {
-      setIsSheetOpen(false)
-    }
-  }, [
-    selectedMethodId,
-    amount,
-    remainingAmount,
-    notes,
-    selectedMethod,
-    onPaymentAdded,
-    posStore,
-    isMobile,
-  ])
-
-  // Auto-fill remaining amount when clicking on amount input
-  const handleAmountFocus = useCallback(() => {
-    if (!amount && remainingAmount > 0) {
-      setAmount(remainingAmount.toFixed(2))
-    }
-  }, [amount, remainingAmount])
-
-  const contentProps = {
-    paymentMethods,
-    selectedMethodId,
-    amount,
-    notes,
-    remainingAmount,
-    handleMethodSelect,
-    handleAmountChange,
-    handleNotesChange,
-    handleAddPayment,
-  }
 
   // Mobile: Show as Sheet
   if (isMobile) {
