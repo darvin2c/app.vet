@@ -3,6 +3,7 @@
 import useOrderDetail from '@/hooks/orders/use-order-detail'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { DateDisplay } from '../ui/date-picker'
 
 export function OrderPrint({ orderId }: { orderId: string }) {
   const { data: order } = useOrderDetail(orderId)
@@ -186,10 +187,7 @@ export function OrderPrint({ orderId }: { orderId: string }) {
         <div className="info-section">
           <h3>Información de la Orden</h3>
           <p>
-            <strong>Fecha:</strong>{' '}
-            {format(new Date(order.created_at), 'dd/MM/yyyy HH:mm', {
-              locale: es,
-            })}
+            <strong>Fecha:</strong> <DateDisplay value={order.created_at} />
           </p>
           <p>
             <strong>Estado:</strong> {order.status}

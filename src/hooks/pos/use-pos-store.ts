@@ -22,12 +22,14 @@ interface POSState {
 
   // UI State
   currentView: 'catalog' | 'payment' | 'receipt'
+  openCartMobile: boolean
 
   // Search
   setSearchQuery: (query: string) => void
 
   // ui state
   setCurrentView: (view: POSState['currentView']) => void
+  setOpenCartMobile: (open: boolean) => void
 
   //setCustomer
   setCustomer: (customer: Customer | null) => void
@@ -56,6 +58,7 @@ interface POSState {
   }
   enableReceiptTab: () => boolean
   enablePaymentTab: () => boolean
+  orderItemCount: () => number
 }
 
 const usePOSStore = create<POSState>()((set, get) => {
@@ -131,12 +134,14 @@ const usePOSStore = create<POSState>()((set, get) => {
 
     // UI State
     currentView: 'catalog' as POSState['currentView'],
+    openCartMobile: false,
 
     // Search
     setSearchQuery: (query) => set({ searchQuery: query }),
 
     // ui state
     setCurrentView: (view) => set({ currentView: view }),
+    setOpenCartMobile: (open) => set({ openCartMobile: open }),
 
     //setCustomer
     setCustomer: (customer) => set({ customer }),
@@ -217,6 +222,9 @@ const usePOSStore = create<POSState>()((set, get) => {
 
       return { order, orderItems, payments }
     },
+    // sum quantity
+    orderItemCount: () =>
+      get().orderItems.reduce((acc, item) => acc + item.quantity, 0),
     enableReceiptTab: () => !!get().order?.id,
     enablePaymentTab: () => get().orderItems.length > 0,
   }

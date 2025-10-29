@@ -27,15 +27,16 @@ interface POSHeaderProps {
 
 export function POSHeader({ onClose }: POSHeaderProps) {
   const {
-    cartItems,
+    orderItems,
+    orderItemCount,
     currentView,
     setCurrentView,
-    setIsMobileCartOpen,
     searchQuery,
     setSearchQuery,
+    enableReceiptTab,
+    enablePaymentTab,
+    setOpenCartMobile,
   } = usePOSStore()
-
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
 
   const tabs = [
     {
@@ -47,13 +48,13 @@ export function POSHeader({ onClose }: POSHeaderProps) {
       value: 'payment',
       label: 'Pago',
       icon: CreditCard,
-      disabled: cartItems.length === 0,
+      disabled: !enablePaymentTab,
     },
     {
       value: 'receipt',
       label: 'Recibo',
       icon: Receipt,
-      disabled: true, // Se habilita después del pago
+      disabled: !enableReceiptTab, // Se habilita después del pago
     },
   ]
 
@@ -101,11 +102,11 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           <Button
             variant="outline"
             className="lg:hidden"
-            onClick={() => setIsMobileCartOpen(true)}
+            onClick={() => setOpenCartMobile(true)}
           >
             <ShoppingCart className="h-4 w-4 mr-1" />
             <Badge variant="secondary" className="ml-1">
-              {itemCount}
+              {orderItemCount()}
             </Badge>
           </Button>
         </div>
