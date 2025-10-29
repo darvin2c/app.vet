@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { getOrderStatusFromPayment } from '@/schemas/orders.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
@@ -23,17 +22,10 @@ export default function useOrderCreate() {
 
       const { order, items, payments } = data
 
-      // Determinar el estado basado en el pago si no se proporciona
-      const status =
-        order.status ||
-        getOrderStatusFromPayment(order.paid_amount || 0, order.total || 0)
-
       const orderData: TablesInsert<'orders'> = {
         ...order,
-        status: status,
         tenant_id: currentTenant.id,
       }
-
       const { data: createdOrder, error } = await supabase
         .from('orders')
         .insert(orderData)
@@ -47,12 +39,15 @@ export default function useOrderCreate() {
       // Insertar los ítems de la orden
       items.forEach((item) => {
         item.order_id = createdOrder.id
+        item.tenant_id = currentTenant?.id
       })
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(items)
 
       if (itemsError) {
+        // Eliminar la orden si hay error en los ítems
+        await supabase.from('orders').delete().eq('id', createdOrder.id)
         throw new Error(
           `Error al crear ítems de la orden: ${itemsError.message}`
         )
@@ -67,6 +62,8 @@ export default function useOrderCreate() {
         .insert(payments)
 
       if (paymentsError) {
+        // Eliminar la orden si hay error en los pagos
+        await supabase.from('orders').delete().eq('id', createdOrder.id)
         throw new Error(
           `Error al crear pagos de la orden: ${paymentsError.message}`
         )

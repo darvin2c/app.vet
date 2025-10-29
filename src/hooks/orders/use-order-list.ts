@@ -58,6 +58,7 @@ export default function useOrderList({
       })
 
       // Aplicar ordenamiento
+      console.log(orders)
       orders.forEach((order) => {
         query = query.order(order.field, {
           ascending: order.ascending,

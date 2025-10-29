@@ -37,9 +37,6 @@ interface POSState {
   searchQuery: string
   // Cart
   cartItems: CartItem[]
-  cartTotal: number
-  cartSubtotal: number
-  cartTax: number
 
   // Customer
   selectedCustomer: Customer | null
@@ -55,6 +52,10 @@ interface POSState {
   currentView: 'catalog' | 'payment' | 'receipt'
   isLoading: boolean
   isMobileCartOpen: boolean
+  error: string | null
+  cartTotal: number
+  cartSubtotal: number
+  cartTax: number
 
   // Search
   setSearchQuery: (query: string) => void
@@ -73,22 +74,17 @@ interface POSState {
   removePayment: (paymentId: string) => void
   clearPayments: () => void
   calculatePaymentTotals: () => void
+  calculateTotals: () => void
 
   setCurrentView: (view: 'catalog' | 'payment' | 'receipt') => void
   setIsLoading: (loading: boolean) => void
   setIsMobileCartOpen: (open: boolean) => void
 
-  calculateTotals: () => void
-
   // Order creation data
   getOrderData: () => {
-    customer_id: string
-    subtotal: number
-    tax: number
-    total: number
-    paid_amount: number
-    status: Enums<'order_status'>
-    notes?: string
+    customer_id: string | null
+    status: 'confirmed' | 'cancelled' | 'partial_payment' | 'paid' | 'refunded'
+    notes: string
   }
 
   // Payment validation and utilities
@@ -115,9 +111,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   // Initial state
   cartItems: [],
-  cartTotal: 0,
-  cartSubtotal: 0,
-  cartTax: 0,
   selectedCustomer: null,
   payments: [],
   totalPaid: 0,
@@ -127,6 +120,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
   currentView: 'catalog',
   isLoading: false,
   isMobileCartOpen: false,
+  error: null,
+  cartTotal: 0,
+  cartSubtotal: 0,
+  cartTax: 0,
 
   // Actions
   addToCart: (product, quantity = 1) => {
@@ -154,11 +151,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
         product,
         quantity,
         price: product.price || 0,
-        subtotal: (product.price || 0) * quantity,
+        subtotal: quantity * (product.price || 0),
       }
       set({ cartItems: [...state.cartItems, newItem] })
     }
-
     get().calculateTotals()
   },
 
@@ -204,10 +200,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
   clearCart: () => {
     set({
       cartItems: [],
+      paymentStatus: 'pending',
       cartTotal: 0,
       cartSubtotal: 0,
       cartTax: 0,
-      paymentStatus: 'pending',
     })
     // También limpiar pagos cuando se limpia el carrito
     get().clearPayments()
@@ -253,17 +249,27 @@ export const usePOSStore = create<POSState>((set, get) => ({
     get().calculatePaymentTotals()
   },
 
+  calculateTotals: () => {
+    const state = get()
+    const subtotal = state.cartItems.reduce((sum, item) => sum + item.subtotal, 0)
+    const tax = subtotal * 0.18 // 18% IGV
+    const total = subtotal + tax
+
+    set({
+      cartSubtotal: subtotal,
+      cartTax: tax,
+      cartTotal: total,
+    })
+
+    get().calculatePaymentTotals()
+  },
+
   calculatePaymentTotals: () => {
     const state = get()
-    const totalPaid = state.payments.reduce(
-      (sum, payment) => sum + payment.amount,
-      0
-    )
-
-    // Usar funciones del schema para cálculos consistentes
-    const paymentStatus = getPaymentStatus(totalPaid, state.cartTotal)
+    const totalPaid = state.payments.reduce((sum, payment) => sum + payment.amount, 0)
     const remainingAmount = Math.max(0, state.cartTotal - totalPaid)
     const changeAmount = Math.max(0, totalPaid - state.cartTotal)
+    const paymentStatus = getPaymentStatus(totalPaid, state.cartTotal)
 
     set({
       totalPaid,
@@ -285,40 +291,17 @@ export const usePOSStore = create<POSState>((set, get) => ({
     set({ isMobileCartOpen: open })
   },
 
-  calculateTotals: () => {
-    const state = get()
-    const subtotal = state.cartItems.reduce(
-      (sum, item) => sum + item.subtotal,
-      0
-    )
-    const tax = subtotal * 0.18 // 18% tax rate
-    const total = subtotal + tax
 
-    set({
-      cartSubtotal: subtotal,
-      cartTax: tax,
-      cartTotal: total,
-    })
-
-    // Recalcular totales de pago cuando cambia el total del carrito
-    get().calculatePaymentTotals()
-  },
 
   getOrderData: () => {
     const state = get()
-    const orderStatus = getOrderStatusFromPayment(
-      state.totalPaid,
-      state.cartTotal
-    )
+    const orderStatus = state.totalPaid >= state.cartTotal ? 'paid' : 
+                       state.totalPaid > 0 ? 'partial_payment' : 'confirmed'
 
     return {
-      customer_id: state.selectedCustomer?.id || '',
-      subtotal: state.cartSubtotal,
-      tax: state.cartTax,
-      total: state.cartTotal,
-      paid_amount: state.totalPaid,
+      customer_id: state.selectedCustomer?.id || null,
       status: orderStatus,
-      notes: `Venta POS - ${state.cartItems.length} productos`,
+      notes: '',
     }
   },
 
@@ -335,7 +318,7 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   canAddPaymentAmount: (amount: number) => {
     const state = get()
-    return canAddPayment(state.totalPaid, state.cartTotal, amount)
+    return state.totalPaid + amount <= state.cartTotal
   },
 
   getPaymentStatusInfo: () => {

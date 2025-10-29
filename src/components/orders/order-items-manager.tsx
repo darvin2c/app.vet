@@ -104,6 +104,7 @@ export function OrderItemsManager({
       discount: newItem.discount,
       total: itemTotal.total,
       price_base: newItem.unit_price,
+      tenant_id: null,
       products: null,
     }
 

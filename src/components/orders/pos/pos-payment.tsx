@@ -29,6 +29,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
   const {
     cartItems,
     cartTotal,
+    cartSubtotal,
+    cartTax,
     payments,
     selectedCustomer,
     clearCart,
@@ -54,9 +56,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
       product_id: item.product.id,
       description: item.product.name,
       quantity: item.quantity,
-      unit_price: item.price,
       discount: 0,
-      total: item.subtotal,
       price_base: item.price,
       order_id: '', // Se asignará en el hook
       tenant_id: '', // Se asignará en el hook
@@ -74,10 +74,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     }))
 
     const createOrderData = {
-      order: {
-        ...orderData,
-        customer_id: selectedCustomer?.id || null,
-      },
+      order: orderData,
       items: orderItems,
       payments: orderPayments,
     }
@@ -101,7 +98,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
         className: 'border-amber-200 text-amber-700 hover:bg-amber-50',
         canSave: canSaveWithoutPayment(),
       }
-    } else if (totalPaid > 0 && totalPaid < cartTotal) {
+    } else if (totalPaid > 0) {
       return {
         text: 'Guardar con Pago Parcial',
         icon: CreditCard,
@@ -127,8 +124,8 @@ export function POSPayment({ onBack }: POSPaymentProps) {
     <div className="flex flex-col h-full">
       {/* Payment Summary - Compact Header */}
       <PaymentSummary
-        cartSubtotal={cartTotal}
-        cartTax={0}
+        cartSubtotal={cartSubtotal}
+        cartTax={cartTax}
         cartTotal={cartTotal}
         totalPaid={totalPaid}
         remainingAmount={remainingAmount}
