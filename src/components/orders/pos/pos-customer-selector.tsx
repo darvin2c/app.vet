@@ -34,7 +34,7 @@ export function POSCustomerSelector() {
   const [createOpen, setCreateOpen] = useState(false)
   const [search, setSearch] = useState('')
 
-  const { selectedCustomer, setSelectedCustomer } = usePOSStore()
+  const { customer: selectedCustomer, setCustomer } = usePOSStore()
 
   const { data: customers = [], isLoading } = useCustomerList({
     search,
@@ -43,7 +43,7 @@ export function POSCustomerSelector() {
   })
 
   const handleSelectCustomer = (customer: Tables<'customers'>) => {
-    setSelectedCustomer(customer)
+    setCustomer(customer)
     setOpen(false)
   }
 
@@ -63,7 +63,7 @@ export function POSCustomerSelector() {
         {selectedCustomer && (
           <InputGroupButton
             variant="ghost"
-            onClick={() => setSelectedCustomer(null)}
+            onClick={() => setCustomer(null)}
             aria-label="Crear nuevo cliente"
             className="h-full"
           >
@@ -124,7 +124,7 @@ export function POSCustomerSelector() {
                       </ItemDescription>
                     </ItemContent>
                     <ItemActions>
-                      {selectedCustomer?.id === customer.id && (
+                      {customer?.id === customer.id && (
                         <div className="w-2 h-2 bg-primary rounded-full" />
                       )}
                     </ItemActions>

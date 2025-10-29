@@ -122,7 +122,7 @@ function ProductListItem({
   onAddToCart?: (product: Product) => void
 }) {
   const isLowStock = product.stock <= 5
-  const { addToCart } = usePOSStore()
+  const { addProductToOrder } = usePOSStore()
 
   return (
     <Item variant="outline" className="hover:bg-accent/50 transition-colors">
@@ -155,7 +155,7 @@ function ProductListItem({
             S/ {product.price?.toFixed(2) || '0.00'}
           </p>
         </div>
-        <Button size="sm" onClick={() => addToCart(product)}>
+        <Button size="sm" onClick={() => addProductToOrder(product)}>
           <Plus className="h-4 w-4 mr-1" />
         </Button>
       </ItemActions>
