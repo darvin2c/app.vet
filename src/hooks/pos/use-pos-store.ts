@@ -251,7 +251,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   calculateTotals: () => {
     const state = get()
-    const subtotal = state.cartItems.reduce((sum, item) => sum + item.subtotal, 0)
+    const subtotal = state.cartItems.reduce(
+      (sum, item) => sum + item.subtotal,
+      0
+    )
     const tax = subtotal * 0.18 // 18% IGV
     const total = subtotal + tax
 
@@ -266,7 +269,10 @@ export const usePOSStore = create<POSState>((set, get) => ({
 
   calculatePaymentTotals: () => {
     const state = get()
-    const totalPaid = state.payments.reduce((sum, payment) => sum + payment.amount, 0)
+    const totalPaid = state.payments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0
+    )
     const remainingAmount = Math.max(0, state.cartTotal - totalPaid)
     const changeAmount = Math.max(0, totalPaid - state.cartTotal)
     const paymentStatus = getPaymentStatus(totalPaid, state.cartTotal)
@@ -291,12 +297,14 @@ export const usePOSStore = create<POSState>((set, get) => ({
     set({ isMobileCartOpen: open })
   },
 
-
-
   getOrderData: () => {
     const state = get()
-    const orderStatus = state.totalPaid >= state.cartTotal ? 'paid' : 
-                       state.totalPaid > 0 ? 'partial_payment' : 'confirmed'
+    const orderStatus =
+      state.totalPaid >= state.cartTotal
+        ? 'paid'
+        : state.totalPaid > 0
+          ? 'partial_payment'
+          : 'confirmed'
 
     return {
       customer_id: state.selectedCustomer?.id || null,

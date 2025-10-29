@@ -18,12 +18,8 @@ interface OrderPosCreateProps {
 
 export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
   const isMobile = useIsMobile()
-  
-  const {
-    clearCart,
-    clearPayments,
-    setSelectedCustomer,
-  } = usePOSStore()
+
+  const { clearCart, clearPayments, setSelectedCustomer } = usePOSStore()
 
   // Limpiar el POS store cuando se abre el sheet de crear orden
   useEffect(() => {

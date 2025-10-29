@@ -27,7 +27,6 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Package, Calculator } from 'lucide-react'
 import { usePOSStore, type CartItem } from '@/hooks/pos/use-pos-store'
-import { CurrencyDisplay } from '@/components/ui/currency-input'
 
 // Schema de validación para editar item del carrito
 const cartItemEditSchema = z.object({

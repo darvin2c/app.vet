@@ -47,8 +47,10 @@ export function OrderActions({ order }: OrderActionsProps) {
   const isEditable = canEditOrder(order.status)
   const getEditTooltipMessage = () => {
     if (order.status === 'paid') return 'No se puede editar una orden pagada'
-    if (order.status === 'cancelled') return 'No se puede editar una orden cancelada'
-    if (order.status === 'refunded') return 'No se puede editar una orden reembolsada'
+    if (order.status === 'cancelled')
+      return 'No se puede editar una orden cancelada'
+    if (order.status === 'refunded')
+      return 'No se puede editar una orden reembolsada'
     return ''
   }
 

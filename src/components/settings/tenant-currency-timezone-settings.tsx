@@ -16,7 +16,7 @@ import {
   FieldSet,
 } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
-import { CurrencyInput } from '@/components/ui/currency-input'
+import { CurrencySelector } from '@/components/ui/currency-select'
 import { TimezoneInput } from '@/components/ui/timezone-input'
 import { Loader2, DollarSign } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
@@ -111,7 +111,7 @@ export function TenantCurrencyTimezoneSettings() {
                     Selecciona la moneda principal para tu clínica
                   </FieldDescription>
                 </FieldContent>
-                <CurrencyInput
+                <CurrencySelector
                   value={form.watch('currency') || ''}
                   onChange={(value) => form.setValue('currency', value)}
                   placeholder="Seleccionar moneda"

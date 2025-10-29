@@ -23,11 +23,11 @@ import {
 } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Database } from '@/types/supabase.types'
-import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
+import { CurrencyDisplay } from '@/components/ui/current-input'
 
 type Product = Database['public']['Tables']['products']['Row']
 

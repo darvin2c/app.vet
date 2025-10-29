@@ -118,7 +118,7 @@ const CURRENCIES = [
   { value: 'TRY', label: 'Lira Turca', symbol: '₺', region: 'Otras' },
 ]
 
-export interface CurrencyInputProps {
+export interface CurrencySelectorProps {
   /** Valor actual de la moneda (código ISO) */
   value?: string
   /** Función que se ejecuta cuando cambia el valor */
@@ -148,7 +148,10 @@ export interface CurrencyInputProps {
  * />
  * ```
  */
-const CurrencyInput = React.forwardRef<HTMLButtonElement, CurrencyInputProps>(
+export const CurrencySelector = React.forwardRef<
+  HTMLButtonElement,
+  CurrencySelectorProps
+>(
   (
     {
       value,
@@ -260,7 +263,7 @@ const CurrencyInput = React.forwardRef<HTMLButtonElement, CurrencyInputProps>(
   }
 )
 
-CurrencyInput.displayName = 'CurrencyInput'
+CurrencySelector.displayName = 'CurrencySelector'
 
 export function useCurrency() {
   const { currentTenant } = useCurrentTenantStore()
@@ -269,16 +272,3 @@ export function useCurrency() {
   )
   return { currency }
 }
-
-export function CurrencyDisplay({ children }: { children?: React.ReactNode }) {
-  const { currency } = useCurrency()
-  return (
-    <>
-      {currency?.symbol} {children}
-    </>
-  )
-}
-
-CurrencyDisplay.displayName = 'CurrencyDisplay'
-
-export { CurrencyInput }

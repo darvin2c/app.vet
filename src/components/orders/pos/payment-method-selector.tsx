@@ -14,6 +14,16 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+  FieldTitle,
+} from '@/components/ui/field'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import {
   CreditCard,
   Banknote,
   Smartphone,
@@ -26,6 +36,13 @@ import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { toast } from 'sonner'
 import { Separator } from '@/components/ui/separator'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
+import {
+  InputGroup,
+  InputGroupButton,
+  InputGroupInput,
+} from '@/components/ui/input-group'
+import { CurrencyInput } from '@/components/ui/current-input'
 
 const paymentTypeIcons = {
   cash: Banknote,
@@ -42,7 +59,8 @@ const paymentTypeLabels = {
 }
 
 interface PaymentMethodSelectorProps {
-  onPaymentAdded?: () => void
+  onPaymentAdded?: (payment: any) => void
+  remainingAmount?: number
 }
 
 interface PaymentSelectorContentProps {
@@ -68,101 +86,139 @@ function PaymentSelectorContent({
   handleNotesChange,
   handleAddPayment,
 }: PaymentSelectorContentProps) {
+  const selectedMethod = paymentMethods.find(
+    (method) => method.id === selectedMethodId
+  )
+
+  const handleQuickAmount = (percentage: number) => {
+    const quickAmount = (remainingAmount * percentage).toFixed(2)
+    handleAmountChange({
+      target: { value: quickAmount },
+    } as React.ChangeEvent<HTMLInputElement>)
+  }
+
   return (
     <div className="space-y-6">
-      {/* Payment Method Selection - Touch-First */}
-      <div className="space-y-3">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {paymentMethods.map((method) => {
-            const Icon =
-              paymentTypeIcons[
-                method.payment_type as keyof typeof paymentTypeIcons
-              ] || MoreHorizontal
-            const isSelected = selectedMethodId === method.id
+      {/* Payment Methods with Field and RadioGroup */}
+      <FieldGroup>
+        <FieldSet>
+          <FieldLabel htmlFor="payment-method-selector">
+            Método de Pago
+          </FieldLabel>
+          <RadioGroup
+            value={selectedMethodId}
+            onValueChange={handleMethodSelect}
+            data-slot="radio-group"
+            className="grid grid-cols-2 gap-4"
+          >
+            {paymentMethods.map((method) => {
+              const Icon =
+                paymentTypeIcons[
+                  method.payment_type as keyof typeof paymentTypeIcons
+                ] || CreditCard
 
-            return (
-              <Button
-                key={method.id}
-                variant={isSelected ? 'default' : 'outline'}
-                className="h-14 p-4 justify-start transition-all duration-200"
-                onClick={() => handleMethodSelect(method.id)}
-              >
-                <div className="flex items-center gap-3 w-full">
-                  <Icon className="h-5 w-5 flex-shrink-0" />
-                  <div className="text-left flex-1">
-                    <div className="font-medium text-sm">{method.name}</div>
-                    <Badge variant="secondary" className="text-xs mt-1">
-                      {paymentTypeLabels[
-                        method.payment_type as keyof typeof paymentTypeLabels
-                      ] || 'Otros'}
-                    </Badge>
-                  </div>
-                </div>
-              </Button>
-            )
-          })}
+              return (
+                <FieldLabel
+                  key={method.id}
+                  htmlFor={`payment-method-${method.id}`}
+                >
+                  <Field orientation="horizontal">
+                    <FieldContent>
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <FieldTitle>{method.name}</FieldTitle>
+                      </div>
+                      <FieldDescription>
+                        {paymentTypeLabels[
+                          method.payment_type as keyof typeof paymentTypeLabels
+                        ] || 'Otros'}
+                      </FieldDescription>
+                    </FieldContent>
+                    <RadioGroupItem
+                      value={method.id}
+                      id={`payment-method-${method.id}`}
+                    />
+                  </Field>
+                </FieldLabel>
+              )
+            })}
+          </RadioGroup>
+        </FieldSet>
+      </FieldGroup>
+
+      <Separator />
+
+      {/* Amount Input */}
+      <div className="space-y-3">
+        <div className="relative">
+          <CurrencyInput>
+            {/* Quick Amount Buttons */}
+            {remainingAmount > 0 && (
+              <>
+                <Separator className="h-full" orientation="vertical" />
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleQuickAmount(0.25)}
+                  className="h-full"
+                >
+                  25%
+                </InputGroupButton>
+                <Separator className="h-full" orientation="vertical" />
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleQuickAmount(0.5)}
+                  className="h-full"
+                >
+                  50%
+                </InputGroupButton>
+                <Separator className="h-full" orientation="vertical" />
+                <InputGroupButton
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleQuickAmount(1)}
+                  className="h-full"
+                >
+                  Total
+                </InputGroupButton>
+              </>
+            )}
+          </CurrencyInput>
         </div>
       </div>
 
-      {/* Amount Input - Mejorado */}
-      <div className="space-y-3">
-        <Label htmlFor="amount">Monto a Pagar</Label>
-        <Input
-          id="amount"
-          placeholder="0.00"
-          value={amount}
-          onChange={handleAmountChange}
-        />
-      </div>
-
-      {/* Notes - Compacto */}
+      {/* Notes */}
       <div className="space-y-2">
-        <Label htmlFor="notes">Notas (Opcional)</Label>
+        <Label htmlFor="notes" className="text-sm font-medium">
+          Notas (opcional)
+        </Label>
         <Textarea
           id="notes"
-          placeholder="Agregar notas sobre este pago..."
+          placeholder="Agregar notas del pago..."
           value={notes}
           onChange={handleNotesChange}
-          rows={2}
-          className="resize-none"
+          className="min-h-[80px] resize-none"
         />
       </div>
 
-      {/* Add Payment Button - Touch-First */}
-      <div className="flex justify-end">
-        <Button
-          onClick={handleAddPayment}
-          disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
-          size="lg"
-        >
-          <Plus className="h-5 w-5 mr-2" />
-          Agregar Pago
-          {amount && parseFloat(amount) > 0 && (
-            <span className="ml-2 font-mono">
-              S/ {parseFloat(amount).toFixed(2)}
-            </span>
-          )}
-        </Button>
-      </div>
-
-      {/* Validation Messages */}
-      {parseFloat(amount) > remainingAmount && remainingAmount > 0 && (
-        <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <div className="flex items-center gap-2 text-yellow-800">
-            <Calculator className="h-4 w-4" />
-            <span className="text-sm">
-              El monto excede el saldo pendiente por S/{' '}
-              {(parseFloat(amount) - remainingAmount).toFixed(2)}
-            </span>
-          </div>
-        </div>
-      )}
+      {/* Add Payment Button */}
+      <Button
+        onClick={handleAddPayment}
+        className="w-full h-12"
+        size="sm"
+        disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
+      >
+        <Plus className="h-4 w-4 mr-2" />
+        Agregar Pago
+      </Button>
     </div>
   )
 }
 
 export function PaymentMethodSelector({
   onPaymentAdded,
+  remainingAmount: propRemainingAmount,
 }: PaymentMethodSelectorProps) {
   const [selectedMethodId, setSelectedMethodId] = useState<string>('')
   const [amount, setAmount] = useState('')
@@ -170,7 +226,11 @@ export function PaymentMethodSelector({
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   const { data: paymentMethods = [] } = usePaymentMethodList()
-  const { addPayment, cartTotal, remainingAmount } = usePOSStore()
+
+  // Use POS store if no remainingAmount prop is provided (backward compatibility)
+  const posStore = usePOSStore()
+  const remainingAmount = propRemainingAmount ?? posStore.remainingAmount
+
   const isMobile = useIsMobile()
 
   // Memoizar el método de pago por defecto para evitar re-cálculos innecesarios
@@ -235,13 +295,20 @@ export function PaymentMethodSelector({
       return
     }
 
-    addPayment({
+    const payment = {
       payment_method_id: selectedMethodId,
       amount: paymentAmount,
       notes: notes || undefined,
       payment_method: selectedMethod,
       payment_date: new Date().toISOString(),
-    })
+    }
+
+    // Use custom callback if provided, otherwise use POS store
+    if (onPaymentAdded) {
+      onPaymentAdded(payment)
+    } else {
+      posStore.addPayment(payment)
+    }
 
     // Reset form
     setAmount('')
@@ -249,82 +316,76 @@ export function PaymentMethodSelector({
 
     toast.success('Pago agregado correctamente')
 
-    // Close sheet if mobile
+    // Close sheet on mobile
     if (isMobile) {
       setIsSheetOpen(false)
     }
-
-    // Call callback if provided
-    onPaymentAdded?.()
   }, [
     selectedMethodId,
     amount,
     remainingAmount,
     notes,
     selectedMethod,
-    addPayment,
-    isMobile,
     onPaymentAdded,
+    posStore,
+    isMobile,
   ])
 
-  // Memoizar el contenido del selector para evitar re-renders innecesarios
+  // Auto-fill remaining amount when clicking on amount input
+  const handleAmountFocus = useCallback(() => {
+    if (!amount && remainingAmount > 0) {
+      setAmount(remainingAmount.toFixed(2))
+    }
+  }, [amount, remainingAmount])
 
-  // Renderizado responsivo
+  const contentProps = {
+    paymentMethods,
+    selectedMethodId,
+    amount,
+    notes,
+    remainingAmount,
+    handleMethodSelect,
+    handleAmountChange,
+    handleNotesChange,
+    handleAddPayment,
+  }
+
+  // Mobile: Show as Sheet
   if (isMobile) {
     return (
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
         <SheetTrigger asChild>
-          <Button
-            size="lg"
-            className="fixed bottom-6 right-6 h-14 w-14 rounded-full shadow-lg z-40"
-          >
-            <Plus className="h-6 w-6" />
+          <Button className="w-full h-12" size="lg">
+            <Plus className="h-4 w-4 mr-2" />
+            Agregar Pago
           </Button>
         </SheetTrigger>
         <SheetContent side="bottom" className="h-[90vh]">
-          <SheetHeader>
+          <SheetHeader className="pb-4">
             <SheetTitle>Agregar Pago</SheetTitle>
           </SheetHeader>
-          <div className="mt-6 overflow-y-auto max-h-[calc(90vh-120px)]">
-            <PaymentSelectorContent
-              paymentMethods={paymentMethods}
-              selectedMethodId={selectedMethodId}
-              amount={amount}
-              notes={notes}
-              remainingAmount={remainingAmount}
-              handleMethodSelect={handleMethodSelect}
-              handleAmountChange={handleAmountChange}
-              handleNotesChange={handleNotesChange}
-              handleAddPayment={handleAddPayment}
-            />
+          <div className="overflow-y-auto">
+            <PaymentSelectorContent {...contentProps} />
           </div>
         </SheetContent>
       </Sheet>
     )
   }
 
-  // Desktop/Tablet: Mostrar como Card
+  // Desktop: Show inline
   return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <div className="flex items-center gap-2 px-4 py-2">
-          <CreditCard className="h-5 w-5" />
-          Métodos de Pago
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <Calculator className="h-4 w-4" />
+        <h3 className="font-medium">Agregar Pago</h3>
+        {remainingAmount > 0 && (
+          <Badge variant="outline" className="text-xs">
+            Pendiente: S/ {remainingAmount.toFixed(2)}
+          </Badge>
+        )}
       </div>
-      <Separator />
-      <div>
-        <PaymentSelectorContent
-          paymentMethods={paymentMethods}
-          selectedMethodId={selectedMethodId}
-          amount={amount}
-          notes={notes}
-          remainingAmount={remainingAmount}
-          handleMethodSelect={handleMethodSelect}
-          handleAmountChange={handleAmountChange}
-          handleNotesChange={handleNotesChange}
-          handleAddPayment={handleAddPayment}
-        />
+      <div className="border rounded-lg p-4">
+        <PaymentSelectorContent {...contentProps} />
       </div>
     </div>
   )

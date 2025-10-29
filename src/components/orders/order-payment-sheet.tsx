@@ -28,10 +28,6 @@ export function OrderPaymentSheet({
     if (open && order) {
       // Limpiar el carrito actual
       clearCart()
-
-      // TODO: Cargar datos de la orden existente para pagos adicionales
-      // Esto requeriría modificar el store POS para manejar órdenes existentes
-      console.log('Cargando orden para pago:', order)
     }
   }, [open, order, clearCart])
 
