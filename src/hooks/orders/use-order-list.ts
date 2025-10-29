@@ -32,7 +32,7 @@ export default function useOrderList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'orders', JSON.stringify(filters), search],
+    queryKey: [currentTenant?.id, orders, JSON.stringify(filters), search],
     queryFn: async (): Promise<Order[]> => {
       if (!currentTenant?.id) {
         return []
@@ -57,8 +57,6 @@ export default function useOrderList({
         query = query.filter(filter.field, filter.operator, filter.value)
       })
 
-      // Aplicar ordenamiento
-      console.log(orders)
       orders.forEach((order) => {
         query = query.order(order.field, {
           ascending: order.ascending,
@@ -67,9 +65,7 @@ export default function useOrderList({
 
       // Aplicar búsqueda global
       if (search) {
-        query = query.or(
-          `order_number.ilike.%${search}%,notes.ilike.%${search}%,customers.first_name.ilike.%${search}%,customers.last_name.ilike.%${search}%,customers.doc_id.ilike.%${search}%`
-        )
+        query = query.or(`order_number.ilike.%${search}%`)
       }
 
       const { data, error } = await query

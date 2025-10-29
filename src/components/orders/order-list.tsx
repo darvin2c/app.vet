@@ -52,7 +52,7 @@ import {
 import useOrderList from '@/hooks/orders/use-order-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
-import { useSearch } from '@/hooks/use-search'
+import { useSimpleSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -88,14 +88,14 @@ export function OrderList({
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
-  const { appliedSearch } = useSearch()
+  const search = useSimpleSearch()
   const {
     data: orders = [],
     isPending,
     error,
   } = useOrderList({
     filters: appliedFilters,
-    search: appliedSearch,
+    search: search,
     orders: orderByHook.appliedSorts,
   })
 
