@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo } from 'react'
-import { useForm, useFormContext } from 'react-hook-form'
+import { useForm, useFormContext, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog,
@@ -30,7 +30,6 @@ import {
   calculateCartItemTotal,
 } from '@/schemas/cart-item-edit.schema'
 import { TablesInsert, Tables } from '@/types/supabase.types'
-import { Form } from '@/components/ui/form'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
@@ -243,16 +242,18 @@ export function CartItemEditDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <Form onSubmit={form.handleSubmit(handleSave)}>
-          <CartItemEditForm item={item} />
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(handleSave)}>
+            <CartItemEditForm item={item} />
 
-          <DialogFooter className="mt-6">
-            <Button type="button" variant="outline" onClick={handleCancel}>
-              Cancelar
-            </Button>
-            <Button type="submit">Guardar cambios</Button>
-          </DialogFooter>
-        </Form>
+            <DialogFooter className="mt-6">
+              <Button type="button" variant="outline" onClick={handleCancel}>
+                Cancelar
+              </Button>
+              <Button type="submit">Guardar cambios</Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   )

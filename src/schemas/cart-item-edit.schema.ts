@@ -8,8 +8,7 @@ export const cartItemEditSchema = z.object({
   discount: z
     .number()
     .min(0, 'El descuento debe ser mayor o igual a 0')
-    .max(100, 'El descuento no puede ser mayor a 100%')
-    .default(0),
+    .max(100, 'El descuento no puede ser mayor a 100%'),
   description: z.string().optional(),
 })
 
