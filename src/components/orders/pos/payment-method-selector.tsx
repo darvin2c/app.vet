@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState } from 'react'
+import { useForm, FormProvider, useFormContext } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -17,45 +17,91 @@ import {
   Field,
   FieldContent,
   FieldDescription,
+  FieldError,
   FieldGroup,
   FieldLabel,
   FieldSet,
   FieldTitle,
 } from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import {
-  CreditCard,
-  Banknote,
-  Smartphone,
-  MoreHorizontal,
-  Plus,
-  Calculator,
-} from 'lucide-react'
+import { Plus, Calculator } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from '@/components/ui/separator'
 import { InputGroupButton } from '@/components/ui/input-group'
 import { CurrencyInput } from '@/components/ui/current-input'
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
+import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
+import {
+  posPaymentSchema,
+  POSPaymentSchema,
+} from '@/schemas/pos-payment.schema'
+import { Tables } from '@/types/supabase.types'
 
-function PaymentSelectorContent() {
+interface PaymentSelectorContentProps {
+  onPaymentAdded?: () => void
+}
+
+function PaymentSelectorContent({
+  onPaymentAdded,
+}: PaymentSelectorContentProps) {
+  const form = useFormContext<POSPaymentSchema>()
+  const { data: paymentMethods = [], isPending: isLoadingMethods } =
+    usePaymentMethodList()
+  const { getPaymentType } = usePaymentType()
+  const { order, addPayment } = usePOSStore()
+
+  // Calculate remaining amount from order balance
+  const remainingAmount = order?.balance || 0
+
+  const handleQuickAmount = (percentage: number) => {
+    if (remainingAmount > 0) {
+      const amount = remainingAmount * percentage
+      form.setValue('amount', amount)
+    }
+  }
+
+  const handleSubmit = (data: POSPaymentSchema) => {
+    const selectedMethod = paymentMethods.find(
+      (m) => m.id === data.payment_method_id
+    )
+    if (!selectedMethod) return
+
+    // Create payment object for POS store
+    const payment = {
+      id: crypto.randomUUID(),
+      amount: data.amount,
+      payment_method_id: data.payment_method_id,
+      payment_method: selectedMethod,
+      notes: data.notes || null,
+      payment_date: new Date().toISOString(),
+      reference: null,
+      created_by: null,
+    }
+
+    addPayment(payment)
+    form.reset()
+    onPaymentAdded?.()
+  }
+
+  if (isLoadingMethods) {
+    return <div className="p-4 text-center">Cargando métodos de pago...</div>
+  }
+
   return (
-    <div className="space-y-6">
-      {/* Payment Methods with Field and RadioGroup */}
-      <FieldGroup>
-        <FieldSet>
-          <FieldLabel htmlFor="payment-method-selector">
-            Método de Pago
-          </FieldLabel>
+    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+      {/* Payment Methods */}
+      <Field>
+        <FieldLabel>Método de Pago</FieldLabel>
+        <FieldContent>
           <RadioGroup
-            value={selectedMethodId}
-            onValueChange={handleMethodSelect}
-            data-slot="radio-group"
+            value={form.watch('payment_method_id') || ''}
+            onValueChange={(value) => form.setValue('payment_method_id', value)}
             className="grid grid-cols-2 gap-4"
           >
             {paymentMethods.map((method) => {
-              const Icon =
-                paymentTypeIcons[
-                  method.payment_type as keyof typeof paymentTypeIcons
-                ] || CreditCard
+              const paymentType = getPaymentType(method.payment_type)
+              const Icon = paymentType?.icon
 
               return (
                 <FieldLabel
@@ -65,13 +111,11 @@ function PaymentSelectorContent() {
                   <Field orientation="horizontal">
                     <FieldContent>
                       <div className="flex items-center gap-2">
-                        <Icon className="h-4 w-4" />
+                        {Icon && <Icon className="h-4 w-4" />}
                         <FieldTitle>{method.name}</FieldTitle>
                       </div>
                       <FieldDescription>
-                        {paymentTypeLabels[
-                          method.payment_type as keyof typeof paymentTypeLabels
-                        ] || 'Otros'}
+                        {paymentType?.label || 'Otros'}
                       </FieldDescription>
                     </FieldContent>
                     <RadioGroupItem
@@ -83,18 +127,23 @@ function PaymentSelectorContent() {
               )
             })}
           </RadioGroup>
-        </FieldSet>
-      </FieldGroup>
+          <FieldError errors={[form.formState.errors.payment_method_id]} />
+        </FieldContent>
+      </Field>
 
       <Separator />
 
       {/* Amount Input */}
-      <div className="space-y-3">
-        <div className="relative">
+      <Field>
+        <FieldLabel htmlFor="amount">Monto</FieldLabel>
+        <FieldContent>
           <CurrencyInput
             id="amount"
-            value={amount}
-            onChange={handleAmountChange}
+            value={form.watch('amount')?.toString() || ''}
+            onChange={(e) => {
+              const value = parseFloat(e.target.value.replace(/,/g, '')) || 0
+              form.setValue('amount', value)
+            }}
             className="w-full"
           >
             {/* Quick Amount Buttons */}
@@ -130,40 +179,57 @@ function PaymentSelectorContent() {
               </>
             )}
           </CurrencyInput>
-        </div>
-      </div>
+          <FieldError errors={[form.formState.errors.amount]} />
+        </FieldContent>
+      </Field>
 
       {/* Notes */}
-      <div className="space-y-2">
-        <Label htmlFor="notes" className="text-sm font-medium">
-          Notas (opcional)
-        </Label>
-        <Textarea
-          id="notes"
-          placeholder="Agregar notas del pago..."
-          value={notes}
-          onChange={handleNotesChange}
-          className="min-h-[80px] resize-none"
-        />
-      </div>
+      <Field>
+        <FieldLabel htmlFor="notes">Notas (opcional)</FieldLabel>
+        <FieldContent>
+          <Textarea
+            id="notes"
+            placeholder="Agregar notas del pago..."
+            {...form.register('notes')}
+            className="min-h-[80px] resize-none"
+          />
+          <FieldError errors={[form.formState.errors.notes]} />
+        </FieldContent>
+      </Field>
 
       {/* Add Payment Button */}
       <div className="flex justify-end">
-        <Button
-          onClick={handleAddPayment}
-          size="sm"
-          disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
-        >
+        <Button type="submit" size="sm" disabled={form.formState.isSubmitting}>
           <Plus className="h-4 w-4 mr-2" />
           Agregar Pago
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
 
 export function PaymentMethodSelector() {
   const isMobile = useIsMobile()
+  const [isSheetOpen, setIsSheetOpen] = useState(false)
+  const { order } = usePOSStore()
+
+  // Calculate remaining amount from order balance
+  const remainingAmount = order?.balance || 0
+
+  const form = useForm<POSPaymentSchema>({
+    resolver: zodResolver(posPaymentSchema),
+    defaultValues: {
+      payment_method_id: '',
+      amount: 0,
+      notes: '',
+    },
+  })
+
+  const handlePaymentAdded = () => {
+    if (isMobile) {
+      setIsSheetOpen(false)
+    }
+  }
 
   // Mobile: Show as Sheet
   if (isMobile) {
@@ -180,7 +246,9 @@ export function PaymentMethodSelector() {
             <SheetTitle>Agregar Pago</SheetTitle>
           </SheetHeader>
           <div className="overflow-y-auto">
-            <PaymentSelectorContent {...contentProps} />
+            <FormProvider {...form}>
+              <PaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+            </FormProvider>
           </div>
         </SheetContent>
       </Sheet>
@@ -200,7 +268,9 @@ export function PaymentMethodSelector() {
         )}
       </div>
       <div className="border rounded-lg p-4">
-        <PaymentSelectorContent {...contentProps} />
+        <FormProvider {...form}>
+          <PaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+        </FormProvider>
       </div>
     </div>
   )
