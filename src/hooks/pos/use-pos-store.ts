@@ -170,6 +170,7 @@ const usePOSStore = create<POSState>()((set, get) => {
         // Update existing item quantity
         get().updateOrderItem(existingItem.product_id, {
           quantity: existingItem.quantity + 1,
+          product,
         })
       } else {
         // Add new item with unique ID and all required fields
@@ -179,6 +180,7 @@ const usePOSStore = create<POSState>()((set, get) => {
           price_base: product.price || 0,
           quantity: 1,
           discount: 0,
+          product,
         }
 
         set({

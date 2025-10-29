@@ -67,12 +67,31 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { DateDisplay } from '../ui/date-picker'
 import { CurrencyDisplay } from '../ui/current-input'
+import useOrderStatus from '@/hooks/orders/use-order-status'
+
+// Función para obtener la variante del badge según el estado
+function getStatusBadgeVariant(
+  status: string
+): 'default' | 'secondary' | 'destructive' | 'outline' {
+  switch (status) {
+    case 'pending':
+      return 'outline'
+    case 'processing':
+      return 'secondary'
+    case 'completed':
+      return 'default'
+    case 'cancelled':
+      return 'destructive'
+    default:
+      return 'outline'
+  }
+}
 
 type Order = Tables<'orders'> & {
-  customers: Tables<'customers'> | null
-  order_items: Array<
+  customer: Tables<'customers'> | null
+  order_items?: Array<
     Tables<'order_items'> & {
-      products: Tables<'products'> | null
+      product: Tables<'products'> | null
     }
   >
 }
@@ -101,31 +120,7 @@ export function OrderList({
     orders: orderByHook.appliedSorts,
   })
 
-  // Función para obtener el estado de la orden
-  const getOrderStatus = (status: string) => {
-    const statusOption = orderStatusOptions.find(
-      (option) => option.value === status
-    )
-    return statusOption || { label: status, value: status, color: 'gray' }
-  }
-
-  // Función para obtener el color del badge según el estado
-  const getStatusBadgeVariant = (status: string) => {
-    switch (status) {
-      case 'draft':
-        return 'secondary'
-      case 'confirmed':
-        return 'default'
-      case 'paid':
-        return 'default'
-      case 'cancelled':
-        return 'destructive'
-      case 'refunded':
-        return 'outline'
-      default:
-        return 'secondary'
-    }
-  }
+  const { getOrderStatus } = useOrderStatus()
 
   const columns: ColumnDef<Order>[] = [
     {
@@ -140,14 +135,14 @@ export function OrderList({
       ),
     },
     {
-      accessorKey: 'customers',
+      accessorKey: 'customer',
       header: ({ header }) => (
         <OrderByTableHeader field="customer_id" orderByHook={orderByHook}>
           Cliente
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<Order> }) => {
-        const customer = row.original.customers
+        const customer = row.original.customer
         return (
           <div className="text-sm">
             {customer
@@ -168,7 +163,7 @@ export function OrderList({
       cell: ({ row }: { row: Row<Order> }) => {
         const status = getOrderStatus(row.getValue('status'))
         return (
-          <Badge variant={getStatusBadgeVariant(row.getValue('status'))}>
+          <Badge className={status.className}>
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
               {status.label}
@@ -260,9 +255,9 @@ export function OrderList({
   const renderCardView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {orders.map((order) => {
-        const customer = order.customers
+        const customer = order.customer
         const status = getOrderStatus(order.status)
-        const itemCount = order.order_items?.length || 0
+        const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
 
         return (
           <Card key={order.id} className="hover:shadow-md transition-shadow">
@@ -287,7 +282,7 @@ export function OrderList({
               <div className="flex items-center justify-between text-sm">
                 <div className="flex items-center gap-1 text-muted-foreground">
                   <Package className="w-4 h-4" />
-                  {itemCount} {itemCount === 1 ? 'item' : 'items'}
+                  {itemCount} items
                 </div>
                 <div className="flex items-center gap-1 font-medium">
                   <DollarSign className="w-4 h-4" />
@@ -314,9 +309,9 @@ export function OrderList({
   const renderListView = () => (
     <ItemGroup className="space-y-2">
       {orders.map((order) => {
-        const customer = order.customers
+        const customer = order.customer
         const status = getOrderStatus(order.status)
-        const itemCount = order.order_items?.length || 0
+        const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
 
         return (
           <Item key={order.id}>
@@ -328,11 +323,11 @@ export function OrderList({
                     {customer
                       ? `${customer.first_name} ${customer.last_name}`
                       : 'Sin cliente'}
-                    {` • ${itemCount} ${itemCount === 1 ? 'item' : 'items'}`}
+                    {` • ${itemCount} items`}
                   </ItemDescription>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge variant={getStatusBadgeVariant(order.status)}>
+                  <Badge className={status.className}>
                     <div className="flex items-center gap-1">
                       <Clock className="w-4 h-4" />
                       {status.label}

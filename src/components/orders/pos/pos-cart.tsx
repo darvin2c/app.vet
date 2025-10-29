@@ -22,14 +22,16 @@ import {
   Trash,
 } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import { TablesInsert } from '@/types/supabase.types'
+import { TablesInsert, Tables } from '@/types/supabase.types'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
 import { CurrencyDisplay } from '@/components/ui/current-input'
 
-type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'>
+type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
+  product?: Tables<'products'>
+}
 
 interface POSCartProps {
   className?: string
@@ -86,12 +88,7 @@ export function POSCart({ className }: POSCartProps) {
             )}
           </div>
           {orderItemCount() > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClearCart}
-              className="text-destructive hover:text-destructive"
-            >
+            <Button size="sm" variant="ghost" onClick={handleClearCart}>
               <Trash className="h-4 w-4" />
               Limpiar carrito
             </Button>
@@ -194,13 +191,15 @@ function CartItemCard({
 
       <ItemContent>
         <ItemTitle className="text-sm flex justify-between w-full">
-          <div>{item.description || 'Producto sin nombre'}</div>
+          <div>
+            {item.description || item.product?.name || 'Producto sin nombre'}
+          </div>
           <div>
             <CurrencyDisplay value={subtotal} />
           </div>
         </ItemTitle>
         <div className="text-xs text-muted-foreground flex h-5 items-center space-x-2">
-          <span>ID: {item.product_id}</span>
+          <span>ID: {item.product?.sku || 'N/A'}</span>
           <Separator orientation="vertical" />
           <span>
             <CurrencyDisplay value={item.unit_price || 0} />

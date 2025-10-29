@@ -114,13 +114,7 @@ export function POSProductGrid() {
   )
 }
 
-function ProductListItem({
-  product,
-  onAddToCart,
-}: {
-  product: Product
-  onAddToCart?: (product: Product) => void
-}) {
+function ProductListItem({ product }: { product: Product }) {
   const isLowStock = product.stock <= 5
   const { addProductToOrder } = usePOSStore()
 
