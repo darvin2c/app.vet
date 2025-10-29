@@ -6,7 +6,6 @@ import { Calendar as CalendarIcon, Clock } from 'lucide-react'
 import { format, parse, isValid } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { z } from 'zod'
-
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -31,6 +30,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from './separator'
 import TimePicker from './time-picker'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 // Schema de validación para fechas
 const dateSchema = z.string().refine(
@@ -741,6 +741,17 @@ export function DatePicker({
       )}
     </div>
   )
+}
+
+type DateDisplayProps = Omit<React.ComponentProps<'span'>, 'children'> & {
+  value?: Date | string | null
+}
+
+export function DateDisplay({ value, ...props }: DateDisplayProps) {
+  if (!value) {
+    return null
+  }
+  return <span {...props}>{format(value, 'dd/MM/yyyy', { locale: es })}</span>
 }
 
 export default DatePicker
