@@ -5,9 +5,10 @@ import { create } from 'zustand'
 
 type Customer = Tables<'customers'>
 type Order = Omit<TablesInsert<'orders'>, 'tenant_id'>
-type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id'>
-type Payment = Omit<TablesInsert<'payments'>, 'tenant_id'>
+type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'>
+type Payment = Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'>
 type orderStatus = Enums<'order_status'>
+type Product = Tables<'products'>
 
 interface POSState {
   searchQuery: string
@@ -37,9 +38,9 @@ interface POSState {
 
   setOrder: (order: Order | null) => void
   // items
-  addOrderItem: (item: OrderItem) => void
-  removeOrderItem: (itemId: string) => void
-  updateOrderItem: (itemId: string, updates: Partial<OrderItem>) => void
+  addProductToOrder: (product: Product) => void
+  removeOrderItem: (productId: string) => void
+  updateOrderItem: (productId: string, updates: Partial<OrderItem>) => void
   // payments
   addPayment: (payment: Payment) => void
   removePayment: (paymentId: string) => void
@@ -52,7 +53,7 @@ interface POSState {
   clearOrderItems: () => void
   // utils
   getOrderData: () => {
-    order: Order | null
+    order: Order
     orderItems: OrderItem[]
     payments: Payment[]
   }
@@ -149,22 +150,48 @@ const usePOSStore = create<POSState>()((set, get) => {
     setOrder: (order) => set({ order }),
 
     // items
-    addOrderItem: (item) => {
-      set({ orderItems: [...get().orderItems, item] })
+    addProductToOrder: (product) => {
+      const existingItem = get().orderItems.find(
+        (item) => item.product_id === product.id
+      )
+
+      if (existingItem) {
+        // Update existing item quantity
+        get().updateOrderItem(existingItem.product_id, {
+          quantity: existingItem.quantity + 1,
+        })
+      } else {
+        // Add new item with unique ID and all required fields
+        const newItem: OrderItem = {
+          id: crypto.randomUUID(),
+          product_id: product.id,
+          description: product.name || 'Producto sin nombre',
+          price_base: product.price || 0,
+          quantity: 1,
+          discount: 0,
+        }
+
+        set({
+          orderItems: [...get().orderItems, newItem],
+        })
+      }
+
       updateOrderTotals()
     },
 
-    removeOrderItem: (itemId) => {
+    removeOrderItem: (productId) => {
       set({
-        orderItems: get().orderItems.filter((item) => item.id !== itemId),
+        orderItems: get().orderItems.filter(
+          (item) => item.product_id !== productId
+        ),
       })
       updateOrderTotals()
     },
 
-    updateOrderItem: (itemId, updates) => {
+    updateOrderItem: (productId, updates) => {
       set({
         orderItems: get().orderItems.map((item) =>
-          item.id === itemId ? { ...item, ...updates } : item
+          item.product_id === productId ? { ...item, ...updates } : item
         ),
       })
       updateOrderTotals()
@@ -203,24 +230,44 @@ const usePOSStore = create<POSState>()((set, get) => {
         payments: [],
         customer: null,
         currentView: 'catalog',
+        openCartMobile: false,
         tenant: null,
       }),
 
     // utils
     getOrderData: () => {
       const { order, orderItems, payments } = get()
-      // this field, get from server, not from client
-      delete order?.balance //
-      delete order?.subtotal
-      delete order?.tax_amount
 
-      // this field, orderItems get from client, not from server
-      orderItems.forEach((item) => {
+      // Create deep copies to avoid mutating state
+      const orderItemsCopy = orderItems.map((item) => ({ ...item }))
+      const paymentsCopy = payments.map((payment) => ({ ...payment }))
+
+      // Create order copy or default order if null
+      const orderCopy: Order = order
+        ? { ...order }
+        : {
+            total: 0,
+            paid_amount: 0,
+            balance: 0,
+            status: 'confirmed' as orderStatus,
+          }
+
+      // Remove fields that should not be sent to server
+      delete orderCopy.balance
+      delete orderCopy.subtotal
+      delete orderCopy.tax_amount
+
+      // Remove calculated fields from order items
+      orderItemsCopy.forEach((item) => {
         delete item.unit_price // price_base - discount
         delete item.total // unit_price * quantity
       })
 
-      return { order, orderItems, payments }
+      return {
+        order: orderCopy,
+        orderItems: orderItemsCopy,
+        payments: paymentsCopy,
+      }
     },
     // sum quantity
     orderItemCount: () =>

@@ -27,93 +27,83 @@ export function POSPayment({ onBack }: POSPaymentProps) {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
 
   const {
-    cartItems,
-    cartTotal,
-    cartSubtotal,
-    cartTax,
+    orderItems,
+    order,
     payments,
-    selectedCustomer,
-    clearCart,
-    remainingAmount,
-    totalPaid,
-    paymentStatus,
+    customer,
     getOrderData,
-    canSaveWithoutPayment,
-    canSaveWithPartialPayment,
-    canSaveWithFullPayment,
-    getPaymentStatusInfo,
+    setOrder,
+    setCurrentView,
   } = usePOSStore()
 
   const { mutate: createOrder, isPending } = useOrderCreate()
+
+  // Calcular valores desde el store
+  const cartSubtotal = order?.total || 0
+  const cartTax = 0 // Asumiendo que no hay impuestos por ahora
+  const cartTotal = cartSubtotal + cartTax
+  const totalPaid = order?.paid_amount || 0
+  const remainingAmount = order?.balance || 0
+  const paymentStatus =
+    remainingAmount <= 0
+      ? 'completed'
+      : remainingAmount < cartTotal
+        ? 'partial'
+        : 'pending'
 
   // Función unificada para guardar orden
   const handleSaveOrder = () => {
     // Crear datos de la orden
     const orderData = getOrderData()
 
-    // Preparar items de la orden (sin order_id y tenant_id, se agregan en el hook)
-    const orderItems = cartItems.map((item) => ({
-      product_id: item.product.id,
-      description: item.product.name,
-      quantity: item.quantity,
-      discount: 0,
-      price_base: item.price,
-      order_id: '', // Se asignará en el hook
-      tenant_id: '', // Se asignará en el hook
-    }))
-
-    // Preparar pagos de la orden (sin order_id y tenant_id, se agregan en el hook)
-    const orderPayments = payments.map((payment) => ({
-      amount: payment.amount,
-      customer_id: selectedCustomer?.id,
-      payment_method_id: payment.payment_method_id,
-      payment_date: payment.payment_date,
-      notes: payment.notes,
-      order_id: '', // Se asignará en el hook
-      tenant_id: '', // Se asignará en el hook
-    }))
-
     const createOrderData = {
-      order: orderData,
-      items: orderItems,
-      payments: orderPayments,
+      order: orderData.order,
+      items: orderData.orderItems,
+      payments: orderData.payments,
     }
 
     // Ejecutar la creación de la orden
     createOrder(createOrderData, {
-      onSuccess: () => {
-        clearCart()
-        onBack()
+      onSuccess: (savedOrder) => {
+        // Guardar la orden en el store para mostrar en el recibo
+        setOrder(savedOrder)
+        setCurrentView('receipt')
+        // NO llamar onBack() ni clearCart() aquí - se hará desde el recibo
       },
     })
   }
 
   // Determinar el estado del botón según el pago
   const getButtonConfig = () => {
-    if (totalPaid === 0) {
+    if (order?.status === 'confirmed') {
       return {
         text: 'Guardar sin Pago',
         icon: Save,
         variant: 'outline' as const,
         className: 'border-amber-200 text-amber-700 hover:bg-amber-50',
-        canSave: canSaveWithoutPayment(),
       }
-    } else if (totalPaid > 0) {
+    } else if (order?.status === 'partial_payment') {
       return {
         text: 'Guardar con Pago Parcial',
         icon: CreditCard,
         variant: 'default' as const,
         className: 'bg-orange-600 hover:bg-orange-700',
-        canSave: canSaveWithPartialPayment(),
       }
-    } else {
+    } else if (order?.status === 'paid') {
       return {
         text: 'Completar Orden',
         icon: CheckCircle,
         variant: 'default' as const,
         className: 'bg-green-600 hover:bg-green-700',
-        canSave: canSaveWithFullPayment(),
       }
+    }
+
+    // Valor por defecto si no hay orden o status
+    return {
+      text: 'Guardar Orden',
+      icon: Save,
+      variant: 'default' as const,
+      className: 'bg-blue-600 hover:bg-blue-700',
     }
   }
 
@@ -167,7 +157,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           <Button
             variant={buttonConfig.variant}
             onClick={() => handleSaveOrder()}
-            disabled={isPending || !buttonConfig.canSave}
+            disabled={isPending}
             className={`flex-1 h-12 ${buttonConfig.className}`}
             size="lg"
           >
@@ -207,7 +197,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             <Button
               variant={buttonConfig.variant}
               onClick={() => handleSaveOrder()}
-              disabled={isPending || !buttonConfig.canSave}
+              disabled={isPending}
               size="lg"
               className={`min-w-[200px] ${buttonConfig.className}`}
             >

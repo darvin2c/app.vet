@@ -5,9 +5,9 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
 type CreateOrderSchema = {
-  order: Omit<TablesInsert<'orders'>, 'tenant_id' | 'balance'>
-  items: TablesInsert<'order_items'>[]
-  payments: TablesInsert<'payments'>[]
+  order: Omit<TablesInsert<'orders'>, 'tenant_id'>
+  items: Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'>[]
+  payments: Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'>[]
 }
 
 export default function useOrderCreate() {
@@ -37,13 +37,14 @@ export default function useOrderCreate() {
       }
 
       // Insertar los ítems de la orden
-      items.forEach((item) => {
-        item.order_id = createdOrder.id
-        item.tenant_id = currentTenant?.id
-      })
+      const orderItems: TablesInsert<'order_items'>[] = items.map((item) => ({
+        ...item,
+        order_id: createdOrder.id,
+        tenant_id: currentTenant?.id,
+      }))
       const { error: itemsError } = await supabase
         .from('order_items')
-        .insert(items)
+        .insert(orderItems)
 
       if (itemsError) {
         // Eliminar la orden si hay error en los ítems
@@ -54,12 +55,16 @@ export default function useOrderCreate() {
       }
 
       // Insertar los pagos de la orden
-      payments.forEach((payment) => {
-        payment.order_id = createdOrder.id
-      })
+      const paymentsData: TablesInsert<'payments'>[] = payments.map(
+        (payment) => ({
+          ...payment,
+          order_id: createdOrder.id,
+          tenant_id: currentTenant?.id,
+        })
+      )
       const { error: paymentsError } = await supabase
         .from('payments')
-        .insert(payments)
+        .insert(paymentsData)
 
       if (paymentsError) {
         // Eliminar la orden si hay error en los pagos
