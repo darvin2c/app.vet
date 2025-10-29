@@ -1,9 +1,8 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { useForm, type FieldValues } from 'react-hook-form'
+import { useEffect, useMemo } from 'react'
+import { useForm, useFormContext } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import {
   Dialog,
   DialogContent,
@@ -13,48 +12,167 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Package, Calculator } from 'lucide-react'
-import { usePOSStore, type CartItem } from '@/hooks/pos/use-pos-store'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
+import {
+  cartItemEditSchema,
+  CartItemEditSchema,
+  calculateCartItemTotal,
+} from '@/schemas/cart-item-edit.schema'
+import { TablesInsert, Tables } from '@/types/supabase.types'
+import { Form } from '@/components/ui/form'
 
-// Schema de validación para editar item del carrito
-const cartItemEditSchema = z.object({
-  quantity: z
-    .number()
-    .min(1, 'La cantidad debe ser mayor a 0')
-    .max(999, 'La cantidad no puede ser mayor a 999'),
-  unit_price: z
-    .number()
-    .min(0, 'El precio unitario debe ser mayor o igual a 0')
-    .max(99999, 'El precio no puede ser mayor a 99,999'),
-  discount: z
-    .number()
-    .min(0, 'El descuento debe ser mayor o igual a 0')
-    .max(100, 'El descuento no puede ser mayor a 100%')
-    .default(0),
-  description: z
-    .string()
-    .max(500, 'La descripción no puede tener más de 500 caracteres')
-    .optional(),
-})
-
-type CartItemEditFormData = z.infer<typeof cartItemEditSchema>
+type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
+  product?: Tables<'products'>
+}
 
 interface CartItemEditDialogProps {
-  item: CartItem | null
+  item: OrderItem | null
   open: boolean
   onOpenChange: (open: boolean) => void
+}
+
+function CartItemEditForm({ item }: { item: OrderItem }) {
+  const form = useFormContext<CartItemEditSchema>()
+  const { updateOrderItem } = usePOSStore()
+
+  const {
+    formState: { errors },
+    watch,
+  } = form
+
+  // Watch form values for real-time calculations
+  const quantity = watch('quantity') || 0
+  const unit_price = watch('unit_price') || 0
+  const discount = watch('discount') || 0
+
+  // Calculate totals in real-time
+  const calculations = useMemo(() => {
+    return calculateCartItemTotal({
+      quantity,
+      unit_price,
+      discount,
+    })
+  }, [quantity, unit_price, discount])
+
+  return (
+    <div className="space-y-4">
+      {/* Información del producto */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <h4 className="font-medium">
+            {item.product?.name || item.description}
+          </h4>
+          <Badge variant="secondary">SKU: {item.product?.sku || 'N/A'}</Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Precio original: S/{' '}
+          {item.product?.price?.toFixed(2) ||
+            item.price_base?.toFixed(2) ||
+            '0.00'}
+        </p>
+      </div>
+
+      <Separator />
+
+      {/* Campos editables */}
+      <div className="grid grid-cols-2 gap-4">
+        <Field>
+          <FieldLabel htmlFor="quantity">Cantidad</FieldLabel>
+          <FieldContent>
+            <Input
+              id="quantity"
+              type="number"
+              min="1"
+              max="999"
+              {...form.register('quantity', { valueAsNumber: true })}
+            />
+            <FieldError errors={[errors.quantity]} />
+          </FieldContent>
+        </Field>
+
+        <Field>
+          <FieldLabel htmlFor="unit_price">Precio Unitario</FieldLabel>
+          <FieldContent>
+            <Input
+              id="unit_price"
+              type="number"
+              min="0"
+              step="0.01"
+              {...form.register('unit_price', { valueAsNumber: true })}
+            />
+            <FieldError errors={[errors.unit_price]} />
+          </FieldContent>
+        </Field>
+      </div>
+
+      <Field>
+        <FieldLabel htmlFor="discount">Descuento (%)</FieldLabel>
+        <FieldContent>
+          <Input
+            id="discount"
+            type="number"
+            min="0"
+            max="100"
+            step="0.1"
+            {...form.register('discount', { valueAsNumber: true })}
+          />
+          <FieldError errors={[errors.discount]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="description">
+          Descripción personalizada (opcional)
+        </FieldLabel>
+        <FieldContent>
+          <Textarea
+            id="description"
+            placeholder="Agregar notas o descripción personalizada..."
+            className="resize-none"
+            rows={3}
+            {...form.register('description')}
+          />
+          <FieldError errors={[errors.description]} />
+        </FieldContent>
+      </Field>
+
+      {/* Cálculos en tiempo real */}
+      <div className="bg-muted/50 p-3 rounded-lg space-y-2">
+        <div className="flex items-center gap-2 text-sm font-medium">
+          <Calculator className="h-4 w-4" />
+          Cálculos
+        </div>
+        <div className="space-y-1 text-sm">
+          <div className="flex justify-between">
+            <span>Subtotal:</span>
+            <span>S/ {calculations.subtotal.toFixed(2)}</span>
+          </div>
+          {calculations.discountAmount > 0 && (
+            <div className="flex justify-between text-red-600">
+              <span>Descuento:</span>
+              <span>-S/ {calculations.discountAmount.toFixed(2)}</span>
+            </div>
+          )}
+          <Separator />
+          <div className="flex justify-between font-medium">
+            <span>Total:</span>
+            <span>S/ {calculations.total.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function CartItemEditDialog({
@@ -62,9 +180,9 @@ export function CartItemEditDialog({
   open,
   onOpenChange,
 }: CartItemEditDialogProps) {
-  const { updateCartItemQuantity, cartItems } = usePOSStore()
+  const { updateOrderItem } = usePOSStore()
 
-  const form = useForm({
+  const form = useForm<CartItemEditSchema>({
     resolver: zodResolver(cartItemEditSchema),
     defaultValues: {
       quantity: 1,
@@ -72,86 +190,42 @@ export function CartItemEditDialog({
       discount: 0,
       description: '',
     },
-    mode: 'onChange',
   })
 
-  // Actualizar valores del formulario cuando cambie el item
+  // Update form when item changes
   useEffect(() => {
-    if (item) {
+    if (item && open) {
       form.reset({
-        quantity: item.quantity,
-        unit_price: item.price,
-        discount: 0, // Por ahora no manejamos descuentos en el store
-        description: item.product.notes || '',
+        quantity: item.quantity || 1,
+        unit_price: item.unit_price || item.price_base || 0,
+        discount: item.discount || 0,
+        description: item.description || '',
       })
     }
-  }, [item, form])
+  }, [item, open, form])
 
-  // Calcular totales en tiempo real usando useMemo para evitar bucles infinitos
-  const quantity = form.watch('quantity')
-  const unit_price = form.watch('unit_price')
-  const discount = form.watch('discount')
+  const handleSave = (data: CartItemEditSchema) => {
+    if (!item?.product_id) return
 
-  const calculations = useMemo(() => {
-    if (quantity && unit_price >= 0) {
-      const subtotal = quantity * unit_price
-      const discountAmount = (subtotal * (discount || 0)) / 100
-      const total = subtotal - discountAmount
+    // Calculate the new total
+    const calculations = calculateCartItemTotal(data)
 
-      return {
-        subtotal,
-        discountAmount,
-        total,
-      }
-    }
-
-    return {
-      subtotal: 0,
-      discountAmount: 0,
-      total: 0,
-    }
-  }, [quantity, unit_price, discount])
-
-  const handleSave = (data: CartItemEditFormData) => {
-    if (!item) return
-
-    // Por ahora solo actualizamos cantidad y precio
-    // En el futuro se puede extender para manejar descuentos y descripción personalizada
-    const updatedItem = {
-      ...item,
+    // Update the item in the POS store
+    updateOrderItem(item.product_id, {
       quantity: data.quantity,
-      price: data.unit_price,
-      subtotal: data.quantity * data.unit_price,
-    }
+      unit_price: data.unit_price,
+      discount: data.discount,
+      description: data.description,
+      total: calculations.total,
+    })
 
-    // Actualizar en el store
-    updateCartItemQuantity(item.product.id, data.quantity)
-
-    // Si el precio cambió, necesitamos actualizar el store manualmente
-    if (data.unit_price !== item.price) {
-      const currentCartItems = usePOSStore.getState().cartItems
-      const updatedCartItems = currentCartItems.map((cartItem) =>
-        cartItem.product.id === item.product.id
-          ? {
-              ...cartItem,
-              price: data.unit_price,
-              subtotal: data.quantity * data.unit_price,
-            }
-          : cartItem
-      )
-
-      // Actualizar el store directamente
-      usePOSStore.setState({ cartItems: updatedCartItems })
-      usePOSStore.getState().calculateTotals()
-    }
-
+    // Close dialog
     onOpenChange(false)
-    form.reset()
   }
 
   const handleCancel = () => {
-    onOpenChange(false)
     form.reset()
+    onOpenChange(false)
   }
 
   if (!item) return null
@@ -169,141 +243,15 @@ export function CartItemEditDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <Form {...form}>
-          <div className="space-y-4">
-            {/* Información del producto */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="font-medium">{item.product.name}</h4>
-                <Badge variant="secondary">
-                  SKU: {item.product.sku || 'N/A'}
-                </Badge>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Precio original: S/ {item.product.price?.toFixed(2) || '0.00'}
-              </p>
-            </div>
+        <Form onSubmit={form.handleSubmit(handleSave)}>
+          <CartItemEditForm item={item} />
 
-            <Separator />
-
-            {/* Campos editables */}
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="quantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Cantidad</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="1"
-                        max="999"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="unit_price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Precio Unitario</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        {...field}
-                        onChange={(e) => field.onChange(Number(e.target.value))}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="discount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descuento (%)</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.1"
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Descripción personalizada (opcional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder="Agregar notas o descripción personalizada..."
-                      className="resize-none"
-                      rows={3}
-                      {...field}
-                      value={field.value || ''}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {/* Cálculos en tiempo real */}
-            <div className="bg-muted/50 p-3 rounded-lg space-y-2">
-              <div className="flex items-center gap-2 text-sm font-medium">
-                <Calculator className="h-4 w-4" />
-                Cálculos
-              </div>
-              <div className="space-y-1 text-sm">
-                <div className="flex justify-between">
-                  <span>Subtotal:</span>
-                  <span>S/ {calculations.subtotal.toFixed(2)}</span>
-                </div>
-                {calculations.discountAmount > 0 && (
-                  <div className="flex justify-between text-red-600">
-                    <span>Descuento:</span>
-                    <span>-S/ {calculations.discountAmount.toFixed(2)}</span>
-                  </div>
-                )}
-                <Separator />
-                <div className="flex justify-between font-medium">
-                  <span>Total:</span>
-                  <span>S/ {calculations.total.toFixed(2)}</span>
-                </div>
-              </div>
-            </div>
-
-            <DialogFooter>
-              <Button type="button" variant="outline" onClick={handleCancel}>
-                Cancelar
-              </Button>
-              <Button type="button" onClick={form.handleSubmit(handleSave)}>
-                Guardar cambios
-              </Button>
-            </DialogFooter>
-          </div>
+          <DialogFooter className="mt-6">
+            <Button type="button" variant="outline" onClick={handleCancel}>
+              Cancelar
+            </Button>
+            <Button type="submit">Guardar cambios</Button>
+          </DialogFooter>
         </Form>
       </DialogContent>
     </Dialog>

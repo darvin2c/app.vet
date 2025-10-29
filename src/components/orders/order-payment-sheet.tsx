@@ -22,18 +22,18 @@ export function OrderPaymentSheet({
   open,
   onOpenChange,
 }: OrderPaymentSheetProps) {
-  const { clearCart } = usePOSStore()
+  const { clearAll } = usePOSStore()
 
   useEffect(() => {
     if (open && order) {
       // Limpiar el carrito actual
-      clearCart()
+      clearAll()
     }
-  }, [open, order, clearCart])
+  }, [open, order, clearAll])
 
   const handleClose = () => {
     // Limpiar el carrito al cerrar
-    clearCart()
+    clearAll()
     onOpenChange(false)
   }
 

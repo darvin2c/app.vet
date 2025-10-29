@@ -9,10 +9,16 @@ type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Product
 }
 type Payment = Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'> & {
-  payment_method: Tables<'payment_methods'>
+  payment_method?: Tables<'payment_methods'>
 }
 type orderStatus = Enums<'order_status'>
 type Product = Tables<'products'>
+
+type OrderQueryType = Tables<'orders'> & {
+  order_items: Tables<'order_items'>[]
+  payments: Tables<'payments'>[]
+  customer?: Tables<'customers'> | null
+}
 
 interface POSState {
   searchQuery: string
@@ -61,6 +67,7 @@ interface POSState {
     orderItems: OrderItem[]
     payments: Payment[]
   }
+  setOrderData: (orderData: OrderQueryType) => void
   enableReceiptTab: () => boolean
   enablePaymentTab: () => boolean
   orderItemCount: () => number
@@ -272,6 +279,14 @@ const usePOSStore = create<POSState>()((set, get) => {
         orderItems: orderItemsCopy,
         payments: paymentsCopy,
       }
+    },
+    setOrderData: (orderData: OrderQueryType) => {
+      set({
+        order: orderData,
+        orderItems: orderData.order_items,
+        payments: orderData.payments || [],
+        customer: orderData.customer,
+      })
     },
     // sum quantity
     orderItemCount: () =>

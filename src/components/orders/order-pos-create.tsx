@@ -19,16 +19,14 @@ interface OrderPosCreateProps {
 export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
   const isMobile = useIsMobile()
 
-  const { clearCart, clearPayments, setSelectedCustomer } = usePOSStore()
+  const { clearAll } = usePOSStore()
 
   // Limpiar el POS store cuando se abre el sheet de crear orden
   useEffect(() => {
     if (open) {
-      clearCart()
-      clearPayments()
-      setSelectedCustomer(null)
+      clearAll()
     }
-  }, [open, clearCart, clearPayments, setSelectedCustomer])
+  }, [open, clearAll])
 
   const handleOrderCreated = () => {
     // Cerrar el modal POS cuando se crea la orden

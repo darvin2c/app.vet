@@ -8,7 +8,7 @@ export default function useOrderDetail(orderId: string) {
       const { data, error } = await supabase
         .from('orders')
         .select(
-          '*, customer:customer_id(*), payments(*), items:order_items(*, products(*))'
+          '*, customer:customer_id(*), payments(*), order_items(*, products(*))'
         )
         .eq('id', orderId)
         .single()

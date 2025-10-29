@@ -23,73 +23,26 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
   const { data } = useOrderDetail(order.id)
   const isMobile = useIsMobile()
 
-  const {
-    clearCart,
-    clearPayments,
-    setSelectedCustomer,
-    addToCart,
-    addPayment,
-    updateCartItemPrice,
-  } = usePOSStore()
+  const { clearAll, setOrderData } = usePOSStore()
 
   // Cargar datos de la orden existente al POS store
   useEffect(() => {
     if (data && open) {
       // Limpiar el store antes de cargar los datos
-      clearCart()
-      clearPayments()
+      clearAll()
 
-      // Cargar customer
-      if (data.customer) {
-        setSelectedCustomer(data.customer)
-      }
-
-      // Cargar items al carrito
-      if (data.items && data.items.length > 0) {
-        data.items.forEach((item: any) => {
-          if (item.products) {
-            // Agregar el producto al carrito con la cantidad y precio de la orden
-            addToCart(item.products, item.quantity)
-
-            // Si el precio es diferente al precio del producto, actualizarlo
-            if (item.unit_price !== item.products.price) {
-              updateCartItemPrice(item.products.id, item.unit_price)
-            }
-          }
-        })
-      }
-
-      // Cargar payments existentes
-      if (data.payments && data.payments.length > 0) {
-        data.payments.forEach((payment: any) => {
-          addPayment({
-            payment_method_id: payment.payment_method_id,
-            amount: payment.amount,
-            notes: payment.notes || '',
-            payment_date: payment.payment_date,
-          })
-        })
-      }
+      setOrderData(data)
     }
-  }, [
-    data,
-    open,
-    clearCart,
-    clearPayments,
-    setSelectedCustomer,
-    addToCart,
-    addPayment,
-    updateCartItemPrice,
-  ])
+  }, [data, open, clearAll, setOrderData])
 
   const handleOrderUpdated = () => {
     // Cerrar cuando se actualiza la orden
-    onOpenChange(false)
+    handleClose()
   }
 
   const handleClose = () => {
-    // Limpiar el carrito al cerrar
-    clearCart()
+    // Limpiar el store al cerrar
+    clearAll()
     onOpenChange(false)
   }
 
