@@ -18,9 +18,7 @@ import {
   FieldContent,
   FieldDescription,
   FieldError,
-  FieldGroup,
   FieldLabel,
-  FieldSet,
   FieldTitle,
 } from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
@@ -28,7 +26,7 @@ import { Plus, Calculator } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from '@/components/ui/separator'
 import { InputGroupButton } from '@/components/ui/input-group'
-import { CurrencyInput } from '@/components/ui/current-input'
+import { CurrencyDisplay, CurrencyInput } from '@/components/ui/current-input'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
@@ -36,7 +34,7 @@ import {
   posPaymentSchema,
   POSPaymentSchema,
 } from '@/schemas/pos-payment.schema'
-import { Tables } from '@/types/supabase.types'
+import { Form } from '@/components/ui/form'
 
 interface PaymentSelectorContentProps {
   onPaymentAdded?: () => void
@@ -213,9 +211,6 @@ export function PaymentMethodSelector() {
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { order } = usePOSStore()
 
-  // Calculate remaining amount from order balance
-  const remainingAmount = order?.balance || 0
-
   const form = useForm<POSPaymentSchema>({
     resolver: zodResolver(posPaymentSchema),
     defaultValues: {
@@ -261,16 +256,16 @@ export function PaymentMethodSelector() {
       <div className="flex items-center gap-2">
         <Calculator className="h-4 w-4" />
         <h3 className="font-medium">Agregar Pago</h3>
-        {remainingAmount > 0 && (
+        {order?.balance && (
           <Badge variant="outline" className="text-xs">
-            Pendiente: S/ {remainingAmount.toFixed(2)}
+            Pendiente: <CurrencyDisplay value={order?.balance || 0} />
           </Badge>
         )}
       </div>
       <div className="border rounded-lg p-4">
-        <FormProvider {...form}>
+        <Form {...form}>
           <PaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
-        </FormProvider>
+        </Form>
       </div>
     </div>
   )
