@@ -35,11 +35,6 @@ export function OrderPaymentSheet({
     }
   }, [open, order, clearCart])
 
-  const handlePaymentCompleted = () => {
-    // Cerrar el sheet cuando se completa el pago
-    onOpenChange(false)
-  }
-
   const handleClose = () => {
     // Limpiar el carrito al cerrar
     clearCart()
@@ -48,7 +43,7 @@ export function OrderPaymentSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full max-w-md p-0" side="right">
+      <SheetContent className="!w-full !max-w-full p-0" side="right">
         <SheetHeader className="sr-only">
           <SheetTitle>Pagar Orden {order.order_number}</SheetTitle>
         </SheetHeader>
