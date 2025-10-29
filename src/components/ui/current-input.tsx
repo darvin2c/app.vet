@@ -37,8 +37,6 @@ export function CurrencyInput({
     })
   }, [format])
 
-  console.log('value', props.value)
-
   const maskedInputRef = useMaskito({ options: maskOptions })
 
   return (

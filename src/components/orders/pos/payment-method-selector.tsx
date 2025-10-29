@@ -151,7 +151,12 @@ function PaymentSelectorContent({
       {/* Amount Input */}
       <div className="space-y-3">
         <div className="relative">
-          <CurrencyInput>
+          <CurrencyInput
+            id="amount"
+            value={amount}
+            onChange={handleAmountChange}
+            className="w-full"
+          >
             {/* Quick Amount Buttons */}
             {remainingAmount > 0 && (
               <>
@@ -203,15 +208,16 @@ function PaymentSelectorContent({
       </div>
 
       {/* Add Payment Button */}
-      <Button
-        onClick={handleAddPayment}
-        className="w-full h-12"
-        size="sm"
-        disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
-      >
-        <Plus className="h-4 w-4 mr-2" />
-        Agregar Pago
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          onClick={handleAddPayment}
+          size="sm"
+          disabled={!selectedMethodId || !amount || parseFloat(amount) <= 0}
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Agregar Pago
+        </Button>
+      </div>
     </div>
   )
 }
