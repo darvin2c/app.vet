@@ -5,8 +5,12 @@ import { create } from 'zustand'
 
 type Customer = Tables<'customers'>
 type Order = Omit<TablesInsert<'orders'>, 'tenant_id'>
-type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'>
-type Payment = Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'>
+type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
+  product?: Product
+}
+type Payment = Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'> & {
+  payment_method: Tables<'payment_methods'>
+}
 type orderStatus = Enums<'order_status'>
 type Product = Tables<'products'>
 

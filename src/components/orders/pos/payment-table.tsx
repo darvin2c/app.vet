@@ -27,6 +27,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '../../ui/empty'
+import { CurrencyDisplay } from '@/components/ui/current-input'
 
 const paymentTypeIcons = {
   cash: Banknote,
@@ -43,9 +44,12 @@ const paymentTypeLabels = {
 }
 
 export function PaymentTable() {
-  const { payments, removePayment, totalPaid } = usePOSStore()
+  const { payments, removePayment, order } = usePOSStore()
 
-  const handleRemovePayment = (paymentId: string) => {
+  const handleRemovePayment = (paymentId?: string) => {
+    if (!paymentId) {
+      return
+    }
     removePayment(paymentId)
     toast.success('Pago eliminado')
   }
@@ -208,9 +212,10 @@ export function PaymentTable() {
           <div className="border-t bg-muted/30 p-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium">Total Pagado:</span>
-              <span className="text-lg font-bold">
-                S/ {totalPaid.toFixed(2)}
-              </span>
+              <CurrencyDisplay
+                className="text-lg font-bold"
+                value={order?.paid_amount}
+              />
             </div>
           </div>
         </div>

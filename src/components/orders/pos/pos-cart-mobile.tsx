@@ -11,13 +11,11 @@ import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSCart } from './pos-cart'
 
 export function POSCartMobile() {
-  const { cartItems, isMobileCartOpen, setIsMobileCartOpen } = usePOSStore()
-
-  const itemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0)
+  const { openCartMobile, setOpenCartMobile } = usePOSStore()
 
   return (
     <div className="lg:hidden">
-      <Sheet open={isMobileCartOpen} onOpenChange={setIsMobileCartOpen}>
+      <Sheet open={openCartMobile} onOpenChange={setOpenCartMobile}>
         <SheetContent side="right" className="w-full sm:max-w-md p-0">
           <SheetHeader className="sr-only">
             <SheetTitle>Carrito de Compras</SheetTitle>
