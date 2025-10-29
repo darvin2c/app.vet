@@ -6,7 +6,7 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
 type CreateOrderSchema = {
-  order: Omit<TablesInsert<'orders'>, 'tenant_id'>
+  order: Omit<TablesInsert<'orders'>, 'tenant_id' | 'balance'>
   items: TablesInsert<'order_items'>[]
   payments: TablesInsert<'payments'>[]
 }

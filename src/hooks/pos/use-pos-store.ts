@@ -49,7 +49,6 @@ interface POSState {
   totalPaid: number
   remainingAmount: number
   changeAmount: number
-  balance: number
   paymentStatus: PaymentStatus
 
   // UI State
@@ -88,7 +87,6 @@ interface POSState {
     tax: number
     total: number
     paid_amount: number
-    balance: number
     status: Enums<'order_status'>
     notes?: string
   }
@@ -102,7 +100,6 @@ interface POSState {
     label: string
     color: string
     icon: string
-    balance: number
   }
 
   // Funciones para diferentes tipos de guardado
@@ -126,7 +123,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
   totalPaid: 0,
   remainingAmount: 0,
   changeAmount: 0,
-  balance: 0,
   paymentStatus: 'pending',
   currentView: 'catalog',
   isLoading: false,
@@ -211,7 +207,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
       cartTotal: 0,
       cartSubtotal: 0,
       cartTax: 0,
-      balance: 0,
       paymentStatus: 'pending',
     })
     // También limpiar pagos cuando se limpia el carrito
@@ -266,7 +261,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
     )
 
     // Usar funciones del schema para cálculos consistentes
-    const balance = calculateBalance(state.cartTotal, totalPaid)
     const paymentStatus = getPaymentStatus(totalPaid, state.cartTotal)
     const remainingAmount = Math.max(0, state.cartTotal - totalPaid)
     const changeAmount = Math.max(0, totalPaid - state.cartTotal)
@@ -275,7 +269,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
       totalPaid,
       remainingAmount,
       changeAmount,
-      balance,
       paymentStatus,
     })
   },
@@ -324,7 +317,6 @@ export const usePOSStore = create<POSState>((set, get) => ({
       tax: state.cartTax,
       total: state.cartTotal,
       paid_amount: state.totalPaid,
-      balance: state.balance,
       status: orderStatus,
       notes: `Venta POS - ${state.cartItems.length} productos`,
     }

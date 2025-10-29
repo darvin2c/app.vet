@@ -1,7 +1,9 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { POSInterface } from './pos/pos-interface'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import {
   Sheet,
   SheetContent,
@@ -16,6 +18,22 @@ interface OrderPosCreateProps {
 
 export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
   const isMobile = useIsMobile()
+  
+  const {
+    clearCart,
+    clearPayments,
+    setSelectedCustomer,
+  } = usePOSStore()
+
+  // Limpiar el POS store cuando se abre el sheet de crear orden
+  useEffect(() => {
+    if (open) {
+      clearCart()
+      clearPayments()
+      setSelectedCustomer(null)
+    }
+  }, [open, clearCart, clearPayments, setSelectedCustomer])
+
   const handleOrderCreated = () => {
     // Cerrar el modal POS cuando se crea la orden
     onOpenChange(false)
