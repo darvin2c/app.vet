@@ -116,7 +116,7 @@ export function POSCart({ className }: POSCartProps) {
           <ScrollArea className="flex-1">
             <ItemGroup>
               {orderItems.map((item, index) => (
-                <React.Fragment key={item.id}>
+                <React.Fragment key={index}>
                   <CartItemCard
                     item={item}
                     onRemove={handleRemoveItem}

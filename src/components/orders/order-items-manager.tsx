@@ -309,8 +309,8 @@ export function OrderItemsManager({
               )}
 
               {/* Items existentes */}
-              {items.map((item) => (
-                <TableRow key={item.id}>
+              {items.map((item, index) => (
+                <TableRow key={index}>
                   <TableCell>
                     <div>
                       <div className="font-medium">{item.description}</div>

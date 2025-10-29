@@ -33,15 +33,7 @@ export default function useOrderList({
         .select(
           `
           *,
-          customers (*),
-          order_items (
-            *,
-            products (*)
-          ),
-          payments (
-            *,
-            payment_method (*)
-          )
+          customer:customer_id(*)
         `
         )
         .eq('tenant_id', currentTenant.id)

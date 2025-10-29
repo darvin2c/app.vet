@@ -174,9 +174,8 @@ const usePOSStore = create<POSState>()((set, get) => {
       } else {
         // Add new item with unique ID and all required fields
         const newItem: OrderItem = {
-          id: crypto.randomUUID(),
           product_id: product.id,
-          description: product.name || 'Producto sin nombre',
+          description: product.name,
           price_base: product.price || 0,
           quantity: 1,
           discount: 0,
