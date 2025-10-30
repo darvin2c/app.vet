@@ -1,273 +1,363 @@
 'use client'
 
+import { useMemo, useState, useEffect } from 'react'
 import useOrderDetail from '@/hooks/orders/use-order-detail'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
 import { DateDisplay } from '../ui/date-picker'
+import { Button } from '@/components/ui/button'
+import { FileText, Receipt, Printer } from 'lucide-react'
+import { ScrollArea } from '../ui/scroll-area'
 
-export function OrderPrint({ orderId }: { orderId: string }) {
+type OrderPrintProps = {
+  orderId: string
+  view?: 'full' | 'ticket'
+}
+
+export function OrderPrint({
+  orderId,
+  view: initialView = 'full',
+}: OrderPrintProps) {
   const { data: order } = useOrderDetail(orderId)
+  const [currentView, setCurrentView] = useState<'full' | 'ticket'>(initialView)
 
-  if (!order) {
-    return null
+  // Función para imprimir
+  const handlePrint = () => {
+    window.print()
+  }
+
+  // Actualizar vista cuando cambie el prop
+  useEffect(() => {
+    setCurrentView(initialView)
+  }, [initialView])
+
+  const PEN = useMemo(
+    () =>
+      new Intl.NumberFormat('es-PE', {
+        style: 'currency',
+        currency: 'PEN',
+        minimumFractionDigits: 2,
+      }),
+    []
+  )
+
+  if (!order) return null
+
+  const subtotal = order.subtotal ?? 0
+  const tax = order.tax ?? 0
+  const total = order.total ?? subtotal + tax
+  const paid = order.paid_amount ?? 0
+  const balance = order.balance ?? Math.max(total - paid, 0)
+
+  // Clases base comunes
+  const baseClasses = 'font-sans text-black bg-white w-full'
+
+  // Clases específicas por vista
+  const viewClasses = {
+    full: 'max-w-4xl mx-auto p-8 sm:p-12 lg:p-16 text-sm leading-relaxed print:p-6 print:text-xs print:max-w-none print:mx-0',
+    ticket: 'max-w-xs mx-auto p-4 text-xs leading-tight',
   }
 
   return (
-    <div className="order-print font-sans text-xs leading-relaxed text-black bg-white">
-      <style
-        dangerouslySetInnerHTML={{
-          __html: `
-          .order-print {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-            font-size: 14px;
-            line-height: 1.6;
-            color: #000;
-            background: white;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 40px;
-          }
-          
-          .order-print .header {
-            text-align: center;
-            margin-bottom: 60px;
-          }
-          
-          .order-print .header h1 {
-            font-size: 28px;
-            font-weight: 400;
-            margin: 0 0 8px 0;
-            letter-spacing: 0.5px;
-          }
-          
-          .order-print .header p {
-            font-size: 16px;
-            margin: 0;
-            font-weight: 300;
-            color: #666;
-          }
-          
-          .order-print .divider {
-            height: 1px;
-            background: #e5e5e5;
-            margin: 40px 0;
-          }
-          
-          .order-print .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            margin-bottom: 60px;
-          }
-          
-          .order-print .info-section h3 {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0 0 20px 0;
-            color: #000;
-          }
-          
-          .order-print .info-section p {
-            margin: 8px 0;
-            font-size: 14px;
-            color: #333;
-          }
-          
-          .order-print .info-section strong {
-            font-weight: 500;
-            color: #000;
-          }
-          
-          .order-print .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 60px;
-          }
-          
-          .order-print .items-table th {
-            font-size: 14px;
-            font-weight: 500;
-            padding: 16px 0;
-            text-align: left;
-            border-bottom: 1px solid #e5e5e5;
-            color: #000;
-          }
-          
-          .order-print .items-table td {
-            padding: 16px 0;
-            font-size: 14px;
-            border-bottom: 1px solid #f5f5f5;
-            color: #333;
-          }
-          
-          .order-print .items-table td.text-center {
-            text-align: center;
-            color: #999;
-            font-style: normal;
-          }
-          
-          .order-print .totals {
-            margin-left: auto;
-            width: 280px;
-          }
-          
-          .order-print .total-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            font-size: 14px;
-          }
-          
-          .order-print .total-row:not(:last-child) {
-            border-bottom: 1px solid #f5f5f5;
-          }
-          
-          .order-print .total-row.final {
-            border-top: 1px solid #e5e5e5;
-            margin-top: 8px;
-            padding-top: 16px;
-            font-weight: 500;
-            font-size: 16px;
-          }
-          
-          .order-print .notes {
-            margin-top: 60px;
-          }
-          
-          .order-print .notes h3 {
-            font-size: 16px;
-            font-weight: 500;
-            margin: 0 0 16px 0;
-            color: #000;
-          }
-          
-          .order-print .notes p {
-            font-size: 14px;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-          }
-          
-          @media print {
-            .order-print {
-              font-size: 12px;
-              padding: 40px 20px;
-            }
-            
-            .order-print .header h1 {
-              font-size: 24px;
-            }
-            
-            .order-print .info-section h3,
-            .order-print .notes h3 {
-              font-size: 14px;
-            }
-            
-            .order-print .total-row.final {
-              font-size: 14px;
-            }
-            
-            @page {
-              size: A4;
-              margin: 15mm;
-            }
-          }
-        `,
-        }}
-      />
-
-      <div className="header">
-        <h1>ORDEN DE SERVICIO</h1>
-        <p>#{order.order_number}</p>
+    <div className="w-full">
+      {/* Controles de vista e impresión */}
+      <div className="flex justify-between items-center mb-4 p-4 bg-gray-50 rounded-lg print:hidden">
+        <div className="flex gap-2">
+          <Button
+            variant={currentView === 'full' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setCurrentView('full')}
+            className="flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            Vista Completa
+          </Button>
+          <Button
+            variant={currentView === 'ticket' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setCurrentView('ticket')}
+            className="flex items-center gap-2"
+          >
+            <Receipt className="h-4 w-4" />
+            Vista Ticket
+          </Button>
+        </div>
+        <Button
+          onClick={handlePrint}
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          <Printer className="h-4 w-4" />
+          Imprimir
+        </Button>
       </div>
+      <ScrollArea className="h-[calc(100vh-200px)]">
+        {/* Contenido de impresión */}
+        {currentView === 'ticket' ? (
+          <div className={`${baseClasses} ${viewClasses.ticket}`}>
+            {/* Header - Ticket */}
+            <div className="text-center mb-4 border-b border-gray-300 pb-3">
+              <h1 className="text-sm font-semibold mb-1 tracking-wide">
+                ORDEN DE SERVICIO
+              </h1>
+              <p className="text-xs text-gray-600">#{order.order_number}</p>
+            </div>
 
-      <div className="divider"></div>
+            {/* Info básica - Ticket */}
+            <div className="space-y-2 mb-4 text-xs">
+              <div className="flex justify-between">
+                <span className="font-medium">Fecha:</span>
+                <span>
+                  <DateDisplay value={order.created_at} />
+                </span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Estado:</span>
+                <span>{order.status}</span>
+              </div>
+              {!!order.customer_id && (
+                <div className="flex justify-between">
+                  <span className="font-medium">Cliente:</span>
+                  <span className="truncate ml-2">{order.customer_id}</span>
+                </div>
+              )}
+            </div>
 
-      <div className="info-grid">
-        <div className="info-section">
-          <h3>Información de la Orden</h3>
-          <p>
-            <strong>Fecha:</strong> <DateDisplay value={order.created_at} />
-          </p>
-          <p>
-            <strong>Estado:</strong> {order.status}
-          </p>
-          {order.customer_id && (
-            <p>
-              <strong>Cliente:</strong> {order.customer_id}
-            </p>
-          )}
-        </div>
-        <div className="info-section">
-          <h3>Detalles Financieros</h3>
-          <p>
-            <strong>Subtotal:</strong> S/ {(order.subtotal || 0).toFixed(2)}
-          </p>
-          <p>
-            <strong>Impuestos:</strong> S/ {(order.tax || 0).toFixed(2)}
-          </p>
-          <p>
-            <strong>Total:</strong> S/ {(order.total || 0).toFixed(2)}
-          </p>
-          <p>
-            <strong>Pagado:</strong> S/ {(order.paid_amount || 0).toFixed(2)}
-          </p>
-          <p>
-            <strong>Balance:</strong> S/ {(order.balance || 0).toFixed(2)}
-          </p>
-        </div>
-      </div>
+            {/* Items - Ticket (Lista compacta) */}
+            <div className="border-t border-gray-300 pt-3 mb-4">
+              <h3 className="text-xs font-semibold mb-2">ITEMS:</h3>
+              <div className="space-y-2">
+                {Array.isArray(order.order_items) &&
+                order.order_items.length > 0 ? (
+                  order.order_items.map((it: any, idx: number) => {
+                    const qty = it.quantity ?? 0
+                    const unit = it.unit_price ?? 0
+                    const line = it.total ?? qty * unit
+                    return (
+                      <div key={it.id ?? idx} className="text-xs">
+                        <div className="font-medium truncate">
+                          {it.description ?? it.name ?? '-'}
+                        </div>
+                        <div className="flex justify-between text-gray-600">
+                          <span>
+                            {qty} x {PEN.format(unit)}
+                          </span>
+                          <span className="font-medium">
+                            {PEN.format(line)}
+                          </span>
+                        </div>
+                      </div>
+                    )
+                  })
+                ) : (
+                  <div className="text-center text-gray-500 text-xs py-2">
+                    Items pendientes
+                  </div>
+                )}
+              </div>
+            </div>
 
-      {/* Tabla de items */}
-      <table className="items-table">
-        <thead>
-          <tr>
-            <th>Descripción</th>
-            <th>Cantidad</th>
-            <th>Precio Unit.</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td colSpan={4} className="text-center">
-              Items de la orden (pendiente de implementar)
-            </td>
-          </tr>
-        </tbody>
-      </table>
+            {/* Totales - Ticket */}
+            <div className="border-t border-gray-300 pt-3 space-y-1 text-xs">
+              <div className="flex justify-between">
+                <span>Subtotal:</span>
+                <span>{PEN.format(subtotal)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Impuestos:</span>
+                <span>{PEN.format(tax)}</span>
+              </div>
+              <div className="flex justify-between font-semibold text-sm border-t border-gray-300 pt-1 mt-2">
+                <span>TOTAL:</span>
+                <span>{PEN.format(total)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Pagado:</span>
+                <span>{PEN.format(paid)}</span>
+              </div>
+              <div className="flex justify-between text-gray-600">
+                <span>Balance:</span>
+                <span>{PEN.format(balance)}</span>
+              </div>
+            </div>
 
-      {/* Totales */}
-      <div className="totals">
-        <div className="total-row">
-          <span>Subtotal:</span>
-          <span>S/ {(order.subtotal || 0).toFixed(2)}</span>
-        </div>
-        <div className="total-row">
-          <span>Impuestos:</span>
-          <span>S/ {(order.tax || 0).toFixed(2)}</span>
-        </div>
-        <div className="total-row final">
-          <span>Total:</span>
-          <span>S/ {(order.total || 0).toFixed(2)}</span>
-        </div>
-        <div className="total-row">
-          <span>Pagado:</span>
-          <span>S/ {(order.paid_amount || 0).toFixed(2)}</span>
-        </div>
-        <div className="total-row">
-          <span>Balance:</span>
-          <span>S/ {(order.balance || 0).toFixed(2)}</span>
-        </div>
-      </div>
+            {/* Notas - Ticket */}
+            {!!order.notes && (
+              <div className="border-t border-gray-300 pt-3 mt-4">
+                <h3 className="text-xs font-semibold mb-1">NOTAS:</h3>
+                <p className="text-xs text-gray-700 leading-tight">
+                  {order.notes}
+                </p>
+              </div>
+            )}
+          </div>
+        ) : (
+          // Vista completa (full)
+          <div className={`${baseClasses} ${viewClasses.full}`}>
+            {/* Header - Full */}
+            <div className="text-center mb-12 print:mb-8">
+              <h1 className="text-2xl sm:text-3xl font-light mb-2 tracking-wide print:text-xl">
+                ORDEN DE SERVICIO
+              </h1>
+              <p className="text-lg text-gray-600 font-light print:text-base">
+                #{order.order_number}
+              </p>
+            </div>
 
-      {/* Notas */}
-      {order.notes && (
-        <div className="notes">
-          <h3>Notas:</h3>
-          <p>{order.notes}</p>
-        </div>
-      )}
+            {/* Divider */}
+            <div className="h-px bg-gray-300 mb-12 print:mb-8" />
+
+            {/* Info Grid - Full */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12 mb-12 print:grid-cols-2 print:gap-8 print:mb-8">
+              <div>
+                <h3 className="text-base font-medium mb-4 text-black print:text-sm">
+                  Información de la Orden
+                </h3>
+                <div className="space-y-2 text-sm text-gray-700 print:text-xs">
+                  <p>
+                    <span className="font-medium text-black">Fecha:</span>{' '}
+                    <DateDisplay value={order.created_at} />
+                  </p>
+                  <p>
+                    <span className="font-medium text-black">Estado:</span>{' '}
+                    {order.status}
+                  </p>
+                  {!!order.customer_id && (
+                    <p>
+                      <span className="font-medium text-black">Cliente:</span>{' '}
+                      {order.customer_id}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-base font-medium mb-4 text-black print:text-sm">
+                  Detalles Financieros
+                </h3>
+                <div className="space-y-2 text-sm text-gray-700 print:text-xs">
+                  <p>
+                    <span className="font-medium text-black">Subtotal:</span>{' '}
+                    {PEN.format(subtotal)}
+                  </p>
+                  <p>
+                    <span className="font-medium text-black">Impuestos:</span>{' '}
+                    {PEN.format(tax)}
+                  </p>
+                  <p>
+                    <span className="font-medium text-black">Total:</span>{' '}
+                    {PEN.format(total)}
+                  </p>
+                  <p>
+                    <span className="font-medium text-black">Pagado:</span>{' '}
+                    {PEN.format(paid)}
+                  </p>
+                  <p>
+                    <span className="font-medium text-black">Balance:</span>{' '}
+                    {PEN.format(balance)}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Items Table - Full */}
+            <div className="mb-12 print:mb-8">
+              <table className="w-full border-collapse text-sm print:text-xs">
+                <thead>
+                  <tr className="border-b border-gray-300">
+                    <th className="text-left py-3 px-2 font-medium text-black print:py-2">
+                      Descripción
+                    </th>
+                    <th className="text-left py-3 px-2 font-medium text-black print:py-2">
+                      Cantidad
+                    </th>
+                    <th className="text-left py-3 px-2 font-medium text-black print:py-2">
+                      Precio Unit.
+                    </th>
+                    <th className="text-left py-3 px-2 font-medium text-black print:py-2">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Array.isArray(order.order_items) &&
+                  order.order_items.length > 0 ? (
+                    order.order_items.map((it: any, idx: number) => {
+                      const qty = it.quantity ?? 0
+                      const unit = it.unit_price ?? 0
+                      const line = it.total ?? qty * unit
+                      return (
+                        <tr
+                          key={it.id ?? idx}
+                          className="border-b border-gray-100"
+                        >
+                          <td className="py-3 px-2 text-gray-700 print:py-2">
+                            {it.description ?? it.name ?? '-'}
+                          </td>
+                          <td className="py-3 px-2 text-gray-700 print:py-2">
+                            {qty}
+                          </td>
+                          <td className="py-3 px-2 text-gray-700 print:py-2">
+                            {PEN.format(unit)}
+                          </td>
+                          <td className="py-3 px-2 text-gray-700 print:py-2">
+                            {PEN.format(line)}
+                          </td>
+                        </tr>
+                      )
+                    })
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={4}
+                        className="text-center py-6 text-gray-500 print:py-4"
+                      >
+                        Items de la orden (pendiente de implementar)
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Totales - Full */}
+            <div className="ml-auto w-full max-w-xs">
+              <div className="space-y-3 text-sm print:text-xs">
+                <div className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-700">Subtotal:</span>
+                  <span className="text-black">{PEN.format(subtotal)}</span>
+                </div>
+                <div className="flex justify-between py-2 border-b border-gray-100">
+                  <span className="text-gray-700">Impuestos:</span>
+                  <span className="text-black">{PEN.format(tax)}</span>
+                </div>
+                <div className="flex justify-between py-3 border-t border-gray-300 font-medium text-base print:text-sm">
+                  <span className="text-black">Total:</span>
+                  <span className="text-black">{PEN.format(total)}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span className="text-gray-700">Pagado:</span>
+                  <span className="text-black">{PEN.format(paid)}</span>
+                </div>
+                <div className="flex justify-between py-2">
+                  <span className="text-gray-700">Balance:</span>
+                  <span className="text-black">{PEN.format(balance)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Notas - Full */}
+            {!!order.notes && (
+              <div className="mt-12 print:mt-8">
+                <h3 className="text-base font-medium mb-4 text-black print:text-sm">
+                  Notas:
+                </h3>
+                <p className="text-sm text-gray-700 leading-relaxed print:text-xs">
+                  {order.notes}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+      </ScrollArea>
     </div>
   )
 }

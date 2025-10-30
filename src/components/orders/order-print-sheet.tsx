@@ -8,9 +8,15 @@ import {
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet'
-import { Printer, Eye, Download } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Printer, Eye, Download, FileText, Receipt } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
 import { OrderPrint } from './order-print'
 import { downloadPDF } from '@/lib/print-utils'
@@ -31,6 +37,7 @@ export function OrderPrintSheet({
   const [internalOpen, setInternalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
+  const [view, setView] = useState<'full' | 'ticket'>('full')
 
   // Usar el estado controlado si se proporciona, sino usar el estado interno
   const isOpen = open !== undefined ? open : internalOpen
@@ -191,28 +198,56 @@ export function OrderPrintSheet({
         </SheetHeader>
 
         <div className="mt-6 space-y-4">
-          <div className="flex gap-2">
-            <Button onClick={handlePreview} variant="outline">
-              <Eye className="h-4 w-4 mr-2" />
-              Vista Previa
-            </Button>
-            <Button onClick={handlePrint} disabled={isLoading}>
-              <Printer className="h-4 w-4 mr-2" />
-              {isLoading ? 'Imprimiendo...' : 'Imprimir'}
-            </Button>
-            <Button
-              onClick={handleDownloadPDF}
-              disabled={isDownloading}
-              variant="outline"
-            >
-              <Download className="h-4 w-4 mr-2" />
-              {isDownloading ? 'Descargando...' : 'Descargar PDF'}
-            </Button>
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium">Formato:</span>
+              <Select
+                value={view}
+                onValueChange={(value: 'full' | 'ticket') => setView(value)}
+              >
+                <SelectTrigger className="w-40">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="full">
+                    <div className="flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Página Completa
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="ticket">
+                    <div className="flex items-center gap-2">
+                      <Receipt className="h-4 w-4" />
+                      Ticket
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="flex gap-2">
+              <Button onClick={handlePreview} variant="outline">
+                <Eye className="h-4 w-4 mr-2" />
+                Vista Previa
+              </Button>
+              <Button onClick={handlePrint} disabled={isLoading}>
+                <Printer className="h-4 w-4 mr-2" />
+                {isLoading ? 'Imprimiendo...' : 'Imprimir'}
+              </Button>
+              <Button
+                onClick={handleDownloadPDF}
+                disabled={isDownloading}
+                variant="outline"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                {isDownloading ? 'Descargando...' : 'Descargar PDF'}
+              </Button>
+            </div>
           </div>
 
           <div className="border rounded-lg p-4 bg-white">
             <div id="order-print-content">
-              <OrderPrint orderId={order.id} />
+              <OrderPrint orderId={order.id} view={view} />
             </div>
           </div>
         </div>

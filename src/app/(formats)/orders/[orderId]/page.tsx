@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, use } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { OrderPrint } from '@/components/orders/order-print'
 import { Tables } from '@/types/supabase.types'
 import { supabase } from '@/lib/supabase/client'
@@ -13,6 +14,8 @@ interface PrintPageProps {
 
 export default function PrintPage({ params }: PrintPageProps) {
   const { orderId } = use(params)
+  const searchParams = useSearchParams()
+  const view = (searchParams.get('view') as 'full' | 'ticket') || 'full'
   const [order, setOrder] = useState<Tables<'orders'> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -69,7 +72,7 @@ export default function PrintPage({ params }: PrintPageProps) {
   return (
     <div className="min-h-screen bg-white">
       <div className="print-page">
-        <OrderPrint orderId={orderId} />
+        <OrderPrint orderId={orderId} view={view} />
       </div>
     </div>
   )
