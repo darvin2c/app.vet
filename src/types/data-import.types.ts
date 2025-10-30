@@ -100,11 +100,11 @@ export interface ImportConfig<T = any> {
 
 export interface DataImporterProps<T = any> {
   config: ImportConfig<T>
-  onComplete?: (result: ImportResult) => void
   onCancel?: () => void
   className?: string
   isImporting?: boolean
   importResult?: ImportResult | null
+  onComplete?: (result: ImportResult) => void
   onImport?: (data: T[]) => Promise<void>
 }
 

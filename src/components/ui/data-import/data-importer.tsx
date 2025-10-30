@@ -15,10 +15,14 @@ export function DataImporter<T = any>({
   importResult = null,
   onImport,
 }: DataImporterProps<T>) {
-  const { state, importResult: hookImportResult, actions } = useDataImport({ 
-    config, 
-    isImporting, 
-    importResult 
+  const {
+    state,
+    importResult: hookImportResult,
+    actions,
+  } = useDataImport({
+    config,
+    isImporting,
+    importResult,
   })
 
   // Manejar completación de importación
@@ -47,15 +51,15 @@ export function DataImporter<T = any>({
   // Función para manejar la importación
   const handleImport = async () => {
     if (!onImport) return
-    
+
     const preparedData = actions.getPreparedData()
     await onImport(preparedData)
   }
 
   return (
-    <div className={`w-full max-w-6xl mx-auto ${className}`}>
+    <div className={`w-full max-w-6xl mx-auto pb-10 ${className}`}>
       <div>
-        <div className="p-6">
+        <div className="px-6">
           {/* Header con progreso */}
           <div className="mb-8">
             {/* Indicador de progreso */}
@@ -65,7 +69,11 @@ export function DataImporter<T = any>({
                 const isCompleted = step < stepInfo.number
                 const isConnector = index < 2
 
-                const stepTitles = ['Subir Archivo', 'Verificar Datos', 'Confirmar Importación']
+                const stepTitles = [
+                  'Subir Archivo',
+                  'Verificar Datos',
+                  'Confirmar Importación',
+                ]
 
                 return (
                   <div key={step} className="flex items-center flex-1">
@@ -85,7 +93,7 @@ export function DataImporter<T = any>({
                       >
                         {step}
                       </div>
-                      
+
                       {/* Título del paso */}
                       <div className="mt-3 text-center">
                         {isActive && (
@@ -93,7 +101,9 @@ export function DataImporter<T = any>({
                             Paso {step} de 3
                           </div>
                         )}
-                        <div className={`text-sm ${isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>
+                        <div
+                          className={`text-sm ${isActive ? 'text-gray-900 font-medium' : 'text-gray-500'}`}
+                        >
                           {stepTitles[index]}
                         </div>
                       </div>
@@ -123,7 +133,9 @@ export function DataImporter<T = any>({
             {state.step === 'upload' && (
               <FileUploadStep
                 onFileSelect={actions.handleFileSelect}
-                acceptedTypes={config.allowedFileTypes || ['.csv', '.xlsx', '.xls']}
+                acceptedTypes={
+                  config.allowedFileTypes || ['.csv', '.xlsx', '.xls']
+                }
                 maxSize={config.maxFileSize || 10 * 1024 * 1024}
                 isLoading={state.isLoading}
                 error={state.error || undefined}
@@ -131,65 +143,32 @@ export function DataImporter<T = any>({
               />
             )}
 
-            {state.step === 'verify' && state.parsedData && state.validationResult && (
-              <DataVerificationStep
-                data={state.parsedData}
-                validationResult={state.validationResult}
-                columnMapping={state.columnMapping}
-                onColumnMap={actions.handleColumnMapping}
-                onNext={actions.proceedToConfirmation}
-                onBack={actions.goBack}
-                isLoading={state.isLoading}
-              />
-            )}
-
-            {state.step === 'confirm' && state.parsedData && state.validationResult && (
-              <ImportConfirmationStep
-                data={actions.getPreparedData()}
-                validationResult={state.validationResult}
-                onImport={handleImport}
-                onBack={actions.goBack}
-                isImporting={isImporting}
-                result={hookImportResult || undefined}
-              />
-            )}
-          </div>
-
-          {/* Botones de acción globales */}
-          <div className="flex justify-between items-center mt-6 pt-6 border-t">
-            <div>
-              {state.step !== 'upload' && (
-                <button
-                  onClick={actions.goBack}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                  disabled={state.isLoading || isImporting}
-                >
-                  ← Volver
-                </button>
-              )}
-            </div>
-
-            <div className="flex gap-3">
-              {onCancel && (
-                <button
-                  onClick={onCancel}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                  disabled={state.isLoading || isImporting}
-                >
-                  Cancelar
-                </button>
+            {state.step === 'verify' &&
+              state.parsedData &&
+              state.validationResult && (
+                <DataVerificationStep
+                  data={state.parsedData}
+                  validationResult={state.validationResult}
+                  columnMapping={state.columnMapping}
+                  onColumnMap={actions.handleColumnMapping}
+                  onNext={actions.proceedToConfirmation}
+                  onBack={actions.goBack}
+                  isLoading={state.isLoading}
+                />
               )}
 
-              {state.step === 'upload' && (
-                <button
-                  onClick={actions.reset}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-                  disabled={state.isLoading}
-                >
-                  Limpiar
-                </button>
+            {state.step === 'confirm' &&
+              state.parsedData &&
+              state.validationResult && (
+                <ImportConfirmationStep
+                  data={actions.getPreparedData()}
+                  validationResult={state.validationResult}
+                  onImport={handleImport}
+                  onBack={actions.goBack}
+                  isImporting={isImporting}
+                  result={hookImportResult || undefined}
+                />
               )}
-            </div>
           </div>
         </div>
       </div>

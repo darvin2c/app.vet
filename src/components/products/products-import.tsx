@@ -1,20 +1,20 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-  SheetTrigger,
 } from '@/components/ui/sheet'
 import { DataImporter } from '@/components/ui/data-import'
-import { ImportConfig, ImportResult } from '@/types/data-import.types'
-import { createProductSchema, CreateProductSchema } from '@/schemas/products.schema'
-import useProductCreate from '@/hooks/products/use-product-create'
-import { toast } from 'sonner'
+import { ImportConfig } from '@/types/data-import.types'
+import {
+  createProductSchema,
+  CreateProductSchema,
+} from '@/schemas/products.schema'
 import { ScrollArea } from '../ui/scroll-area'
+import { useProductCreateBulk } from '@/hooks/products/use-product-create'
 
 interface ProductsImportProps {
   open: boolean
@@ -22,69 +22,12 @@ interface ProductsImportProps {
 }
 
 export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
-  const [isImporting, setIsImporting] = useState(false)
-  const [importResult, setImportResult] = useState<ImportResult | null>(null)
-  const { mutateAsync: createProduct } = useProductCreate()
-
   // Función para manejar la importación
+  const createProductBulk = useProductCreateBulk()
+
   const handleImport = async (data: CreateProductSchema[]): Promise<void> => {
-    setIsImporting(true)
-    setImportResult(null)
-    
-    const startTime = Date.now()
-    let imported = 0
-    let failed = 0
-    const errors: Array<{ row: number; message: string; data: any }> = []
-
-    try {
-      // Procesar cada producto
-      for (let i = 0; i < data.length; i++) {
-        const product = data[i]
-        try {
-          await createProduct(product)
-          imported++
-        } catch (error) {
-          failed++
-          errors.push({
-            row: i + 1,
-            message: error instanceof Error ? error.message : 'Error desconocido',
-            data: product,
-          })
-        }
-      }
-
-      const duration = Date.now() - startTime
-      const result: ImportResult = {
-        success: failed === 0,
-        imported,
-        failed,
-        errors,
-        message: failed === 0 
-          ? `Se importaron ${imported} productos correctamente`
-          : `Se importaron ${imported} productos, ${failed} fallaron`,
-      }
-
-      setImportResult(result)
-
-      if (result.success) {
-        toast.success(`Productos importados correctamente: ${imported}`)
-      } else {
-        toast.error(`Importación completada con errores: ${failed} productos fallaron`)
-      }
-    } catch (error) {
-      const result: ImportResult = {
-        success: false,
-        imported: 0,
-        failed: data.length,
-        errors: [{ row: 0, message: 'Error general en la importación', data: {} }],
-        message: 'Error al importar productos',
-      }
-
-      setImportResult(result)
-      toast.error('Error al importar productos')
-    } finally {
-      setIsImporting(false)
-    }
+    await createProductBulk.mutateAsync(data)
+    onOpenChange(false)
   }
 
   const config: ImportConfig<CreateProductSchema> = {
@@ -205,17 +148,6 @@ export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
     ],
   }
 
-  const handleComplete = (result: ImportResult) => {
-    console.log('Importación completada:', result)
-    // Mantener el sheet abierto para mostrar resultados
-  }
-
-  const handleCancel = () => {
-    setIsImporting(false)
-    setImportResult(null)
-    onOpenChange(false)
-  }
-
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full max-w-6xl sm:max-w-6xl">
@@ -227,13 +159,10 @@ export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
         </SheetHeader>
 
         <ScrollArea className="h-[calc(100vh-120px)] mt-6">
-          <DataImporter
+          <DataImporter<CreateProductSchema>
             config={config}
-            onComplete={handleComplete}
-            onCancel={handleCancel}
-            isImporting={isImporting}
-            importResult={importResult}
             onImport={handleImport}
+            isImporting={createProductBulk.isPending}
           />
         </ScrollArea>
       </SheetContent>

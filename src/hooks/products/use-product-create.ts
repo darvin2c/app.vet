@@ -1,6 +1,5 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { CreateProductSchema } from '@/schemas/products.schema'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
@@ -10,19 +9,13 @@ export default function useProductCreate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: CreateProductSchema) => {
+    mutationFn: async (data: Omit<TablesInsert<'products'>, 'tenant_id'>) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const productData: TablesInsert<'products'> = {
-        name: data.name,
-        sku: data.sku,
-        category_id: data.category_id,
-        unit_id: data.unit_id,
-
-        stock: data.stock,
-        is_active: data.is_active ?? true,
+        ...data,
         tenant_id: currentTenant.id,
       }
 
@@ -47,6 +40,45 @@ export default function useProductCreate() {
     },
     onError: (error) => {
       toast.error(error.message || 'Error al crear producto')
+    },
+  })
+}
+
+export function useProductCreateBulk() {
+  const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
+
+  return useMutation({
+    mutationFn: async (data: Omit<TablesInsert<'products'>, 'tenant_id'>[]) => {
+      if (!currentTenant?.id) {
+        throw new Error('No hay tenant seleccionado')
+      }
+
+      const productData: TablesInsert<'products'>[] = data.map((item) => ({
+        ...item,
+        tenant_id: currentTenant.id,
+      }))
+
+      const { data: products, error } = await supabase
+        .from('products')
+        .insert(productData)
+        .select()
+
+      if (error) {
+        throw new Error(`Error al crear productos: ${error.message}`)
+      }
+
+      return products
+    },
+    onSuccess: (products) => {
+      // Invalidar las consultas relacionadas
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
+      toast.success(`Se crearon ${products.length} productos exitosamente`)
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Error al crear productos')
     },
   })
 }
