@@ -1,7 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useState } from 'react'
 import { Upload, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 
 interface UploadStepProps {
   onFileSelect: (file: File) => void
@@ -20,6 +21,8 @@ export function UploadStep({
   maxFileSize = 10 * 1024 * 1024, // 10MB
   templateName = 'template.csv',
 }: UploadStepProps) {
+  const [isDragOver, setIsDragOver] = useState(false)
+
   const handleFileChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0]
@@ -41,13 +44,28 @@ export function UploadStep({
     [onFileSelect, acceptedFileTypes, maxFileSize]
   )
 
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }, [])
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault()
+    // Solo cambiar el estado si realmente salimos del área de drop
+    if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+      setIsDragOver(false)
+    }
+  }, [])
+
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
+    setIsDragOver(true)
   }, [])
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
       e.preventDefault()
+      setIsDragOver(false)
       const file = e.dataTransfer.files[0]
       if (file) {
         const fileExtension = '.' + file.name.split('.').pop()?.toLowerCase()
@@ -72,14 +90,32 @@ export function UploadStep({
       </div>
 
       <div
-        className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center hover:border-muted-foreground/50 transition-colors"
+        className={cn(
+          "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ease-in-out",
+          isDragOver
+            ? "border-primary bg-primary/5 border-solid shadow-md"
+            : "border-muted-foreground/25 hover:border-muted-foreground/50"
+        )}
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+        <Upload 
+          className={cn(
+            "mx-auto h-12 w-12 mb-4 transition-colors duration-200",
+            isDragOver ? "text-primary" : "text-muted-foreground"
+          )} 
+        />
         <div className="space-y-2">
-          <p className="text-sm font-medium">
-            Arrastra y suelta tu archivo aquí, o haz clic para seleccionar
+          <p className={cn(
+            "text-sm font-medium transition-colors duration-200",
+            isDragOver ? "text-primary" : ""
+          )}>
+            {isDragOver 
+              ? "Suelta el archivo aquí" 
+              : "Arrastra y suelta tu archivo aquí, o haz clic para seleccionar"
+            }
           </p>
           <p className="text-xs text-muted-foreground">
             Formatos soportados: {acceptedFileTypes.join(', ')} (máx.{' '}
