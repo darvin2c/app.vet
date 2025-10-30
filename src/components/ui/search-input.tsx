@@ -117,43 +117,41 @@ const InternalSearchInput = React.forwardRef<
         />
 
         {/* Right side elements */}
-        <InputGroupAddon align="inline-end">
-          {/* Loading spinner - highest priority */}
-          {isLoading || isFetching ? (
-            <Loader2
-              className={cn(
-                'animate-spin text-muted-foreground',
-                iconSizeClasses[size]
-              )}
-            />
-          ) : null}
+        {/* Loading spinner - highest priority */}
+        {isLoading || isFetching ? (
+          <Loader2
+            className={cn(
+              'animate-spin text-muted-foreground',
+              iconSizeClasses[size]
+            )}
+          />
+        ) : null}
 
-          {/* Clear button */}
-          {showClearButton ? (
-            <InputGroupButton
-              type="button"
-              onClick={onClear}
-              size={size === 'sm' ? 'icon-xs' : 'icon-sm'}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <X className={iconSizeClasses[size]} />
-            </InputGroupButton>
-          ) : null}
+        {/* Clear button */}
+        {showClearButton ? (
+          <InputGroupButton
+            type="button"
+            onClick={onClear}
+            size={size === 'sm' ? 'icon-xs' : 'icon-sm'}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <X className={iconSizeClasses[size]} />
+          </InputGroupButton>
+        ) : null}
 
-          {/* Keyboard shortcut hint */}
-          {showShortcut ? (
-            <InputGroupText className="text-xs pointer-events-none">
-              <Kbd>Ctrl+K</Kbd>
-            </InputGroupText>
-          ) : null}
+        {/* Keyboard shortcut hint */}
+        {showShortcut ? (
+          <InputGroupText className="text-xs pointer-events-none">
+            <Kbd>Ctrl+K</Kbd>
+          </InputGroupText>
+        ) : null}
 
-          {/* Suffix */}
-          {showSuffix ? <InputGroupText>{suffix}</InputGroupText> : null}
-          {/* Search icon - right side */}
-          {hasSidebarTriggerRight && isMobile && (
-            <SidebarTriggerRight className="cursor-ew-resize" />
-          )}
-        </InputGroupAddon>
+        {/* Suffix */}
+        {showSuffix ? <InputGroupText>{suffix}</InputGroupText> : null}
+        {/* Search icon - right side */}
+        {hasSidebarTriggerRight && isMobile && (
+          <SidebarTriggerRight className="cursor-ew-resize" />
+        )}
       </InputGroup>
     )
   }
