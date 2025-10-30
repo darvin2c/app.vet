@@ -8,7 +8,6 @@ import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/types/order-by.types'
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
-import { ProductsImportButton } from '@/components/products/products-import-button'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -80,7 +79,6 @@ export default function ProductsPage() {
               <Filters filters={filters} />
               <OrderBy config={orderByConfig} />
               <ProductCreateButton variant={'ghost'} />
-              <ProductsImportButton variant={'ghost'} className="h-full" />
             </ButtonGroup>
           }
         />
