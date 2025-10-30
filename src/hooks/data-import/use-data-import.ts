@@ -9,7 +9,17 @@ import type {
   ImportResult,
 } from '@/types/data-import.types'
 
-export function useDataImport<T = any>(config: ImportConfig<T>) {
+interface UseDataImportProps<T = any> {
+  config: ImportConfig<T>
+  isImporting?: boolean
+  importResult?: ImportResult | null
+}
+
+export function useDataImport<T = any>({ 
+  config, 
+  isImporting = false, 
+  importResult = null 
+}: UseDataImportProps<T>) {
   const { parseFile, validateFile } = useFileParser()
   const { validateData, transformData, validateRequiredColumns } =
     useDataValidator()
@@ -22,8 +32,6 @@ export function useDataImport<T = any>(config: ImportConfig<T>) {
     columnMapping: config.columnMapping || {},
     isLoading: false,
     error: null,
-    result: null,
-    progress: 0,
   })
 
   const setStep = useCallback((step: ImportStep) => {
@@ -65,178 +73,81 @@ export function useDataImport<T = any>(config: ImportConfig<T>) {
           return
         }
 
-        // Validar límite de filas
-        if (config.maxRows && parsedData.data.length > config.maxRows) {
+        // Validar columnas requeridas
+        const columnValidation = validateRequiredColumns(
+          parsedData.headers,
+          config.requiredColumns || []
+        )
+
+        if (!columnValidation.isValid) {
           setError(
-            `El archivo contiene demasiadas filas. Máximo permitido: ${config.maxRows}`
+            `Faltan columnas requeridas: ${columnValidation.missingColumns.join(', ')}`
           )
           return
         }
+
+        // Validar datos
+        const validationResult = validateData(parsedData.data, config.schema || {})
 
         setState((prev) => ({
           ...prev,
           file,
           parsedData,
+          validationResult,
           step: 'verify',
           isLoading: false,
           error: null,
         }))
-
-        // Ejecutar validación inicial
-        await handleDataValidation(parsedData.data)
       } catch (error) {
         setError(
           error instanceof Error ? error.message : 'Error procesando archivo'
         )
       }
     },
-    [config, parseFile, validateFile, validateRequiredColumns]
+    [config, parseFile, validateFile, validateData, validateRequiredColumns, setLoading, setError]
   )
 
-  const handleDataValidation = useCallback(
-    async (data: T[]) => {
-      setLoading(true)
-
-      try {
-        // Aplicar mapeo de columnas si existe
-        let mappedData = data
-        if (Object.keys(state.columnMapping).length > 0) {
-          mappedData = data.map((row) => {
-            const mappedRow: any = {}
-            Object.entries(state.columnMapping).forEach(
-              ([csvColumn, entityField]) => {
-                mappedRow[entityField] = (row as any)[csvColumn]
-              }
-            )
-            return mappedRow
-          })
-        }
-
-        // Validar datos
-        const validationResult = validateData(
-          mappedData,
-          config.validationSchema
-        )
-
-        setState((prev) => ({
-          ...prev,
-          validationResult,
-          isLoading: false,
-        }))
-      } catch (error) {
-        setError(
-          error instanceof Error ? error.message : 'Error validando datos'
-        )
-      }
-    },
-    [state.columnMapping, validateData, config.validationSchema]
-  )
-
-  const handleColumnMapping = useCallback(
-    (mapping: ColumnMapping) => {
-      setState((prev) => ({ ...prev, columnMapping: mapping }))
-
-      // Re-validar datos con el nuevo mapeo
-      if (state.parsedData) {
-        handleDataValidation(state.parsedData.data)
-      }
-    },
-    [state.parsedData, handleDataValidation]
-  )
+  const handleColumnMapping = useCallback((mapping: ColumnMapping) => {
+    setState((prev) => ({ ...prev, columnMapping: mapping }))
+  }, [])
 
   const proceedToConfirmation = useCallback(() => {
-    if (!state.validationResult?.isValid) {
-      setError(
-        'Hay errores de validación que deben corregirse antes de continuar'
-      )
-      return
-    }
-
     setStep('confirm')
-  }, [state.validationResult, setStep])
+  }, [setStep])
 
-  const handleImport = useCallback(async () => {
+  // Función para preparar datos listos para importar
+  const getPreparedData = useCallback((): T[] => {
     if (!state.parsedData || !state.validationResult) {
-      setError('No hay datos para importar')
-      return
+      return []
     }
 
-    setLoading(true)
-    setState((prev) => ({ ...prev, progress: 0 }))
-
-    try {
-      // Aplicar mapeo y transformaciones
-      let dataToImport = state.parsedData.data
-
-      if (Object.keys(state.columnMapping).length > 0) {
-        dataToImport = state.parsedData.data.map((row) => {
-          const mappedRow: any = {}
-          Object.entries(state.columnMapping).forEach(
-            ([csvColumn, entityField]) => {
-              mappedRow[entityField] = (row as any)[csvColumn]
-            }
-          )
-          return mappedRow
-        })
-      }
-
-      // Aplicar transformaciones del schema
-      const transformedData = transformData(
-        dataToImport,
-        config.validationSchema
-      )
-
-      // Filtrar solo filas válidas
-      const validData = transformedData.filter((_, index) => {
-        const rowErrors = state.validationResult!.errors.filter(
-          (error) => error.row === index + 1
+    // Mapear columnas si es necesario
+    let dataToImport = state.parsedData.data
+    if (Object.keys(state.columnMapping).length > 0) {
+      dataToImport = state.parsedData.data.map((row) => {
+        const mappedRow: any = {}
+        Object.entries(state.columnMapping).forEach(
+          ([csvColumn, entityField]) => {
+            mappedRow[entityField] = (row as any)[csvColumn]
+          }
         )
-        return rowErrors.length === 0
+        return mappedRow
       })
-
-      // Simular progreso
-      setState((prev) => ({ ...prev, progress: 25 }))
-
-      // Ejecutar importación
-      const result = await config.importFunction(validData)
-
-      setState((prev) => ({
-        ...prev,
-        result,
-        step: result.success ? 'success' : 'error',
-        isLoading: false,
-        progress: 100,
-      }))
-    } catch (error) {
-      const errorResult: ImportResult = {
-        success: false,
-        imported: 0,
-        failed: state.parsedData.data.length,
-        errors: [
-          {
-            row: 0,
-            message:
-              error instanceof Error ? error.message : 'Error desconocido',
-            data: null,
-          },
-        ],
-        duration: 0,
-      }
-
-      setState((prev) => ({
-        ...prev,
-        result: errorResult,
-        step: 'error',
-        isLoading: false,
-      }))
     }
-  }, [
-    state.parsedData,
-    state.validationResult,
-    state.columnMapping,
-    config,
-    transformData,
-  ])
+
+    // Aplicar transformaciones del schema
+    const transformedData = transformData(dataToImport, config.schema || {})
+
+    // Filtrar solo filas válidas
+    const validData = transformedData.filter((_, index) => {
+      const rowErrors = state.validationResult!.errors.filter(
+        (error) => error.row === index + 1
+      )
+      return rowErrors.length === 0
+    })
+
+    return validData
+  }, [state.parsedData, state.validationResult, state.columnMapping, config.schema, transformData])
 
   const reset = useCallback(() => {
     setState({
@@ -247,8 +158,6 @@ export function useDataImport<T = any>(config: ImportConfig<T>) {
       columnMapping: config.columnMapping || {},
       isLoading: false,
       error: null,
-      result: null,
-      progress: 0,
     })
   }, [config.columnMapping])
 
@@ -260,20 +169,27 @@ export function useDataImport<T = any>(config: ImportConfig<T>) {
       case 'confirm':
         setStep('verify')
         break
-      case 'success':
-      case 'error':
+      default:
         reset()
         break
     }
   }, [state.step, setStep, reset])
 
+  // Combinar estado interno con estado externo
+  const combinedState = {
+    ...state,
+    // Usar estado externo para importación si está disponible
+    isLoading: state.isLoading || isImporting,
+  }
+
   return {
-    state,
+    state: combinedState,
+    importResult,
     actions: {
       handleFileSelect,
       handleColumnMapping,
       proceedToConfirmation,
-      handleImport,
+      getPreparedData,
       goBack,
       reset,
       setStep,

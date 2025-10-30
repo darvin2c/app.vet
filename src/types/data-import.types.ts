@@ -70,26 +70,42 @@ export interface ImportResult {
   imported: number
   failed: number
   errors: ImportError[]
-  duration: number
+  duration?: number
+  message?: string
+}
+
+// Nuevo tipo para mapeo de columnas con metadatos
+export interface ColumnMappingConfig {
+  label: string
+  description: string
+  example: string
+  required: boolean
+  type?: 'string' | 'number' | 'email' | 'date' | 'boolean' | 'select'
+  options?: string[]
 }
 
 export interface ImportConfig<T = any> {
   entityType: string
-  validationSchema: ValidationSchema
+  schema?: any // Esquema de validación (Zod schema)
+  validationSchema?: ValidationSchema // Esquema de validación legacy
   columnMapping?: ColumnMapping
+  columnMappings?: Record<string, ColumnMappingConfig> // Nuevo mapeo con metadatos
+  requiredColumns?: string[]
+  optionalColumns?: string[]
   maxRows?: number
   maxFileSize?: number // en bytes
-  requiredColumns: string[]
-  importFunction: (data: any[]) => Promise<ImportResult>
   allowedFileTypes?: string[]
+  sampleData?: T[] // Datos de ejemplo
 }
 
-// Props de componentes
 export interface DataImporterProps<T = any> {
   config: ImportConfig<T>
   onComplete?: (result: ImportResult) => void
   onCancel?: () => void
   className?: string
+  isImporting?: boolean
+  importResult?: ImportResult | null
+  onImport?: (data: T[]) => Promise<void>
 }
 
 export interface FileUploadStepProps<T = any> {
@@ -121,7 +137,7 @@ export interface ImportConfirmationStepProps {
   result?: ImportResult
 }
 
-// Estados del hook principal
+// Estado del hook useDataImport
 export interface ImportState<T = any> {
   step: ImportStep
   file: File | null
@@ -130,11 +146,9 @@ export interface ImportState<T = any> {
   columnMapping: ColumnMapping
   isLoading: boolean
   error: string | null
-  result: ImportResult | null
-  progress: number
 }
 
-// Tipos para el parser de archivos
+// Opciones para parsear archivos
 export interface FileParseOptions {
   delimiter?: string
   skipEmptyLines?: boolean

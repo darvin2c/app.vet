@@ -22,8 +22,8 @@ export function generateTemplate<T = any>(
 
   // Obtener columnas requeridas y opcionales
   const columns = getColumnsFromSchema(
-    config.validationSchema,
-    config.requiredColumns
+    config.schema || {},
+    config.requiredColumns || []
   )
 
   // Crear datos de ejemplo si se solicita

@@ -5,12 +5,12 @@ import {
   ChevronLeft,
   Download,
   RefreshCw,
+  Upload,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Badge } from '@/components/ui/badge'
 import type { ImportConfirmationStepProps } from '@/types/data-import.types'
 
 export function ImportConfirmationStep({
@@ -70,7 +70,7 @@ export function ImportConfirmationStep({
               </div>
               <div className="text-center">
                 <div className="text-2xl font-bold text-gray-600">
-                  {Math.round(result.duration / 1000)}s
+                  {result.duration ? Math.round(result.duration / 1000) : 0}s
                 </div>
                 <div className="text-sm text-gray-600">Duración</div>
               </div>
@@ -287,7 +287,7 @@ export function ImportConfirmationStep({
             </>
           ) : (
             <>
-              <Download className="w-4 h-4 mr-2" />
+              <Upload className="w-4 h-4 mr-2" />
               Importar {validRowsCount} Registros
             </>
           )}

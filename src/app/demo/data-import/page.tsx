@@ -14,7 +14,7 @@ import { Badge } from '@/components/ui/badge'
 import { DataImporter } from '@/components/ui/data-import'
 import type { ImportConfig, ImportResult } from '@/types/data-import.types'
 
-// Esquema de validación para productos
+// Esquemas de validación
 const ProductSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   price: z.number().min(0, 'El precio debe ser mayor a 0'),
@@ -25,7 +25,7 @@ const ProductSchema = z.object({
   active: z.boolean().default(true),
 })
 
-// Esquema de validación para clientes
+// Esquema para clientes
 const ClientSchema = z.object({
   name: z.string().min(1, 'El nombre es requerido'),
   email: z.string().email('Email inválido').optional().or(z.literal('')),
@@ -61,382 +61,355 @@ interface Client {
 }
 
 export default function DataImportDemo() {
-  const [selectedEntity, setSelectedEntity] = useState<DemoEntity | null>(null)
+  const [selectedEntity, setSelectedEntity] = useState<DemoEntity>('products')
+  const [isImporting, setIsImporting] = useState(false)
   const [importResult, setImportResult] = useState<ImportResult | null>(null)
+
+  // Función para manejar la importación de productos
+  const handleProductImport = async (data: Product[]): Promise<void> => {
+    setIsImporting(true)
+    setImportResult(null)
+
+    try {
+      // Simular importación
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      const result: ImportResult = {
+        success: true,
+        imported: data.length,
+        failed: 0,
+        errors: [],
+        message: `Se importaron ${data.length} productos correctamente`,
+      }
+
+      setImportResult(result)
+    } catch (error) {
+      const result: ImportResult = {
+        success: false,
+        imported: 0,
+        failed: data.length,
+        errors: [{ row: 0, message: 'Error en la importación', data: {} }],
+        message: 'Error al importar productos',
+      }
+
+      setImportResult(result)
+    } finally {
+      setIsImporting(false)
+    }
+  }
+
+  // Función para manejar la importación de clientes
+  const handleClientImport = async (data: Client[]): Promise<void> => {
+    setIsImporting(true)
+    setImportResult(null)
+
+    try {
+      // Simular importación
+      await new Promise((resolve) => setTimeout(resolve, 1500))
+
+      const result: ImportResult = {
+        success: true,
+        imported: data.length,
+        failed: 0,
+        errors: [],
+        message: `Se importaron ${data.length} clientes correctamente`,
+      }
+
+      setImportResult(result)
+    } catch (error) {
+      const result: ImportResult = {
+        success: false,
+        imported: 0,
+        failed: data.length,
+        errors: [{ row: 0, message: 'Error en la importación', data: {} }],
+        message: 'Error al importar clientes',
+      }
+
+      setImportResult(result)
+    } finally {
+      setIsImporting(false)
+    }
+  }
 
   // Configuración para productos
   const productConfig: ImportConfig<Product> = {
     entityType: 'Productos',
-    allowedFileTypes: ['.csv', '.xlsx', '.xls'],
-    maxFileSize: 5 * 1024 * 1024, // 5MB
-    validationSchema: {
+    schema: ProductSchema,
+    requiredColumns: ['name', 'price', 'category', 'stock', 'sku'],
+    optionalColumns: ['description', 'active'],
+    columnMappings: {
       name: {
-        type: 'string',
+        label: 'Nombre del Producto',
+        description: 'Nombre único del producto',
+        example: 'Laptop Dell Inspiron',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'El nombre es requerido' },
-        ],
       },
       price: {
-        type: 'number',
+        label: 'Precio',
+        description: 'Precio de venta del producto',
+        example: '1299.99',
         required: true,
-        rules: [
-          { type: 'min', value: 0, message: 'El precio debe ser mayor a 0' },
-        ],
+        type: 'number',
       },
       category: {
-        type: 'string',
+        label: 'Categoría',
+        description: 'Categoría del producto',
+        example: 'Electrónicos',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'La categoría es requerida' },
-        ],
       },
       stock: {
-        type: 'number',
+        label: 'Stock',
+        description: 'Cantidad disponible en inventario',
+        example: '50',
         required: true,
-        rules: [
-          {
-            type: 'min',
-            value: 0,
-            message: 'El stock debe ser mayor o igual a 0',
-          },
-        ],
+        type: 'number',
       },
       description: {
-        type: 'string',
+        label: 'Descripción',
+        description: 'Descripción detallada del producto',
+        example: 'Laptop para uso profesional...',
         required: false,
       },
       sku: {
-        type: 'string',
+        label: 'SKU',
+        description: 'Código único del producto',
+        example: 'DELL-INSP-001',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'El SKU es requerido' },
-        ],
       },
       active: {
-        type: 'boolean',
+        label: 'Activo',
+        description: 'Estado del producto (true/false)',
+        example: 'true',
         required: false,
-        defaultValue: true,
+        type: 'boolean',
       },
     },
-    requiredColumns: ['name', 'price', 'category', 'stock', 'sku'],
-    importFunction: async (data: Product[]) => {
-      // Simular importación
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Simular algunos errores
-      const errors = data
-        .slice(0, Math.floor(data.length * 0.1))
-        .map((item, index) => ({
-          row: index,
-          message: 'SKU duplicado en la base de datos',
-          data: item,
-        }))
-
-      return {
-        success: true,
-        imported: data.length - errors.length,
-        failed: errors.length,
-        errors,
-        duration: 2000,
-      }
-    },
+    allowedFileTypes: ['.csv', '.xlsx', '.xls'],
+    maxFileSize: 5 * 1024 * 1024, // 5MB
+    sampleData: [
+      {
+        name: 'Laptop Dell Inspiron',
+        price: 1299.99,
+        category: 'Electrónicos',
+        stock: 25,
+        description: 'Laptop para uso profesional con procesador Intel i7',
+        sku: 'DELL-INSP-001',
+        active: true,
+      },
+      {
+        name: 'Mouse Inalámbrico',
+        price: 29.99,
+        category: 'Accesorios',
+        stock: 100,
+        description: 'Mouse inalámbrico ergonómico',
+        sku: 'MOUSE-WIRELESS-001',
+        active: true,
+      },
+    ],
   }
 
   // Configuración para clientes
   const clientConfig: ImportConfig<Client> = {
     entityType: 'Clientes',
-    allowedFileTypes: ['.csv', '.xlsx', '.xls'],
-    maxFileSize: 5 * 1024 * 1024, // 5MB
-    validationSchema: {
+    schema: ClientSchema,
+    requiredColumns: ['name', 'phone', 'city', 'document_number', 'document_type'],
+    optionalColumns: ['email', 'address'],
+    columnMappings: {
       name: {
-        type: 'string',
+        label: 'Nombre Completo',
+        description: 'Nombre completo del cliente',
+        example: 'Juan Pérez García',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'El nombre es requerido' },
-        ],
       },
       email: {
-        type: 'string',
+        label: 'Email',
+        description: 'Correo electrónico del cliente',
+        example: 'juan.perez@email.com',
         required: false,
-        rules: [{ type: 'email', message: 'Email inválido' }],
+        type: 'email',
       },
       phone: {
-        type: 'string',
+        label: 'Teléfono',
+        description: 'Número de teléfono del cliente',
+        example: '+51 999 888 777',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'El teléfono es requerido' },
-        ],
       },
       address: {
-        type: 'string',
+        label: 'Dirección',
+        description: 'Dirección completa del cliente',
+        example: 'Av. Principal 123, San Isidro',
         required: false,
       },
       city: {
-        type: 'string',
+        label: 'Ciudad',
+        description: 'Ciudad de residencia',
+        example: 'Lima',
         required: true,
-        rules: [
-          { type: 'minLength', value: 1, message: 'La ciudad es requerida' },
-        ],
       },
       document_number: {
-        type: 'string',
+        label: 'Número de Documento',
+        description: 'Número de documento de identidad',
+        example: '12345678',
         required: true,
-        rules: [
-          {
-            type: 'minLength',
-            value: 1,
-            message: 'El número de documento es requerido',
-          },
-        ],
       },
       document_type: {
-        type: 'string',
+        label: 'Tipo de Documento',
+        description: 'Tipo de documento (DNI, RUC, CE)',
+        example: 'DNI',
         required: true,
-        rules: [
-          {
-            type: 'enum',
-            values: ['DNI', 'RUC', 'CE'],
-            message: 'Tipo de documento debe ser DNI, RUC o CE',
-          },
-        ],
+        type: 'select',
+        options: ['DNI', 'RUC', 'CE'],
       },
     },
-    requiredColumns: [
-      'name',
-      'phone',
-      'city',
-      'document_number',
-      'document_type',
+    allowedFileTypes: ['.csv', '.xlsx', '.xls'],
+    maxFileSize: 5 * 1024 * 1024, // 5MB
+    sampleData: [
+      {
+        name: 'Juan Pérez García',
+        email: 'juan.perez@email.com',
+        phone: '+51 999 888 777',
+        address: 'Av. Principal 123, San Isidro',
+        city: 'Lima',
+        document_number: '12345678',
+        document_type: 'DNI' as const,
+      },
+      {
+        name: 'María González López',
+        email: 'maria.gonzalez@email.com',
+        phone: '+51 888 777 666',
+        address: 'Jr. Los Olivos 456, Miraflores',
+        city: 'Lima',
+        document_number: '87654321',
+        document_type: 'DNI' as const,
+      },
     ],
-    importFunction: async (data: Client[]) => {
-      // Simular importación
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-
-      return {
-        success: true,
-        imported: data.length,
-        failed: 0,
-        errors: [],
-        duration: 1500,
-      }
-    },
   }
 
-  const handleImportComplete = (result: ImportResult) => {
-    setImportResult(result)
+  const handleComplete = (result: ImportResult) => {
     console.log('Importación completada:', result)
+    setImportResult(result)
   }
 
   const handleCancel = () => {
-    setSelectedEntity(null)
+    setIsImporting(false)
     setImportResult(null)
   }
 
-  const resetDemo = () => {
-    setSelectedEntity(null)
-    setImportResult(null)
+  const getImportHandler = () => {
+    return selectedEntity === 'products' ? handleProductImport : handleClientImport
   }
 
-  if (selectedEntity) {
-    return (
-      <div className="container mx-auto py-8">
-        {selectedEntity === 'products' ? (
-          <DataImporter<Product>
-            config={productConfig}
-            onComplete={handleImportComplete}
-            onCancel={handleCancel}
-          />
-        ) : (
-          <DataImporter<Client>
-            config={clientConfig}
-            onComplete={handleImportComplete}
-            onCancel={handleCancel}
-          />
-        )}
-      </div>
-    )
+  const getCurrentConfig = () => {
+    return selectedEntity === 'products' ? productConfig : clientConfig
   }
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Demo: Componente de Importación de Datos
-          </h1>
-          <p className="text-lg text-gray-600">
-            Componente reutilizable para importar datos de cualquier entidad con
-            validación y mapeo de columnas.
-          </p>
-        </div>
+    <div className="container mx-auto py-8 space-y-8">
+      <div className="space-y-4">
+        <h1 className="text-3xl font-bold">Demo - Importador de Datos</h1>
+        <p className="text-muted-foreground">
+          Demostración del componente DataImporter con diferentes tipos de entidades.
+        </p>
+      </div>
 
-        {importResult && (
-          <Card className="mb-8 border-green-200 bg-green-50">
-            <CardHeader>
-              <CardTitle className="text-green-800">
-                ¡Importación Completada!
-              </CardTitle>
-              <CardDescription>
-                Los datos se han importado exitosamente
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-green-600">
-                    {importResult.imported}
-                  </div>
-                  <div className="text-sm text-gray-600">Importados</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-red-600">
-                    {importResult.failed}
-                  </div>
-                  <div className="text-sm text-gray-600">Fallidos</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">
-                    {importResult.duration}ms
-                  </div>
-                  <div className="text-sm text-gray-600">Duración</div>
-                </div>
-                <div className="text-center">
-                  <Badge
-                    variant={importResult.success ? 'default' : 'destructive'}
-                  >
-                    {importResult.success ? 'Éxito' : 'Error'}
-                  </Badge>
-                </div>
-              </div>
-              <Button onClick={resetDemo} variant="outline">
-                Realizar otra importación
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+      {/* Selector de entidad */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Seleccionar Entidad</CardTitle>
+          <CardDescription>
+            Elige el tipo de datos que deseas importar
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4">
+            <Button
+              variant={selectedEntity === 'products' ? 'default' : 'outline'}
+              onClick={() => setSelectedEntity('products')}
+            >
+              Productos
+            </Button>
+            <Button
+              variant={selectedEntity === 'clients' ? 'default' : 'outline'}
+              onClick={() => setSelectedEntity('clients')}
+            >
+              Clientes
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                📦 Importar Productos
-                <Badge variant="secondary">Demo</Badge>
-              </CardTitle>
-              <CardDescription>
-                Importa productos con validación de precios, stock, SKU y
-                categorías.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 mb-4">
-                <p className="text-sm text-gray-600">
-                  <strong>Columnas requeridas:</strong> name, price, category,
-                  stock, sku
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Columnas opcionales:</strong> description, active
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Validaciones:</strong> Precios &gt; 0, Stock ≥ 0, SKU
-                  único
-                </p>
-              </div>
-              <Button
-                onClick={() => setSelectedEntity('products')}
-                className="w-full"
-              >
-                Comenzar Importación
-              </Button>
-            </CardContent>
-          </Card>
-
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                👥 Importar Clientes
-                <Badge variant="secondary">Demo</Badge>
-              </CardTitle>
-              <CardDescription>
-                Importa clientes con validación de emails, documentos y datos de
-                contacto.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2 mb-4">
-                <p className="text-sm text-gray-600">
-                  <strong>Columnas requeridas:</strong> name, phone, city,
-                  document_number, document_type
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Columnas opcionales:</strong> email, address
-                </p>
-                <p className="text-sm text-gray-600">
-                  <strong>Validaciones:</strong> Email válido, Tipo documento
-                  (DNI/RUC/CE)
-                </p>
-              </div>
-              <Button
-                onClick={() => setSelectedEntity('clients')}
-                className="w-full"
-              >
-                Comenzar Importación
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-
-        <Card className="mt-8">
+      {/* Estado de importación */}
+      {importResult && (
+        <Card>
           <CardHeader>
-            <CardTitle>Características del Componente</CardTitle>
-            <CardDescription>
-              Funcionalidades incluidas en el componente de importación
-            </CardDescription>
+            <CardTitle className="flex items-center gap-2">
+              Resultado de Importación
+              <Badge variant={importResult.success ? 'default' : 'destructive'}>
+                {importResult.success ? 'Exitoso' : 'Error'}
+              </Badge>
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h4 className="font-semibold mb-2">📁 Paso 1: Subir Archivo</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Drag &amp; drop de archivos</li>
-                  <li>• Soporte CSV y Excel (.xlsx, .xls)</li>
-                  <li>• Validación de tipo y tamaño</li>
-                  <li>• Feedback visual del estado</li>
-                </ul>
+            <div className="space-y-2">
+              <p>{importResult.message}</p>
+              <div className="flex gap-4 text-sm text-muted-foreground">
+                <span>Importados: {importResult.imported}</span>
+                <span>Fallidos: {importResult.failed}</span>
               </div>
-              <div>
-                <h4 className="font-semibold mb-2">
-                  🔍 Paso 2: Verificar Datos
-                </h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Vista previa en tabla</li>
-                  <li>• Validación en tiempo real</li>
-                  <li>• Mapeo de columnas</li>
-                  <li>• Filtros por errores</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">✅ Paso 3: Confirmar</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Resumen de importación</li>
-                  <li>• Barra de progreso</li>
-                  <li>• Manejo de errores</li>
-                  <li>• Resultados detallados</li>
-                </ul>
-              </div>
-              <div>
-                <h4 className="font-semibold mb-2">⚙️ Configuración</h4>
-                <ul className="text-sm text-gray-600 space-y-1">
-                  <li>• Completamente reutilizable</li>
-                  <li>• Esquemas de validación flexibles</li>
-                  <li>• Función de importación personalizable</li>
-                  <li>• TypeScript con tipos estrictos</li>
-                </ul>
-              </div>
+              {importResult.errors.length > 0 && (
+                <div className="mt-4">
+                  <h4 className="font-medium mb-2">Errores:</h4>
+                  <ul className="space-y-1 text-sm">
+                    {importResult.errors.slice(0, 5).map((error, index) => (
+                      <li key={index} className="text-red-600">
+                        Fila {error.row}: {error.message}
+                      </li>
+                    ))}
+                    {importResult.errors.length > 5 && (
+                      <li className="text-muted-foreground">
+                        ... y {importResult.errors.length - 5} errores más
+                      </li>
+                    )}
+                  </ul>
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
-      </div>
+      )}
+
+      {/* Importador */}
+      <Card>
+        <CardHeader>
+          <CardTitle>
+            Importar {selectedEntity === 'products' ? 'Productos' : 'Clientes'}
+          </CardTitle>
+          <CardDescription>
+            Sube un archivo CSV o Excel para importar datos
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {selectedEntity === 'products' ? (
+            <DataImporter<Product>
+              config={productConfig}
+              onComplete={handleComplete}
+              onCancel={handleCancel}
+              isImporting={isImporting}
+              importResult={importResult}
+              onImport={handleProductImport}
+            />
+          ) : (
+            <DataImporter<Client>
+              config={clientConfig}
+              onComplete={handleComplete}
+              onCancel={handleCancel}
+              isImporting={isImporting}
+              importResult={importResult}
+              onImport={handleClientImport}
+            />
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
