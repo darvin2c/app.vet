@@ -170,8 +170,6 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
               <FieldError errors={[errors.cost]} />
             </FieldContent>
           </Field>
-
-
         </div>
       </div>
 
