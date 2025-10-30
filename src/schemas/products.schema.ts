@@ -37,6 +37,8 @@ export type CreateProductSchema = z.infer<typeof createProductSchema>
 export type UpdateProductSchema = z.infer<typeof updateProductSchema>
 export type ProductFiltersSchema = z.infer<typeof productFiltersSchema>
 
+
+
 export const activeStatusOptions = [
   { value: true, label: 'Activo' },
   { value: false, label: 'Inactivo' },

@@ -1,13 +1,14 @@
-import { ProductList } from '@/components/products/product-list'
+import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 import { ProductCreateButton } from '@/components/products/product-create-button'
-import { SearchInput } from '@/components/ui/search-input'
-import PageBase from '@/components/page-base'
-import { Filters } from '@/components/ui/filters'
+import { ProductList } from '@/components/products/product-list'
 import { ButtonGroup } from '@/components/ui/button-group'
+import { SearchInput } from '@/components/ui/search-input'
+import { OrderByConfig } from '@/types/order-by.types'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
-import { OrderByConfig } from '@/types/order-by.types'
-import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
+import { Filters } from '@/components/ui/filters'
+import PageBase from '@/components/page-base'
+import { ProductImportButton } from '@/components/products/product-import-button'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -79,6 +80,7 @@ export default function ProductsPage() {
               <Filters filters={filters} />
               <OrderBy config={orderByConfig} />
               <ProductCreateButton variant={'ghost'} />
+              <ProductImportButton variant={'ghost'} />
             </ButtonGroup>
           }
         />
