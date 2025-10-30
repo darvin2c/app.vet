@@ -12,6 +12,8 @@
     "supabase:gen": "npx supabase gen types typescript --project-id ottoprqholddzeykpdro --schema public > src/types/supabase.types.ts"
   },
   "dependencies": {
+    "@anatine/zod-mock": "^3.14.0",
+    "@faker-js/faker": "^10.1.0",
     "@floating-ui/dom": "^1.7.4",
     "@googlemaps/js-api-loader": "^2.0.1",
     "@hookform/resolvers": "^5.2.2",

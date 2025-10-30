@@ -23,6 +23,44 @@ export function useDataImport<T = any>(
   onImport: (data: T[]) => void
 ): UseDataImportReturn {
   const [state, setState] = useState<DataImportState>(initialState)
+
+  // Helper function para obtener las claves del schema usando schema.shape
+  const getSchemaKeys = useCallback(() => {
+    try {
+      // Verificar si el schema tiene la propiedad shape (z.ZodObject)
+      if ('shape' in schema && schema.shape) {
+        const shape = schema.shape as Record<string, z.ZodTypeAny>
+        const allKeys = Object.keys(shape)
+        
+        // Distinguir entre campos requeridos y opcionales
+        const requiredKeys = allKeys.filter(
+          key => !(shape[key] instanceof z.ZodOptional)
+        )
+        const optionalKeys = allKeys.filter(
+          key => shape[key] instanceof z.ZodOptional
+        )
+        
+        return {
+          allKeys,
+          requiredKeys,
+          optionalKeys
+        }
+      }
+      
+      // Fallback si no es un ZodObject
+      return {
+        allKeys: [],
+        requiredKeys: [],
+        optionalKeys: []
+      }
+    } catch {
+      return {
+        allKeys: [],
+        requiredKeys: [],
+        optionalKeys: []
+      }
+    }
+  }, [schema])
   const [fileError, setFileError] = useState<string | null>(null)
 
   const parseFile = useCallback(async (file: File): Promise<ParsedRow[]> => {
@@ -95,26 +133,13 @@ export function useDataImport<T = any>(
   const validateData = useCallback((parsedData: ParsedRow[]): ValidationResult | null => {
     if (!parsedData.length) return null
 
-    // Obtener las claves del esquema de manera más segura
-    let schemaKeys: string[] = []
-    try {
-      // Intentar obtener las claves del esquema usando safeParse con un objeto vacío
-      const result = schema.safeParse({})
-      if (!result.success && result.error) {
-        schemaKeys = result.error.issues
-          .map((issue) => issue.path[0] as string)
-          .filter(Boolean)
-      }
-      // Si no hay errores o no podemos obtener las claves, usar las del primer registro
-      if (schemaKeys.length === 0 && parsedData[0]) {
-        schemaKeys = Object.keys(parsedData[0].data)
-      }
-    } catch {
-      // Fallback: usar las claves del primer registro
-      if (parsedData[0]) {
-        schemaKeys = Object.keys(parsedData[0].data)
-      }
-    }
+    // Obtener las claves del esquema usando schema.shape
+    const { allKeys: schemaKeys } = getSchemaKeys()
+    
+    // Si no se pueden obtener las claves del schema, usar las del primer registro como fallback
+    const finalSchemaKeys = schemaKeys.length > 0 
+      ? schemaKeys 
+      : (parsedData[0] ? Object.keys(parsedData[0].data) : [])
 
     const validRows: ParsedRow[] = []
     const invalidRows: ParsedRow[] = []
@@ -122,10 +147,10 @@ export function useDataImport<T = any>(
 
     // Verificar columnas del archivo
     const fileColumns = Object.keys(parsedData[0]?.data || {})
-    const missingColumns = schemaKeys.filter(
+    const missingColumns = finalSchemaKeys.filter(
       (key) => !fileColumns.includes(key)
     )
-    const extraColumns = fileColumns.filter((col) => !schemaKeys.includes(col))
+    const extraColumns = fileColumns.filter((col) => !finalSchemaKeys.includes(col))
 
     if (missingColumns.length > 0) {
       columnErrors.push(`Columnas faltantes: ${missingColumns.join(', ')}`)
@@ -213,22 +238,15 @@ export function useDataImport<T = any>(
   }, [])
 
   const downloadTemplate = useCallback(() => {
-    // Obtener las claves del esquema de manera más segura
-    let schemaKeys: string[] = []
-    try {
-      // Intentar obtener las claves del esquema usando safeParse con un objeto vacío
-      const result = schema.safeParse({})
-      if (!result.success && result.error) {
-        schemaKeys = result.error.issues
-          .map((issue) => issue.path[0] as string)
-          .filter(Boolean)
-      }
-    } catch {
-      // Fallback: usar claves genéricas si no se pueden obtener
-      schemaKeys = ['column1', 'column2', 'column3']
-    }
+    // Obtener las claves del esquema usando schema.shape
+    const { allKeys: schemaKeys } = getSchemaKeys()
+    
+    // Si no se pueden obtener las claves del schema, usar claves genéricas como fallback
+    const finalSchemaKeys = schemaKeys.length > 0 
+      ? schemaKeys 
+      : ['column1', 'column2', 'column3']
 
-    const csvContent = schemaKeys.join(',') + '\n'
+    const csvContent = finalSchemaKeys.join(',') + '\n'
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
@@ -240,7 +258,7 @@ export function useDataImport<T = any>(
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [schema])
+  }, [getSchemaKeys])
 
   const validateCurrentData = useCallback(() => {
     if (!state.parsedData.length) return
