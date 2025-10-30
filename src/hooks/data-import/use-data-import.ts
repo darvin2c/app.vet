@@ -72,6 +72,12 @@ export function useDataImport<T = any>(
           header: true,
           skipEmptyLines: true,
           complete: (results) => {
+            // Verificar si hay datos además de los headers
+            if (results.data.length === 0) {
+              reject(new Error('El archivo solo contiene encabezados, no hay datos para importar'))
+              return
+            }
+
             const parsedRows: ParsedRow[] = results.data.map((row, index) => ({
               data: row as Record<string, any>,
               index: index + 1,
@@ -99,6 +105,12 @@ export function useDataImport<T = any>(
 
             const headers = jsonData[0] as string[]
             const rows = jsonData.slice(1) as any[][]
+
+            // Verificar si hay datos además de los headers
+            if (rows.length === 0) {
+              reject(new Error('El archivo solo contiene encabezados, no hay datos para importar'))
+              return
+            }
 
             const parsedRows: ParsedRow[] = rows.map((row, index) => {
               const rowData: Record<string, any> = {}
