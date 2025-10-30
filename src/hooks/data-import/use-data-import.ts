@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { z } from 'zod'
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
+import { generateMock } from '@anatine/zod-mock'
 import {
   DataImportState,
   DataImportStep,
@@ -20,7 +21,8 @@ const initialState: DataImportState = {
 
 export function useDataImport<T = any>(
   schema: z.ZodSchema<T>,
-  onImport: (data: T[]) => void
+  onImport: (data: T[]) => void,
+  templateName: string = 'template.csv'
 ): UseDataImportReturn {
   const [state, setState] = useState<DataImportState>(initialState)
 
@@ -258,19 +260,53 @@ export function useDataImport<T = any>(
       ? schemaKeys 
       : ['column1', 'column2', 'column3']
 
-    const csvContent = finalSchemaKeys.join(',') + '\n'
+    // Generar 3 filas de ejemplo usando zod-mock
+    let csvContent = finalSchemaKeys.join(',') + '\n'
+    
+    try {
+      // Generar 3 ejemplos de datos usando el schema
+      for (let i = 0; i < 3; i++) {
+        const mockData = generateMock(schema)
+        const row = finalSchemaKeys.map(key => {
+           const value = mockData[key as keyof typeof mockData]
+           // Convertir el valor a string y escapar comillas si es necesario
+           if (value === null || value === undefined) return ''
+           
+           // Convertir fechas a formato ISO string
+           let stringValue: string
+           if (value instanceof Date) {
+             stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
+           } else {
+             stringValue = String(value)
+           }
+           
+           // Si contiene comas o comillas, envolver en comillas dobles
+           if (stringValue.includes(',') || stringValue.includes('"')) {
+             return `"${stringValue.replace(/"/g, '""')}"`
+           }
+           return stringValue
+         })
+        csvContent += row.join(',') + '\n'
+      }
+    } catch (error) {
+      // Si falla la generación de mock data, agregar filas vacías como ejemplo
+      console.warn('No se pudieron generar datos de ejemplo:', error)
+      for (let i = 0; i < 3; i++) {
+        csvContent += finalSchemaKeys.map(() => '').join(',') + '\n'
+      }
+    }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
     const url = URL.createObjectURL(blob)
 
     link.setAttribute('href', url)
-    link.setAttribute('download', 'template.csv')
+    link.setAttribute('download', templateName)
     link.style.visibility = 'hidden'
     document.body.appendChild(link)
     link.click()
     document.body.removeChild(link)
-  }, [getSchemaKeys])
+  }, [getSchemaKeys, schema, templateName])
 
   const validateCurrentData = useCallback(() => {
     if (!state.parsedData.length) return

@@ -20,7 +20,7 @@ export function DataImport<T = any>({
   acceptedFileTypes = ['.csv', '.xlsx', '.xls'],
   maxFileSize = 10 * 1024 * 1024, // 10MB
 }: DataImportProps<T>) {
-  const { state, actions, errors } = useDataImport(schema, onImport)
+  const { state, actions, errors } = useDataImport(schema, onImport, templateName)
 
   const renderCurrentStep = () => {
     switch (state.step) {
