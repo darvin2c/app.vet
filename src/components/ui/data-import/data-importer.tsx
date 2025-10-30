@@ -1,13 +1,10 @@
 import { useEffect } from 'react'
-import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { useDataImport } from '@/hooks/data-import/use-data-import'
 import { FileUploadStep } from './file-upload-step'
 import { DataVerificationStep } from './data-verification-step'
 import { ImportConfirmationStep } from './import-confirmation-step'
 import type { DataImporterProps } from '@/types/data-import.types'
+import { Separator } from '@radix-ui/react-separator'
 
 export function DataImporter<T = any>({
   config,
@@ -45,67 +42,76 @@ export function DataImporter<T = any>({
 
   return (
     <div className={`w-full max-w-6xl mx-auto ${className}`}>
-      <Card>
-        <CardContent className="p-6">
+      <div>
+        <div className="p-6">
           {/* Header con progreso */}
           <div className="mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Importar {config.entityType}
-                </h1>
-                <p className="text-sm text-gray-600 mt-1">
-                  Sigue los pasos para importar tus datos
-                </p>
-              </div>
-
-              {onCancel && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onCancel}
-                  disabled={state.isLoading}
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
-
             {/* Indicador de progreso */}
-            <div className="flex items-center space-x-4">
-              {[1, 2, 3].map((step) => (
-                <div key={step} className="flex items-center">
-                  <div
-                    className={`
-                      w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
-                      ${
-                        step < stepInfo.number
-                          ? 'bg-green-600 text-white'
-                          : step === stepInfo.number
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-200 text-gray-600'
-                      }
-                    `}
-                  >
-                    {step}
-                  </div>
-                  {step < 3 && (
-                    <div
-                      className={`
-                        w-16 h-0.5 mx-2
-                        ${step < stepInfo.number ? 'bg-green-600' : 'bg-gray-200'}
-                      `}
-                    />
-                  )}
-                </div>
-              ))}
-            </div>
+            <div className="flex items-center justify-center w-full max-w-4xl mx-auto px-8">
+              {[1, 2, 3].map((step) => {
+                const getStepTitle = (stepNumber: number) => {
+                  switch (stepNumber) {
+                    case 1:
+                      return 'Subir Archivo'
+                    case 2:
+                      return 'Verificar Datos'
+                    case 3:
+                      return 'Confirmar Importación'
+                    default:
+                      return ''
+                  }
+                }
 
-            <div className="mt-2 flex items-center gap-2">
-              <Badge variant={stepInfo.number === 3 ? 'default' : 'secondary'}>
-                Paso {stepInfo.number} de {stepInfo.total}
-              </Badge>
-              <span className="text-sm text-gray-600">{stepInfo.title}</span>
+                const isActive = step === stepInfo.number
+                const stepTitle = getStepTitle(step)
+
+                return (
+                  <div key={step} className="flex items-center flex-1">
+                    <div className="flex flex-col items-center">
+                      <div
+                        className={`
+                          w-12 h-12 rounded-full flex items-center justify-center text-lg font-semibold
+                          ${
+                            step < stepInfo.number
+                              ? 'bg-green-600 text-white'
+                              : step === stepInfo.number
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-600'
+                          }
+                        `}
+                      >
+                        {step}
+                      </div>
+                      <div className="mt-3 text-center">
+                        {isActive ? (
+                          <div className="space-y-1">
+                            <div className="text-sm font-medium text-blue-600">
+                              Paso {step} de 3
+                            </div>
+                            <div className="text-sm text-gray-700 font-medium">
+                              {stepTitle}
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="text-sm text-gray-600">
+                            {stepTitle}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {step < 3 && (
+                      <div className="flex-1 mx-8">
+                        <div
+                          className={`
+                            h-1 w-full
+                            ${step < stepInfo.number ? 'bg-green-600' : 'bg-gray-200'}
+                          `}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
 
@@ -154,9 +160,9 @@ export function DataImporter<T = any>({
                 />
               )}
           </div>
-
+          <Separator className="my-8 w-full" />
           {/* Footer con información adicional */}
-          <div className="mt-8 pt-6 border-t border-gray-200">
+          <div className="mt-8 pt-6">
             <div className="flex flex-wrap items-center justify-between gap-4 text-sm text-gray-600">
               <div className="flex items-center gap-4">
                 <span>
@@ -188,8 +194,8 @@ export function DataImporter<T = any>({
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

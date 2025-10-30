@@ -25,6 +25,7 @@ src/
 │   │   ├── <feature>-form.tsx # Dentro de form solo debe de tener los field necesarios para el formulario, no la logica del formulario.
 │   │   ├── <feature>-list.tsx
 │   │   ├── <feature>-<edit/create>.tsx # debes de usar un `./drawer-form.tsx` para mostrar el formulario
+│   │   ├── <feature>-import.tsx # debes de usar un `./data-import` para mostrar el importador dentro de un Sheet
 │   │   ├── <feature>-delete.tsx  # debe de usar ui/alert-confirmation
 │   │   ├── <feature>-actions.tsx
 │   │   ├── <feature>-create-button.tsx

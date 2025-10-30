@@ -6,11 +6,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Settings,
-  Eye,
-  EyeOff,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Badge } from '@/components/ui/badge'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
@@ -127,18 +125,18 @@ export function DataVerificationStep<T = any>({
       </div>
 
       {/* Resumen de validación */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <div className="">
+        <div className="p-6 pb-0">
+          <h3 className="flex items-center gap-2 text-lg font-semibold">
             {validationResult.isValid ? (
               <CheckCircle className="w-5 h-5 text-green-600" />
             ) : (
               <XCircle className="w-5 h-5 text-red-600" />
             )}
             Resumen de Validación
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900">
@@ -165,8 +163,8 @@ export function DataVerificationStep<T = any>({
               <div className="text-sm text-gray-600">Advertencias</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Controles */}
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -200,11 +198,11 @@ export function DataVerificationStep<T = any>({
 
       {/* Mapeo de columnas */}
       {showColumnMapping && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Mapeo de Columnas</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="border rounded-lg bg-white shadow-sm">
+          <div className="p-6 pb-0">
+            <h3 className="text-lg font-semibold">Mapeo de Columnas</h3>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {data.headers.map((header) => (
                 <div key={header} className="flex items-center space-x-2">
@@ -214,7 +212,10 @@ export function DataVerificationStep<T = any>({
                   <Select
                     value={columnMapping[header] || '__unmapped__'}
                     onValueChange={(value) =>
-                      handleColumnMappingChange(header, value === '__unmapped__' ? '' : value)
+                      handleColumnMappingChange(
+                        header,
+                        value === '__unmapped__' ? '' : value
+                      )
                     }
                   >
                     <SelectTrigger className="w-48">
@@ -232,13 +233,13 @@ export function DataVerificationStep<T = any>({
                 </div>
               ))}
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Tabla de datos */}
-      <Card>
-        <CardContent className="p-0">
+      <div className="border rounded-lg bg-white shadow-sm">
+        <div className="p-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -279,9 +280,18 @@ export function DataVerificationStep<T = any>({
                         const value = (row as any)[header]
 
                         return (
-                          <TableCell key={header} className={cellError ? 'bg-red-50 border-red-200' : ''}>
+                          <TableCell
+                            key={header}
+                            className={
+                              cellError ? 'bg-red-50 border-red-200' : ''
+                            }
+                          >
                             <div className="space-y-1">
-                              <div className={cellError ? 'text-red-700 font-medium' : ''}>
+                              <div
+                                className={
+                                  cellError ? 'text-red-700 font-medium' : ''
+                                }
+                              >
                                 {value?.toString() || '-'}
                               </div>
                               {cellError && (
@@ -306,8 +316,8 @@ export function DataVerificationStep<T = any>({
               </TableBody>
             </Table>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Paginación */}
       {totalPages > 1 && (

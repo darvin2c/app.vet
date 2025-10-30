@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, FileText, AlertCircle, Download } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
+
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { downloadTemplate } from './template-generator'
 import type { FileUploadStepProps } from '@/types/data-import.types'
@@ -89,8 +89,8 @@ export function FileUploadStep<T = any>({
 
       {/* Sección de descarga de plantilla */}
       {config && (
-        <Card className="w-full max-w-2xl mx-auto mb-6">
-          <CardContent className="p-4">
+        <div className="w-full max-w-2xl mx-auto mb-6 border rounded-lg bg-white shadow-sm">
+          <div className="p-4">
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">
                 ¿No tienes un archivo listo?
@@ -122,12 +122,12 @@ export function FileUploadStep<T = any>({
                 </Button>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
-      <Card className="w-full max-w-2xl mx-auto">
-        <CardContent className="p-6">
+      <div className="w-full max-w-2xl mx-auto border rounded-lg bg-white shadow-sm">
+        <div className="p-6">
           <div
             {...getRootProps()}
             className={`
@@ -191,8 +191,8 @@ export function FileUploadStep<T = any>({
               <p>{formatFileSize(maxSize)}</p>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {error && (
         <Alert variant="destructive" className="max-w-2xl mx-auto">

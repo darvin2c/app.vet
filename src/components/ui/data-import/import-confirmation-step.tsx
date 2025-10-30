@@ -7,7 +7,7 @@ import {
   RefreshCw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -48,11 +48,11 @@ export function ImportConfirmationStep({
           </p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Resumen de Importación</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="border rounded-lg bg-white shadow-sm">
+          <div className="p-6 pb-0">
+            <h3 className="text-lg font-semibold">Resumen de Importación</h3>
+          </div>
+          <div className="p-6">
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
@@ -99,8 +99,8 @@ export function ImportConfirmationStep({
                 </div>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
 
         <div className="flex justify-center">
           <Button onClick={() => window.location.reload()}>
@@ -128,8 +128,8 @@ export function ImportConfirmationStep({
 
       {/* Progreso de importación */}
       {isImporting && (
-        <Card>
-          <CardContent className="p-6">
+        <div className="border rounded-lg bg-white shadow-sm">
+          <div className="p-6">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium">
@@ -142,16 +142,16 @@ export function ImportConfirmationStep({
                 Procesando registros...
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       )}
 
       {/* Resumen de datos a importar */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Resumen de Importación</CardTitle>
-        </CardHeader>
-        <CardContent>
+      <div className="border rounded-lg bg-white shadow-sm">
+        <div className="p-6 pb-0">
+          <h3 className="text-lg font-semibold">Resumen de Importación</h3>
+        </div>
+        <div className="p-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900">
@@ -178,8 +178,8 @@ export function ImportConfirmationStep({
               <div className="text-sm text-gray-600">Advertencias</div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Alertas de validación */}
       {hasErrors && (
@@ -237,8 +237,8 @@ export function ImportConfirmationStep({
       )}
 
       {/* Información adicional */}
-      <Card>
-        <CardContent className="p-6">
+      <div className="border rounded-lg bg-white shadow-sm">
+        <div className="p-6">
           <div className="space-y-4">
             <h3 className="text-lg font-medium">
               ¿Qué sucederá durante la importación?
@@ -265,8 +265,8 @@ export function ImportConfirmationStep({
               </li>
             </ul>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Botones de acción */}
       <div className="flex justify-between">
