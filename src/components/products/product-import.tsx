@@ -39,8 +39,7 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
         <SheetHeader>
           <SheetTitle>Importar Productos</SheetTitle>
           <SheetDescription>
-            Importa productos desde un archivo CSV o Excel. Los campos
-            requeridos son: name, price, stock.
+            Importa productos desde un archivo CSV o Excel.
           </SheetDescription>
         </SheetHeader>
 

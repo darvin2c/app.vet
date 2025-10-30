@@ -2,7 +2,6 @@ import { useMemo } from 'react'
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Table,
   TableBody,

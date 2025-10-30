@@ -17,8 +17,6 @@ export function DataImport<T = any>({
   onImport,
   isLoading = false,
   templateName = 'template.csv',
-  title = 'Importar Datos',
-  description = 'Importa datos desde un archivo CSV o Excel',
   acceptedFileTypes = ['.csv', '.xlsx', '.xls'],
   maxFileSize = 10 * 1024 * 1024, // 10MB
 }: DataImportProps<T>) {
@@ -74,16 +72,9 @@ export function DataImport<T = any>({
 
   return (
     <div className="w-full max-w-4xl mx-auto px-6">
-      <div className="text-center mb-8">
-        <h2 className="text-2xl font-bold">{title}</h2>
-        <p className="text-muted-foreground mt-2">{description}</p>
-      </div>
-
       <StepIndicator currentStep={state.step} steps={steps} />
 
-      <div className="bg-background border rounded-lg p-6">
-        {renderCurrentStep()}
-      </div>
+      <div className="bg-background p-6">{renderCurrentStep()}</div>
     </div>
   )
 }
