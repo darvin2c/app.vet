@@ -286,11 +286,27 @@ export function useDataValidator() {
     []
   )
 
+  const validateAllowedColumns = useCallback(
+    (headers: string[], requiredColumns: string[], optionalColumns: string[]) => {
+      const allowedColumns = [...requiredColumns, ...optionalColumns]
+      const invalidColumns = headers.filter(
+        (header) => !allowedColumns.includes(header)
+      )
+
+      return {
+        isValid: invalidColumns.length === 0,
+        invalidColumns,
+      }
+    },
+    []
+  )
+
   return {
     validateData,
     validateField,
     validateFieldType,
     transformData,
     validateRequiredColumns,
+    validateAllowedColumns,
   }
 }

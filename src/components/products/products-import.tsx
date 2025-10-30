@@ -48,6 +48,8 @@ export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
       'is_service',
       'is_active',
       'brand_id',
+      'batch_number',
+      'expiry_date',
     ],
     columnMappings: {
       name: {
@@ -127,6 +129,18 @@ export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
         example: 'brand_123',
         required: false,
       },
+      batch_number: {
+        label: 'Número de Lote',
+        description: 'Número de lote del producto',
+        example: 'LOTE-2024-001',
+        required: false,
+      },
+      expiry_date: {
+        label: 'Fecha de Vencimiento',
+        description: 'Fecha de vencimiento del producto (YYYY-MM-DD)',
+        example: '2025-12-31',
+        required: false,
+      },
     },
     allowedFileTypes: ['.csv', '.xlsx', '.xls'],
     maxFileSize: 5 * 1024 * 1024, // 5MB
@@ -144,6 +158,8 @@ export function ProductsImport({ open, onOpenChange }: ProductsImportProps) {
         is_service: false,
         is_active: true,
         brand_id: 'brand_123',
+        batch_number: 'LOTE-2024-001',
+        expiry_date: '2025-12-31',
       },
     ],
   }

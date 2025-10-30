@@ -37,7 +37,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
       {/* Información básica */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Información básica</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Field>
             <FieldLabel htmlFor="name">Nombre *</FieldLabel>
             <FieldContent>
@@ -135,7 +135,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
       {/* Precios y costos */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Precios y costos</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel htmlFor="price">Precio de venta *</FieldLabel>
             <FieldContent>
@@ -171,24 +171,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
             </FieldContent>
           </Field>
 
-          <Field>
-            <FieldLabel htmlFor="tax_rate">Tasa de impuesto (%)</FieldLabel>
-            <FieldContent>
-              <Input
-                id="tax_rate"
-                type="number"
-                step="0.01"
-                min="0"
-                max="100"
-                placeholder="0.00"
-                {...register('tax_rate', {
-                  setValueAs: (value) =>
-                    value ? parseFloat(value) / 100 : undefined,
-                })}
-              />
-              <FieldError errors={[errors.tax_rate]} />
-            </FieldContent>
-          </Field>
+
         </div>
       </div>
 

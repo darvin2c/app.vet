@@ -21,7 +21,7 @@ export function useDataImport<T = any>({
   importResult = null 
 }: UseDataImportProps<T>) {
   const { parseFile, validateFile } = useFileParser()
-  const { validateData, transformData, validateRequiredColumns } =
+  const { validateData, transformData, validateRequiredColumns, validateAllowedColumns } =
     useDataValidator()
 
   const [state, setState] = useState<ImportState<T>>({
@@ -82,6 +82,20 @@ export function useDataImport<T = any>({
         if (!columnValidation.isValid) {
           setError(
             `Faltan columnas requeridas: ${columnValidation.missingColumns.join(', ')}`
+          )
+          return
+        }
+
+        // Validar columnas permitidas
+        const allowedColumnValidation = validateAllowedColumns(
+          parsedData.headers,
+          config.requiredColumns || [],
+          config.optionalColumns || []
+        )
+
+        if (!allowedColumnValidation.isValid) {
+          setError(
+            `Columnas no permitidas: ${allowedColumnValidation.invalidColumns.join(', ')}`
           )
           return
         }
