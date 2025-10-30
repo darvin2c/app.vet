@@ -12,6 +12,11 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { ValidationResult, ParsedRow } from '@/types/data-import.types'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface ValidateStepProps {
   validationResult: ValidationResult
@@ -94,60 +99,65 @@ export function ValidateStep({
 
       {/* Tabla de datos */}
       <div className="border rounded-lg">
-        <ScrollArea className="h-96">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-12">Estado</TableHead>
-                <TableHead className="w-16">#</TableHead>
-                {columns.map((column) => (
-                  <TableHead key={column}>{column}</TableHead>
-                ))}
-                <TableHead>Errores</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {allRows.map((row) => {
-                const status = getRowStatus(row)
-                const StatusIcon = status.icon
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="w-12">Estado</TableHead>
+              <TableHead className="w-16">#</TableHead>
+              {columns.map((column) => (
+                <TableHead key={column}>{column}</TableHead>
+              ))}
+              <TableHead>Errores</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {allRows.map((row) => {
+              const status = getRowStatus(row)
+              const StatusIcon = status.icon
 
-                return (
-                  <TableRow
-                    key={row.index}
-                    className={row.errors.length > 0 ? status.bg : ''}
-                  >
-                    <TableCell>
-                      <StatusIcon className={`h-4 w-4 ${status.color}`} />
+              return (
+                <TableRow
+                  key={row.index}
+                  className={row.errors.length > 0 ? status.bg : ''}
+                >
+                  <TableCell>
+                    <StatusIcon className={`h-4 w-4 ${status.color}`} />
+                  </TableCell>
+                  <TableCell className="font-mono text-sm">
+                    {row.index}
+                  </TableCell>
+                  {columns.map((column) => (
+                    <TableCell key={column} className="max-w-32 truncate">
+                      {String(row.data[column] || '')}
                     </TableCell>
-                    <TableCell className="font-mono text-sm">
-                      {row.index}
-                    </TableCell>
-                    {columns.map((column) => (
-                      <TableCell key={column} className="max-w-32 truncate">
-                        {String(row.data[column] || '')}
-                      </TableCell>
-                    ))}
-                    <TableCell>
-                      {row.errors.length > 0 && (
-                        <div className="space-y-1">
-                          {row.errors.map((error, errorIndex) => (
-                            <Badge
-                              key={errorIndex}
-                              variant="destructive"
-                              className="text-xs"
-                            >
+                  ))}
+                  <TableCell>
+                    {row.errors.length > 0 && (
+                      <div className="space-y-1">
+                        {row.errors.map((error, errorIndex) => (
+                          <Tooltip key={errorIndex}>
+                            <TooltipTrigger>
+                              <Badge
+                                key={errorIndex}
+                                variant="destructive"
+                                className="text-xs"
+                              >
+                                {error.field}
+                              </Badge>
+                            </TooltipTrigger>
+                            <TooltipContent>
                               {error.field}: {error.message}
-                            </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-        </ScrollArea>
+                            </TooltipContent>
+                          </Tooltip>
+                        ))}
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              )
+            })}
+          </TableBody>
+        </Table>
       </div>
 
       {/* Acciones */}

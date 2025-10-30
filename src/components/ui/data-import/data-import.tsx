@@ -73,7 +73,7 @@ export function DataImport<T = any>({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-6">
+    <div className="w-full max-w-4xl mx-auto px-6">
       <div className="text-center mb-8">
         <h2 className="text-2xl font-bold">{title}</h2>
         <p className="text-muted-foreground mt-2">{description}</p>
