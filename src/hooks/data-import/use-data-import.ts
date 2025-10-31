@@ -23,7 +23,8 @@ const initialState: DataImportState = {
 export function useDataImport<T = any>(
   schema: z.ZodSchema<T>,
   onImport: (data: T[]) => void,
-  templateName: string = 'template.csv'
+  templateName: string = 'template.csv',
+  error?: string | null
 ): UseDataImportReturn {
   const [state, setState] = useState<DataImportState>(initialState)
 
@@ -383,6 +384,7 @@ export function useDataImport<T = any>(
       fileError,
       validationErrors:
         state.validationResult?.invalidRows.flatMap((row) => row.errors) || [],
+      importError: error || null,
     },
   }
 }

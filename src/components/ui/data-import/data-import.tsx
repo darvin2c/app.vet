@@ -19,8 +19,9 @@ export function DataImport<T = any>({
   templateName = 'template.csv',
   acceptedFileTypes = ['.csv', '.xlsx', '.xls'],
   maxFileSize = 10 * 1024 * 1024, // 10MB
+  error,
 }: DataImportProps<T>) {
-  const { state, actions, errors } = useDataImport(schema, onImport, templateName)
+  const { state, actions, errors } = useDataImport(schema, onImport, templateName, error)
 
   const renderCurrentStep = () => {
     switch (state.step) {
@@ -62,6 +63,7 @@ export function DataImport<T = any>({
             validCount={state.validationResult?.validCount || 0}
             isLoading={isLoading}
             onReset={actions.reset}
+            error={errors.importError}
           />
         )
 

@@ -30,13 +30,14 @@ export interface DataImportState {
   validationResult: ValidationResult | null
 }
 
-export interface DataImportProps<T = any> {
+export interface DataImportProps<T> {
   schema: z.ZodSchema<T>
-  onImport: (data: T[]) => void
+  onImport: (data: T[]) => void | Promise<void>
   isLoading?: boolean
   templateName?: string
   title?: string
   description?: string
+  error?: string | null
   acceptedFileTypes?: string[]
   maxFileSize?: number
 }
@@ -54,5 +55,6 @@ export interface UseDataImportReturn {
   errors: {
     fileError: string | null
     validationErrors: ValidationError[]
+    importError: string | null
   }
 }

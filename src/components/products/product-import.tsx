@@ -28,15 +28,20 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
   const createProductBulk = useProductCreateBulk()
 
   const handleImport = async (data: CreateProductSchema[]) => {
-    const formattedData = data.map((item) => ({
-      ...item,
-      expiry_date: item.expiry_date
-        ? item.expiry_date.toISOString()
-        : undefined,
-    }))
-    await createProductBulk.mutateAsync(formattedData)
-    toast.success('Productos importados exitosamente')
-    onOpenChange(false)
+    try {
+      const formattedData = data.map((item) => ({
+        ...item,
+        expiry_date: item.expiry_date
+          ? item.expiry_date.toISOString()
+          : undefined,
+      }))
+      await createProductBulk.mutateAsync(formattedData)
+      toast.success('Productos importados exitosamente')
+      onOpenChange(false)
+    } catch (error) {
+      // El error se manejará a través de la prop error del DataImport
+      console.error('Error al importar productos:', error)
+    }
   }
 
   return (
@@ -57,6 +62,7 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
             templateName="productos_template.csv"
             title="Importar Productos"
             description="Importa productos desde un archivo CSV o Excel. Los campos requeridos son: name, price, stock."
+            error={createProductBulk.error?.message || null}
           />
         </ScrollArea>
       </SheetContent>

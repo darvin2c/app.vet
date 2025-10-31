@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -16,6 +16,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { Alert } from '../alert'
+import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 
 interface ValidateStepProps {
   validationResult: ValidationResult
@@ -36,6 +38,25 @@ export function ValidateStep({
     invalidCount,
     columnErrors,
   } = validationResult
+
+  const [showConfirmation, setShowConfirmation] = useState(false)
+
+  const handleConfirm = () => {
+    setShowConfirmation(true)
+  }
+
+  const handleConfirmImport = () => {
+    setShowConfirmation(false)
+    onConfirm()
+  }
+
+  const getConfirmationMessage = () => {
+    if (invalidCount > 0) {
+      return `¿Estás seguro de que deseas importar ${validCount} registros válidos? Se omitirán ${invalidCount} registros con errores.`
+    } else {
+      return `¿Estás seguro de que deseas importar ${validCount} registros?`
+    }
+  }
 
   const allRows = useMemo(() => {
     return [...validRows, ...invalidRows].sort((a, b) => a.index - b.index)
@@ -159,13 +180,21 @@ export function ValidateStep({
         </Table>
       </div>
 
+      {invalidCount > 0 && invalidCount < totalRows && (
+        <Alert>
+          <AlertTriangle className="h-4 w-4" />
+          Hay {invalidCount} filas con errores. Solo se importarán los registros
+          válidos. ¿Deseas continuar?
+        </Alert>
+      )}
+
       {/* Acciones */}
       <div className="flex justify-between">
         <Button variant="outline" onClick={onBack}>
           Volver
         </Button>
         <Button
-          onClick={onConfirm}
+          onClick={handleConfirm}
           disabled={validCount === 0}
           className="flex items-center gap-2"
         >
@@ -173,6 +202,15 @@ export function ValidateStep({
           Confirmar importación ({validCount} filas)
         </Button>
       </div>
+
+      <AlertConfirmation
+        isOpen={showConfirmation}
+        onClose={() => setShowConfirmation(false)}
+        onConfirm={handleConfirmImport}
+        title="Confirmar Importación"
+        description={getConfirmationMessage()}
+        confirmText="IMPORTAR"
+      />
     </div>
   )
 }
