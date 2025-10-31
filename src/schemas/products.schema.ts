@@ -19,7 +19,7 @@ export const productBaseSchema = z.object({
   barcode: z.string().optional(),
   sku: z.string().optional(),
   notes: z.string().optional(),
-  expiry_date: z.coerce.date().optional(),
+  expiry_date: z.string().optional(),
   batch_number: z.string().optional(),
   brand_id: z.uuid('ID de marca inválido').optional(),
   category_id: z.uuid('ID de categoría inválido').optional(),

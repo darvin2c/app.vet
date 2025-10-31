@@ -2,7 +2,8 @@ import { useState, useCallback } from 'react'
 import { z } from 'zod'
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
-import { fake } from 'zod-schema-faker'
+import { faker } from '@faker-js/faker'
+import { fake, setFaker } from 'zod-schema-faker'
 import {
   DataImportState,
   DataImportStep,
@@ -278,97 +279,54 @@ export function useDataImport<T = any>(
     // Generar 3 filas de ejemplo usando zod-mock
     let csvContent = finalSchemaKeys.join(',') + '\n'
 
+    // Configurar faker según la documentación oficial
     try {
-      // Generar 3 filas de ejemplo con zod-schema-faker
-      for (let i = 0; i < 3; i++) {
-        const mockData = fake(schema)
-        const row = finalSchemaKeys.map(key => {
-          const value = mockData[key as keyof typeof mockData]
-          if (value === null || value === undefined) return ''
-          
-          // Convertir fechas a formato ISO string
-          let stringValue: string
-          if (value instanceof Date) {
-            stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
-          } else {
-            stringValue = String(value)
-          }
-          
-          // Si contiene comas o comillas, envolver en comillas dobles
-          if (stringValue.includes(',') || stringValue.includes('"')) {
-            return `"${stringValue.replace(/"/g, '""')}"`
-          }
-          return stringValue
-        })
-        csvContent += row.join(',') + '\n'
-      }
+      setFaker(faker as any)
     } catch (error) {
-      // Si falla la generación de mock data, usar datos de ejemplo básicos
-      console.warn('Error al generar datos de ejemplo con zod-schema-faker:', error)
-      
-      const generateBasicSampleData = (index: number): Record<string, any> => {
-        const sampleData: Record<string, any> = {}
-        
-        finalSchemaKeys.forEach(key => {
-          switch (key) {
-            case 'name':
-              sampleData[key] = `Producto Ejemplo ${index + 1}`
-              break
-            case 'price':
-              sampleData[key] = (Math.random() * 90 + 10).toFixed(2)
-              break
-            case 'stock':
-              sampleData[key] = Math.floor(Math.random() * 51)
-              break
-            case 'cost':
-              sampleData[key] = (Math.random() * 75 + 5).toFixed(2)
-              break
-            case 'is_service':
-              sampleData[key] = index % 2 === 0 ? 'true' : 'false'
-              break
-            case 'is_active':
-              sampleData[key] = 'true'
-              break
-            case 'barcode':
-              sampleData[key] = `12345678901${index}`
-              break
-            case 'sku':
-              sampleData[key] = `SKU00${index + 1}`
-              break
-            case 'notes':
-              sampleData[key] = `Notas del producto ${index + 1}`
-              break
-            case 'expiry_date':
-              const futureDate = new Date()
-              futureDate.setMonth(futureDate.getMonth() + (index + 1) * 6)
-              sampleData[key] = futureDate.toISOString().split('T')[0]
-              break
-            case 'batch_number':
-              sampleData[key] = `LOTE00${index + 1}`
-              break
-            default:
-              sampleData[key] = ''
-          }
-        })
-        
-        return sampleData
+      console.warn('Error al configurar faker:', error)
+    }
+
+    // Generar 3 filas de ejemplo con zod-schema-faker
+    for (let i = 0; i < 3; i++) {
+      let mockData: any = {}
+
+      try {
+        mockData = fake(schema)
+      } catch (error) {
+        // Si falla la generación de mock data, mostrar warning y usar fila vacía
+        console.warn(
+          'Error al generar datos de ejemplo con zod-schema-faker:',
+          error
+        )
+        // Crear objeto vacío con las keys del schema
+        mockData = finalSchemaKeys.reduce(
+          (acc, key) => {
+            acc[key] = ''
+            return acc
+          },
+          {} as Record<string, any>
+        )
       }
 
-      // Generar 3 filas de ejemplo básicas como fallback
-      for (let i = 0; i < 3; i++) {
-        const mockData = generateBasicSampleData(i)
-        const row = finalSchemaKeys.map(key => {
-          const value = mockData[key]
-          if (value === null || value === undefined || value === '') return ''
-          
-          const stringValue = String(value)
-          if (stringValue.includes(',') || stringValue.includes('"')) {
-            return `"${stringValue.replace(/"/g, '""')}"`
-          }
-          return stringValue
-        })
-        csvContent += row.join(',') + '\n'
-      }
+      const row = finalSchemaKeys.map((key) => {
+        const value = mockData[key as keyof typeof mockData]
+        if (value === null || value === undefined || value === '') return ''
+
+        // Convertir fechas a formato ISO string
+        let stringValue: string
+        if (value instanceof Date) {
+          stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
+        } else {
+          stringValue = String(value)
+        }
+
+        // Si contiene comas o comillas, envolver en comillas dobles
+        if (stringValue.includes(',') || stringValue.includes('"')) {
+          return `"${stringValue.replace(/"/g, '""')}"`
+        }
+        return stringValue
+      })
+      csvContent += row.join(',') + '\n'
     }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
