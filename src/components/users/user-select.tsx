@@ -16,10 +16,28 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import useUserList from '@/hooks/users/use-user-list'
+import { useUserList } from '@/hooks/users/use-user-list'
 import { Tables } from '@/types/supabase.types'
 
-type UserProfile = Tables<'profiles'>
+type UserWithRole = {
+  id: string
+  first_name: string | null
+  last_name: string | null
+  email: string | null
+  phone: string | null
+  avatar_url: string | null
+  tenant_user: {
+    id: string
+    role_id: string | null
+    is_superuser: boolean
+    is_active: boolean
+    role: {
+      id: string
+      name: string
+      description: string | null
+    } | null
+  }
+}
 
 interface UserSelectProps {
   value?: string
@@ -43,7 +61,7 @@ export function UserSelect({
     search: searchTerm,
   })
 
-  const selectedUser = users.find((user: UserProfile) => user.id === value)
+  const selectedUser = users.find((user: UserWithRole) => user.id === value)
 
   const handleSelect = (userId: string) => {
     onValueChange?.(userId)
@@ -99,7 +117,7 @@ export function UserSelect({
               {isLoading ? 'Cargando...' : 'No se encontraron usuarios.'}
             </CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
-              {users.map((user: UserProfile) => (
+              {users.map((user: UserWithRole) => (
                 <CommandItem
                   key={user.id}
                   value={`${user.first_name} ${user.last_name}`}

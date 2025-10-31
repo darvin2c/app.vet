@@ -215,7 +215,10 @@ export function PermissionsTree({
                       <Checkbox
                         checked={isResourceChecked(resource.value)}
                         onCheckedChange={(checked) =>
-                          handleResourceToggle(resource.value, checked as boolean)
+                          handleResourceToggle(
+                            resource.value,
+                            checked as boolean
+                          )
                         }
                         className={cn(
                           isResourceIndeterminate(resource.value) &&
@@ -226,7 +229,7 @@ export function PermissionsTree({
                         {resource.label}
                       </Label>
                     </div>
-                    
+
                     {/* Inline Resource Permissions */}
                     <div className="flex flex-wrap gap-4">
                       {resource.perms.map((perm) => (
