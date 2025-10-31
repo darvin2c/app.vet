@@ -10,6 +10,7 @@ import {
   PawPrint,
   Handshake,
   Scale,
+  ShieldCheck,
 } from 'lucide-react'
 
 import {
@@ -103,6 +104,23 @@ const navigationGroups: NavGroup[] = [
         href: '/settings',
         icon: Box,
         tooltip: 'Configuración',
+      },
+    ],
+  },
+  {
+    label: 'Seguridad',
+    items: [
+      {
+        title: 'Usuarios',
+        href: '/users',
+        icon: User,
+        tooltip: 'Usuarios',
+      },
+      {
+        title: 'Roles',
+        href: '/roles',
+        icon: ShieldCheck,
+        tooltip: 'Roles',
       },
     ],
   },
