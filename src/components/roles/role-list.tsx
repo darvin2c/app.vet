@@ -59,7 +59,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { Badge } from '@/components/ui/badge'
+import { PermissionsDisplay } from './permissions-display'
 
 type Role = Tables<'roles'>
 
@@ -118,31 +118,7 @@ export function RoleList({
       header: 'Permisos',
       cell: ({ row }: { row: Row<Role> }) => {
         const perms = row.getValue('perms') as string[]
-        return (
-          <div className="flex flex-wrap gap-1">
-            {perms && perms.length > 0 ? (
-              <>
-                <Badge variant="secondary" className="text-xs">
-                  {perms.length} permisos
-                </Badge>
-                {perms.slice(0, 2).map((perm: string, index: number) => (
-                  <Badge key={index} variant="outline" className="text-xs">
-                    {perm}
-                  </Badge>
-                ))}
-                {perms.length > 2 && (
-                  <Badge variant="outline" className="text-xs">
-                    +{perms.length - 2} más
-                  </Badge>
-                )}
-              </>
-            ) : (
-              <span className="text-muted-foreground text-sm">
-                Sin permisos
-              </span>
-            )}
-          </div>
-        )
+        return <PermissionsDisplay perms={perms} maxItems={2} />
       },
     },
 
@@ -222,35 +198,7 @@ export function RoleList({
             </div>
 
             <div className="space-y-2">
-              <div className="flex flex-wrap gap-1">
-                {role.perms && role.perms.length > 0 ? (
-                  <>
-                    <Badge variant="secondary" className="text-xs">
-                      {role.perms.length} permisos
-                    </Badge>
-                    {role.perms
-                      .slice(0, 3)
-                      .map((perm: string, index: number) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {perm}
-                        </Badge>
-                      ))}
-                    {role.perms.length > 3 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{role.perms.length - 3} más
-                      </Badge>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-muted-foreground text-sm">
-                    Sin permisos
-                  </span>
-                )}
-              </div>
+              <PermissionsDisplay perms={role.perms} maxItems={3} />
             </div>
           </CardContent>
         </Card>
@@ -269,35 +217,7 @@ export function RoleList({
               <ItemDescription>{role.description}</ItemDescription>
             )}
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              <div className="flex flex-wrap gap-1">
-                {role.perms && role.perms.length > 0 ? (
-                  <>
-                    <Badge variant="secondary" className="text-xs">
-                      {role.perms.length} permisos
-                    </Badge>
-                    {role.perms
-                      .slice(0, 2)
-                      .map((perm: string, index: number) => (
-                        <Badge
-                          key={index}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          {perm}
-                        </Badge>
-                      ))}
-                    {role.perms.length > 2 && (
-                      <Badge variant="outline" className="text-xs">
-                        +{role.perms.length - 2} más
-                      </Badge>
-                    )}
-                  </>
-                ) : (
-                  <span className="text-muted-foreground text-sm">
-                    Sin permisos
-                  </span>
-                )}
-              </div>
+              <PermissionsDisplay perms={role.perms} maxItems={2} />
             </div>
           </ItemContent>
           <ItemActions>

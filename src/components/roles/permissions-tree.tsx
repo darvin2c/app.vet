@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState, useMemo } from 'react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import { ChevronDown, ChevronRight } from 'lucide-react'
@@ -20,7 +20,7 @@ export function PermissionsTree({
   className,
 }: PermissionsTreeProps) {
   const { getTreePerms } = usePerms()
-  const treeData = getTreePerms()
+  const treeData = useMemo(() => getTreePerms(), [getTreePerms])
 
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
   const [expandedResources, setExpandedResources] = useState<Set<string>>(
