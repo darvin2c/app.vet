@@ -152,6 +152,7 @@ export function DatePicker({
   // Manejar selección desde el calendario
   const handleCalendarSelect = useCallback(
     (selectedDate: Date | undefined) => {
+      console.log('selectedDate', selectedDate)
       if (selectedDate) {
         setSelectedDate(selectedDate)
         if (!isMobile) {

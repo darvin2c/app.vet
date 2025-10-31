@@ -67,7 +67,6 @@ function PaymentSelectorContent({
 
     // Create payment object for POS store
     const payment = {
-      id: crypto.randomUUID(),
       amount: data.amount,
       payment_method_id: data.payment_method_id,
       payment_method: selectedMethod,
