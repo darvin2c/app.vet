@@ -5,20 +5,10 @@ import { AppliedFilter } from '@/types/filters.types'
 import { AppliedSort } from '@/types/order-by.types'
 import { Tables } from '@/types/supabase.types'
 
-type UserWithRole = {
-  id: string
-  first_name: string | null
-  last_name: string | null
-  email: string | null
-  phone: string | null
-  avatar_url: string | null
-  tenant_user: {
-    id: string
-    role_id: string | null
-    is_superuser: boolean
-    is_active: boolean
-    role: Tables<'roles'> | null
-  }
+export type UserWithRole = Tables<'profiles'> & {
+  role: Tables<'roles'> | null
+  is_superuser: boolean | null
+  is_active: boolean | null
 }
 
 export function useUserList({
@@ -63,40 +53,16 @@ export function useUserList({
       orders.forEach((order) => {})
 
       const { data, error } = await query
-      console.log(data)
       if (error) {
         throw new Error(`Error al obtener usuarios: ${error.message}`)
       }
 
-      // Transformar los datos para incluir información del rol
-      const users: UserWithRole[] = (data || [])
-        .filter((item: any) => item.profiles)
-        .map((item: any) => ({
-          id: item.profiles!.id,
-          first_name: item.profiles!.first_name,
-          last_name: item.profiles!.last_name,
-          email: item.profiles!.email,
-          phone: item.profiles!.phone,
-          avatar_url: item.profiles!.avatar_url,
-          tenant_user: {
-            id: item.tenant_user_id,
-            role_id: item.role_id,
-            is_superuser: item.is_superuser,
-            is_active: item.is_active,
-            role: item.roles,
-          },
-        }))
-
-      // Aplicar búsqueda global después de la transformación
-      if (search) {
-        const searchLower = search.toLowerCase()
-        return users.filter(
-          (user) =>
-            user.first_name?.toLowerCase().includes(searchLower) ||
-            user.last_name?.toLowerCase().includes(searchLower) ||
-            user.email?.toLowerCase().includes(searchLower)
-        )
-      }
+      const users = data?.map((item) => ({
+        ...item.profile,
+        role: item.role,
+        is_superuser: item.is_superuser,
+        is_active: item.is_active,
+      }))
 
       return users
     },

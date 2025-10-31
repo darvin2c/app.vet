@@ -46,7 +46,7 @@ import {
   Crown,
   Shield,
 } from 'lucide-react'
-import { useUserList } from '@/hooks/users/use-user-list'
+import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
 import { useFilters } from '@/hooks/use-filters'
 import { FilterConfig } from '@/types/filters.types'
 import { useSearch } from '@/hooks/use-search'
@@ -60,26 +60,9 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { UserRolesEdit } from './user-roles-edit'
-
-type UserWithRole = {
-  id: string
-  first_name: string | null
-  last_name: string | null
-  email: string | null
-  phone: string | null
-  avatar_url: string | null
-  tenant_user: {
-    id: string
-    role_id: string | null
-    is_superuser: boolean
-    is_active: boolean
-    role: {
-      id: string
-      name: string
-      description: string | null
-    } | null
-  }
-}
+import { PermissionsDisplay } from '../roles/permissions-display'
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
+import { IsActiveDisplay } from '../ui/is-active-field'
 
 export function UserList({
   filterConfig,
@@ -144,7 +127,7 @@ export function UserList({
             <div>
               <div className="font-medium flex items-center gap-2">
                 {getFullName(user)}
-                {user.tenant_user.is_superuser && (
+                {user.is_superuser && (
                   <Crown className="h-4 w-4 text-yellow-500" />
                 )}
               </div>
@@ -165,15 +148,26 @@ export function UserList({
       accessorKey: 'role',
       header: 'Rol',
       cell: ({ row }: { row: Row<UserWithRole> }) => {
-        const role = row.original.tenant_user.role
+        const role = row.original.role
         return (
-          <div>
-            {role ? (
-              <Badge variant="secondary">{role.name}</Badge>
-            ) : (
-              <Badge variant="outline">Sin rol</Badge>
-            )}
-          </div>
+          <Popover>
+            <PopoverTrigger>
+              {role ? (
+                <Badge variant="secondary">{role.name}</Badge>
+              ) : (
+                <Badge variant="outline">Sin rol</Badge>
+              )}
+            </PopoverTrigger>
+            <PopoverContent>
+              <div className="font-medium flex items-center gap-2">
+                {role?.name || 'Sin rol'}
+              </div>
+              <div className="text-sm text-muted-foreground">
+                {role?.description || 'Sin descripción'}
+              </div>
+              <PermissionsDisplay perms={role?.perms || []} />
+            </PopoverContent>
+          </Popover>
         )
       },
     },
@@ -184,25 +178,30 @@ export function UserList({
         const user = row.original
         return (
           <div className="flex items-center gap-2">
-            <Badge
-              variant={user.tenant_user.is_active ? 'default' : 'secondary'}
-            >
-              {user.tenant_user.is_active ? 'Activo' : 'Inactivo'}
-            </Badge>
-            {user.tenant_user.is_superuser && (
-              <Badge variant="outline" className="text-yellow-600">
-                Super Admin
-              </Badge>
-            )}
+            <IsActiveDisplay value={!!user.is_active} />
           </div>
         )
       },
     },
     {
       id: 'actions',
-      cell: ({ row }: { row: Row<UserWithRole> }) => (
-        <UserRolesEdit user={row.original} />
-      ),
+      cell: ({ row }: { row: Row<UserWithRole> }) => {
+        const user = row.original
+        return (
+          <UserRolesEdit
+            user={{
+              ...user,
+              tenant_user: {
+                id: user.id,
+                role_id: user.role?.id || null,
+                is_superuser: user.is_superuser || false,
+                is_active: user.is_active || false,
+                role: user.role,
+              },
+            }}
+          />
+        )
+      },
     },
   ]
 
@@ -270,14 +269,13 @@ export function UserList({
                 <div>
                   <h3 className="font-medium flex items-center gap-2">
                     {getFullName(user)}
-                    {user.tenant_user.is_superuser && (
+                    {user.is_superuser && (
                       <Crown className="h-4 w-4 text-yellow-500" />
                     )}
                   </h3>
                   <p className="text-sm text-muted-foreground">{user.email}</p>
                 </div>
               </div>
-              <UserRolesEdit user={user} />
             </div>
 
             <div className="space-y-2">
@@ -288,10 +286,8 @@ export function UserList({
 
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Rol:</span>
-                {user.tenant_user.role ? (
-                  <Badge variant="secondary">
-                    {user.tenant_user.role.name}
-                  </Badge>
+                {user.role ? (
+                  <Badge variant="secondary">{user.role.name}</Badge>
                 ) : (
                   <Badge variant="outline">Sin rol</Badge>
                 )}
@@ -300,14 +296,10 @@ export function UserList({
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">Estado:</span>
                 <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      user.tenant_user.is_active ? 'default' : 'secondary'
-                    }
-                  >
-                    {user.tenant_user.is_active ? 'Activo' : 'Inactivo'}
+                  <Badge variant={user.is_active ? 'default' : 'secondary'}>
+                    {user.is_active ? 'Activo' : 'Inactivo'}
                   </Badge>
-                  {user.tenant_user.is_superuser && (
+                  {user.is_superuser && (
                     <Badge variant="outline" className="text-yellow-600">
                       Super Admin
                     </Badge>
@@ -337,7 +329,7 @@ export function UserList({
               <div>
                 <ItemTitle className="flex items-center gap-2">
                   {getFullName(user)}
-                  {user.tenant_user.is_superuser && (
+                  {user.is_superuser && (
                     <Crown className="h-4 w-4 text-yellow-500" />
                   )}
                 </ItemTitle>
@@ -347,20 +339,31 @@ export function UserList({
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <div className="flex items-center gap-2">
                 <Shield className="h-4 w-4" />
-                {user.tenant_user.role?.name || 'Sin rol'}
+                {user.role?.name || 'Sin rol'}
               </div>
               <div className="flex items-center gap-2">
                 <Badge
-                  variant={user.tenant_user.is_active ? 'default' : 'secondary'}
+                  variant={user.is_active ? 'default' : 'secondary'}
                   className="text-xs"
                 >
-                  {user.tenant_user.is_active ? 'Activo' : 'Inactivo'}
+                  {user.is_active ? 'Activo' : 'Inactivo'}
                 </Badge>
               </div>
             </div>
           </ItemContent>
           <ItemActions>
-            <UserRolesEdit user={user} />
+            <UserRolesEdit
+              user={{
+                ...user,
+                tenant_user: {
+                  id: user.id,
+                  role_id: user.role?.id || null,
+                  is_superuser: user.is_superuser || false,
+                  is_active: user.is_active || false,
+                  role: user.role,
+                },
+              }}
+            />
           </ItemActions>
         </Item>
       ))}

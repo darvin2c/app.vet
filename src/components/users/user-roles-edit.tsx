@@ -57,7 +57,9 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
   const form = useForm({
     resolver: zodResolver(updateUserRolesSchema),
     defaultValues: {
-      role_ids: user.tenant_user.role_id ? [user.tenant_user.role_id] : [],
+      role_ids: user.tenant_user.role_id
+        ? [user.tenant_user.role_id]
+        : ['no-role'],
     },
   })
 
@@ -65,9 +67,11 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
     try {
       // Actualizar rol del usuario
       if (data.role_ids.length > 0) {
+        const roleId = data.role_ids[0]
+        // Si se selecciona "no-role", enviar null para remover el rol
         await updateUserRole.mutateAsync({
           userId: user.id,
-          roleId: data.role_ids[0], // Solo un rol por usuario
+          roleId: roleId === 'no-role' ? null : roleId,
         })
       }
 

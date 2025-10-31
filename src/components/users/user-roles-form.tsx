@@ -74,6 +74,8 @@ export function UserRolesForm({
   useEffect(() => {
     if (user.tenant_user.role_id) {
       form.setValue('role_ids', [user.tenant_user.role_id])
+    } else {
+      form.setValue('role_ids', ['no-role'])
     }
   }, [user.tenant_user.role_id, form])
 
@@ -121,7 +123,7 @@ export function UserRolesForm({
             </FormLabel>
             <FormControl>
               <Select
-                value={field.value?.[0] || ''}
+                value={field.value?.[0] || 'no-role'}
                 onValueChange={(value) => field.onChange([value])}
                 disabled={rolesLoading}
               >
@@ -129,7 +131,7 @@ export function UserRolesForm({
                   <SelectValue placeholder="Seleccionar rol..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Sin rol</SelectItem>
+                  <SelectItem value="no-role">Sin rol</SelectItem>
                   {roles.map((role) => (
                     <SelectItem key={role.id} value={role.id}>
                       <div className="flex flex-col">
