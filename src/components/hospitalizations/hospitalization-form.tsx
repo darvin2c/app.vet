@@ -30,7 +30,6 @@ export function HospitalizationForm() {
             onChange={(value) =>
               setValue('admission_at', value?.toISOString() || '')
             }
-            hasTime={true}
           />
           <FieldError errors={[errors.admission_at]} />
         </FieldContent>
@@ -46,7 +45,6 @@ export function HospitalizationForm() {
             onChange={(value) =>
               setValue('discharge_at', value?.toISOString() || '')
             }
-            hasTime={true}
           />
           <FieldError errors={[errors.discharge_at]} />
         </FieldContent>

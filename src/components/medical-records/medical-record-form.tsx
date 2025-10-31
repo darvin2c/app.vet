@@ -45,7 +45,6 @@ export function MedicalRecordForm() {
             onChange={(value) =>
               setValue('record_date', value?.toISOString() || '')
             }
-            hasTime={false}
           />
           <FieldError errors={[errors.record_date]} />
         </FieldContent>

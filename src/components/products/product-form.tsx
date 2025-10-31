@@ -192,9 +192,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                 name="expiry_date"
                 value={watch('expiry_date')}
                 onChange={(value) => setValue('expiry_date', value)}
-                hasTime={false}
                 error={!!errors.expiry_date}
-                errorMessage={errors.expiry_date?.message as string}
               />
               <FieldError errors={[errors.expiry_date]} />
             </FieldContent>

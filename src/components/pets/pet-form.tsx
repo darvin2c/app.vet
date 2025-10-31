@@ -138,9 +138,7 @@ export function PetForm({ mode = 'create', pet }: PetFormProps) {
                 onChange={(value) =>
                   setValue('birth_date', value?.toISOString())
                 }
-                hasTime={false}
                 error={!!errors.birth_date}
-                errorMessage={errors.birth_date?.message as string}
               />
               <FieldError errors={[errors.birth_date]} />
             </FieldContent>
