@@ -21,7 +21,12 @@ export function DataImport<T = any>({
   maxFileSize = 10 * 1024 * 1024, // 10MB
   error,
 }: DataImportProps<T>) {
-  const { state, actions, errors } = useDataImport(schema, onImport, templateName, error)
+  const { state, actions, errors } = useDataImport(
+    schema,
+    onImport,
+    templateName,
+    error
+  )
 
   const renderCurrentStep = () => {
     switch (state.step) {

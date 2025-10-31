@@ -7,9 +7,12 @@ export default function ProductImportDemoPage() {
     <div className="container mx-auto py-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold">Demo - Importación de Productos</h1>
+          <h1 className="text-3xl font-bold">
+            Demo - Importación de Productos
+          </h1>
           <p className="text-muted-foreground mt-2">
-            Prueba la funcionalidad de importación de productos desde archivos CSV o Excel
+            Prueba la funcionalidad de importación de productos desde archivos
+            CSV o Excel
           </p>
         </div>
 
@@ -28,34 +31,42 @@ export default function ProductImportDemoPage() {
             <h3 className="font-medium mb-2">Campos soportados:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
-                <span className="font-medium text-red-600">• name</span> (requerido)
+                <span className="font-medium text-red-600">• name</span>{' '}
+                (requerido)
               </div>
               <div>
-                <span className="font-medium text-red-600">• price</span> (requerido)
+                <span className="font-medium text-red-600">• price</span>{' '}
+                (requerido)
               </div>
               <div>
-                <span className="font-medium text-red-600">• stock</span> (requerido)
+                <span className="font-medium text-red-600">• stock</span>{' '}
+                (requerido)
               </div>
               <div>
                 <span className="text-muted-foreground">• cost</span> (opcional)
               </div>
               <div>
-                <span className="text-muted-foreground">• barcode</span> (opcional)
+                <span className="text-muted-foreground">• barcode</span>{' '}
+                (opcional)
               </div>
               <div>
                 <span className="text-muted-foreground">• sku</span> (opcional)
               </div>
               <div>
-                <span className="text-muted-foreground">• notes</span> (opcional)
+                <span className="text-muted-foreground">• notes</span>{' '}
+                (opcional)
               </div>
               <div>
-                <span className="text-muted-foreground">• category_id</span> (opcional)
+                <span className="text-muted-foreground">• category_id</span>{' '}
+                (opcional)
               </div>
               <div>
-                <span className="text-muted-foreground">• brand_id</span> (opcional)
+                <span className="text-muted-foreground">• brand_id</span>{' '}
+                (opcional)
               </div>
               <div>
-                <span className="text-muted-foreground">• unit_id</span> (opcional)
+                <span className="text-muted-foreground">• unit_id</span>{' '}
+                (opcional)
               </div>
             </div>
           </div>

@@ -31,9 +31,7 @@ export function ConfirmStep({
             <h3 className="text-lg font-semibold text-red-600">
               Error en la importación
             </h3>
-            <p className="text-sm text-red-600">
-              {error}
-            </p>
+            <p className="text-sm text-red-600">{error}</p>
           </>
         ) : (
           <>

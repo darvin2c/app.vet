@@ -91,31 +91,32 @@ export function UploadStep({
 
       <div
         className={cn(
-          "border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ease-in-out",
+          'border-2 border-dashed rounded-lg p-8 text-center transition-all duration-200 ease-in-out',
           isDragOver
-            ? "border-primary bg-primary/5 border-solid shadow-md"
-            : "border-muted-foreground/25 hover:border-muted-foreground/50"
+            ? 'border-primary bg-primary/5 border-solid shadow-md'
+            : 'border-muted-foreground/25 hover:border-muted-foreground/50'
         )}
         onDragEnter={handleDragEnter}
         onDragLeave={handleDragLeave}
         onDragOver={handleDragOver}
         onDrop={handleDrop}
       >
-        <Upload 
+        <Upload
           className={cn(
-            "mx-auto h-12 w-12 mb-4 transition-colors duration-200",
-            isDragOver ? "text-primary" : "text-muted-foreground"
-          )} 
+            'mx-auto h-12 w-12 mb-4 transition-colors duration-200',
+            isDragOver ? 'text-primary' : 'text-muted-foreground'
+          )}
         />
         <div className="space-y-2">
-          <p className={cn(
-            "text-sm font-medium transition-colors duration-200",
-            isDragOver ? "text-primary" : ""
-          )}>
-            {isDragOver 
-              ? "Suelta el archivo aquí" 
-              : "Arrastra y suelta tu archivo aquí, o haz clic para seleccionar"
-            }
+          <p
+            className={cn(
+              'text-sm font-medium transition-colors duration-200',
+              isDragOver ? 'text-primary' : ''
+            )}
+          >
+            {isDragOver
+              ? 'Suelta el archivo aquí'
+              : 'Arrastra y suelta tu archivo aquí, o haz clic para seleccionar'}
           </p>
           <p className="text-xs text-muted-foreground">
             Formatos soportados: {acceptedFileTypes.join(', ')} (máx.{' '}

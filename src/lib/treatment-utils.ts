@@ -1,7 +1,19 @@
 import type { Database } from '@/types/supabase.types'
 
-type TreatmentStatus = Database['public']['Enums']['treatment_status']
-type TreatmentType = Database['public']['Enums']['treatment_type']
+// TODO: Estos enums no existen en la base de datos actual
+// type TreatmentStatus = Database['public']['Enums']['treatment_status']
+// type TreatmentType = Database['public']['Enums']['treatment_type']
+
+type TreatmentStatus = 'draft' | 'completed' | 'cancelled'
+type TreatmentType =
+  | 'consultation'
+  | 'vaccination'
+  | 'surgery'
+  | 'grooming'
+  | 'hospitalization'
+  | 'deworming'
+  | 'boarding'
+  | 'training'
 
 export function getStatusVariant(
   status: TreatmentStatus
