@@ -1,6 +1,5 @@
-import { PageBase } from '@/components/ui/page-base'
+import PageBase from '@/components/page-base'
 import { SupplierBrandList } from '@/components/supplier-brands/supplier-brand-list'
-import { SupplierBrandCreateButton } from '@/components/supplier-brands/supplier-brand-create-button'
 
 export default function SupplierBrandsPage() {
   return (

@@ -1,11 +1,11 @@
 'use client'
 
-import { PageBase } from '@/components/ui/page-base'
 import { TenantGeneralSettings } from '@/components/settings/tenant-general-settings'
 import { TenantBusinessSettings } from '@/components/settings/tenant-business-settings'
 import { TenantOperationalSettings } from '@/components/settings/tenant-operational-settings'
 import { TenantBrandingSettings } from '@/components/settings/tenant-branding-settings'
 import { TenantDangerZone } from '@/components/settings/tenant-danger-zone'
+import PageBase from '@/components/page-base'
 
 export default function SettingsPage() {
   return (

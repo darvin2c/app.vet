@@ -39,13 +39,7 @@ export function useUserList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [
-      currentTenant?.id,
-      'users',
-      JSON.stringify(filters),
-      search,
-      JSON.stringify(orders),
-    ],
+    queryKey: [currentTenant?.id, 'users', filters, search, orders],
     queryFn: async (): Promise<UserWithRole[]> => {
       if (!currentTenant?.id) {
         return []
@@ -55,52 +49,21 @@ export function useUserList({
         .from('tenant_users')
         .select(
           `
-          tenant_user_id:id,
-          role_id,
-          is_superuser,
-          is_active,
-          roles:role_id(*),
-          profiles:user_id(
-            id,
-            first_name,
-            last_name,
-            email,
-            phone,
-            avatar_url
-          )
+          *,
+          role:role_id(*),
+          profile:user_id(*)
         `
         )
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      filters.forEach((filter) => {
-        if (filter.field === 'is_superuser') {
-          query = query.eq('is_superuser', filter.value === 'true')
-        } else if (filter.field === 'role_id') {
-          query = query.eq('role_id', filter.value)
-        } else if (filter.field !== 'search') {
-          query = query.eq(filter.field, filter.value)
-        }
-      })
+      filters.forEach((filter) => {})
 
       // Aplicar ordenamiento
-      orders.forEach((order) => {
-        if (order.field.startsWith('profiles.')) {
-          // Para campos de profiles, usar foreignTable
-          const profileField = order.field.replace('profiles.', '')
-          query = query.order(profileField, {
-            ascending: order.ascending,
-            foreignTable: 'profiles',
-          })
-        } else {
-          query = query.order(order.field, {
-            ascending: order.ascending,
-          })
-        }
-      })
+      orders.forEach((order) => {})
 
       const { data, error } = await query
-
+      console.log(data)
       if (error) {
         throw new Error(`Error al obtener usuarios: ${error.message}`)
       }
