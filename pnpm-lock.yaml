@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@anatine/zod-mock':
-        specifier: ^3.14.0
-        version: 3.14.0(@faker-js/faker@10.1.0)(zod@4.1.11)
       '@faker-js/faker':
         specifier: ^10.1.0
         version: 10.1.0
@@ -209,6 +206,9 @@ importers:
       zod:
         specifier: ^4.1.11
         version: 4.1.11
+      zod-schema-faker:
+        specifier: 2.0.0-beta.8
+        version: 2.0.0-beta.8
       zustand:
         specifier: ^5.0.8
         version: 5.0.8(@types/react@19.1.13)(react@19.1.0)(use-sync-external-store@1.5.0(react@19.1.0))
@@ -261,12 +261,6 @@ packages:
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
     engines: {node: '>=10'}
-
-  '@anatine/zod-mock@3.14.0':
-    resolution: {integrity: sha512-pTYyn9dlszUl5gMGWtE7DBRvx1EcqpBJ1iJ73rlJYCZr9lgIEdZ6PCZQqoXIdlC8DYIwuT1M3/N8arkJa7A10Q==}
-    peerDependencies:
-      '@faker-js/faker': ^7.0.0 || ^8.0.0 || ^9.0.0
-      zod: ^3.21.4
 
   '@babel/code-frame@7.27.1':
     resolution: {integrity: sha512-cjQ7ZlQ0Mv3b47hABuTevyTuYN4i+loJKGeV9flcCgIK37cCXRh+L1bd3iBHlynerhQ7BhCkn2BPbQUL+rGqFg==}
@@ -355,6 +349,10 @@ packages:
   '@eslint/plugin-kit@0.3.5':
     resolution: {integrity: sha512-Z5kJ+wU3oA7MMIqVR9tyZRtjYPr4OC004Q4Rw7pgOKUOKkJfZ3O24nz3WYfGRpMDNmcOi3TwQOmgm7B7Tpii0w==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@faker-js/faker@10.0.0':
+    resolution: {integrity: sha512-UollFEUkVXutsaP+Vndjxar40Gs5JL2HeLcl8xO1QAjJgOdhc3OmBFWyEylS+RddWaaBiAzH+5/17PLQJwDiLw==}
+    engines: {node: ^20.19.0 || ^22.13.0 || ^23.5.0 || >=24.0.0, npm: '>=10'}
 
   '@faker-js/faker@10.1.0':
     resolution: {integrity: sha512-C3mrr3b5dRVlKPJdfrAXS8+dq+rq8Qm5SNRazca0JKgw1HQERFmrVb0towvMmw5uu8hHKNiQasMaR/tydf3Zsg==}
@@ -3654,6 +3652,9 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
+  zod-schema-faker@2.0.0-beta.8:
+    resolution: {integrity: sha512-K39FxJDarc+LeANA3E1uVhyMvqmRFseEzfoZZQ73mqtcbfIKCKwPSc1ljQTn7Zbrb9x+1R8uHaGwIRVBCtSoBA==}
+
   zod@3.25.76:
     resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
 
@@ -3681,12 +3682,6 @@ packages:
 snapshots:
 
   '@alloc/quick-lru@5.2.0': {}
-
-  '@anatine/zod-mock@3.14.0(@faker-js/faker@10.1.0)(zod@4.1.11)':
-    dependencies:
-      '@faker-js/faker': 10.1.0
-      randexp: 0.5.3
-      zod: 4.1.11
 
   '@babel/code-frame@7.27.1':
     dependencies:
@@ -3789,6 +3784,8 @@ snapshots:
     dependencies:
       '@eslint/core': 0.15.2
       levn: 0.4.1
+
+  '@faker-js/faker@10.0.0': {}
 
   '@faker-js/faker@10.1.0': {}
 
@@ -7433,6 +7430,11 @@ snapshots:
       fd-slicer: 1.1.0
 
   yocto-queue@0.1.0: {}
+
+  zod-schema-faker@2.0.0-beta.8:
+    dependencies:
+      '@faker-js/faker': 10.0.0
+      randexp: 0.5.3
 
   zod@3.25.76: {}
 

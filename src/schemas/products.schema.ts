@@ -14,8 +14,8 @@ export const productBaseSchema = z.object({
     .number()
     .min(0, 'El costo debe ser mayor o igual a 0')
     .optional(),
-  is_service: z.boolean().default(false),
-  is_active: z.boolean().default(true),
+  is_service: z.coerce.boolean().default(false),
+  is_active: z.coerce.boolean().default(true),
   barcode: z.string().optional(),
   sku: z.string().optional(),
   notes: z.string().optional(),

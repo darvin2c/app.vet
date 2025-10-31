@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react'
 import { z } from 'zod'
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
-import { generateMock } from '@anatine/zod-mock'
+import { fake } from 'zod-schema-faker'
 import {
   DataImportState,
   DataImportStep,
@@ -33,33 +33,33 @@ export function useDataImport<T = any>(
       if ('shape' in schema && schema.shape) {
         const shape = schema.shape as Record<string, z.ZodTypeAny>
         const allKeys = Object.keys(shape)
-        
+
         // Distinguir entre campos requeridos y opcionales
         const requiredKeys = allKeys.filter(
-          key => !(shape[key] instanceof z.ZodOptional)
+          (key) => !(shape[key] instanceof z.ZodOptional)
         )
         const optionalKeys = allKeys.filter(
-          key => shape[key] instanceof z.ZodOptional
+          (key) => shape[key] instanceof z.ZodOptional
         )
-        
+
         return {
           allKeys,
           requiredKeys,
-          optionalKeys
+          optionalKeys,
         }
       }
-      
+
       // Fallback si no es un ZodObject
       return {
         allKeys: [],
         requiredKeys: [],
-        optionalKeys: []
+        optionalKeys: [],
       }
     } catch {
       return {
         allKeys: [],
         requiredKeys: [],
-        optionalKeys: []
+        optionalKeys: [],
       }
     }
   }, [schema])
@@ -76,7 +76,11 @@ export function useDataImport<T = any>(
           complete: (results) => {
             // Verificar si hay datos además de los headers
             if (results.data.length === 0) {
-              reject(new Error('El archivo solo contiene encabezados, no hay datos para importar'))
+              reject(
+                new Error(
+                  'El archivo solo contiene encabezados, no hay datos para importar'
+                )
+              )
               return
             }
 
@@ -110,7 +114,11 @@ export function useDataImport<T = any>(
 
             // Verificar si hay datos además de los headers
             if (rows.length === 0) {
-              reject(new Error('El archivo solo contiene encabezados, no hay datos para importar'))
+              reject(
+                new Error(
+                  'El archivo solo contiene encabezados, no hay datos para importar'
+                )
+              )
               return
             }
 
@@ -144,67 +152,75 @@ export function useDataImport<T = any>(
     })
   }, [])
 
-  const validateData = useCallback((parsedData: ParsedRow[]): ValidationResult | null => {
-    if (!parsedData.length) return null
+  const validateData = useCallback(
+    (parsedData: ParsedRow[]): ValidationResult | null => {
+      if (!parsedData.length) return null
 
-    // Obtener las claves del esquema usando schema.shape
-    const { allKeys: schemaKeys } = getSchemaKeys()
-    
-    // Si no se pueden obtener las claves del schema, usar las del primer registro como fallback
-    const finalSchemaKeys = schemaKeys.length > 0 
-      ? schemaKeys 
-      : (parsedData[0] ? Object.keys(parsedData[0].data) : [])
+      // Obtener las claves del esquema usando schema.shape
+      const { allKeys: schemaKeys } = getSchemaKeys()
 
-    const validRows: ParsedRow[] = []
-    const invalidRows: ParsedRow[] = []
-    const columnErrors: string[] = []
+      // Si no se pueden obtener las claves del schema, usar las del primer registro como fallback
+      const finalSchemaKeys =
+        schemaKeys.length > 0
+          ? schemaKeys
+          : parsedData[0]
+            ? Object.keys(parsedData[0].data)
+            : []
 
-    // Verificar columnas del archivo
-    const fileColumns = Object.keys(parsedData[0]?.data || {})
-    const missingColumns = finalSchemaKeys.filter(
-      (key) => !fileColumns.includes(key)
-    )
-    const extraColumns = fileColumns.filter((col) => !finalSchemaKeys.includes(col))
+      const validRows: ParsedRow[] = []
+      const invalidRows: ParsedRow[] = []
+      const columnErrors: string[] = []
 
-    if (missingColumns.length > 0) {
-      columnErrors.push(`Columnas faltantes: ${missingColumns.join(', ')}`)
-    }
-    if (extraColumns.length > 0) {
-      columnErrors.push(`Columnas no reconocidas: ${extraColumns.join(', ')}`)
-    }
+      // Verificar columnas del archivo
+      const fileColumns = Object.keys(parsedData[0]?.data || {})
+      const missingColumns = finalSchemaKeys.filter(
+        (key) => !fileColumns.includes(key)
+      )
+      const extraColumns = fileColumns.filter(
+        (col) => !finalSchemaKeys.includes(col)
+      )
 
-    // Validar cada fila
-    parsedData.forEach((row) => {
-      const errors: ValidationError[] = []
-
-      try {
-        schema.parse(row.data)
-        validRows.push({ ...row, errors })
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          error.issues.forEach((err) => {
-            errors.push({
-              field: err.path.join('.'),
-              message: err.message,
-              type: 'invalid',
-            })
-          })
-        }
-        invalidRows.push({ ...row, errors })
+      if (missingColumns.length > 0) {
+        columnErrors.push(`Columnas faltantes: ${missingColumns.join(', ')}`)
       }
-    })
+      if (extraColumns.length > 0) {
+        columnErrors.push(`Columnas no reconocidas: ${extraColumns.join(', ')}`)
+      }
 
-    const validationResult: ValidationResult = {
-      validRows,
-      invalidRows,
-      totalRows: parsedData.length,
-      validCount: validRows.length,
-      invalidCount: invalidRows.length,
-      columnErrors,
-    }
+      // Validar cada fila
+      parsedData.forEach((row) => {
+        const errors: ValidationError[] = []
 
-    return validationResult
-  }, [schema])
+        try {
+          schema.parse(row.data)
+          validRows.push({ ...row, errors })
+        } catch (error) {
+          if (error instanceof z.ZodError) {
+            error.issues.forEach((err) => {
+              errors.push({
+                field: err.path.join('.'),
+                message: err.message,
+                type: 'invalid',
+              })
+            })
+          }
+          invalidRows.push({ ...row, errors })
+        }
+      })
+
+      const validationResult: ValidationResult = {
+        validRows,
+        invalidRows,
+        totalRows: parsedData.length,
+        validCount: validRows.length,
+        invalidCount: invalidRows.length,
+        columnErrors,
+      }
+
+      return validationResult
+    },
+    [schema]
+  )
 
   const handleFileSelect = useCallback(
     async (file: File) => {
@@ -213,7 +229,7 @@ export function useDataImport<T = any>(
       try {
         const parsedData = await parseFile(file)
         const validationResult = validateData(parsedData)
-        
+
         setState((prev) => ({
           ...prev,
           file,
@@ -254,45 +270,104 @@ export function useDataImport<T = any>(
   const downloadTemplate = useCallback(() => {
     // Obtener las claves del esquema usando schema.shape
     const { allKeys: schemaKeys } = getSchemaKeys()
-    
+
     // Si no se pueden obtener las claves del schema, usar claves genéricas como fallback
-    const finalSchemaKeys = schemaKeys.length > 0 
-      ? schemaKeys 
-      : ['column1', 'column2', 'column3']
+    const finalSchemaKeys =
+      schemaKeys.length > 0 ? schemaKeys : ['column1', 'column2', 'column3']
 
     // Generar 3 filas de ejemplo usando zod-mock
     let csvContent = finalSchemaKeys.join(',') + '\n'
-    
+
     try {
-      // Generar 3 ejemplos de datos usando el schema
+      // Generar 3 filas de ejemplo con zod-schema-faker
       for (let i = 0; i < 3; i++) {
-        const mockData = generateMock(schema)
+        const mockData = fake(schema)
         const row = finalSchemaKeys.map(key => {
-           const value = mockData[key as keyof typeof mockData]
-           // Convertir el valor a string y escapar comillas si es necesario
-           if (value === null || value === undefined) return ''
-           
-           // Convertir fechas a formato ISO string
-           let stringValue: string
-           if (value instanceof Date) {
-             stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
-           } else {
-             stringValue = String(value)
-           }
-           
-           // Si contiene comas o comillas, envolver en comillas dobles
-           if (stringValue.includes(',') || stringValue.includes('"')) {
-             return `"${stringValue.replace(/"/g, '""')}"`
-           }
-           return stringValue
-         })
+          const value = mockData[key as keyof typeof mockData]
+          if (value === null || value === undefined) return ''
+          
+          // Convertir fechas a formato ISO string
+          let stringValue: string
+          if (value instanceof Date) {
+            stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
+          } else {
+            stringValue = String(value)
+          }
+          
+          // Si contiene comas o comillas, envolver en comillas dobles
+          if (stringValue.includes(',') || stringValue.includes('"')) {
+            return `"${stringValue.replace(/"/g, '""')}"`
+          }
+          return stringValue
+        })
         csvContent += row.join(',') + '\n'
       }
     } catch (error) {
-      // Si falla la generación de mock data, agregar filas vacías como ejemplo
-      console.warn('No se pudieron generar datos de ejemplo:', error)
+      // Si falla la generación de mock data, usar datos de ejemplo básicos
+      console.warn('Error al generar datos de ejemplo con zod-schema-faker:', error)
+      
+      const generateBasicSampleData = (index: number): Record<string, any> => {
+        const sampleData: Record<string, any> = {}
+        
+        finalSchemaKeys.forEach(key => {
+          switch (key) {
+            case 'name':
+              sampleData[key] = `Producto Ejemplo ${index + 1}`
+              break
+            case 'price':
+              sampleData[key] = (Math.random() * 90 + 10).toFixed(2)
+              break
+            case 'stock':
+              sampleData[key] = Math.floor(Math.random() * 51)
+              break
+            case 'cost':
+              sampleData[key] = (Math.random() * 75 + 5).toFixed(2)
+              break
+            case 'is_service':
+              sampleData[key] = index % 2 === 0 ? 'true' : 'false'
+              break
+            case 'is_active':
+              sampleData[key] = 'true'
+              break
+            case 'barcode':
+              sampleData[key] = `12345678901${index}`
+              break
+            case 'sku':
+              sampleData[key] = `SKU00${index + 1}`
+              break
+            case 'notes':
+              sampleData[key] = `Notas del producto ${index + 1}`
+              break
+            case 'expiry_date':
+              const futureDate = new Date()
+              futureDate.setMonth(futureDate.getMonth() + (index + 1) * 6)
+              sampleData[key] = futureDate.toISOString().split('T')[0]
+              break
+            case 'batch_number':
+              sampleData[key] = `LOTE00${index + 1}`
+              break
+            default:
+              sampleData[key] = ''
+          }
+        })
+        
+        return sampleData
+      }
+
+      // Generar 3 filas de ejemplo básicas como fallback
       for (let i = 0; i < 3; i++) {
-        csvContent += finalSchemaKeys.map(() => '').join(',') + '\n'
+        const mockData = generateBasicSampleData(i)
+        const row = finalSchemaKeys.map(key => {
+          const value = mockData[key]
+          if (value === null || value === undefined || value === '') return ''
+          
+          const stringValue = String(value)
+          if (stringValue.includes(',') || stringValue.includes('"')) {
+            return `"${stringValue.replace(/"/g, '""')}"`
+          }
+          return stringValue
+        })
+        csvContent += row.join(',') + '\n'
       }
     }
 
@@ -310,7 +385,7 @@ export function useDataImport<T = any>(
 
   const validateCurrentData = useCallback(() => {
     if (!state.parsedData.length) return
-    
+
     const validationResult = validateData(state.parsedData)
     setState((prev) => ({
       ...prev,
