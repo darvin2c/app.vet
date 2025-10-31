@@ -28,7 +28,13 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
   const createProductBulk = useProductCreateBulk()
 
   const handleImport = async (data: CreateProductSchema[]) => {
-    await createProductBulk.mutateAsync(data)
+    const formattedData = data.map((item) => ({
+      ...item,
+      expiry_date: item.expiry_date
+        ? item.expiry_date.toISOString()
+        : undefined,
+    }))
+    await createProductBulk.mutateAsync(formattedData)
     toast.success('Productos importados exitosamente')
     onOpenChange(false)
   }

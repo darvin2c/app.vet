@@ -42,9 +42,15 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
   })
 
   const onSubmit = async (data: UpdateProductSchema) => {
+    const formattedData = {
+      ...data,
+      expiry_date: data.expiry_date
+        ? data.expiry_date.toISOString()
+        : undefined,
+    }
     await updateProduct.mutateAsync({
       id: product.id,
-      data,
+      data: formattedData,
     })
     onOpenChange(false)
   }

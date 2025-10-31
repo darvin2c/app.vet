@@ -191,9 +191,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                 id="expiry_date"
                 name="expiry_date"
                 value={watch('expiry_date')}
-                onChange={(value) =>
-                  setValue('expiry_date', value?.toISOString())
-                }
+                onChange={(value) => setValue('expiry_date', value)}
                 hasTime={false}
                 error={!!errors.expiry_date}
                 errorMessage={errors.expiry_date?.message as string}

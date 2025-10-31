@@ -40,7 +40,13 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
   })
 
   const onSubmit = async (data: CreateProductSchema) => {
-    await createProduct.mutateAsync(data)
+    const formattedData = {
+      ...data,
+      expiry_date: data.expiry_date
+        ? data.expiry_date.toISOString()
+        : undefined,
+    }
+    await createProduct.mutateAsync(formattedData)
     form.reset()
     onOpenChange(false)
   }
