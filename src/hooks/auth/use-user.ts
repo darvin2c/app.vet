@@ -2,6 +2,7 @@
 
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 export default function useUser() {
   const userQuery = useQuery({
@@ -17,6 +18,7 @@ export default function useUser() {
 
 export function useProfile() {
   const { data: user } = useUser()
+  const { currentTenant } = useCurrentTenantStore()
   const profileQuery = useQuery({
     queryKey: ['profile'],
     queryFn: async () => {
@@ -25,7 +27,19 @@ export function useProfile() {
         .select('*')
         .eq('id', user!.id)
         .single()
-      return data
+
+      const { data: tenantUser } = await supabase
+        .from('tenant_users')
+        .select('*, role:role_id(*)')
+        .eq('user_id', user!.id)
+        .eq('tenant_id', currentTenant!.id)
+        .single()
+
+      return {
+        ...data,
+        role: tenantUser?.role,
+        isSuperuser: tenantUser?.is_superuser || false,
+      }
     },
     enabled: !!user?.id,
   })
