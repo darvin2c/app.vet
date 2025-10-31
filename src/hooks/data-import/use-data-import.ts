@@ -70,8 +70,12 @@ export function useDataImport<T = any>(
   const parseFile = useCallback(async (file: File): Promise<ParsedRow[]> => {
     // Función helper para normalizar valores vacíos a undefined
     const normalizeValue = (value: any): any => {
-      if (value === null || value === undefined || value === '' || 
-          (typeof value === 'string' && value.trim() === '')) {
+      if (
+        value === null ||
+        value === undefined ||
+        value === '' ||
+        (typeof value === 'string' && value.trim() === '')
+      ) {
         return undefined
       }
       return value
@@ -98,10 +102,12 @@ export function useDataImport<T = any>(
             const parsedRows: ParsedRow[] = results.data.map((row, index) => {
               // Normalizar todos los valores del row
               const normalizedData: Record<string, any> = {}
-              Object.keys(row as Record<string, any>).forEach(key => {
-                normalizedData[key] = normalizeValue((row as Record<string, any>)[key])
+              Object.keys(row as Record<string, any>).forEach((key) => {
+                normalizedData[key] = normalizeValue(
+                  (row as Record<string, any>)[key]
+                )
               })
-              
+
               return {
                 data: normalizedData,
                 index: index + 1,
@@ -297,56 +303,6 @@ export function useDataImport<T = any>(
 
     // Generar 3 filas de ejemplo usando zod-mock
     let csvContent = finalSchemaKeys.join(',') + '\n'
-
-    // Configurar faker según la documentación oficial
-    try {
-      setFaker(faker as any)
-    } catch (error) {
-      console.warn('Error al configurar faker:', error)
-    }
-
-    // Generar 3 filas de ejemplo con zod-schema-faker
-    for (let i = 0; i < 3; i++) {
-      let mockData: any = {}
-
-      try {
-        mockData = fake(schema)
-      } catch (error) {
-        // Si falla la generación de mock data, mostrar warning y usar fila vacía
-        console.warn(
-          'Error al generar datos de ejemplo con zod-schema-faker:',
-          error
-        )
-        // Crear objeto vacío con las keys del schema
-        mockData = finalSchemaKeys.reduce(
-          (acc, key) => {
-            acc[key] = ''
-            return acc
-          },
-          {} as Record<string, any>
-        )
-      }
-
-      const row = finalSchemaKeys.map((key) => {
-        const value = mockData[key as keyof typeof mockData]
-        if (value === null || value === undefined || value === '') return ''
-
-        // Convertir fechas a formato ISO string
-        let stringValue: string
-        if (value instanceof Date) {
-          stringValue = value.toISOString().split('T')[0] // Solo la fecha YYYY-MM-DD
-        } else {
-          stringValue = String(value)
-        }
-
-        // Si contiene comas o comillas, envolver en comillas dobles
-        if (stringValue.includes(',') || stringValue.includes('"')) {
-          return `"${stringValue.replace(/"/g, '""')}"`
-        }
-        return stringValue
-      })
-      csvContent += row.join(',') + '\n'
-    }
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')
