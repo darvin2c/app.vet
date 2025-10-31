@@ -67,6 +67,15 @@ export function useDataImport<T = any>(
   const [fileError, setFileError] = useState<string | null>(null)
 
   const parseFile = useCallback(async (file: File): Promise<ParsedRow[]> => {
+    // Función helper para normalizar valores vacíos a undefined
+    const normalizeValue = (value: any): any => {
+      if (value === null || value === undefined || value === '' || 
+          (typeof value === 'string' && value.trim() === '')) {
+        return undefined
+      }
+      return value
+    }
+
     return new Promise((resolve, reject) => {
       const fileExtension = file.name.split('.').pop()?.toLowerCase()
 
@@ -85,11 +94,19 @@ export function useDataImport<T = any>(
               return
             }
 
-            const parsedRows: ParsedRow[] = results.data.map((row, index) => ({
-              data: row as Record<string, any>,
-              index: index + 1,
-              errors: [],
-            }))
+            const parsedRows: ParsedRow[] = results.data.map((row, index) => {
+              // Normalizar todos los valores del row
+              const normalizedData: Record<string, any> = {}
+              Object.keys(row as Record<string, any>).forEach(key => {
+                normalizedData[key] = normalizeValue((row as Record<string, any>)[key])
+              })
+              
+              return {
+                data: normalizedData,
+                index: index + 1,
+                errors: [],
+              }
+            })
             resolve(parsedRows)
           },
           error: (error) =>
@@ -126,7 +143,8 @@ export function useDataImport<T = any>(
             const parsedRows: ParsedRow[] = rows.map((row, index) => {
               const rowData: Record<string, any> = {}
               headers.forEach((header, colIndex) => {
-                rowData[header] = row[colIndex] || ''
+                // Usar normalizeValue en lugar de || ''
+                rowData[header] = normalizeValue(row[colIndex])
               })
               return {
                 data: rowData,
