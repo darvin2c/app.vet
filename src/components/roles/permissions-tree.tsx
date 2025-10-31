@@ -209,41 +209,26 @@ export function PermissionsTree({
             <div className="ml-8 space-y-2">
               {group.resources.map((resource) => (
                 <div key={resource.value}>
-                  {/* Resource Header */}
-                  <div className="flex items-center gap-2 mb-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-5 w-5 p-0"
-                      onClick={() => toggleResource(resource.value)}
-                    >
-                      {expandedResources.has(resource.value) ? (
-                        <ChevronDown className="h-3 w-3" />
-                      ) : (
-                        <ChevronRight className="h-3 w-3" />
-                      )}
-                    </Button>
-                    <Checkbox
-                      checked={isResourceChecked(resource.value)}
-                      onCheckedChange={(checked) =>
-                        handleResourceToggle(resource.value, checked as boolean)
-                      }
-                      className={cn(
-                        isResourceIndeterminate(resource.value) &&
-                          'data-[state=checked]:bg-muted-foreground'
-                      )}
-                    />
-                    <Label
-                      className="text-sm cursor-pointer"
-                      onClick={() => toggleResource(resource.value)}
-                    >
-                      {resource.label}
-                    </Label>
-                  </div>
-
-                  {/* Resource Permissions */}
-                  {expandedResources.has(resource.value) && (
-                    <div className="ml-8 flex flex-wrap gap-4">
+                  {/* Resource Header with inline permissions */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        checked={isResourceChecked(resource.value)}
+                        onCheckedChange={(checked) =>
+                          handleResourceToggle(resource.value, checked as boolean)
+                        }
+                        className={cn(
+                          isResourceIndeterminate(resource.value) &&
+                            'data-[state=checked]:bg-muted-foreground'
+                        )}
+                      />
+                      <Label className="text-sm font-medium">
+                        {resource.label}
+                      </Label>
+                    </div>
+                    
+                    {/* Inline Resource Permissions */}
+                    <div className="flex flex-wrap gap-4">
                       {resource.perms.map((perm) => (
                         <div
                           key={perm.value}
@@ -264,7 +249,7 @@ export function PermissionsTree({
                         </div>
                       ))}
                     </div>
-                  )}
+                  </div>
                 </div>
               ))}
             </div>
