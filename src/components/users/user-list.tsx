@@ -190,7 +190,12 @@ export function UserList({
         return (
           <UserRolesEdit
             user={{
-              ...user,
+              id: user.id,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              email: user.email,
+              phone: user.phone,
+              avatar_url: user.avatar_url,
               tenant_user: {
                 id: user.id,
                 role_id: user.role?.id || null,
@@ -354,7 +359,12 @@ export function UserList({
           <ItemActions>
             <UserRolesEdit
               user={{
-                ...user,
+                id: user.id,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                phone: user.phone,
+                avatar_url: user.avatar_url,
                 tenant_user: {
                   id: user.id,
                   role_id: user.role?.id || null,

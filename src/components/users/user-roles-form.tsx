@@ -3,12 +3,11 @@
 import { useFormContext } from 'react-hook-form'
 import { useEffect } from 'react'
 import {
-  FormField,
-  FormItem,
-  FormLabel,
-  FormControl,
-  FormMessage,
-} from '@/components/ui/form'
+  Field,
+  FieldContent,
+  FieldLabel,
+  FieldError,
+} from '@/components/ui/field'
 import {
   Select,
   SelectContent,
@@ -55,6 +54,10 @@ export function UserRolesForm({
 }: UserRolesFormProps) {
   const form = useFormContext()
   const { data: roles = [], isPending: rolesLoading } = useRoleList({})
+
+  // Watch the role_ids field
+  const roleIds = form.watch('role_ids')
+  const errors = form.formState.errors
 
   // Función para obtener las iniciales del usuario
   const getUserInitials = (user: UserWithRole) => {
@@ -112,45 +115,39 @@ export function UserRolesForm({
       </div>
 
       {/* Selector de rol */}
-      <FormField
-        control={form.control}
-        name="role_ids"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="flex items-center gap-2">
-              <User className="h-4 w-4" />
-              Rol Asignado
-            </FormLabel>
-            <FormControl>
-              <Select
-                value={field.value?.[0] || 'no-role'}
-                onValueChange={(value) => field.onChange([value])}
-                disabled={rolesLoading}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Seleccionar rol..." />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="no-role">Sin rol</SelectItem>
-                  {roles.map((role) => (
-                    <SelectItem key={role.id} value={role.id}>
-                      <div className="flex flex-col">
-                        <span className="font-medium">{role.name}</span>
-                        {role.description && (
-                          <span className="text-xs text-muted-foreground">
-                            {role.description}
-                          </span>
-                        )}
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <Field>
+        <FieldLabel htmlFor="role_ids" className="flex items-center gap-2">
+          <User className="h-4 w-4" />
+          Rol Asignado
+        </FieldLabel>
+        <FieldContent>
+          <Select
+            value={roleIds?.[0] || 'no-role'}
+            onValueChange={(value) => form.setValue('role_ids', [value])}
+            disabled={rolesLoading}
+          >
+            <SelectTrigger id="role_ids">
+              <SelectValue placeholder="Seleccionar rol..." />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="no-role">Sin rol</SelectItem>
+              {roles.map((role) => (
+                <SelectItem key={role.id} value={role.id}>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{role.name}</span>
+                    {role.description && (
+                      <span className="text-xs text-muted-foreground">
+                        {role.description}
+                      </span>
+                    )}
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FieldError errors={[errors.role_ids]} />
+        </FieldContent>
+      </Field>
 
       {/* Toggle Super Admin */}
       <div className="flex items-center justify-between p-4 border rounded-lg">

@@ -16,28 +16,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useUserList } from '@/hooks/users/use-user-list'
+import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
 import { Tables } from '@/types/supabase.types'
-
-type UserWithRole = {
-  id: string
-  first_name: string | null
-  last_name: string | null
-  email: string | null
-  phone: string | null
-  avatar_url: string | null
-  tenant_user: {
-    id: string
-    role_id: string | null
-    is_superuser: boolean
-    is_active: boolean
-    role: {
-      id: string
-      name: string
-      description: string | null
-    } | null
-  }
-}
 
 interface UserSelectProps {
   value?: string
