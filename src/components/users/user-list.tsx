@@ -59,7 +59,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { UserRolesEdit } from './user-roles-edit'
+import { UserActions } from './user-actions'
 import { PermissionsDisplay } from '../roles/permissions-display'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { IsActiveDisplay } from '../ui/is-active-field'
@@ -188,7 +188,7 @@ export function UserList({
       cell: ({ row }: { row: Row<UserWithRole> }) => {
         const user = row.original
         return (
-          <UserRolesEdit
+          <UserActions
             user={{
               ...user,
             }}
@@ -345,7 +345,7 @@ export function UserList({
             </div>
           </ItemContent>
           <ItemActions>
-            <UserRolesEdit
+            <UserActions
               user={{
                 ...user,
               }}

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -28,10 +27,17 @@ import { UserWithRole } from '@/hooks/users/use-user-list'
 
 interface UserRolesEditProps {
   user: UserWithRole
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  trigger?: React.ReactNode
 }
 
-export function UserRolesEdit({ user }: UserRolesEditProps) {
-  const [open, setOpen] = useState(false)
+export function UserRolesEdit({ 
+  user, 
+  open, 
+  onOpenChange,
+  trigger 
+}: UserRolesEditProps) {
   const updateUserRole = useUserRoleUpdate()
   const toggleSuperAdmin = useUserSuperAdminToggle()
 
@@ -54,7 +60,9 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
         })
       }
 
-      setOpen(false)
+      if (onOpenChange) {
+        onOpenChange(false)
+      }
     } catch (error) {
       console.error('Error updating user roles:', error)
     }
@@ -66,13 +74,27 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
     return `${firstName} ${lastName}`.trim() || 'Sin nombre'
   }
 
+  // Si se proporcionan open y onOpenChange, usar modo controlado
+  const drawerProps = open !== undefined && onOpenChange !== undefined 
+    ? { open, onOpenChange }
+    : {}
+
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="ghost" size="sm">
-          <Settings className="h-4 w-4" />
-        </Button>
-      </DrawerTrigger>
+    <Drawer {...drawerProps}>
+      {trigger && (
+        <DrawerTrigger asChild>
+          {trigger}
+        </DrawerTrigger>
+      )}
+      
+      {/* Si no hay trigger, usar el botón por defecto solo si no está en modo controlado */}
+      {!trigger && open === undefined && (
+        <DrawerTrigger asChild>
+          <Button variant="ghost" size="sm">
+            <Settings className="h-4 w-4" />
+          </Button>
+        </DrawerTrigger>
+      )}
 
       <DrawerContent className="!w-full !max-w-md">
         <DrawerHeader>
@@ -100,7 +122,7 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
           </Button>
           <Button
             variant="outline"
-            onClick={() => setOpen(false)}
+            onClick={() => onOpenChange ? onOpenChange(false) : undefined}
             disabled={updateUserRole.isPending}
           >
             Cancelar
