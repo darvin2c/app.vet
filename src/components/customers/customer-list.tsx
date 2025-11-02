@@ -186,7 +186,6 @@ export function CustomerList({
     },
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }) => (
         <CustomerActions
           customer={row.original}
