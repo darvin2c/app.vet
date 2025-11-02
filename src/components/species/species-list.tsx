@@ -1,12 +1,10 @@
 'use client'
 
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Tables } from '@/types/supabase.types'
-import { SpeciesActions } from './species-actions'
 import { SpeciesCreateButton } from './species-create-button'
-import { IsActiveDisplay } from '@/components/ui/is-active-field'
-import { useOrderBy } from '@/hooks/use-order-by'
-import { OrderByConfig } from '@/types/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
 import {
   Empty,
   EmptyHeader,

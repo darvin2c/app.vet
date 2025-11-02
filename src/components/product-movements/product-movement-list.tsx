@@ -61,10 +61,9 @@ import { ProductMovementActions } from './product-movement-actions'
 import { ProductMovementCreateButton } from './product-movement-create-button'
 import { useFilters } from '@/hooks/use-filters'
 import { useSearch } from '@/hooks/use-search'
-import { useOrderBy } from '@/hooks/use-order-by'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/types/filters.types'
-import type { OrderByConfig } from '@/types/order-by.types'
-import { ProductCreateButton } from '../products/product-create-button'
+import type { OrderByConfig } from '@/components/ui/order-by/order-by.types'
 
 export function ProductMovementList({
   filterConfig,

@@ -35,12 +35,10 @@ import { BreedActions } from './breed-actions'
 import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { Tables } from '@/types/supabase.types'
 import { FilterConfig } from '@/types/filters.types'
-import { OrderByConfig } from '@/types/order-by.types'
-import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/types/order-by.types'
-import { useFilters } from '@/hooks/use-filters'
-import { useOrderBy } from '@/hooks/use-order-by'
+import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { useSearch } from '@/hooks/use-search'
+import { useFilters } from '@/hooks/use-filters'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null

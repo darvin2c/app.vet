@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/types/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by'
 import { Tables } from '@/types/supabase.types'
 
 export type MedicalRecordItem = Tables<'record_items'> & {

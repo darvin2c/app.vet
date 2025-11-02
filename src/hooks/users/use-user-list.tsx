@@ -2,7 +2,7 @@ import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/types/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by/order-by.types'
 import { Tables } from '@/types/supabase.types'
 
 export type UserWithRole = Tables<'profiles'> & {
@@ -10,7 +10,6 @@ export type UserWithRole = Tables<'profiles'> & {
   is_superuser: boolean | null
   is_active: boolean | null
 }
-
 
 export function useUserList({
   filters = [],

@@ -20,14 +20,10 @@ import {
 
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { useOrderBy } from '@/hooks/use-order-by'
+import { useOrderBy } from './use-order-by'
 
-import type {
-  OrderByProps,
-  SortDirection,
-  SortColumn,
-} from '@/types/order-by.types'
-import { ResponsiveButton } from './responsive-button'
+import type { OrderByProps, SortDirection, SortColumn } from './order-by.types'
+import { ResponsiveButton } from '@/components/ui/responsive-button'
 
 // Componente para mostrar el icono de dirección de ordenamiento
 function SortDirectionIcon({ direction }: { direction: SortDirection | null }) {

@@ -29,8 +29,8 @@ import { ProductActions } from './product-actions'
 import { ProductCreateButton } from './product-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
-import { OrderByConfig } from '@/types/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

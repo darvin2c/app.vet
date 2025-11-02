@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Database } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/types/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by/order-by.types'
 
 type Product = Database['public']['Tables']['products']['Row']
 

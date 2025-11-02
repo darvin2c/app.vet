@@ -29,8 +29,8 @@ import { Tables } from '@/types/supabase.types'
 import { OrderActions } from './order-actions'
 import { OrderCreateButton } from './order-create-button'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
-import { OrderByConfig } from '@/types/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
 import {
   Empty,
   EmptyHeader,

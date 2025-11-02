@@ -5,7 +5,7 @@ import { Database } from '@/types/supabase.types'
 import { ProductCategoryActions } from './product-category-actions'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
+import { useOrderBy } from '@/components/ui/order-by'
 
 type ProductCategory = Database['public']['Tables']['product_categories']['Row']
 

@@ -6,10 +6,9 @@ import { Empty } from '@/components/ui/empty'
 import { ItemGroup } from '@/components/ui/item'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 import { useFilters } from '@/hooks/use-filters'
-import { useOrderBy } from '@/hooks/use-order-by'
 import type { FilterConfig } from '@/types/filters.types'
-import type { OrderByConfig } from '@/types/order-by.types'
 import ClinicalRecordItem from './records/clinical-record-item'
+import { OrderByConfig, useOrderBy } from '../ui/order-by'
 
 export function MedicalRecordList({
   filterConfig,

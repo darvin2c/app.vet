@@ -2,14 +2,9 @@
 
 import { ColumnDef, Row } from '@tanstack/react-table'
 import { Tables } from '@/types/supabase.types'
-import { OrderByTableHeader } from '@/components/ui/order-by'
+import { OrderByTableHeader, useOrderBy } from '@/components/ui/order-by'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { PetActions } from './pet-actions'
-
-// Tipo inferido del hook useOrderBy
-type UseOrderByReturn = ReturnType<
-  typeof import('@/hooks/use-order-by').useOrderBy
->
 
 // Tipo para mascota con relaciones
 type Pet = Tables<'pets'> & {
@@ -19,7 +14,7 @@ type Pet = Tables<'pets'> & {
 }
 
 export function getPetTableColumns(
-  orderByHook: UseOrderByReturn
+  orderByHook: ReturnType<typeof useOrderBy>
 ): ColumnDef<Pet>[] {
   return [
     {

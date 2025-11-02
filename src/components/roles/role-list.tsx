@@ -29,8 +29,8 @@ import { RoleActions } from './role-actions'
 import { RoleCreateButton } from './role-create-button'
 
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
-import { OrderByConfig } from '@/types/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

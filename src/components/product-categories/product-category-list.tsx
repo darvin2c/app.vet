@@ -28,8 +28,8 @@ import { ProductCategoryActions } from './product-category-actions'
 import { ProductCategoryCreateButton } from './product-category-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
-import { OrderByConfig } from '@/types/order-by.types'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
 import {
   Empty,
   EmptyHeader,

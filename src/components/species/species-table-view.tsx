@@ -28,7 +28,7 @@ import { Tables } from '@/types/supabase.types'
 import { SpeciesActions } from './species-actions'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/hooks/use-order-by'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react'
 import { BreedActions } from '@/components/breeds/breed-actions'
 
