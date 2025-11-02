@@ -147,7 +147,11 @@ const InternalSearchInput = React.forwardRef<
         ) : null}
 
         {/* Suffix */}
-        {showSuffix ? <InputGroupText>{suffix}</InputGroupText> : null}
+        {showSuffix ? (
+          <InputGroupAddon align={'inline-end'} className="gap-0 p-0">
+            {suffix}
+          </InputGroupAddon>
+        ) : null}
         {/* Search icon - right side */}
         {hasSidebarTriggerRight && isMobile && (
           <SidebarTriggerRight className="cursor-ew-resize" />
