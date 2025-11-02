@@ -80,7 +80,7 @@ export function UserRolesForm({
     } else {
       form.setValue('role_ids', ['no-role'])
     }
-  }, [user.tenant_user.role_id, form])
+  }, [user.tenant_user.role_id, form.setValue])
 
   return (
     <div className="space-y-6">
@@ -127,19 +127,27 @@ export function UserRolesForm({
             disabled={rolesLoading}
           >
             <SelectTrigger id="role_ids">
-              <SelectValue placeholder="Seleccionar rol..." />
+              <SelectValue
+                className="w-full"
+                placeholder="Seleccionar rol..."
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="no-role">Sin rol</SelectItem>
+              <SelectItem value="no-role">
+                <div className="flex flex-col text-left w-full p-2">
+                  <span className="font-medium text-sm">Sin rol</span>
+                  <span className="text-xs text-muted-foreground">
+                    El usuario no tiene asignado ningún rol
+                  </span>
+                </div>
+              </SelectItem>
               {roles.map((role) => (
                 <SelectItem key={role.id} value={role.id}>
-                  <div className="flex flex-col">
-                    <span className="font-medium">{role.name}</span>
-                    {role.description && (
-                      <span className="text-xs text-muted-foreground">
-                        {role.description}
-                      </span>
-                    )}
+                  <div className="flex flex-col text-left w-full p-2">
+                    <span className="font-medium text-sm">{role.name}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {role.description}
+                    </span>
                   </div>
                 </SelectItem>
               ))}
