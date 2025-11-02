@@ -21,9 +21,9 @@ export function ProductImportButton({
         variant="outline"
         size="sm"
         tooltip="Importar Productos"
+        icon={Upload}
         {...props}
       >
-        <Upload className="h-4 w-4" />
         <span className="hidden sm:inline">{children || 'Importar'}</span>
       </ResponsiveButton>
 
