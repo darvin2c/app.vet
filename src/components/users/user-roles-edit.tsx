@@ -32,11 +32,11 @@ interface UserRolesEditProps {
   trigger?: React.ReactNode
 }
 
-export function UserRolesEdit({ 
-  user, 
-  open, 
+export function UserRolesEdit({
+  user,
+  open,
   onOpenChange,
-  trigger 
+  trigger,
 }: UserRolesEditProps) {
   const updateUserRole = useUserRoleUpdate()
   const toggleSuperAdmin = useUserSuperAdminToggle()
@@ -75,18 +75,15 @@ export function UserRolesEdit({
   }
 
   // Si se proporcionan open y onOpenChange, usar modo controlado
-  const drawerProps = open !== undefined && onOpenChange !== undefined 
-    ? { open, onOpenChange }
-    : {}
+  const drawerProps =
+    open !== undefined && onOpenChange !== undefined
+      ? { open, onOpenChange }
+      : {}
 
   return (
     <Drawer {...drawerProps}>
-      {trigger && (
-        <DrawerTrigger asChild>
-          {trigger}
-        </DrawerTrigger>
-      )}
-      
+      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+
       {/* Si no hay trigger, usar el botón por defecto solo si no está en modo controlado */}
       {!trigger && open === undefined && (
         <DrawerTrigger asChild>
@@ -122,7 +119,7 @@ export function UserRolesEdit({
           </Button>
           <Button
             variant="outline"
-            onClick={() => onOpenChange ? onOpenChange(false) : undefined}
+            onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
             disabled={updateUserRole.isPending}
           >
             Cancelar

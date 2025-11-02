@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/components/ui/order-by/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by'
 
 type Role = Tables<'roles'>
 

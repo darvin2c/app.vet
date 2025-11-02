@@ -51,13 +51,11 @@ export interface AppliedSort {
   direction: SortDirection
   ascending: boolean // Para compatibilidad con Supabase
   /**
-   * Tabla foránea para ordenamiento en recursos embedidos
-   * Se usa con la sintaxis: .order(field, {foreignTable: foreignTable})
+   * Tabla foránea si aplica
    */
   foreignTable?: string
 }
 
-// Configuración completa de ordenamiento para un componente
 export interface OrderByProps {
   config: OrderByConfig
   onSortChange?: (appliedSorts: AppliedSort[]) => void

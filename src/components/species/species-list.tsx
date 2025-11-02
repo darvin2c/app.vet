@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react'
 import { Tables } from '@/types/supabase.types'
 import { SpeciesCreateButton } from './species-create-button'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

@@ -31,7 +31,7 @@ import { PetActions } from './pet-actions'
 import { PetCreateButton } from './pet-create-button'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

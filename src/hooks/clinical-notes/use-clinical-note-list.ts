@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/components/ui/order-by/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by'
 
 interface UseClinicalNotesParams {
   filters?: AppliedFilter[]

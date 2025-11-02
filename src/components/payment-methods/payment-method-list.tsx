@@ -48,7 +48,7 @@ import { PaymentMethodActions } from './payment-method-actions'
 import { PaymentMethodCreateButton } from './payment-method-create-button'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { FilterConfig } from '@/types/filters.types'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 
 type PaymentMethod = Tables<'payment_methods'>
 

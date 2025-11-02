@@ -40,9 +40,9 @@ import {
   Users,
 } from 'lucide-react'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
-import { OrderByTableHeader } from '@/components/ui/order-by/order-by'
+import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

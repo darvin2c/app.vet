@@ -63,7 +63,7 @@ import { useFilters } from '@/hooks/use-filters'
 import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/types/filters.types'
-import type { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 export function ProductMovementList({
   filterConfig,

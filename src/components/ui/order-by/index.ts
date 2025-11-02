@@ -1,3 +1,14 @@
-export { OrderBy, OrderByTableHeader } from './order-by'
+// Componente principal
+export { OrderBy } from './order-by'
+
+// Componentes individuales
+export { OrderByTrigger } from './order-by-trigger'
+export { OrderByTableHeader, SortDirectionIcon } from './order-by-table-header'
+export { OrderByPopover } from './order-by-popover'
+export { OrderByDrawer } from './order-by-drawer'
+
+// Hook
 export { useOrderBy } from './use-order-by'
-export * from './order-by.types'
+
+// Tipos
+export * from './types'

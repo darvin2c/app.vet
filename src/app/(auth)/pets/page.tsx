@@ -6,7 +6,7 @@ import { Filters } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 import { CustomerSelect } from '@/components/customers/customer-select'
 
 export default function PetsPage() {

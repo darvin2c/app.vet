@@ -9,7 +9,7 @@ import type {
   OrderByValue,
   OrderByValues,
   SortDirection,
-} from './order-by.types'
+} from './types'
 
 // Parser para ordenamiento simple (un solo campo)
 /**

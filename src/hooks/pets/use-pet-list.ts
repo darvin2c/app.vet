@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import { AppliedFilter } from '@/types/filters.types'
-import { AppliedSort } from '@/components/ui/order-by/order-by.types'
+import { AppliedSort } from '@/components/ui/order-by'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Pet = Tables<'pets'> & {

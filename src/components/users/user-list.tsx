@@ -28,7 +28,7 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { OrderByConfig } from '@/components/ui/order-by/order-by.types'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,

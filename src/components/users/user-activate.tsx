@@ -10,11 +10,7 @@ interface UserActivateProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function UserActivate({
-  user,
-  open,
-  onOpenChange,
-}: UserActivateProps) {
+export function UserActivate({ user, open, onOpenChange }: UserActivateProps) {
   const activateUser = useUserActivate()
 
   const handleConfirm = async () => {
