@@ -8,7 +8,12 @@ import { OrderByPopover } from './order-by-popover'
 import { OrderByDrawer } from './order-by-drawer'
 import type { OrderByProps } from './types'
 
-export function OrderBy({ config, onSortChange, className }: OrderByProps) {
+export function OrderBy({
+  config,
+  onSortChange,
+  className,
+  triggerProps,
+}: OrderByProps) {
   const isMobile = useIsMobile()
   const {
     currentSort,
@@ -40,6 +45,7 @@ export function OrderBy({ config, onSortChange, className }: OrderByProps) {
         getSortDirection={getSortDirection}
         isSorted={isSorted}
         className={className}
+        {...triggerProps}
       />
     )
   }
@@ -53,6 +59,7 @@ export function OrderBy({ config, onSortChange, className }: OrderByProps) {
       getSortDirection={getSortDirection}
       isSorted={isSorted}
       className={className}
+      {...triggerProps}
     />
   )
 }

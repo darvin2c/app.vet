@@ -1,3 +1,5 @@
+import { ResponsiveButtonProps } from '../responsive-button'
+
 // Tipos para ordenamiento basados en operadores de Supabase
 export type SortDirection = 'asc' | 'desc'
 
@@ -60,4 +62,5 @@ export interface OrderByProps {
   config: OrderByConfig
   onSortChange?: (appliedSorts: AppliedSort[]) => void
   className?: string
+  triggerProps?: ResponsiveButtonProps
 }

@@ -11,6 +11,7 @@ import {
 import { OrderByTrigger } from './order-by-trigger'
 import { SortDirectionIcon } from './order-by-table-header'
 import type { SortDirection, SortColumn } from './types'
+import { ResponsiveButtonProps } from '../responsive-button'
 
 export interface OrderByPopoverProps {
   sortableColumns: SortColumn[]
@@ -27,6 +28,7 @@ export interface OrderByPopoverProps {
   ) => SortDirection | null
   isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
+  triggerProps?: ResponsiveButtonProps
 }
 
 export function OrderByPopover({
@@ -37,13 +39,14 @@ export function OrderByPopover({
   getSortDirection,
   isSorted,
   className,
+  triggerProps,
 }: OrderByPopoverProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <OrderByTrigger activeSortsCount={activeSortsCount} />
+        <OrderByTrigger activeSortsCount={activeSortsCount} {...triggerProps} />
       </PopoverTrigger>
       <PopoverContent className="w-64 p-0" align="start">
         <div className="p-4">

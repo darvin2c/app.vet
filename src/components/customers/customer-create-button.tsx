@@ -23,13 +23,12 @@ export function CustomerCreateButton({
 
   return (
     <>
-      <ResponsiveButton onClick={() => setShowCreate(true)} {...props}>
-        {children || (
-          <>
-            <Plus className="mr-2 h-4 w-4" />
-            Nuevo Cliente
-          </>
-        )}
+      <ResponsiveButton
+        icon={Plus}
+        onClick={() => setShowCreate(true)}
+        {...props}
+      >
+        {children || 'Nuevo'}
       </ResponsiveButton>
 
       <CustomerCreate

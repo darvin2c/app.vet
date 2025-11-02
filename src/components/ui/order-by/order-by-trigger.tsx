@@ -5,7 +5,10 @@ import { ArrowUpDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
 
@@ -14,7 +17,7 @@ export const OrderByTrigger = React.forwardRef<
   {
     activeSortsCount: number
     className?: string
-  } & React.ComponentProps<typeof Button>
+  } & ResponsiveButtonProps
 >(({ activeSortsCount, className, ...props }, ref) => {
   const isMobile = useIsMobile()
   return (

@@ -13,6 +13,7 @@ import {
 import { OrderByTrigger } from './order-by-trigger'
 import { SortDirectionIcon } from './order-by-table-header'
 import type { SortDirection, SortColumn } from './types'
+import { ResponsiveButtonProps } from '../responsive-button'
 
 export interface OrderByDrawerProps {
   sortableColumns: SortColumn[]
@@ -29,6 +30,7 @@ export interface OrderByDrawerProps {
   ) => SortDirection | null
   isSorted: (field: string, foreignTable?: string) => boolean
   className?: string
+  triggerProps?: ResponsiveButtonProps
 }
 
 export function OrderByDrawer({
@@ -38,14 +40,14 @@ export function OrderByDrawer({
   clearSort,
   getSortDirection,
   isSorted,
-  className,
+  triggerProps,
 }: OrderByDrawerProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>
-        <OrderByTrigger activeSortsCount={activeSortsCount} />
+        <OrderByTrigger activeSortsCount={activeSortsCount} {...triggerProps} />
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader>
