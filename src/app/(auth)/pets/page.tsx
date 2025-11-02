@@ -1,5 +1,6 @@
 import { PetList } from '@/components/pets/pet-list'
 import { PetCreateButton } from '@/components/pets/pet-create-button'
+import { PetImportButton } from '@/components/pets/pet-import-button'
 import { SearchInput } from '@/components/ui/search-input'
 import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
@@ -88,9 +89,20 @@ export default function PetsPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <PetCreateButton />
+              <Filters
+                filters={filters}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <PetImportButton variant="ghost" />
+              <PetCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />
