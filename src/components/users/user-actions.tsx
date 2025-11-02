@@ -12,6 +12,7 @@ import {
 import { UserWithRole } from '@/hooks/users/use-user-list'
 import { UserRolesEdit } from './user-roles-edit'
 import { UserDeactivate } from './user-deactivate'
+import { UserActivate } from './user-activate'
 
 interface UserActionsProps {
   user: UserWithRole
@@ -20,6 +21,7 @@ interface UserActionsProps {
 export function UserActions({ user }: UserActionsProps) {
   const [showRolesDialog, setShowRolesDialog] = useState(false)
   const [showDeactivateDialog, setShowDeactivateDialog] = useState(false)
+  const [showActivateDialog, setShowActivateDialog] = useState(false)
 
   // Transformar user a UserWithRoleForEdit para UserRolesEdit
   const userForEdit = {
@@ -36,20 +38,25 @@ export function UserActions({ user }: UserActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {user.is_active && (
-            <DropdownMenuItem onClick={() => setShowRolesDialog(true)}>
+          {user.is_active ? (
+            <>
+              <DropdownMenuItem onClick={() => setShowRolesDialog(true)}>
+                <UserCheck className="mr-2 h-4 w-4" />
+                Asignar rol
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => setShowDeactivateDialog(true)}
+                className="text-destructive"
+                variant="destructive"
+              >
+                <UserX className="mr-2 h-4 w-4" />
+                Desactivar usuario
+              </DropdownMenuItem>
+            </>
+          ) : (
+            <DropdownMenuItem onClick={() => setShowActivateDialog(true)}>
               <UserCheck className="mr-2 h-4 w-4" />
-              Asignar rol
-            </DropdownMenuItem>
-          )}
-          {user.is_active && (
-            <DropdownMenuItem
-              onClick={() => setShowDeactivateDialog(true)}
-              className="text-destructive"
-              variant="destructive"
-            >
-              <UserX className="mr-2 h-4 w-4" />
-              Desactivar usuario
+              Activar usuario
             </DropdownMenuItem>
           )}
         </DropdownMenuContent>
@@ -65,6 +72,12 @@ export function UserActions({ user }: UserActionsProps) {
         user={user}
         open={showDeactivateDialog}
         onOpenChange={setShowDeactivateDialog}
+      />
+
+      <UserActivate
+        user={user}
+        open={showActivateDialog}
+        onOpenChange={setShowActivateDialog}
       />
     </>
   )
