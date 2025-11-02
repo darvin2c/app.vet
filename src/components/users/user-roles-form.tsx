@@ -30,9 +30,9 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
   const form = useFormContext()
   const { data: roles = [], isPending: rolesLoading } = useRoleList({})
 
-  // Watch the role_ids field
+  // Watch the role_ids field and superuser status
   const roleIds = form.watch('role_ids')
-  const isSuperuser = user.is_superuser
+  const isSuperuser = form.watch('is_superuser')
   const errors = form.formState.errors
 
   // Función para obtener las iniciales del usuario
@@ -126,7 +126,7 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
           <Select
             value={roleIds?.[0] || 'no-role'}
             onValueChange={(value) => form.setValue('role_ids', [value])}
-            disabled={rolesLoading}
+            disabled={rolesLoading || isSuperuser}
           >
             <SelectTrigger id="role_ids">
               <SelectValue
