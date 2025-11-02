@@ -190,19 +190,7 @@ export function UserList({
         return (
           <UserRolesEdit
             user={{
-              id: user.id,
-              first_name: user.first_name,
-              last_name: user.last_name,
-              email: user.email,
-              phone: user.phone,
-              avatar_url: user.avatar_url,
-              tenant_user: {
-                id: user.id,
-                role_id: user.role?.id || null,
-                is_superuser: user.is_superuser || false,
-                is_active: user.is_active || false,
-                role: user.role,
-              },
+              ...user,
             }}
           />
         )
@@ -359,19 +347,7 @@ export function UserList({
           <ItemActions>
             <UserRolesEdit
               user={{
-                id: user.id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                phone: user.phone,
-                avatar_url: user.avatar_url,
-                tenant_user: {
-                  id: user.id,
-                  role_id: user.role?.id || null,
-                  is_superuser: user.is_superuser || false,
-                  is_active: user.is_active || false,
-                  role: user.role,
-                },
+                ...user,
               }}
             />
           </ItemActions>

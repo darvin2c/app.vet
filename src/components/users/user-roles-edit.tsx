@@ -24,26 +24,7 @@ import {
   useUserSuperAdminToggle,
 } from '@/hooks/users/use-user-roles-update'
 import { Settings } from 'lucide-react'
-
-type UserWithRole = {
-  id: string
-  first_name: string | null
-  last_name: string | null
-  email: string | null
-  phone: string | null
-  avatar_url: string | null
-  tenant_user: {
-    id: string
-    role_id: string | null
-    is_superuser: boolean
-    is_active: boolean
-    role: {
-      id: string
-      name: string
-      description: string | null
-    } | null
-  }
-}
+import { UserWithRole } from '@/hooks/users/use-user-list'
 
 interface UserRolesEditProps {
   user: UserWithRole
@@ -57,9 +38,7 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
   const form = useForm({
     resolver: zodResolver(updateUserRolesSchema),
     defaultValues: {
-      role_ids: user.tenant_user.role_id
-        ? [user.tenant_user.role_id]
-        : ['no-role'],
+      role_ids: user?.role?.id ? [user.role.id] : ['no-role'],
     },
   })
 
@@ -78,17 +57,6 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
       setOpen(false)
     } catch (error) {
       console.error('Error updating user roles:', error)
-    }
-  }
-
-  const handleSuperAdminToggle = async () => {
-    try {
-      await toggleSuperAdmin.mutateAsync({
-        userId: user.id,
-        isSuperuser: !user.tenant_user.is_superuser,
-      })
-    } catch (error) {
-      console.error('Error toggling super admin:', error)
     }
   }
 
@@ -117,11 +85,7 @@ export function UserRolesEdit({ user }: UserRolesEditProps) {
         <div className="px-4 overflow-y-auto">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <UserRolesForm
-                user={user}
-                onSuperAdminToggle={handleSuperAdminToggle}
-                isSuperAdminToggling={toggleSuperAdmin.isPending}
-              />
+              <UserRolesForm user={user} />
             </form>
           </Form>
         </div>
