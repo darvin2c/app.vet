@@ -1,5 +1,6 @@
 import { CustomerList } from '@/components/customers/customer-list'
 import { CustomerCreateButton } from '@/components/customers/customer-create-button'
+import { CustomerImportButton } from '@/components/customers/customer-import-button'
 import { SearchInput } from '@/components/ui/search-input'
 import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
@@ -52,6 +53,7 @@ export default function CustomersPage() {
             <ButtonGroup>
               <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
               <OrderBy config={orderByConfig} />
+              <CustomerImportButton variant="ghost" />
               <CustomerCreateButton variant="ghost" />
             </ButtonGroup>
           }

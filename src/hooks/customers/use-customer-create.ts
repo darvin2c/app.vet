@@ -45,3 +45,42 @@ export default function useCustomerCreate() {
     },
   })
 }
+
+export function useCustomerCreateBulk() {
+  const queryClient = useQueryClient()
+  const { currentTenant } = useCurrentTenantStore()
+
+  return useMutation({
+    mutationFn: async (data: CreateCustomerData[]) => {
+      if (!currentTenant?.id) {
+        throw new Error('No hay tenant seleccionado')
+      }
+
+      const customerData: TablesInsert<'customers'>[] = data.map((item) => ({
+        ...item,
+        tenant_id: currentTenant.id,
+      }))
+
+      const { data: customers, error } = await supabase
+        .from('customers')
+        .insert(customerData)
+        .select()
+
+      if (error) {
+        throw new Error(`Error al crear clientes: ${error.message}`)
+      }
+
+      return customers
+    },
+    onSuccess: (customers) => {
+      // Invalidar las consultas relacionadas
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'customers'],
+      })
+      toast.success(`Se crearon ${customers.length} clientes exitosamente`)
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Error al crear clientes')
+    },
+  })
+}
