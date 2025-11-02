@@ -6,7 +6,10 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 import { Button } from '@/components/ui/button'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -255,13 +258,14 @@ function createPostgRESTValue(
 interface FiltersProps extends FiltersConfig {
   className?: string
   children?: React.ReactNode
+  triggerProps?: ResponsiveButtonProps
 }
 
 export function Filters({
   filters,
   onFiltersChange,
-  className,
   children,
+  triggerProps,
 }: FiltersProps) {
   const isMobile = useIsMobile()
 
@@ -490,6 +494,7 @@ export function Filters({
       icon={Filter}
       tooltip="Filtros"
       variant="outline"
+      {...triggerProps}
     >
       Filtros
       {activeFiltersCount > 0 && (
