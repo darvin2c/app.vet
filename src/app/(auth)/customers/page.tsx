@@ -52,7 +52,10 @@ export default function CustomersPage() {
           suffix={
             <ButtonGroup>
               <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy config={orderByConfig} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
               <CustomerImportButton variant="ghost" />
               <CustomerCreateButton variant="ghost" />
             </ButtonGroup>

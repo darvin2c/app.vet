@@ -45,7 +45,7 @@ export function OrderBy({
         getSortDirection={getSortDirection}
         isSorted={isSorted}
         className={className}
-        {...triggerProps}
+        triggerProps={triggerProps}
       />
     )
   }
@@ -59,7 +59,7 @@ export function OrderBy({
       getSortDirection={getSortDirection}
       isSorted={isSorted}
       className={className}
-      {...triggerProps}
+      triggerProps={triggerProps}
     />
   )
 }
