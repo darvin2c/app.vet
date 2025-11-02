@@ -268,6 +268,7 @@ export function FeatureForm() {
 
 - Cuando se crea un componente reutilizable, se debe de agregar la forma de uso en `/app/demo`, solo y unicamente de los componentes reutilizables que esten dentro de `../ui`
 - las features no deben de estar dentro de `demo`, se debe de solicitar el permiso para agregarla.
+- los componentes reutilisables debe de tener todo dentro del mismo archivo o carpeta, tanto sus hooks y sus tipos.
 
 ## Botones de Acción
 
