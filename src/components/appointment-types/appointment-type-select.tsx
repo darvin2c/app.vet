@@ -1,7 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { Calendar, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import {
+  Calendar,
+  Check,
+  ChevronsUpDown,
+  Plus,
+  X,
+  Edit,
+  Circle,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
@@ -72,7 +80,12 @@ export function AppointmentTypeSelect({
             >
               {selectedAppointmentType ? (
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <Circle
+                    className="w-4 h-4 text-muted-foreground"
+                    style={{
+                      color: selectedAppointmentType.color || 'inherit',
+                    }}
+                  />
                   <span>{selectedAppointmentType.name}</span>
                 </div>
               ) : (
@@ -102,7 +115,12 @@ export function AppointmentTypeSelect({
                     onSelect={() => handleSelect(type.id)}
                   >
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                      <Circle
+                        className="w-4 h-4 text-muted-foreground"
+                        style={{
+                          color: type.color || 'inherit',
+                        }}
+                      />
                       <div className="flex flex-col">
                         <span>{type.name}</span>
                         {type.description && (
