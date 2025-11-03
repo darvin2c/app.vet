@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
@@ -64,6 +64,7 @@ import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { Alert } from '../ui/alert'
 
 export function ProductMovementList({
   filterConfig,
@@ -83,14 +84,12 @@ export function ProductMovementList({
   // Obtener datos usando los hooks
   const {
     data: movements = [],
-    isLoading,
+    isPending,
     error,
   } = useProductMovementList({
     search: appliedSearch,
-    ...appliedFilters.reduce((acc, filter) => {
-      acc[filter.field] = filter.value
-      return acc
-    }, {} as any),
+    orders: orderByHook.appliedSorts,
+    filters: appliedFilters,
   })
 
   const columns: ColumnDef<ProductMovementWithProduct>[] = [
@@ -221,23 +220,10 @@ export function ProductMovementList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: movements,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -357,8 +343,8 @@ export function ProductMovementList({
               {movement.products?.name || 'Producto no encontrado'}
             </ItemTitle>
             <ItemDescription>
-              {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'}{' '}
-              - Cantidad: {movement.quantity}
+              {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'} - Cantidad:{' '}
+              {movement.quantity}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <span>
@@ -382,7 +368,7 @@ export function ProductMovementList({
   )
 
   // Estados de carga y error
-  if (isLoading) {
+  if (isPending) {
     // Durante la carga inicial, usar 'table' para evitar hydration mismatch
     // Después de la hidratación, usar el viewMode del usuario
     return <TableSkeleton variant={viewMode} />
@@ -390,17 +376,15 @@ export function ProductMovementList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
-          Error al cargar movimientos: {error.message}
-        </p>
-      </div>
+      <Alert variant={'destructive'}>
+        Error al cargar movimientos: {error.message}
+      </Alert>
     )
   }
 
   if (movements.length === 0) {
     return (
-      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-200px)]">
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant="icon">
@@ -417,7 +401,6 @@ export function ProductMovementList({
               <ProductMovementCreateButton isResponsive={false}>
                 Crear Movimiento
               </ProductMovementCreateButton>
-              <Button variant="outline">Importar Movimiento</Button>
             </div>
           </EmptyContent>
           <Button

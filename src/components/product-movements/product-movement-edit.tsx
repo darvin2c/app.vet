@@ -38,9 +38,6 @@ export function ProductMovementEdit({
   const form = useForm({
     resolver: zodResolver(UpdateProductMovementSchema),
     defaultValues: {
-      product_id: movement.product_id,
-      quantity: movement.quantity,
-      unit_cost: movement.unit_cost ?? undefined,
       reference: movement.reference ?? undefined,
       note: movement.note ?? undefined,
     },

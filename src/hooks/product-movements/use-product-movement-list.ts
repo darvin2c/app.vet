@@ -43,10 +43,6 @@ export default function useProductMovementList({
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
-  if (!currentTenant?.id) {
-    throw new Error('No hay tenant seleccionado')
-  }
-
   return useQuery({
     queryKey: [currentTenant?.id, 'product-movements', filters, search, orders],
     queryFn: async () => {
