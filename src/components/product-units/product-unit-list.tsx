@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -23,17 +23,32 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Database } from '@/types/supabase.types'
 import { ProductUnitActions } from './product-unit-actions'
+import { ProductUnitCreateButton } from './product-unit-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Scale,
+} from 'lucide-react'
+import useProductUnits from '@/hooks/product-units/use-product-unit-list'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -43,53 +58,76 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChevronLeft, ChevronRight, Scale } from 'lucide-react'
-import useProductUnits from '@/hooks/product-units/use-product-unit-list'
-import type { FilterConfig } from '@/components/ui/filters'
-import type { OrderByConfig } from '@/components/ui/order-by'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
 
-interface ProductUnitListProps {
-  filterConfig?: FilterConfig[]
-  orderByConfig?: OrderByConfig
-}
-
-export function ProductUnitList({ filterConfig, orderByConfig }: ProductUnitListProps) {
-  // Estado para controlar la vista actual
+export function ProductUnitList({
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  // Usar el hook useProductUnits con los filtros aplicados
-  const { data: units = [], isLoading, error } = useProductUnits({})
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
+
+  // Convertir filtros aplicados al formato esperado por el hook
+  const filters = {
+    search: appliedSearch,
+    is_active: appliedFilters.find(f => f.field === 'is_active')?.value as boolean | undefined,
+  }
+
+  const {
+    data: productUnits = [],
+    isPending,
+    error,
+  } = useProductUnits({
+    filters,
+  })
 
   const columns: ColumnDef<ProductUnit>[] = [
     {
       accessorKey: 'name',
-      header: 'Nombre',
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductUnit> }) => (
         <div className="font-medium">{row.getValue('name')}</div>
       ),
     },
     {
       accessorKey: 'abbreviation',
-      header: 'Abreviación',
+      header: ({ header }) => (
+        <OrderByTableHeader field="abbreviation" orderByHook={orderByHook}>
+          Abreviación
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductUnit> }) => (
         <div className="text-sm text-muted-foreground">
-          {row.getValue('abbreviation')}
+          {row.getValue('abbreviation') || '-'}
         </div>
       ),
     },
     {
       accessorKey: 'is_active',
-      header: 'Estado',
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<ProductUnit> }) => (
         <IsActiveDisplay value={row.getValue('is_active')} />
       ),
     },
     {
       id: 'actions',
-      header: 'Acciones',
       cell: ({ row }: { row: Row<ProductUnit> }) => (
         <ProductUnitActions unit={row.original} />
       ),
@@ -99,7 +137,7 @@ export function ProductUnitList({ filterConfig, orderByConfig }: ProductUnitList
   const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
-    data: units,
+    data: productUnits,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -145,112 +183,104 @@ export function ProductUnitList({ filterConfig, orderByConfig }: ProductUnitList
     []
   )
 
-  const renderTableView = useCallback(
-    () => (
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map(renderTableHeader)}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(renderTableRow)
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
-    ),
-    [table, columns.length, renderTableHeader, renderTableRow]
-  )
-
-  const renderCardsView = useCallback(
-    () => (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {units.map((unit) => (
-          <Card key={unit.id}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{unit.name}</CardTitle>
-              <ProductUnitActions unit={unit} />
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <p className="text-sm text-muted-foreground">
-                  Abreviación: {unit.abbreviation}
-                </p>
-                <div className="flex justify-between items-center">
-                  <IsActiveDisplay value={unit.is_active} />
-                </div>
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {productUnits.map((productUnit) => (
+        <Card key={productUnit.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{productUnit.name}</h3>
+                {productUnit.abbreviation && (
+                  <p className="text-sm text-muted-foreground">
+                    {productUnit.abbreviation}
+                  </p>
+                )}
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    ),
-    [units]
+              <ProductUnitActions unit={productUnit} />
+            </div>
+
+            <div className="flex justify-between items-center">
+              <IsActiveDisplay value={productUnit.is_active} />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 
-  const renderListView = useCallback(
-    () => (
-      <ItemGroup>
-        {units.map((unit) => (
-          <Item key={unit.id}>
-            <ItemContent>
-              <ItemTitle>{unit.name}</ItemTitle>
-              <ItemDescription>
-                <div className="space-y-1">
-                  <div className="text-sm text-muted-foreground">
-                    Abreviación: {unit.abbreviation}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <IsActiveDisplay value={unit.is_active} />
-                  </div>
-                </div>
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
-              <ProductUnitActions unit={unit} />
-            </ItemActions>
-          </Item>
-        ))}
-      </ItemGroup>
-    ),
-    [units]
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {productUnits.map((productUnit) => (
+        <Item key={productUnit.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{productUnit.name}</ItemTitle>
+            {productUnit.abbreviation && (
+              <ItemDescription>{productUnit.abbreviation}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <IsActiveDisplay value={productUnit.is_active} />
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <ProductUnitActions unit={productUnit} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
   )
 
-  if (isLoading) {
+  // Estados de carga y error
+  if (isPending) {
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
     return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-destructive">Error al cargar las unidades</p>
+        <p className="text-red-500">
+          Error al cargar unidades de producto: {error.message}
+        </p>
       </div>
     )
   }
 
-  if (units.length === 0) {
+  if (productUnits.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Scale className="h-8 w-8" />
-          </EmptyMedia>
-          <EmptyTitle>No hay unidades</EmptyTitle>
-          <EmptyDescription>
-            Comienza creando tu primera unidad de producto.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Scale className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay unidades de producto</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron unidades de producto que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <ProductUnitCreateButton>Crear Unidad</ProductUnitCreateButton>
+              <Button variant="outline">Importar Unidad</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 
@@ -262,59 +292,71 @@ export function ProductUnitList({ filterConfig, orderByConfig }: ProductUnitList
       </div>
 
       {/* Contenido según la vista seleccionada */}
-      {viewMode === 'table' && renderTableView()}
+      {viewMode === 'table' && (
+        <>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map(renderTableHeader)}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map(renderTableRow)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                productUnits.length
+              )}{' '}
+              de {productUnits.length} unidades
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
-
-      {/* Paginación */}
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{' '}
-          {table.getFilteredRowModel().rows.length} fila(s) seleccionada(s).
-        </div>
-        <div className="flex items-center space-x-6 lg:space-x-8">
-          <div className="flex items-center space-x-2">
-            <p className="text-sm font-medium">Filas por página</p>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value))
-              }}
-              className="h-8 w-[70px] rounded border border-input bg-background px-3 py-1 text-sm"
-            >
-              {[10, 20, 30, 40, 50].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  {pageSize}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Página {table.getState().pagination.pageIndex + 1} de{' '}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              <span className="sr-only">Ir a la página anterior</span>
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              className="h-8 w-8 p-0"
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              <span className="sr-only">Ir a la página siguiente</span>
-              <ChevronRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

@@ -37,9 +37,19 @@ export default function SpecialtiesPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <SpecialtyCreateButton />
+              <Filters
+                filters={filters}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <SpecialtyCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

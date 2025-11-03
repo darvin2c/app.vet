@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -23,15 +23,32 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { Database } from '@/types/supabase.types'
+import { AppointmentTypeActions } from './appointment-type-actions'
+import { AppointmentTypeCreateButton } from './appointment-type-create-button'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+} from 'lucide-react'
+import { useAppointmentTypeList as useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-type-list'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -41,41 +58,48 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { AppointmentTypeActions } from './appointment-type-actions'
-import { useAppointmentTypeList as useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-type-list'
-import type { Tables } from '@/types/supabase.types'
-import type { FilterConfig } from '@/components/ui/filters'
-import type { OrderByConfig } from '@/components/ui/order-by'
 
-type AppointmentType = Tables<'appointment_types'>
-
-interface AppointmentTypeListProps {
-  filterConfig?: FilterConfig[]
-  orderByConfig?: OrderByConfig
-}
+type AppointmentType = Database['public']['Tables']['appointment_types']['Row']
 
 export function AppointmentTypeList({
   filterConfig,
   orderByConfig,
-}: AppointmentTypeListProps) {
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: appointmentTypes = [], isLoading } = useAppointmentTypes({})
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
 
-  const handleEdit = useCallback(() => {
-    // Handle edit logic
-  }, [])
+  // Convertir appliedFilters y appliedSearch al formato esperado por el hook
+  const filters = {
+    search: appliedSearch,
+    ...appliedFilters.reduce((acc, filter) => {
+      acc[filter.field] = filter.value
+      return acc
+    }, {} as Record<string, any>),
+  }
 
-  const handleDelete = useCallback(() => {
-    // Handle delete logic
-  }, [])
+  const {
+    data: appointmentTypes = [],
+    isPending,
+    error,
+  } = useAppointmentTypes(filters)
 
   const columns: ColumnDef<AppointmentType>[] = [
     {
       accessorKey: 'name',
-      header: 'Nombre',
-      cell: ({ row }) => {
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<AppointmentType> }) => {
         const appointmentType = row.original
         return (
           <div className="flex items-center gap-2">
@@ -90,36 +114,33 @@ export function AppointmentTypeList({
     },
     {
       accessorKey: 'description',
-      header: 'Descripción',
-      cell: ({ row }) => {
-        const description = row.getValue('description') as string
-        return description ? (
-          <span className="text-sm text-muted-foreground">{description}</span>
-        ) : (
-          '-'
-        )
-      },
+      header: ({ header }) => (
+        <OrderByTableHeader field="description" orderByHook={orderByHook}>
+          Descripción
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<AppointmentType> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('description') || '-'}
+        </div>
+      ),
     },
+
     {
       accessorKey: 'is_active',
-      header: 'Estado',
-      cell: ({ row }) => {
-        const active = row.getValue('is_active') as boolean
-        return (
-          <Badge variant={active ? 'default' : 'secondary'}>
-            {active ? 'Activo' : 'Inactivo'}
-          </Badge>
-        )
-      },
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<AppointmentType> }) => (
+        <IsActiveDisplay value={row.getValue('is_active')} />
+      ),
     },
     {
       id: 'actions',
-      cell: ({ row }) => (
-        <AppointmentTypeActions
-          appointmentType={row.original}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+      cell: ({ row }: { row: Row<AppointmentType> }) => (
+        <AppointmentTypeActions appointmentType={row.original} />
       ),
     },
   ]
@@ -177,45 +198,30 @@ export function AppointmentTypeList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {appointmentTypes.map((appointmentType) => (
-        <Card
-          key={appointmentType.id}
-          className="hover:shadow-md transition-shadow"
-        >
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex items-start justify-between">
+        <Card key={appointmentType.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
                 <div className="flex items-center gap-2">
                   <div
-                    className="w-4 h-4 rounded-full border"
-                    style={{
-                      backgroundColor: appointmentType.color || '#3B82F6',
-                    }}
+                    className="w-3 h-3 rounded-full border"
+                    style={{ backgroundColor: appointmentType.color || '#3B82F6' }}
                   />
                   <h3 className="font-medium">{appointmentType.name}</h3>
                 </div>
-                <AppointmentTypeActions
-                  appointmentType={appointmentType}
-                  onEdit={handleEdit}
-                  onDelete={handleDelete}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <Badge
-                    variant={
-                      appointmentType.is_active ? 'default' : 'secondary'
-                    }
-                  >
-                    {appointmentType.is_active ? 'Activo' : 'Inactivo'}
-                  </Badge>
-                </div>
                 {appointmentType.description && (
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground mt-1">
                     {appointmentType.description}
                   </p>
                 )}
               </div>
+              <AppointmentTypeActions appointmentType={appointmentType} />
+            </div>
+
+
+
+            <div className="flex justify-between items-center">
+              <IsActiveDisplay value={appointmentType.is_active} />
             </div>
           </CardContent>
         </Card>
@@ -233,50 +239,75 @@ export function AppointmentTypeList({
               <div className="flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-full border"
-                  style={{
-                    backgroundColor: appointmentType.color || '#3B82F6',
-                  }}
+                  style={{ backgroundColor: appointmentType.color || '#3B82F6' }}
                 />
                 {appointmentType.name}
               </div>
             </ItemTitle>
-            <ItemDescription>
-              {appointmentType.description || 'Sin descripción'}
-            </ItemDescription>
-            <div className="flex gap-2 mt-2">
-              <Badge
-                variant={appointmentType.is_active ? 'default' : 'secondary'}
-              >
-                {appointmentType.is_active ? 'Activo' : 'Inactivo'}
-              </Badge>
+            {appointmentType.description && (
+              <ItemDescription>{appointmentType.description}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <IsActiveDisplay value={appointmentType.is_active} />
             </div>
           </ItemContent>
           <ItemActions>
-            <AppointmentTypeActions
-              appointmentType={appointmentType}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <AppointmentTypeActions appointmentType={appointmentType} />
           </ItemActions>
         </Item>
       ))}
     </ItemGroup>
   )
 
-  if (isLoading) {
+  // Estados de carga y error
+  if (isPending) {
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
     return <TableSkeleton variant={viewMode} />
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar tipos de cita: {error.message}
+        </p>
+      </div>
+    )
   }
 
   if (appointmentTypes.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>No hay tipos de cita</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron tipos de cita con los criterios de búsqueda.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Calendar className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay tipos de cita</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron tipos de cita que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <AppointmentTypeCreateButton />
+              <Button variant="outline">Importar Tipo de Cita</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 
@@ -284,10 +315,7 @@ export function AppointmentTypeList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle
-          onValueChange={setViewMode}
-          resource="appointment-types"
-        />
+        <ViewModeToggle onValueChange={setViewMode} resource="appointment-types" />
       </div>
 
       {/* Contenido según la vista seleccionada */}

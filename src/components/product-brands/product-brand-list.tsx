@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -23,15 +23,32 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { Card, CardContent } from '@/components/ui/card'
+import { Database } from '@/types/supabase.types'
+import { ProductBrandActions } from './product-brand-actions'
+import { ProductBrandCreateButton } from './product-brand-create-button'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
   EmptyHeader,
+  EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Tag,
+} from 'lucide-react'
+import useProductBrandList from '@/hooks/product-brands/use-product-brand-list'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -41,77 +58,80 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { ProductBrandActions } from './product-brand-actions'
-import useProductBrands from '@/hooks/product-brands/use-product-brand-list'
-import { ProductBrandFilters } from '@/schemas/product-brands.schema'
-import { Tables } from '@/types/supabase.types'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
-import type { FilterConfig } from '@/components/ui/filters'
-import type { OrderByConfig } from '@/components/ui/order-by'
 
-type ProductBrand = Tables<'product_brands'>
+type ProductBrand = Database['public']['Tables']['product_brands']['Row']
 
-interface ProductBrandListProps {
-  filterConfig?: FilterConfig[]
-  orderByConfig?: OrderByConfig
-}
-
-export function ProductBrandList({ filterConfig, orderByConfig }: ProductBrandListProps) {
+export function ProductBrandList({
+  filterConfig,
+  orderByConfig,
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: productBrands = [], isLoading } = useProductBrands({})
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
+  const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
 
-  const handleEdit = useCallback((productBrand: ProductBrand) => {
-    // Handle edit logic
-    console.log('Edit product brand:', productBrand)
-  }, [])
+  // Convertir appliedFilters y appliedSearch al formato esperado por el hook
+  const filters = {
+    search: appliedSearch,
+    ...appliedFilters.reduce((acc, filter) => {
+      acc[filter.field] = filter.value
+      return acc
+    }, {} as Record<string, any>),
+  }
 
-  const handleDelete = useCallback((productBrand: ProductBrand) => {
-    // Handle delete logic
-    console.log('Delete product brand:', productBrand)
-  }, [])
+  const {
+    data: productBrands = [],
+    isPending,
+    error,
+  } = useProductBrandList(filters)
 
   const columns: ColumnDef<ProductBrand>[] = [
     {
       accessorKey: 'name',
-      header: 'Nombre',
-      cell: ({ row }) => (
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductBrand> }) => (
         <div className="font-medium">{row.getValue('name')}</div>
       ),
     },
     {
       accessorKey: 'description',
-      header: 'Descripción',
-      cell: ({ row }) => {
-        const description = row.getValue('description') as string
-        return description || '-'
-      },
+      header: ({ header }) => (
+        <OrderByTableHeader field="description" orderByHook={orderByHook}>
+          Descripción
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductBrand> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('description') || '-'}
+        </div>
+      ),
     },
     {
       accessorKey: 'is_active',
-      header: 'Estado',
-      cell: ({ row }) => {
-        const isActive = row.getValue('is_active') as boolean
-        return (
-          <Badge variant={isActive ? 'default' : 'secondary'}>
-            {isActive ? 'Activo' : 'Inactivo'}
-          </Badge>
-        )
-      },
-    },
-    {
-      accessorKey: 'created_at',
-      header: 'Fecha de Creación',
-      cell: ({ row }) => {
-        const date = row.getValue('created_at') as string
-        return format(new Date(date), 'dd/MM/yyyy', { locale: es })
-      },
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<ProductBrand> }) => (
+        <IsActiveDisplay value={row.getValue('is_active')} />
+      ),
     },
     {
       id: 'actions',
-      cell: ({ row }) => <ProductBrandActions brand={row.original} />,
+      cell: ({ row }: { row: Row<ProductBrand> }) => (
+        <ProductBrandActions brand={row.original} />
+      ),
     },
   ]
 
@@ -167,40 +187,23 @@ export function ProductBrandList({ filterConfig, orderByConfig }: ProductBrandLi
   // Función para renderizar vista de tarjetas
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {productBrands.map((brand) => (
-        <Card key={brand.id} className="hover:shadow-md transition-shadow">
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CardTitle className="text-lg">{brand.name}</CardTitle>
-                <Badge variant={brand.is_active ? 'default' : 'secondary'}>
-                  {brand.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
-              </div>
-              <ProductBrandActions brand={brand} />
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              {brand.description && (
-                <div>
-                  <span className="font-medium text-muted-foreground">
-                    Descripción:
-                  </span>
-                  <p className="mt-1">{brand.description}</p>
-                </div>
-              )}
-
+      {productBrands.map((productBrand) => (
+        <Card key={productBrand.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
               <div>
-                <span className="font-medium text-muted-foreground">
-                  Registrado:
-                </span>
-                <p className="mt-1">
-                  {format(new Date(brand.created_at), 'dd/MM/yyyy', {
-                    locale: es,
-                  })}
-                </p>
+                <h3 className="font-medium">{productBrand.name}</h3>
+                {productBrand.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {productBrand.description}
+                  </p>
+                )}
               </div>
+              <ProductBrandActions brand={productBrand} />
+            </div>
+
+            <div className="flex justify-between items-center">
+              <IsActiveDisplay value={productBrand.is_active} />
             </div>
           </CardContent>
         </Card>
@@ -211,42 +214,74 @@ export function ProductBrandList({ filterConfig, orderByConfig }: ProductBrandLi
   // Función para renderizar vista de lista
   const renderListView = () => (
     <ItemGroup className="space-y-2">
-      {productBrands.map((brand) => (
-        <Item key={brand.id} variant="outline">
+      {productBrands.map((productBrand) => (
+        <Item key={productBrand.id} variant="outline">
           <ItemContent>
-            <ItemTitle>{brand.name}</ItemTitle>
-            <ItemDescription>
-              {brand.description || 'Sin descripción'} • Registrado:{' '}
-              {format(new Date(brand.created_at), 'dd/MM/yyyy', { locale: es })}
-            </ItemDescription>
-            <div className="flex gap-2 mt-2">
-              <Badge variant={brand.is_active ? 'default' : 'secondary'}>
-                {brand.is_active ? 'Activo' : 'Inactivo'}
-              </Badge>
+            <ItemTitle>{productBrand.name}</ItemTitle>
+            {productBrand.description && (
+              <ItemDescription>{productBrand.description}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <IsActiveDisplay value={productBrand.is_active} />
             </div>
           </ItemContent>
           <ItemActions>
-            <ProductBrandActions brand={brand} />
+            <ProductBrandActions brand={productBrand} />
           </ItemActions>
         </Item>
       ))}
     </ItemGroup>
   )
 
-  if (isLoading) {
+  // Estados de carga y error
+  if (isPending) {
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
     return <TableSkeleton variant={viewMode} />
   }
 
-  if (!productBrands || productBrands.length === 0) {
+  if (error) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyTitle>No hay marcas de productos</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron marcas de productos con los filtros aplicados.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar marcas de productos: {error.message}
+        </p>
+      </div>
+    )
+  }
+
+  if (productBrands.length === 0) {
+    return (
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Tag className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay marcas de productos</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron marcas de productos que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <ProductBrandCreateButton>Crear Marca</ProductBrandCreateButton>
+              <Button variant="outline">Importar Marca</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 

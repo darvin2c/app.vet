@@ -1,9 +1,35 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Tables } from '@/types/supabase.types'
+import { useState, useCallback, useEffect } from 'react'
+import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+  getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
+  HeaderGroup,
+  Header,
+  Row,
+  Cell,
+} from '@tanstack/react-table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Database } from '@/types/supabase.types'
+import { SpeciesActions } from './species-actions'
 import { SpeciesCreateButton } from './species-create-button'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
@@ -11,25 +37,29 @@ import {
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Stethoscope } from 'lucide-react'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Stethoscope,
+} from 'lucide-react'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
-import { useBreedsList } from '@/hooks/breeds/use-breed-list'
-import { FilterConfig, useFilters } from '@/components/ui/filters'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
-import { SpeciesTableView } from './species-table-view'
-import { SpeciesCardsView } from './species-cards-view'
-import { SpeciesListView } from './species-list-view'
+import {
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+  ItemGroup,
+} from '@/components/ui/item'
 
-type Species = Tables<'species'>
-type Breed = Tables<'breeds'>
-
-// Tipo para las filas de la tabla jerárquica
-type HierarchicalSpecies = Species & {
-  subRows?: Breed[]
-}
+type Species = Database['public']['Tables']['species']['Row']
 
 export function SpeciesList({
   filterConfig,
@@ -56,119 +86,273 @@ export function SpeciesList({
     orders: orderByHook.appliedSorts,
   })
 
-  // Obtener todas las razas para la vista jerárquica
-  const { data: allBreeds = [] } = useBreedsList({
-    filters: [
-      {
-        key: 'is_active',
-        field: 'is_active',
-        operator: 'eq',
-        value: true,
-        type: 'boolean',
+  const columns: ColumnDef<Species>[] = [
+    {
+      accessorKey: 'name',
+      header: ({ header }) => (
+        <OrderByTableHeader field="name" orderByHook={orderByHook}>
+          Nombre
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Species> }) => (
+        <div className="font-medium">{row.getValue('name')}</div>
+      ),
+    },
+    {
+      accessorKey: 'description',
+      header: ({ header }) => (
+        <OrderByTableHeader field="description" orderByHook={orderByHook}>
+          Descripción
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Species> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('description') || '-'}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'is_active',
+      header: ({ header }) => (
+        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+          Estado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Species> }) => (
+        <IsActiveDisplay value={row.getValue('is_active')} />
+      ),
+    },
+    {
+      id: 'actions',
+      cell: ({ row }: { row: Row<Species> }) => (
+        <SpeciesActions species={row.original} />
+      ),
+    },
+  ]
+
+  const [sorting, setSorting] = useState<SortingState>([])
+
+  const table = useReactTable({
+    data: species,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
+    initialState: {
+      pagination: {
+        pageSize: 10,
       },
-    ],
-    search: appliedSearch,
+    },
   })
 
-  // Crear datos jerárquicos con subRows para react-table
-  const hierarchicalData: HierarchicalSpecies[] = useMemo(() => {
-    const result = species.map((speciesItem) => {
-      // Solo obtener razas activas para esta especie
-      const speciesBreeds = allBreeds.filter(
-        (breed) => breed.species_id === speciesItem.id && breed.is_active
-      )
+  // Función para renderizar el encabezado de la tabla
+  const renderTableHeader = useCallback(
+    (headerGroup: HeaderGroup<Species>) => (
+      <TableRow key={headerGroup.id}>
+        {headerGroup.headers.map((header: Header<Species, unknown>) => (
+          <TableHead key={header.id}>
+            {header.isPlaceholder
+              ? null
+              : flexRender(header.column.columnDef.header, header.getContext())}
+          </TableHead>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
 
-      // Filtrar razas según búsqueda si existe
-      let filteredBreeds = speciesBreeds
+  // Función para renderizar las filas de la tabla
+  const renderTableRow = useCallback(
+    (row: Row<Species>) => (
+      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+        {row.getVisibleCells().map((cell: Cell<Species, unknown>) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ),
+    []
+  )
 
-      if (appliedSearch) {
-        filteredBreeds = speciesBreeds.filter(
-          (breed) =>
-            breed.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-            (breed.description &&
-              breed.description
-                .toLowerCase()
-                .includes(appliedSearch.toLowerCase()))
-        )
-      }
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {species.map((speciesItem) => (
+        <Card key={speciesItem.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{speciesItem.name}</h3>
+                {speciesItem.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {speciesItem.description}
+                  </p>
+                )}
+              </div>
+              <SpeciesActions species={speciesItem} />
+            </div>
 
-      const hasActiveBreeds = filteredBreeds.length > 0
+            <div className="flex justify-between items-center">
+              <IsActiveDisplay value={speciesItem.is_active} />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
 
-      return {
-        ...speciesItem,
-        subRows: hasActiveBreeds ? filteredBreeds : undefined,
-      }
-    })
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {species.map((speciesItem) => (
+        <Item key={speciesItem.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{speciesItem.name}</ItemTitle>
+            {speciesItem.description && (
+              <ItemDescription>{speciesItem.description}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <IsActiveDisplay value={speciesItem.is_active} />
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <SpeciesActions species={speciesItem} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
+  )
 
-    return result
-  }, [species, allBreeds, appliedSearch])
-
+  // Estados de carga y error
   if (isPending) {
-    return <TableSkeleton />
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
+    return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Stethoscope className="h-8 w-8" />
-          </EmptyMedia>
-          <EmptyTitle>Error al cargar especies</EmptyTitle>
-          <EmptyDescription>
-            Ocurrió un error al cargar las especies. Por favor, intenta
-            nuevamente.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar especies: {error.message}
+        </p>
+      </div>
     )
   }
 
   if (species.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <Stethoscope className="h-8 w-8" />
-          </EmptyMedia>
-          <EmptyTitle>No hay especies registradas</EmptyTitle>
-          <EmptyDescription>
-            Comienza agregando tu primera especie para organizar las razas de
-            animales.
-          </EmptyDescription>
-        </EmptyHeader>
-        <SpeciesCreateButton />
-      </Empty>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Stethoscope className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay especies</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron especies que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <SpeciesCreateButton>Crear Especie</SpeciesCreateButton>
+              <Button variant="outline">Importar Especie</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <ViewModeToggle onValueChange={setViewMode} resource="species" />
-        </div>
+      {/* Controles de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="species" />
       </div>
 
+      {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
-        <SpeciesTableView
-          hierarchicalData={hierarchicalData}
-          orderByHook={orderByHook}
-          appliedSearch={appliedSearch}
-        />
+        <>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map(renderTableHeader)}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map(renderTableRow)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                species.length
+              )}{' '}
+              de {species.length} especies
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
       )}
-      {viewMode === 'list' && (
-        <SpeciesListView
-          species={hierarchicalData}
-          appliedSearch={appliedSearch}
-        />
-      )}
-      {viewMode === 'cards' && (
-        <SpeciesCardsView
-          species={hierarchicalData}
-          appliedSearch={appliedSearch}
-        />
-      )}
+
+      {viewMode === 'cards' && renderCardsView()}
+      {viewMode === 'list' && renderListView()}
     </div>
   )
 }

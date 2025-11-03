@@ -1,32 +1,19 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
-  useReactTable,
-  Row,
-  Header,
   HeaderGroup,
+  Header,
+  Row,
   Cell,
 } from '@tanstack/react-table'
-import { Tables } from '@/types/supabase.types'
-import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'
-import { IsActiveDisplay } from '@/components/ui/is-active-field'
-import { OrderByTableHeader } from '@/components/ui/order-by'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  Empty,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyContent,
-} from '@/components/ui/empty'
 import {
   Table,
   TableBody,
@@ -35,6 +22,34 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Database } from '@/types/supabase.types'
+import { SpecialtyActions } from './specialty-actions'
+import { SpecialtyCreateButton } from './specialty-create-button'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Stethoscope,
+} from 'lucide-react'
+import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { useSearch } from '@/hooks/use-search'
+import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
   ItemContent,
@@ -43,26 +58,33 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { SpecialtyActions } from './specialty-actions'
-import { SpecialtyCreateButton } from './specialty-create-button'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { FilterConfig } from '@/components/ui/filters'
-import { OrderByConfig } from '@/components/ui/order-by'
 
-type Specialty = Tables<'specialties'>
-
-interface SpecialtyListProps {
-  filterConfig: FilterConfig[]
-  orderByConfig: OrderByConfig
-}
+type Specialty = Database['public']['Tables']['specialties']['Row']
 
 export function SpecialtyList({
   filterConfig,
   orderByConfig,
-}: SpecialtyListProps) {
-  const { data: specialties = [], isPending, error } = useSpecialtyList()
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
 
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
+
+  const {
+    data: specialties = [],
+    isPending,
+    error,
+  } = useSpecialtyList({
+    filters: appliedFilters,
+    search: appliedSearch,
+    orders: orderByHook.appliedSorts,
+  })
 
   const columns: ColumnDef<Specialty>[] = [
     {
@@ -78,9 +100,15 @@ export function SpecialtyList({
     },
     {
       accessorKey: 'description',
-      header: 'Descripción',
+      header: ({ header }) => (
+        <OrderByTableHeader field="description" orderByHook={orderByHook}>
+          Descripción
+        </OrderByTableHeader>
+      ),
       cell: ({ row }: { row: Row<Specialty> }) => (
-        <div className="text-muted-foreground">{row.getValue('description') || '-'}</div>
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('description') || '-'}
+        </div>
       ),
     },
     {
@@ -121,6 +149,7 @@ export function SpecialtyList({
     },
   })
 
+  // Función para renderizar el encabezado de la tabla
   const renderTableHeader = useCallback(
     (headerGroup: HeaderGroup<Specialty>) => (
       <TableRow key={headerGroup.id}>
@@ -136,6 +165,7 @@ export function SpecialtyList({
     []
   )
 
+  // Función para renderizar las filas de la tabla
   const renderTableRow = useCallback(
     (row: Row<Specialty>) => (
       <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
@@ -149,14 +179,12 @@ export function SpecialtyList({
     []
   )
 
-  const renderCardsView = useCallback(
-    () => (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {specialties.map((specialty) => (
-          <div
-            key={specialty.id}
-            className="border rounded-lg p-4 space-y-3"
-          >
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {specialties.map((specialty) => (
+        <Card key={specialty.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-medium">{specialty.name}</h3>
@@ -172,101 +200,159 @@ export function SpecialtyList({
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={specialty.is_active} />
             </div>
-          </div>
-        ))}
-      </div>
-    ),
-    [specialties]
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 
-  const renderListView = useCallback(
-    () => (
-      <ItemGroup>
-        {specialties.map((specialty) => (
-          <Item key={specialty.id}>
-            <ItemContent>
-              <ItemTitle>{specialty.name}</ItemTitle>
-              <ItemDescription>
-                {specialty.description || 'Sin descripción'}
-              </ItemDescription>
-            </ItemContent>
-            <ItemActions>
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {specialties.map((specialty) => (
+        <Item key={specialty.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{specialty.name}</ItemTitle>
+            {specialty.description && (
+              <ItemDescription>{specialty.description}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <IsActiveDisplay value={specialty.is_active} />
-              <SpecialtyActions specialty={specialty} />
-            </ItemActions>
-          </Item>
-        ))}
-      </ItemGroup>
-    ),
-    [specialties]
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <SpecialtyActions specialty={specialty} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
   )
 
+  // Estados de carga y error
   if (isPending) {
-    return <TableSkeleton />
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
+    return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-              📋
-            </div>
-          </EmptyMedia>
-          <EmptyTitle>Error al cargar especialidades</EmptyTitle>
-          <EmptyDescription>
-            Hubo un problema al cargar las especialidades. Por favor, intenta de nuevo.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <SpecialtyCreateButton />
-        </EmptyContent>
-      </Empty>
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar especialidades: {error.message}
+        </p>
+      </div>
     )
   }
 
   if (specialties.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-              📋
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Stethoscope className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay especialidades</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron especialidades que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <SpecialtyCreateButton>Crear Especialidad</SpecialtyCreateButton>
+              <Button variant="outline">Importar Especialidad</Button>
             </div>
-          </EmptyMedia>
-          <EmptyTitle>No hay especialidades</EmptyTitle>
-          <EmptyDescription>
-            Comienza creando tu primera especialidad.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <SpecialtyCreateButton />
-        </EmptyContent>
-      </Empty>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map(renderTableHeader)}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map(renderTableRow)
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+      {/* Controles de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="specialties" />
       </div>
+
+      {/* Contenido según la vista seleccionada */}
+      {viewMode === 'table' && (
+        <>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map(renderTableHeader)}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map(renderTableRow)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                specialties.length
+              )}{' '}
+              de {specialties.length} especialidades
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {viewMode === 'cards' && renderCardsView()}
+      {viewMode === 'list' && renderListView()}
     </div>
   )
 }

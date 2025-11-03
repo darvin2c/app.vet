@@ -1,33 +1,19 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  useReactTable,
   getPaginationRowModel,
   getSortedRowModel,
   SortingState,
-  useReactTable,
-  Row,
-  Header,
   HeaderGroup,
+  Header,
+  Row,
   Cell,
 } from '@tanstack/react-table'
-import { Tables } from '@/types/supabase.types'
-import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
-import { Badge } from '@/components/ui/badge'
-import { IsActiveDisplay } from '@/components/ui/is-active-field'
-import { OrderByTableHeader } from '@/components/ui/order-by'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  Empty,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-  EmptyDescription,
-  EmptyContent,
-} from '@/components/ui/empty'
 import {
   Table,
   TableBody,
@@ -36,6 +22,35 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Database } from '@/types/supabase.types'
+import { PaymentMethodActions } from './payment-method-actions'
+import { PaymentMethodCreateButton } from './payment-method-create-button'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { useOrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+  EmptyContent,
+} from '@/components/ui/empty'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  CreditCard,
+} from 'lucide-react'
+import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { useSearch } from '@/hooks/use-search'
+import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
   ItemContent,
@@ -44,13 +59,8 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { PaymentMethodActions } from './payment-method-actions'
-import { PaymentMethodCreateButton } from './payment-method-create-button'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { FilterConfig } from '@/components/ui/filters'
-import { OrderByConfig } from '@/components/ui/order-by'
 
-type PaymentMethod = Tables<'payment_methods'>
+type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
 
 const paymentTypeLabels = {
   cash: 'Efectivo',
@@ -68,18 +78,26 @@ const paymentTypeColors = {
   other: 'bg-gray-100 text-gray-800',
 } as const
 
-interface PaymentMethodListProps {
-  filterConfig: FilterConfig[]
-  orderByConfig: OrderByConfig
-}
-
 export function PaymentMethodList({
   filterConfig,
   orderByConfig,
-}: PaymentMethodListProps) {
-  const { data: paymentMethods = [], isPending, error } = usePaymentMethodList()
+}: {
+  filterConfig: FilterConfig[]
+  orderByConfig: OrderByConfig
+}) {
+  // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
+  const [viewMode, setViewMode] = useState<ViewMode>('table')
 
+  // Usar el hook useFilters para obtener los filtros aplicados
+  const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
+  const { appliedSearch } = useSearch()
+
+  const {
+    data: paymentMethods = [],
+    isPending,
+    error,
+  } = usePaymentMethodList()
 
   const columns: ColumnDef<PaymentMethod>[] = [
     {
@@ -104,6 +122,7 @@ export function PaymentMethodList({
         <div className="font-medium">{row.getValue('name')}</div>
       ),
     },
+
     {
       accessorKey: 'payment_type',
       header: ({ header }) => (
@@ -121,17 +140,6 @@ export function PaymentMethodList({
           </Badge>
         )
       },
-    },
-    {
-      accessorKey: 'sort_order',
-      header: ({ header }) => (
-        <OrderByTableHeader field="sort_order" orderByHook={orderByHook}>
-          Orden
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<PaymentMethod> }) => (
-        <div className="text-center">{row.getValue('sort_order') || '-'}</div>
-      ),
     },
     {
       accessorKey: 'is_active',
@@ -171,6 +179,7 @@ export function PaymentMethodList({
     },
   })
 
+  // Función para renderizar el encabezado de la tabla
   const renderTableHeader = useCallback(
     (headerGroup: HeaderGroup<PaymentMethod>) => (
       <TableRow key={headerGroup.id}>
@@ -186,6 +195,7 @@ export function PaymentMethodList({
     []
   )
 
+  // Función para renderizar las filas de la tabla
   const renderTableRow = useCallback(
     (row: Row<PaymentMethod>) => (
       <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
@@ -199,160 +209,185 @@ export function PaymentMethodList({
     []
   )
 
-  const renderCardsView = useCallback(
-    () => (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {paymentMethods.map((paymentMethod) => {
-          const paymentType =
-            paymentMethod.payment_type as keyof typeof paymentTypeLabels
-          return (
-            <div
-              key={paymentMethod.id}
-              className="border rounded-lg p-4 space-y-3"
-            >
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium">{paymentMethod.name}</h3>
-                  <p className="text-sm text-muted-foreground font-mono">
-                    {paymentMethod.code}
-                  </p>
-                </div>
-                <PaymentMethodActions paymentMethod={paymentMethod} />
-              </div>
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {paymentMethods.map((paymentMethod) => (
+        <Card key={paymentMethod.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
+            <div className="flex justify-between items-start">
+              <div>
+                <h3 className="font-medium">{paymentMethod.name}</h3>
+                <p className="text-sm font-mono text-muted-foreground">
+                  {paymentMethod.code}
+                </p>
 
-              <div className="flex justify-between items-center">
-                <Badge className={paymentTypeColors[paymentType]}>
-                  {paymentTypeLabels[paymentType]}
-                </Badge>
-                <IsActiveDisplay value={paymentMethod.is_active} />
               </div>
-
-              {paymentMethod.sort_order && (
-                <div className="text-sm text-muted-foreground">
-                  Orden: {paymentMethod.sort_order}
-                </div>
-              )}
+              <PaymentMethodActions paymentMethod={paymentMethod} />
             </div>
-          )
-        })}
-      </div>
-    ),
-    [paymentMethods]
+
+            <div className="flex justify-between items-center">
+              <Badge className={paymentTypeColors[paymentMethod.payment_type as keyof typeof paymentTypeColors]}>
+                {paymentTypeLabels[paymentMethod.payment_type as keyof typeof paymentTypeLabels]}
+              </Badge>
+              <IsActiveDisplay value={paymentMethod.is_active} />
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 
-  const renderListView = useCallback(
-    () => (
-      <ItemGroup>
-        {paymentMethods.map((paymentMethod) => {
-          const paymentType =
-            paymentMethod.payment_type as keyof typeof paymentTypeLabels
-          return (
-            <Item key={paymentMethod.id}>
-              <ItemContent>
-                <ItemTitle>{paymentMethod.name}</ItemTitle>
-                <ItemDescription>
-                  <span className="font-mono">{paymentMethod.code}</span>
-                  {' • '}
-                  <Badge className={paymentTypeColors[paymentType]}>
-                    {paymentTypeLabels[paymentType]}
-                  </Badge>
-                  {paymentMethod.sort_order && (
-                    <>
-                      {' • '}
-                      <span>Orden: {paymentMethod.sort_order}</span>
-                    </>
-                  )}
-                </ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <IsActiveDisplay value={paymentMethod.is_active} />
-                <PaymentMethodActions paymentMethod={paymentMethod} />
-              </ItemActions>
-            </Item>
-          )
-        })}
-      </ItemGroup>
-    ),
-    [paymentMethods]
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {paymentMethods.map((paymentMethod) => (
+        <Item key={paymentMethod.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{paymentMethod.name}</ItemTitle>
+            <ItemDescription>
+              {paymentMethod.code}
+            </ItemDescription>
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+              <Badge className={paymentTypeColors[paymentMethod.payment_type as keyof typeof paymentTypeColors]}>
+                {paymentTypeLabels[paymentMethod.payment_type as keyof typeof paymentTypeLabels]}
+              </Badge>
+              <IsActiveDisplay value={paymentMethod.is_active} />
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <PaymentMethodActions paymentMethod={paymentMethod} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
   )
 
+  // Estados de carga y error
   if (isPending) {
-    return <TableSkeleton />
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
+    return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-              <span className="text-2xl">💳</span>
-            </div>
-          </EmptyMedia>
-          <EmptyTitle>Error al cargar métodos de pago</EmptyTitle>
-          <EmptyDescription>
-            Ocurrió un error al cargar los métodos de pago. Por favor, intenta
-            nuevamente.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <div className="text-center py-8">
+        <p className="text-red-500">
+          Error al cargar métodos de pago: {error.message}
+        </p>
+      </div>
     )
   }
 
   if (paymentMethods.length === 0) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-              <span className="text-2xl">💳</span>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <CreditCard className="h-16 w-16" />
+            </EmptyMedia>
+            <EmptyTitle>No hay métodos de pago</EmptyTitle>
+            <EmptyDescription>
+              No se encontraron métodos de pago que coincidan con los filtros
+              aplicados.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <PaymentMethodCreateButton>Crear Método de Pago</PaymentMethodCreateButton>
+              <Button variant="outline">Importar Método de Pago</Button>
             </div>
-          </EmptyMedia>
-          <EmptyTitle>No hay métodos de pago</EmptyTitle>
-          <EmptyDescription>
-            No se encontraron métodos de pago. Crea el primer método de pago
-            para comenzar.
-          </EmptyDescription>
-        </EmptyHeader>
-        <EmptyContent>
-          <PaymentMethodCreateButton />
-        </EmptyContent>
-      </Empty>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
+        </Empty>
+      </div>
     )
   }
 
   return (
     <div className="space-y-4">
-      {/* Vista de tabla */}
-      <div className="hidden md:block">
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map(renderTableHeader)}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map(renderTableRow)
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    No hay resultados.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+      {/* Controles de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="payment-methods" />
       </div>
 
-      {/* Vista de cards para tablet */}
-      <div className="hidden sm:block md:hidden">{renderCardsView()}</div>
+      {/* Contenido según la vista seleccionada */}
+      {viewMode === 'table' && (
+        <>
+          <div className="rounded-md border">
+            <Table>
+              <TableHeader>
+                {table.getHeaderGroups().map(renderTableHeader)}
+              </TableHeader>
+              <TableBody>
+                {table.getRowModel().rows?.length ? (
+                  table.getRowModel().rows.map(renderTableRow)
+                ) : (
+                  <TableRow>
+                    <TableCell
+                      colSpan={columns.length}
+                      className="h-24 text-center"
+                    >
+                      No hay resultados.
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
 
-      {/* Vista de lista para móvil */}
-      <div className="block sm:hidden">{renderListView()}</div>
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
+              Mostrando{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
+              {Math.min(
+                (table.getState().pagination.pageIndex + 1) *
+                  table.getState().pagination.pageSize,
+                paymentMethods.length
+              )}{' '}
+              de {paymentMethods.length} métodos de pago
+            </div>
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                <ChevronLeft className="h-4 w-4" />
+                Anterior
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Siguiente
+                <ChevronRight className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </>
+      )}
+
+      {viewMode === 'cards' && renderCardsView()}
+      {viewMode === 'list' && renderListView()}
     </div>
   )
 }

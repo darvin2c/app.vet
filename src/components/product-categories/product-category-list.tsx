@@ -23,12 +23,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
 import { Database } from '@/types/supabase.types'
 import { ProductCategoryActions } from './product-category-actions'
 import { ProductCategoryCreateButton } from './product-category-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { useOrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 import {
   Empty,
@@ -36,9 +37,15 @@ import {
   EmptyMedia,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ChevronLeft, ChevronRight, Tag } from 'lucide-react'
+import {
+  ArrowUpRightIcon,
+  ChevronLeft,
+  ChevronRight,
+  Tag,
+} from 'lucide-react'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
@@ -68,8 +75,7 @@ export function ProductCategoryList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
-  // Usar el hook useProductCategoryList con los filtros aplicados (sin componentes React)
-  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
+
   const {
     data: productCategories = [],
     isPending,
@@ -173,15 +179,12 @@ export function ProductCategoryList({
     []
   )
 
-  // Función para renderizar la vista de tarjetas
-  const renderCardsView = useCallback(
-    () => (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {productCategories.map((productCategory) => (
-          <div
-            key={productCategory.id}
-            className="border rounded-lg p-4 space-y-3"
-          >
+  // Función para renderizar vista de tarjetas
+  const renderCardsView = () => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {productCategories.map((productCategory) => (
+        <Card key={productCategory.id} className="hover:shadow-md transition-shadow">
+          <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-medium">{productCategory.name}</h3>
@@ -197,94 +200,81 @@ export function ProductCategoryList({
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={productCategory.is_active} />
             </div>
-          </div>
-        ))}
-      </div>
-    ),
-    [productCategories]
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   )
 
-  // Función para renderizar la vista de lista
-  const renderListView = useCallback(
-    () => (
-      <ItemGroup>
-        {productCategories.map((productCategory) => (
-          <Item key={productCategory.id}>
-            <ItemContent>
-              <ItemTitle>{productCategory.name}</ItemTitle>
-              {productCategory.description && (
-                <ItemDescription>{productCategory.description}</ItemDescription>
-              )}
-            </ItemContent>
-            <ItemActions>
+  // Función para renderizar vista de lista
+  const renderListView = () => (
+    <ItemGroup className="space-y-2">
+      {productCategories.map((productCategory) => (
+        <Item key={productCategory.id} variant="outline">
+          <ItemContent>
+            <ItemTitle>{productCategory.name}</ItemTitle>
+            {productCategory.description && (
+              <ItemDescription>{productCategory.description}</ItemDescription>
+            )}
+            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <IsActiveDisplay value={productCategory.is_active} />
-              <ProductCategoryActions category={productCategory} />
-            </ItemActions>
-          </Item>
-        ))}
-      </ItemGroup>
-    ),
-    [productCategories]
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <ProductCategoryActions category={productCategory} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
   )
 
-  // Efecto para sincronizar con localStorage después de la hidratación
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const storageKey = 'product-categories-view-mode'
-        const stored = localStorage.getItem(storageKey)
-        if (stored && ['table', 'cards', 'list'].includes(stored)) {
-          setViewMode(stored as ViewMode)
-        }
-      } catch (error) {
-        console.warn('Error reading from localStorage:', error)
-      }
-    }
-  }, [])
-
+  // Estados de carga y error
   if (isPending) {
-    return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="h-8 w-32 bg-muted animate-pulse rounded" />
-          <div className="h-10 w-24 bg-muted animate-pulse rounded" />
-        </div>
-        <TableSkeleton variant={viewMode} />
-      </div>
-    )
+    // Durante la carga inicial, usar 'table' para evitar hydration mismatch
+    // Después de la hidratación, usar el viewMode del usuario
+    return <TableSkeleton variant={viewMode} />
   }
 
   if (error) {
     return (
       <div className="text-center py-8">
-        <p className="text-destructive">Error al cargar las categorías</p>
+        <p className="text-red-500">
+          Error al cargar categorías de productos: {error.message}
+        </p>
       </div>
     )
   }
 
   if (productCategories.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <ViewModeToggle
-            resource="product-categories"
-            onValueChange={setViewMode}
-          />
-        </div>
+      <div className="flex items-center justify-center text-muted-foreground h-[calc(100vh-100px)]">
         <Empty>
           <EmptyHeader>
-            <EmptyMedia>
+            <EmptyMedia variant="icon">
               <Tag className="h-16 w-16" />
             </EmptyMedia>
-            <EmptyTitle>No hay categorías</EmptyTitle>
+            <EmptyTitle>No hay categorías de productos</EmptyTitle>
             <EmptyDescription>
-              No se encontraron categorías que coincidan con los filtros
+              No se encontraron categorías de productos que coincidan con los filtros
               aplicados.
             </EmptyDescription>
-            <div className="mt-4">
-              <ProductCategoryCreateButton />
-            </div>
           </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <ProductCategoryCreateButton>Crear Categoría</ProductCategoryCreateButton>
+              <Button variant="outline">Importar Categoría</Button>
+            </div>
+          </EmptyContent>
+          <Button
+            variant="link"
+            asChild
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#">
+              Saber Más <ArrowUpRightIcon />
+            </a>
+          </Button>
         </Empty>
       </div>
     )
@@ -292,13 +282,12 @@ export function ProductCategoryList({
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <ViewModeToggle
-          resource="product-categories"
-          onValueChange={setViewMode}
-        />
+      {/* Controles de vista */}
+      <div className="flex justify-end">
+        <ViewModeToggle onValueChange={setViewMode} resource="product-categories" />
       </div>
 
+      {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
           <div className="rounded-md border">
@@ -323,16 +312,14 @@ export function ProductCategoryList({
             </Table>
           </div>
 
-          <div className="flex items-center justify-between px-2">
-            <div className="flex-1 text-sm text-muted-foreground">
+          {/* Paginación */}
+          <div className="flex items-center justify-between space-x-2 py-4">
+            <div className="text-sm text-muted-foreground">
               Mostrando{' '}
-              {Math.min(
-                table.getState().pagination.pageIndex *
-                  table.getState().pagination.pageSize +
-                  1,
-                productCategories.length
-              )}{' '}
-              -{' '}
+              {table.getState().pagination.pageIndex *
+                table.getState().pagination.pageSize +
+                1}{' '}
+              a{' '}
               {Math.min(
                 (table.getState().pagination.pageIndex + 1) *
                   table.getState().pagination.pageSize,
