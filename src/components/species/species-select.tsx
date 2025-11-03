@@ -41,7 +41,7 @@ export function SpeciesSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const { data: species = [], isLoading } = useSpeciesList({
     search: searchTerm,
-    filters: [{ field: 'is_active', operator: 'eq', value: true }],
+    filters: [{ key: 'is_active', field: 'is_active', operator: 'eq', value: true, type: 'boolean' }],
   })
 
   const selectedSpecies = species.find((s: Species) => s.id === value)

@@ -27,7 +27,7 @@ export default function ProductsPage() {
       type: 'custom',
       label: 'Categoría',
       operator: 'eq',
-      component: <ProductCategorySelect placeholder="Selecciona categoría" />,
+      component: ProductCategorySelect,
     },
     {
       key: 'unit_id',

@@ -58,7 +58,7 @@ export function SpeciesList({
 
   // Obtener todas las razas para la vista jerárquica
   const { data: allBreeds = [] } = useBreedsList({
-    filters: [{ field: 'is_active', operator: 'eq', value: true }],
+    filters: [{ key: 'is_active', field: 'is_active', operator: 'eq', value: true, type: 'boolean' }],
     search: appliedSearch,
   })
 

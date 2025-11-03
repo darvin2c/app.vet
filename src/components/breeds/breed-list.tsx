@@ -55,7 +55,7 @@ export function BreedList({
   orderByConfig,
 }: BreedListProps) {
   const [view, setView] = useState<'table' | 'card'>('table')
-  const { appliedFilters } = useFilters()
+  const { appliedFilters } = useFilters(filterConfig)
   const { appliedSorts } = useOrderBy()
   const { appliedSearch } = useSearch()
 

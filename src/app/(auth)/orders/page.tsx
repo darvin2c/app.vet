@@ -34,7 +34,7 @@ export default function OrdersPage() {
       type: 'custom',
       label: 'Cliente',
       operator: 'eq',
-      component: <CustomerSelect placeholder="Selecciona cliente" />,
+      component: CustomerSelect,
     },
     {
       key: 'pet_id',
@@ -42,7 +42,7 @@ export default function OrdersPage() {
       type: 'custom',
       label: 'Mascota',
       operator: 'eq',
-      component: <PetSelect placeholder="Selecciona mascota" />,
+      component: PetSelect,
     },
     {
       key: 'currency',

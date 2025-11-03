@@ -49,7 +49,7 @@ export function PetSelect({
   const { data: pets = [], isLoading } = usePets({
     search: searchTerm,
     filters: customerId
-      ? [{ field: 'customer_id', operator: 'eq', value: customerId }]
+      ? [{ key: 'customer_id', field: 'customer_id', operator: 'eq', value: customerId, type: 'select' }]
       : [],
   })
 

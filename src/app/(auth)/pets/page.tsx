@@ -27,7 +27,7 @@ export default function PetsPage() {
       type: 'custom',
       label: 'Cliente',
       operator: 'eq',
-      component: <CustomerSelect placeholder="Selecciona cliente" />,
+      component: CustomerSelect,
     },
     {
       key: 'species_id',

@@ -47,9 +47,11 @@ export function ProductSelect({
   const { data: products = [], isLoading } = useProductList({
     filters: [
       {
+        key: 'is_active',
         field: 'is_active',
         operator: 'eq',
         value: true,
+        type: 'boolean',
       },
     ],
     search: searchTerm,

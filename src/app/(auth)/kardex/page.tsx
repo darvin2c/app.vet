@@ -21,7 +21,7 @@ export default function KardexPage() {
       type: 'custom',
       label: 'Producto',
       operator: 'eq',
-      component: <ProductSelect placeholder="Seleccionar producto" />,
+      component: ProductSelect,
     },
     {
       key: 'source',

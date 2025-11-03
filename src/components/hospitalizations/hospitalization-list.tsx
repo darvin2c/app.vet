@@ -57,7 +57,7 @@ export function HospitalizationList({
   orderByConfig,
 }: HospitalizationListProps) {
   const [view, setView] = useState('table')
-  const { appliedFilters } = useFilters()
+  const { appliedFilters } = useFilters(filterConfig)
   const { appliedSorts } = useOrderBy()
   const { appliedSearch } = useSearch()
 
