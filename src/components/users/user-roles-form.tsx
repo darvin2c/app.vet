@@ -8,19 +8,13 @@ import {
   FieldLabel,
   FieldError,
 } from '@/components/ui/field'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Crown, User } from 'lucide-react'
 import { useRoleList } from '@/hooks/roles/use-role-list'
 import { UserWithRole } from '@/hooks/users/use-user-list'
+import { RoleSelect } from '@/components/roles/role-select'
 
 interface UserRolesFormProps {
   user: UserWithRole
@@ -123,38 +117,19 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
           Rol Asignado
         </FieldLabel>
         <FieldContent>
-          <Select
-            value={roleIds?.[0] || 'no-role'}
-            onValueChange={(value) => form.setValue('role_ids', [value])}
-            disabled={rolesLoading || isSuperuser}
-          >
-            <SelectTrigger id="role_ids">
-              <SelectValue
-                className="w-full"
-                placeholder="Seleccionar rol..."
-              />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="no-role">
-                <div className="flex flex-col text-left w-full p-2">
-                  <span className="font-medium text-sm">Sin rol</span>
-                  <span className="text-xs text-muted-foreground">
-                    El usuario no tiene asignado ningún rol
-                  </span>
-                </div>
-              </SelectItem>
-              {roles.map((role) => (
-                <SelectItem key={role.id} value={role.id}>
-                  <div className="flex flex-col text-left w-full p-2">
-                    <span className="font-medium text-sm">{role.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {role.description}
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <RoleSelect
+            value={
+              roleIds?.[0] === 'no-role' || !roleIds?.[0]
+                ? undefined
+                : roleIds[0]
+            }
+            onValueChange={(value) => {
+              // Si no hay valor seleccionado, establecer 'no-role'
+              form.setValue('role_ids', [value || 'no-role'])
+            }}
+            disabled={isSuperuser}
+            placeholder="Seleccionar rol..."
+          />
           <FieldError errors={[errors.role_ids]} />
         </FieldContent>
       </Field>

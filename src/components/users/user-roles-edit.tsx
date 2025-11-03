@@ -93,7 +93,7 @@ export function UserRolesEdit({
         </DrawerTrigger>
       )}
 
-      <DrawerContent className="!w-full !max-w-md">
+      <DrawerContent className="!w-full !max-w-xl">
         <DrawerHeader>
           <DrawerTitle>Editar Roles de Usuario</DrawerTitle>
           <DrawerDescription>

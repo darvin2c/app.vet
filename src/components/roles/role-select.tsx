@@ -1,9 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Heart, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import { Check, ChevronsUpDown, Shield, X, Plus, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
@@ -17,61 +16,49 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { usePets } from '@/hooks/pets/use-pet-list'
-import { PetCreate } from './pet-create'
-import { PetEdit } from './pet-edit'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { useRoleList } from '@/hooks/roles/use-role-list'
 import { Tables } from '@/types/supabase.types'
+import { RoleCreate } from './role-create'
+import { RoleEdit } from './role-edit'
 
-type Pet = Tables<'pets'> & { breeds: Tables<'breeds'> | null }
+type Role = Tables<'roles'>
 
-interface PetSelectProps {
+interface RoleSelectProps {
   value?: string
   onValueChange?: (value: string) => void
   placeholder?: string
   disabled?: boolean
   className?: string
-  customerId?: string
 }
 
-export function PetSelect({
+export function RoleSelect({
   value,
   onValueChange,
-  placeholder = 'Seleccionar mascota...',
+  placeholder = 'Seleccionar rol...',
   disabled = false,
   className,
-  customerId,
-}: PetSelectProps) {
+}: RoleSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: pets = [], isLoading } = usePets({
+  const { data: roles = [], isLoading } = useRoleList({
     search: searchTerm,
-    filters: customerId
-      ? [
-          {
-            key: 'customer_id',
-            field: 'customer_id',
-            operator: 'eq',
-            value: customerId,
-            type: 'select',
-          },
-        ]
-      : [],
   })
 
-  const selectedPet = pets.find((pet: Pet) => pet.id === value)
+  const selectedRole = roles.find((role) => role.id === value)
 
-  const handleSelect = (petId: string) => {
+  const handleSelect = (roleId: string) => {
     if (!onValueChange) return
-    onValueChange(value === petId ? '' : petId)
+    onValueChange(value === roleId ? '' : roleId)
     setOpen(false)
   }
 
   return (
     <>
-      <InputGroup className={className}>
+      <InputGroup>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <InputGroupButton
@@ -81,10 +68,23 @@ export function PetSelect({
               className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
             >
-              {selectedPet ? (
+              {selectedRole ? (
                 <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedPet.name}</span>
+                  <Avatar className="h-6 w-6">
+                    <AvatarFallback className="text-xs bg-primary/10">
+                      <Shield className="h-3 w-3" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col items-start min-w-0 flex-1">
+                    <span className="text-sm font-medium truncate">
+                      {selectedRole.name}
+                    </span>
+                    {selectedRole.description && (
+                      <span className="text-xs text-muted-foreground truncate">
+                        {selectedRole.description}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
@@ -98,27 +98,33 @@ export function PetSelect({
           >
             <Command>
               <CommandInput
-                placeholder="Buscar mascota..."
+                placeholder="Buscar rol..."
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
               <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron mascotas.'}
+                {isLoading ? 'Cargando...' : 'No se encontraron roles.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {pets.map((pet: Pet) => (
+                {roles.map((role) => (
                   <CommandItem
-                    key={pet.id}
-                    value={pet.name}
-                    onSelect={() => handleSelect(pet.id)}
+                    key={role.id}
+                    value={role.name}
+                    onSelect={() => handleSelect(role.id)}
                   >
                     <div className="flex items-center gap-2">
-                      <Heart className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span>{pet.name}</span>
-                        {pet.breeds && (
-                          <span className="text-sm text-muted-foreground">
-                            {pet.breeds.name}
+                      <Avatar className="h-6 w-6">
+                        <AvatarFallback className="text-xs bg-primary/10">
+                          <Shield className="h-3 w-3" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col items-start min-w-0 flex-1">
+                        <span className="text-sm font-medium truncate">
+                          {role.name}
+                        </span>
+                        {role.description && (
+                          <span className="text-xs text-muted-foreground truncate">
+                            {role.description}
                           </span>
                         )}
                       </div>
@@ -126,7 +132,7 @@ export function PetSelect({
                     <Check
                       className={cn(
                         'h-4 w-4',
-                        value === pet.id ? 'opacity-100' : 'opacity-0'
+                        value === role.id ? 'opacity-100' : 'opacity-0'
                       )}
                     />
                   </CommandItem>
@@ -136,7 +142,7 @@ export function PetSelect({
           </PopoverContent>
         </Popover>
 
-        {selectedPet && (
+        {selectedRole && (
           <InputGroupButton
             variant="ghost"
             onClick={() => onValueChange?.('')}
@@ -152,18 +158,18 @@ export function PetSelect({
           variant="ghost"
           onClick={() => setCreateOpen(true)}
           disabled={disabled}
-          aria-label="Crear nueva mascota"
+          aria-label="Crear nuevo rol"
           className="h-full"
         >
           <Plus className="h-4 w-4" />
         </InputGroupButton>
 
-        {selectedPet && (
+        {selectedRole && (
           <InputGroupButton
             variant="ghost"
             onClick={() => setEditOpen(true)}
             disabled={disabled}
-            aria-label="Editar mascota seleccionada"
+            aria-label="Editar rol seleccionado"
             className="h-full"
           >
             <Edit className="h-4 w-4" />
@@ -171,14 +177,14 @@ export function PetSelect({
         )}
       </InputGroup>
 
-      <PetCreate
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        clientId={customerId}
-      />
+      <RoleCreate open={createOpen} onOpenChange={setCreateOpen} />
 
-      {selectedPet && (
-        <PetEdit open={editOpen} onOpenChange={setEditOpen} pet={selectedPet} />
+      {selectedRole && (
+        <RoleEdit
+          open={editOpen}
+          onOpenChange={setEditOpen}
+          role={selectedRole}
+        />
       )}
     </>
   )
