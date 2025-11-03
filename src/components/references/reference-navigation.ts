@@ -1,11 +1,14 @@
 import {
   Stethoscope,
   Calendar,
+  Users,
   Package,
   Ruler,
-  LucideIcon,
-  Briefcase,
+  Tag,
   Dna,
+  CreditCard,
+  Shield,
+  LucideIcon,
 } from 'lucide-react'
 
 export interface NavItem {
@@ -23,7 +26,7 @@ export interface NavGroup {
 // Estructura de datos organizada para la navegación de referencias
 export const navigationGroups: NavGroup[] = [
   {
-    label: 'Referencias del Sistema',
+    label: 'Clínica',
     items: [
       {
         title: 'Especialidades',
@@ -38,6 +41,17 @@ export const navigationGroups: NavGroup[] = [
         tooltip: 'Configurar tipos de citas disponibles',
       },
       {
+        title: 'Staff',
+        href: '/references/staff',
+        icon: Users,
+        tooltip: 'Gestionar personal del veterinario',
+      },
+    ],
+  },
+  {
+    label: 'Ventas',
+    items: [
+      {
         title: 'Categorías de Productos',
         href: '/references/product-categories',
         icon: Package,
@@ -50,11 +64,16 @@ export const navigationGroups: NavGroup[] = [
         tooltip: 'Definir unidades de medida',
       },
       {
-        title: 'Métodos de Pago',
-        href: '/references/payment-methods',
-        icon: Briefcase,
-        tooltip: 'Configurar métodos de pago disponibles',
+        title: 'Marcas de Productos',
+        href: '/references/product-brands',
+        icon: Tag,
+        tooltip: 'Gestionar marcas de productos',
       },
+    ],
+  },
+  {
+    label: 'Configuración',
+    items: [
       {
         title: 'Especies',
         href: '/references/species',
@@ -62,10 +81,21 @@ export const navigationGroups: NavGroup[] = [
         tooltip: 'Definir especies de animales',
       },
       {
-        title: 'Staff',
-        href: '/references/staff',
-        icon: Briefcase,
-        tooltip: 'Gestionar personal del veterinario',
+        title: 'Métodos de Pago',
+        href: '/references/payment-methods',
+        icon: CreditCard,
+        tooltip: 'Configurar métodos de pago disponibles',
+      },
+    ],
+  },
+  {
+    label: 'Seguridad',
+    items: [
+      {
+        title: 'Roles',
+        href: '/roles',
+        icon: Shield,
+        tooltip: 'Gestionar roles y permisos del sistema',
       },
     ],
   },
