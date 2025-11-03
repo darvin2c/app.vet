@@ -32,6 +32,7 @@ export default function useProductDelete() {
       toast.success('Producto eliminado exitosamente')
     },
     onError: (error) => {
+      console.error('Error al eliminar producto:', error)
       toast.error(error.message || 'Error al eliminar producto')
     },
   })

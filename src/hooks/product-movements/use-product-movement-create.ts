@@ -15,41 +15,10 @@ export default function useProductMovementCreate() {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
-
-      // Validar stock disponible para salidas (cantidad negativa)
-      if (data.quantity < 0) {
-        const { data: product, error: productError } = await supabase
-          .from('products')
-          .select('stock, name')
-          .eq('id', data.product_id)
-          .eq('tenant_id', currentTenant.id)
-          .single()
-
-        if (productError) {
-          throw new Error(
-            `Error al verificar producto: ${productError.message}`
-          )
-        }
-
-        const availableStock = product.stock || 0
-        const requestedQuantity = Math.abs(data.quantity)
-
-        if (availableStock < requestedQuantity) {
-          throw new Error(
-            `Stock insuficiente. Disponible: ${availableStock}, Solicitado: ${requestedQuantity}`
-          )
-        }
-      }
-
       const { data: movement, error } = await supabase
         .from('product_movements')
         .insert({
-          product_id: data.product_id,
-          quantity: data.quantity,
-          created_at: new Date().toISOString(),
-          unit_cost: data.unit_cost || null,
-          note: data.note || null,
-          reference: data.reference || null,
+          ...data,
           tenant_id: currentTenant.id,
         })
         .select()
@@ -63,11 +32,16 @@ export default function useProductMovementCreate() {
     },
     onSuccess: () => {
       // Invalidar las consultas relacionadas
-      queryClient.invalidateQueries({ queryKey: ['product-movements'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-movements'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Movimiento de producto creado exitosamente')
     },
     onError: (error) => {
+      console.error('Error al crear movimiento de producto:', error)
       toast.error(error.message || 'Error al crear movimiento de producto')
     },
   })

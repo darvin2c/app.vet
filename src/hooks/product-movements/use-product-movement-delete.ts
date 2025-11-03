@@ -13,18 +13,6 @@ export default function useProductMovementDelete() {
         throw new Error('No hay tenant seleccionado')
       }
 
-      // Obtener el movimiento antes de eliminarlo para recalcular stock
-      const { data: movement, error: getError } = await supabase
-        .from('product_movements')
-        .select('product_id')
-        .eq('id', id)
-        .eq('tenant_id', currentTenant.id)
-        .single()
-
-      if (getError) {
-        throw new Error(`Error al obtener movimiento: ${getError.message}`)
-      }
-
       const { error } = await supabase
         .from('product_movements')
         .delete()
@@ -38,11 +26,16 @@ export default function useProductMovementDelete() {
       return { id }
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-movements'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-movements'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Movimiento de producto eliminado exitosamente')
     },
     onError: (error) => {
+      console.error('Error al eliminar movimiento de producto:', error)
       toast.error(error.message || 'Error al eliminar movimiento de producto')
     },
   })

@@ -35,11 +35,16 @@ export default function useProductMovementUpdate() {
       return movement
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['product-movements'] })
-      queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-movements'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'products'],
+      })
       toast.success('Movimiento de producto actualizado exitosamente')
     },
     onError: (error) => {
+      console.error('Error al actualizar movimiento de producto:', error)
       toast.error(error.message || 'Error al actualizar movimiento de producto')
     },
   })

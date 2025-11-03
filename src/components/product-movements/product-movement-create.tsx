@@ -43,14 +43,9 @@ export function ProductMovementCreate({
   })
 
   const onSubmit = async (data: CreateProductMovementData) => {
-    try {
-      await createProductMovement.mutateAsync(data)
-      form.reset()
-      onOpenChange(false)
-    } catch (error) {
-      // Error handling is managed by the hook
-      console.error('Error creating product movement:', error)
-    }
+    await createProductMovement.mutateAsync(data)
+    form.reset()
+    onOpenChange(false)
   }
 
   return (

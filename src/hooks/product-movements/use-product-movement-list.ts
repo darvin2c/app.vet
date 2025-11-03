@@ -2,6 +2,8 @@ import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import { Database } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedSort } from '@/components/ui/order-by'
 
 type ProductMovement = Database['public']['Tables']['product_movements']['Row']
 
@@ -24,21 +26,30 @@ export type ProductMovementWithProduct = ProductMovement & {
   } | null
 }
 
-interface ProductMovementFilters {
+export default function useProductMovementList({
+  filters = [],
+  orders = [
+    {
+      field: 'created_at',
+      direction: 'desc',
+      ascending: false,
+    },
+  ],
+  search,
+}: {
+  filters?: AppliedFilter[]
+  orders?: AppliedSort[]
   search?: string
-  product_id?: string
-  date_from?: string
-  date_to?: string
-}
-
-export default function useProductMovementList(
-  filters?: ProductMovementFilters
-) {
+}) {
   const { currentTenant } = useCurrentTenantStore()
 
+  if (!currentTenant?.id) {
+    throw new Error('No hay tenant seleccionado')
+  }
+
   return useQuery({
-    queryKey: ['product-movements', currentTenant?.id, filters],
-    queryFn: async (): Promise<ProductMovementWithProduct[]> => {
+    queryKey: [currentTenant?.id, 'product-movements', filters, search, orders],
+    queryFn: async () => {
       if (!currentTenant?.id) {
         return []
       }
@@ -67,28 +78,20 @@ export default function useProductMovementList(
         `
         )
         .eq('tenant_id', currentTenant.id)
-        .order('created_at', { ascending: false })
 
-      // Aplicar filtros
-      if (filters?.search) {
-        query = query.or(
-          `note.ilike.%${filters.search}%,reference.ilike.%${filters.search}%`
-        )
+      filters.forEach((filter) => {
+        query.filter(filter.field, filter.operator, filter.value)
+      })
+
+      if (search) {
+        query = query.filter('products.name', 'ilike', `%${search}%`)
       }
 
-      if (filters?.product_id) {
-        query = query.eq('product_id', filters.product_id)
-      }
-
-
-
-      if (filters?.date_from) {
-        query = query.gte('created_at', filters.date_from)
-      }
-
-      if (filters?.date_to) {
-        query = query.lte('created_at', filters.date_to)
-      }
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.ascending,
+        })
+      })
 
       const { data, error } = await query
 
