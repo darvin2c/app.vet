@@ -6,6 +6,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { AppointmentCreate } from './appointment-create'
+import { useState } from 'react'
 
 type AppointmentCreateButtonProps = {
   onSuccess?: () => void
@@ -17,15 +18,26 @@ export function AppointmentCreateButton({
   petId,
   ...props
 }: AppointmentCreateButtonProps) {
+  const [open, setOpen] = useState(false)
+
   return (
-    <AppointmentCreate
-      onSuccess={onSuccess}
-      defaultPetId={petId}
-      trigger={
-        <ResponsiveButton variant="default" size="sm" icon={Plus} {...props}>
-          Nueva Cita
-        </ResponsiveButton>
-      }
-    />
+    <>
+      <ResponsiveButton
+        icon={Plus}
+        onClick={() => setOpen(true)}
+        variant="default"
+        size="sm"
+        {...props}
+      >
+        Nueva Cita
+      </ResponsiveButton>
+
+      <AppointmentCreate
+        open={open}
+        onOpenChange={setOpen}
+        onSuccess={onSuccess}
+        defaultPetId={petId}
+      />
+    </>
   )
 }

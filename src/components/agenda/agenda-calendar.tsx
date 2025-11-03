@@ -210,6 +210,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       {/* Modal de crear cita */}
       <AppointmentCreate
         open={createModalOpen}
+        onOpenChange={setCreateModalOpen}
         onSuccess={handleCreateSuccess}
         defaultScheduledStart={selectedDateTime?.startTime}
         defaultScheduledEnd={selectedDateTime?.endTime}
