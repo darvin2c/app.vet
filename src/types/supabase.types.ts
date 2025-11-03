@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: '13.0.5'
+    PostgrestVersion: "13.0.5"
   }
   public: {
     Tables: {
@@ -53,11 +53,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'appointment_types_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "appointment_types_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -72,7 +72,7 @@ export type Database = {
           reason: string | null
           scheduled_end: string
           scheduled_start: string
-          status: Database['public']['Enums']['appointment_status']
+          status: Database["public"]["Enums"]["appointment_status"]
           tenant_id: string
           updated_at: string
           updated_by: string | null
@@ -88,7 +88,7 @@ export type Database = {
           reason?: string | null
           scheduled_end: string
           scheduled_start: string
-          status?: Database['public']['Enums']['appointment_status']
+          status?: Database["public"]["Enums"]["appointment_status"]
           tenant_id: string
           updated_at?: string
           updated_by?: string | null
@@ -104,7 +104,7 @@ export type Database = {
           reason?: string | null
           scheduled_end?: string
           scheduled_start?: string
-          status?: Database['public']['Enums']['appointment_status']
+          status?: Database["public"]["Enums"]["appointment_status"]
           tenant_id?: string
           updated_at?: string
           updated_by?: string | null
@@ -112,32 +112,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'appointments_appointment_type_id_fkey'
-            columns: ['appointment_type_id']
+            foreignKeyName: "appointments_appointment_type_id_fkey"
+            columns: ["appointment_type_id"]
             isOneToOne: false
-            referencedRelation: 'appointment_types'
-            referencedColumns: ['id']
+            referencedRelation: "appointment_types"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_pet_id_fkey'
-            columns: ['pet_id']
+            foreignKeyName: "appointments_pet_id_fkey"
+            columns: ["pet_id"]
             isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "appointments_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'appointments_veterinarian_id_fkey'
-            columns: ['veterinarian_id']
+            foreignKeyName: "appointments_veterinarian_id_fkey"
+            columns: ["veterinarian_id"]
             isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -177,11 +177,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'boardings_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "boardings_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -224,18 +224,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'breeds_species_id_fkey'
-            columns: ['species_id']
+            foreignKeyName: "breeds_species_id_fkey"
+            columns: ["species_id"]
             isOneToOne: false
-            referencedRelation: 'species'
-            referencedColumns: ['id']
+            referencedRelation: "species"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'breeds_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "breeds_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -278,32 +278,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'clinical_notes_clinical_record_id_fkey'
-            columns: ['clinical_record_id']
+            foreignKeyName: "clinical_notes_clinical_record_id_fkey"
+            columns: ["clinical_record_id"]
             isOneToOne: false
-            referencedRelation: 'clinical_records'
-            referencedColumns: ['id']
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_notes_pet_id_fkey'
-            columns: ['pet_id']
+            foreignKeyName: "clinical_notes_pet_id_fkey"
+            columns: ["pet_id"]
             isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_notes_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "clinical_notes_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_notes_vet_id_fkey'
-            columns: ['vet_id']
+            foreignKeyName: "clinical_notes_vet_id_fkey"
+            columns: ["vet_id"]
             isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -349,25 +349,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'clinical_parameters_pet_id_fkey'
-            columns: ['pet_id']
+            foreignKeyName: "clinical_parameters_pet_id_fkey"
+            columns: ["pet_id"]
             isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_parameters_record_id_fkey'
-            columns: ['clinical_record_id']
+            foreignKeyName: "clinical_parameters_record_id_fkey"
+            columns: ["clinical_record_id"]
             isOneToOne: false
-            referencedRelation: 'clinical_records'
-            referencedColumns: ['id']
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_parameters_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "clinical_parameters_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -382,7 +382,7 @@ export type Database = {
           pet_id: string
           reason: string | null
           record_date: string
-          record_type: Database['public']['Enums']['record_type']
+          record_type: Database["public"]["Enums"]["record_type"]
           tenant_id: string
           updated_at: string
           updated_by: string | null
@@ -398,7 +398,7 @@ export type Database = {
           pet_id: string
           reason?: string | null
           record_date?: string
-          record_type: Database['public']['Enums']['record_type']
+          record_type: Database["public"]["Enums"]["record_type"]
           tenant_id: string
           updated_at?: string
           updated_by?: string | null
@@ -414,7 +414,7 @@ export type Database = {
           pet_id?: string
           reason?: string | null
           record_date?: string
-          record_type?: Database['public']['Enums']['record_type']
+          record_type?: Database["public"]["Enums"]["record_type"]
           tenant_id?: string
           updated_at?: string
           updated_by?: string | null
@@ -422,32 +422,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'clinical_records_appointment_id_fkey'
-            columns: ['appointment_id']
+            foreignKeyName: "clinical_records_appointment_id_fkey"
+            columns: ["appointment_id"]
             isOneToOne: false
-            referencedRelation: 'appointments'
-            referencedColumns: ['id']
+            referencedRelation: "appointments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_records_pet_id_fkey'
-            columns: ['pet_id']
+            foreignKeyName: "clinical_records_pet_id_fkey"
+            columns: ["pet_id"]
             isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_records_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "clinical_records_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'clinical_records_vet_id_fkey'
-            columns: ['vet_id']
+            foreignKeyName: "clinical_records_vet_id_fkey"
+            columns: ["vet_id"]
             isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -499,11 +499,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'clients_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "clients_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -540,18 +540,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'hospitalizations_pet_id_fkey'
-            columns: ['pet_id']
+            foreignKeyName: "hospitalizations_pet_id_fkey"
+            columns: ["pet_id"]
             isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
+            referencedRelation: "pets"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'hospitalizations_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "hospitalizations_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -594,25 +594,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'order_items_order_id_fkey'
-            columns: ['order_id']
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
             isOneToOne: false
-            referencedRelation: 'orders'
-            referencedColumns: ['id']
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'order_items_product_id_fkey'
-            columns: ['product_id']
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
+            referencedRelation: "products"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'order_items_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "order_items_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -626,7 +626,7 @@ export type Database = {
           notes: string | null
           order_number: string | null
           paid_amount: number
-          status: Database['public']['Enums']['order_status']
+          status: Database["public"]["Enums"]["order_status"]
           subtotal: number | null
           tax: number
           tax_amount: number | null
@@ -644,7 +644,7 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
-          status: Database['public']['Enums']['order_status']
+          status: Database["public"]["Enums"]["order_status"]
           subtotal?: number | null
           tax?: number
           tax_amount?: number | null
@@ -662,7 +662,7 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
-          status?: Database['public']['Enums']['order_status']
+          status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number | null
           tax?: number
           tax_amount?: number | null
@@ -673,32 +673,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'orders_created_by_fkey'
-            columns: ['created_by']
+            foreignKeyName: "orders_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'orders_customer_id_fkey'
-            columns: ['customer_id']
+            foreignKeyName: "orders_customer_id_fkey"
+            columns: ["customer_id"]
             isOneToOne: false
-            referencedRelation: 'customers'
-            referencedColumns: ['id']
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'orders_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "orders_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'orders_updated_by_fkey'
-            columns: ['updated_by']
+            foreignKeyName: "orders_updated_by_fkey"
+            columns: ["updated_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -710,7 +710,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
-          payment_type: Database['public']['Enums']['payment_type']
+          payment_type: Database["public"]["Enums"]["payment_type"]
           sort_order: number | null
           tenant_id: string
           updated_at: string | null
@@ -723,7 +723,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
-          payment_type: Database['public']['Enums']['payment_type']
+          payment_type: Database["public"]["Enums"]["payment_type"]
           sort_order?: number | null
           tenant_id: string
           updated_at?: string | null
@@ -736,7 +736,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
-          payment_type?: Database['public']['Enums']['payment_type']
+          payment_type?: Database["public"]["Enums"]["payment_type"]
           sort_order?: number | null
           tenant_id?: string
           updated_at?: string | null
@@ -744,25 +744,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'payment_methods_created_by_fkey'
-            columns: ['created_by']
+            foreignKeyName: "payment_methods_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payment_methods_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "payment_methods_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payment_methods_updated_by_fkey'
-            columns: ['updated_by']
+            foreignKeyName: "payment_methods_updated_by_fkey"
+            columns: ["updated_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -814,46 +814,46 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'payments_created_by_fkey'
-            columns: ['created_by']
+            foreignKeyName: "payments_created_by_fkey"
+            columns: ["created_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payments_customer_id_fkey'
-            columns: ['customer_id']
+            foreignKeyName: "payments_customer_id_fkey"
+            columns: ["customer_id"]
             isOneToOne: false
-            referencedRelation: 'customers'
-            referencedColumns: ['id']
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payments_order_id_fkey'
-            columns: ['order_id']
+            foreignKeyName: "payments_order_id_fkey"
+            columns: ["order_id"]
             isOneToOne: false
-            referencedRelation: 'orders'
-            referencedColumns: ['id']
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payments_payment_method_id_fkey'
-            columns: ['payment_method_id']
+            foreignKeyName: "payments_payment_method_id_fkey"
+            columns: ["payment_method_id"]
             isOneToOne: false
-            referencedRelation: 'payment_methods'
-            referencedColumns: ['id']
+            referencedRelation: "payment_methods"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payments_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "payments_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'payments_updated_by_fkey'
-            columns: ['updated_by']
+            foreignKeyName: "payments_updated_by_fkey"
+            columns: ["updated_by"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -870,7 +870,7 @@ export type Database = {
           microchip: string | null
           name: string
           notes: string | null
-          sex: Database['public']['Enums']['pet_sex']
+          sex: Database["public"]["Enums"]["pet_sex"]
           species_id: string
           tenant_id: string
           updated_at: string
@@ -889,7 +889,7 @@ export type Database = {
           microchip?: string | null
           name: string
           notes?: string | null
-          sex: Database['public']['Enums']['pet_sex']
+          sex: Database["public"]["Enums"]["pet_sex"]
           species_id?: string
           tenant_id: string
           updated_at?: string
@@ -908,7 +908,7 @@ export type Database = {
           microchip?: string | null
           name?: string
           notes?: string | null
-          sex?: Database['public']['Enums']['pet_sex']
+          sex?: Database["public"]["Enums"]["pet_sex"]
           species_id?: string
           tenant_id?: string
           updated_at?: string
@@ -917,32 +917,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'pets_breed_id_fkey'
-            columns: ['breed_id']
+            foreignKeyName: "pets_breed_id_fkey"
+            columns: ["breed_id"]
             isOneToOne: false
-            referencedRelation: 'breeds'
-            referencedColumns: ['id']
+            referencedRelation: "breeds"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'pets_client_id_fkey'
-            columns: ['client_id']
+            foreignKeyName: "pets_client_id_fkey"
+            columns: ["client_id"]
             isOneToOne: false
-            referencedRelation: 'customers'
-            referencedColumns: ['id']
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'pets_species_id_fkey'
-            columns: ['species_id']
+            foreignKeyName: "pets_species_id_fkey"
+            columns: ["species_id"]
             isOneToOne: false
-            referencedRelation: 'species'
-            referencedColumns: ['id']
+            referencedRelation: "species"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'pets_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "pets_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -982,11 +982,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'product_brands_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "product_brands_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1026,11 +1026,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'product_categories_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "product_categories_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1043,8 +1043,6 @@ export type Database = {
           product_id: string
           quantity: number
           reference: string | null
-          related_id: string | null
-          source: string | null
           tenant_id: string
           unit_cost: number | null
           updated_at: string
@@ -1058,8 +1056,6 @@ export type Database = {
           product_id: string
           quantity: number
           reference?: string | null
-          related_id?: string | null
-          source?: string | null
           tenant_id: string
           unit_cost?: number | null
           updated_at?: string
@@ -1073,8 +1069,6 @@ export type Database = {
           product_id?: string
           quantity?: number
           reference?: string | null
-          related_id?: string | null
-          source?: string | null
           tenant_id?: string
           unit_cost?: number | null
           updated_at?: string
@@ -1082,18 +1076,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'product_movements_product_id_fkey'
-            columns: ['product_id']
+            foreignKeyName: "product_movements_product_id_fkey"
+            columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
+            referencedRelation: "products"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'product_movements_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "product_movements_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1133,11 +1127,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'product_units_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "product_units_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1210,32 +1204,32 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'products_brand_id_fkey'
-            columns: ['brand_id']
+            foreignKeyName: "products_brand_id_fkey"
+            columns: ["brand_id"]
             isOneToOne: false
-            referencedRelation: 'product_brands'
-            referencedColumns: ['id']
+            referencedRelation: "product_brands"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'products_category_id_fkey'
-            columns: ['category_id']
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
             isOneToOne: false
-            referencedRelation: 'product_categories'
-            referencedColumns: ['id']
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'products_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "products_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'products_unit_id_fkey'
-            columns: ['unit_id']
+            foreignKeyName: "products_unit_id_fkey"
+            columns: ["unit_id"]
             isOneToOne: false
-            referencedRelation: 'product_units'
-            referencedColumns: ['id']
+            referencedRelation: "product_units"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1317,25 +1311,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'record_items_product_id_fkey'
-            columns: ['product_id']
+            foreignKeyName: "record_items_product_id_fkey"
+            columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: 'products'
-            referencedColumns: ['id']
+            referencedRelation: "products"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'record_items_record_id_fkey'
-            columns: ['record_id']
+            foreignKeyName: "record_items_record_id_fkey"
+            columns: ["record_id"]
             isOneToOne: false
-            referencedRelation: 'clinical_records'
-            referencedColumns: ['id']
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'record_items_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "record_items_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1375,11 +1369,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'roles_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "roles_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1422,11 +1416,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'specialties_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "specialties_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1466,11 +1460,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'species_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "species_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1522,11 +1516,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'staff_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "staff_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1557,25 +1551,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'staff_specialties_specialty_id_fkey'
-            columns: ['specialty_id']
+            foreignKeyName: "staff_specialties_specialty_id_fkey"
+            columns: ["specialty_id"]
             isOneToOne: false
-            referencedRelation: 'specialties'
-            referencedColumns: ['id']
+            referencedRelation: "specialties"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'staff_specialties_staff_id_fkey'
-            columns: ['staff_id']
+            foreignKeyName: "staff_specialties_staff_id_fkey"
+            columns: ["staff_id"]
             isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'staff_specialties_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "staff_specialties_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1621,25 +1615,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'supplier_brands_brand_id_fkey'
-            columns: ['brand_id']
+            foreignKeyName: "supplier_brands_brand_id_fkey"
+            columns: ["brand_id"]
             isOneToOne: false
-            referencedRelation: 'product_brands'
-            referencedColumns: ['id']
+            referencedRelation: "product_brands"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'supplier_brands_supplier_id_fkey'
-            columns: ['supplier_id']
+            foreignKeyName: "supplier_brands_supplier_id_fkey"
+            columns: ["supplier_id"]
             isOneToOne: false
-            referencedRelation: 'suppliers'
-            referencedColumns: ['id']
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'supplier_brands_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "supplier_brands_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1697,11 +1691,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'suppliers_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "suppliers_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1732,11 +1726,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'surgeries_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "surgeries_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1761,11 +1755,11 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'tenant_counters_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "tenant_counters_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1808,25 +1802,25 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'tenant_users_role_id_fkey'
-            columns: ['role_id']
+            foreignKeyName: "tenant_users_role_id_fkey"
+            columns: ["role_id"]
             isOneToOne: false
-            referencedRelation: 'roles'
-            referencedColumns: ['id']
+            referencedRelation: "roles"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'tenant_users_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "tenant_users_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'tenant_users_user_id_fkey1'
-            columns: ['user_id']
+            foreignKeyName: "tenant_users_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: 'profiles'
-            referencedColumns: ['id']
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1923,18 +1917,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'trainings_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "trainings_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'trainings_trainer_id_fkey'
-            columns: ['trainer_id']
+            foreignKeyName: "trainings_trainer_id_fkey"
+            columns: ["trainer_id"]
             isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
+            referencedRelation: "staff"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1983,18 +1977,18 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: 'vaccinations_clinical_record_id_fkey'
-            columns: ['clinical_record_id']
+            foreignKeyName: "vaccinations_clinical_record_id_fkey"
+            columns: ["clinical_record_id"]
             isOneToOne: false
-            referencedRelation: 'clinical_records'
-            referencedColumns: ['id']
+            referencedRelation: "clinical_records"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: 'vaccinations_tenant_id_fkey'
-            columns: ['tenant_id']
+            foreignKeyName: "vaccinations_tenant_id_fkey"
+            columns: ["tenant_id"]
             isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
+            referencedRelation: "tenants"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -2007,26 +2001,26 @@ export type Database = {
     }
     Enums: {
       appointment_status:
-        | 'scheduled'
-        | 'confirmed'
-        | 'in_progress'
-        | 'completed'
-        | 'cancelled'
-        | 'no_show'
+        | "scheduled"
+        | "confirmed"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+        | "no_show"
       order_status:
-        | 'partial_payment'
-        | 'confirmed'
-        | 'paid'
-        | 'cancelled'
-        | 'refunded'
-      payment_type: 'cash' | 'app' | 'credit' | 'others'
-      pet_sex: 'M' | 'F'
+        | "partial_payment"
+        | "confirmed"
+        | "paid"
+        | "cancelled"
+        | "refunded"
+      payment_type: "cash" | "app" | "credit" | "others"
+      pet_sex: "M" | "F"
       record_type:
-        | 'consultation'
-        | 'vaccination'
-        | 'surgery'
-        | 'hospitalization'
-        | 'deworming'
+        | "consultation"
+        | "vaccination"
+        | "surgery"
+        | "hospitalization"
+        | "deworming"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2034,33 +2028,33 @@ export type Database = {
   }
 }
 
-type DatabaseWithoutInternals = Omit<Database, '__InternalSupabase'>
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
 
-type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, 'public'>]
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
-    | keyof (DefaultSchema['Tables'] & DefaultSchema['Views'])
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'] &
-      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Views'])[TableName] extends {
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])
-    ? (DefaultSchema['Tables'] &
-        DefaultSchema['Views'])[DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
         Row: infer R
       }
       ? R
@@ -2069,23 +2063,23 @@ export type Tables<
 
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Insert: infer I
       }
       ? I
@@ -2094,23 +2088,23 @@ export type TablesInsert<
 
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
-    | keyof DefaultSchema['Tables']
+    | keyof DefaultSchema["Tables"]
     | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
 > = DefaultSchemaTableNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions['schema']]['Tables'][TableName] extends {
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
     : never
-  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema['Tables']
-    ? DefaultSchema['Tables'][DefaultSchemaTableNameOrOptions] extends {
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
         Update: infer U
       }
       ? U
@@ -2119,64 +2113,64 @@ export type TablesUpdate<
 
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
-    | keyof DefaultSchema['Enums']
+    | keyof DefaultSchema["Enums"]
     | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums']
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
 > = DefaultSchemaEnumNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions['schema']]['Enums'][EnumName]
-  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema['Enums']
-    ? DefaultSchema['Enums'][DefaultSchemaEnumNameOrOptions]
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
 
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
-    | keyof DefaultSchema['CompositeTypes']
+    | keyof DefaultSchema["CompositeTypes"]
     | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof DatabaseWithoutInternals
   }
-    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
 > = PublicCompositeTypeNameOrOptions extends {
   schema: keyof DatabaseWithoutInternals
 }
-  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
-  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema['CompositeTypes']
-    ? DefaultSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
 export const Constants = {
   public: {
     Enums: {
       appointment_status: [
-        'scheduled',
-        'confirmed',
-        'in_progress',
-        'completed',
-        'cancelled',
-        'no_show',
+        "scheduled",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "no_show",
       ],
       order_status: [
-        'partial_payment',
-        'confirmed',
-        'paid',
-        'cancelled',
-        'refunded',
+        "partial_payment",
+        "confirmed",
+        "paid",
+        "cancelled",
+        "refunded",
       ],
-      payment_type: ['cash', 'app', 'credit', 'others'],
-      pet_sex: ['M', 'F'],
+      payment_type: ["cash", "app", "credit", "others"],
+      pet_sex: ["M", "F"],
       record_type: [
-        'consultation',
-        'vaccination',
-        'surgery',
-        'hospitalization',
-        'deworming',
+        "consultation",
+        "vaccination",
+        "surgery",
+        "hospitalization",
+        "deworming",
       ],
     },
   },

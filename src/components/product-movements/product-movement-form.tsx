@@ -1,10 +1,7 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import {
-  ProductMovementFormData,
-  MovementReferenceType,
-} from '@/schemas/product-movements.schema'
+import { ProductMovementFormData } from '@/schemas/product-movements.schema'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -13,13 +10,7 @@ import {
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+
 import { ProductSelect } from '@/components/products/product-select'
 import { Tables } from '@/types/supabase.types'
 
@@ -44,7 +35,7 @@ export function ProductMovementForm({
   const isEntry = quantity >= 0
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 p-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
           <FieldLabel htmlFor="product_id">Producto *</FieldLabel>
@@ -55,35 +46,6 @@ export function ProductMovementForm({
               placeholder="Seleccionar producto..."
             />
             <FieldError errors={[errors.product_id]} />
-          </FieldContent>
-        </Field>
-
-        <Field>
-          <FieldLabel htmlFor="source">Tipo de Movimiento</FieldLabel>
-          <FieldContent>
-            <Select
-              value={form.watch('source') || ''}
-              onValueChange={(value) => setValue('source', value)}
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="Seleccionar tipo..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value={MovementReferenceType.ENTRY}>
-                  {MovementReferenceType.ENTRY}
-                </SelectItem>
-                <SelectItem value={MovementReferenceType.EXIT}>
-                  {MovementReferenceType.EXIT}
-                </SelectItem>
-                <SelectItem value={MovementReferenceType.ADJUSTMENT}>
-                  {MovementReferenceType.ADJUSTMENT}
-                </SelectItem>
-                <SelectItem value={MovementReferenceType.TRANSFER}>
-                  {MovementReferenceType.TRANSFER}
-                </SelectItem>
-              </SelectContent>
-            </Select>
-            <FieldError errors={[errors.source]} />
           </FieldContent>
         </Field>
       </div>
@@ -122,7 +84,8 @@ export function ProductMovementForm({
               placeholder="0.00"
               {...form.register('unit_cost', {
                 valueAsNumber: true,
-                setValueAs: (value) => (value === '' ? 0 : Number(value)),
+                setValueAs: (value) =>
+                  value === '' || value === null ? null : Number(value),
               })}
             />
             <FieldError errors={[errors.unit_cost]} />

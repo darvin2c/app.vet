@@ -27,7 +27,6 @@ export type ProductMovementWithProduct = ProductMovement & {
 interface ProductMovementFilters {
   search?: string
   product_id?: string
-  source?: string
   date_from?: string
   date_to?: string
 }
@@ -81,9 +80,7 @@ export default function useProductMovementList(
         query = query.eq('product_id', filters.product_id)
       }
 
-      if (filters?.source) {
-        query = query.eq('source', filters.source)
-      }
+
 
       if (filters?.date_from) {
         query = query.gte('created_at', filters.date_from)

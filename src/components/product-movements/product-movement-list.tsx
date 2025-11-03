@@ -309,8 +309,7 @@ export function ProductMovementList({
                 <Badge
                   variant={movement.quantity >= 0 ? 'default' : 'destructive'}
                 >
-                  {movement.source ||
-                    (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}
+                  {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'}
                 </Badge>
               </div>
               <div className="text-sm">
@@ -358,8 +357,7 @@ export function ProductMovementList({
               {movement.products?.name || 'Producto no encontrado'}
             </ItemTitle>
             <ItemDescription>
-              {movement.source ||
-                (movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA')}{' '}
+              {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'}{' '}
               - Cantidad: {movement.quantity}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">

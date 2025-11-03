@@ -31,12 +31,10 @@ export function ProductMovementEdit({
     resolver: zodResolver(UpdateProductMovementSchema),
     defaultValues: {
       product_id: movement.product_id,
-      source: movement.source ?? undefined,
       quantity: movement.quantity,
       unit_cost: movement.unit_cost ?? undefined,
       reference: movement.reference ?? undefined,
       note: movement.note ?? undefined,
-      related_id: movement.related_id ?? undefined,
     },
   })
 

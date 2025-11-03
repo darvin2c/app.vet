@@ -3,24 +3,22 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { Plus, Save } from 'lucide-react'
 import { ProductMovementForm } from './product-movement-form'
 import {
   CreateProductMovementSchema,
   CreateProductMovementData,
 } from '@/schemas/product-movements.schema'
 import useProductMovementCreate from '@/hooks/product-movements/use-product-movement-create'
-import { ProductForm } from '../products/product-form'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface ProductMovementCreateProps {
   open: boolean
@@ -38,52 +36,43 @@ export function ProductMovementCreate({
     defaultValues: {
       product_id: '',
       quantity: 0,
-      unit_cost: 0,
-      note: '',
-      reference: '',
-      source: '',
-      related_id: '',
+      unit_cost: null,
+      note: null,
+      reference: null,
     },
   })
 
   const onSubmit = async (data: CreateProductMovementData) => {
-    await createProductMovement.mutateAsync(data)
-    form.reset()
-    onOpenChange(false)
+    try {
+      await createProductMovement.mutateAsync(data)
+      form.reset()
+      onOpenChange(false)
+    } catch (error) {
+      // Error handling is managed by the hook
+      console.error('Error creating product movement:', error)
+    }
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Movimiento de Producto</DrawerTitle>
-          <DrawerDescription>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="!w-full !max-w-2xl">
+        <SheetHeader>
+          <SheetTitle>Crear Movimiento de Producto</SheetTitle>
+          <SheetDescription>
             Completa la información para agregar un nuevo movimiento de
             producto.
-          </DrawerDescription>
-        </DrawerHeader>
+          </SheetDescription>
+        </SheetHeader>
 
-        <div className="px-4">
+        <ScrollArea className="px-6">
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <ProductMovementForm mode="create" />
             </form>
           </Form>
-        </div>
+        </ScrollArea>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createProductMovement.isPending}
-          >
-            {createProductMovement.isPending
-              ? 'Creando...'
-              : 'Crear Movimiento de Producto'}
-          </Button>
+        <SheetFooter className="gap-2 flex-row">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -91,8 +80,17 @@ export function ProductMovementCreate({
           >
             Cancelar
           </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <Button
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={createProductMovement.isPending}
+          >
+            {createProductMovement.isPending
+              ? 'Creando...'
+              : 'Crear Movimiento'}
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
