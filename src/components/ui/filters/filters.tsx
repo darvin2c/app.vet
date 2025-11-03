@@ -52,7 +52,7 @@ import type {
   BooleanFilterConfig,
   NumberFilterConfig,
   CustomFilterConfig,
-} from './filters.d'
+} from './type'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useDebounce } from '@/hooks/use-debounce'
 

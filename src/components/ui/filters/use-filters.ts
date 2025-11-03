@@ -2,7 +2,7 @@
 
 import { useCallback, useMemo } from 'react'
 import { useQueryStates } from 'nuqs'
-import type { FilterConfig, SupabaseOperator, AppliedFilter } from './filters.d'
+import type { FilterConfig, SupabaseOperator, AppliedFilter } from './type'
 
 // Parsers PostgREST para diferentes tipos de filtros
 function parseAsPostgREST(defaultOperator: SupabaseOperator = 'eq') {
