@@ -45,24 +45,23 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppointmentTypeActions } from './appointment-type-actions'
 import { useAppointmentTypeList as useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-type-list'
 import type { Tables } from '@/types/supabase.types'
+import type { FilterConfig } from '@/components/ui/filters'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 type AppointmentType = Tables<'appointment_types'>
 
 interface AppointmentTypeListProps {
-  searchTerm?: string
-  filters?: Record<string, string | number | boolean>
+  filterConfig?: FilterConfig[]
+  orderByConfig?: OrderByConfig
 }
 
 export function AppointmentTypeList({
-  searchTerm,
-  filters,
+  filterConfig,
+  orderByConfig,
 }: AppointmentTypeListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: appointmentTypes = [], isLoading } = useAppointmentTypes({
-    search: searchTerm,
-    ...filters,
-  })
+  const { data: appointmentTypes = [], isLoading } = useAppointmentTypes({})
 
   const handleEdit = useCallback(() => {
     // Handle edit logic

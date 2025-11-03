@@ -48,17 +48,20 @@ import { ProductBrandFilters } from '@/schemas/product-brands.schema'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import type { FilterConfig } from '@/components/ui/filters'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 type ProductBrand = Tables<'product_brands'>
 
 interface ProductBrandListProps {
-  filters?: ProductBrandFilters
+  filterConfig?: FilterConfig[]
+  orderByConfig?: OrderByConfig
 }
 
-export function ProductBrandList({ filters }: ProductBrandListProps) {
+export function ProductBrandList({ filterConfig, orderByConfig }: ProductBrandListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
-  const { data: productBrands = [], isLoading } = useProductBrands(filters)
+  const { data: productBrands = [], isLoading } = useProductBrands({})
 
   const handleEdit = useCallback((productBrand: ProductBrand) => {
     // Handle edit logic

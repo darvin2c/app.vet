@@ -6,9 +6,9 @@ import {
   ResponsiveButton,
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
-import { ProductBrandCreate } from './product-brand-create'
+import { SpecialtyCreate } from './specialty-create'
 
-export function ProductBrandCreateButton({
+export function SpecialtyCreateButton({
   children,
   ...props
 }: ResponsiveButtonProps) {
@@ -18,14 +18,14 @@ export function ProductBrandCreateButton({
     <>
       <ResponsiveButton
         icon={Plus}
-        tooltip="Nueva Marca de Producto"
+        tooltip="Nueva Especialidad"
         onClick={() => setOpen(true)}
         {...props}
       >
         {children || 'Nuevo'}
       </ResponsiveButton>
 
-      <ProductBrandCreate open={open} onOpenChange={setOpen} />
+      <SpecialtyCreate open={open} onOpenChange={setOpen} />
     </>
   )
 }

@@ -16,19 +16,7 @@ export const specialtyBaseSchema = z.object({
 })
 
 // Esquema para crear especialidad
-export const createSpecialtySchema = z.object({
-  name: z
-    .string()
-    .nonempty('El nombre de la especialidad es requerido')
-    .max(100, 'El nombre no puede exceder 100 caracteres'),
-  code: z.string().optional(),
-  description: z
-    .string()
-    .max(500, 'La descripción no puede exceder 500 caracteres')
-    .optional()
-    .or(z.literal('')),
-  is_active: z.boolean().optional().default(true),
-})
+export const createSpecialtySchema = specialtyBaseSchema
 
 // Esquema para actualizar especialidad
 export const updateSpecialtySchema = specialtyBaseSchema.partial().extend({

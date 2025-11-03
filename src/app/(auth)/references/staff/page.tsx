@@ -1,92 +1,53 @@
-'use client'
-
+import PageBase from '@/components/page-base'
 import { StaffList } from '@/components/staff/staff-list'
 import { StaffCreateButton } from '@/components/staff/staff-create-button'
 import { SearchInput } from '@/components/ui/search-input'
-import PageBase from '@/components/page-base'
-import { Filters, useFilters, FilterConfig } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
-import { useMemo } from 'react'
-import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'
-import { Tables } from '@/types/supabase.types'
-
-type Specialty = Tables<'specialties'>
+import { Filters } from '@/components/ui/filters'
+import { OrderBy } from '@/components/ui/order-by'
+import type { FilterConfig } from '@/components/ui/filters'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 export default function StaffPage() {
-  // Obtener especialidades para el filtro
-  const { data: specialties = [] } = useSpecialtyList()
+  const filters: FilterConfig[] = [
+    {
+      key: 'is_active',
+      field: 'is_active',
+      label: 'Estado',
+      type: 'boolean',
+      operator: 'eq',
+    },
+  ]
 
-  // Configuración de filtros
-  const filtersConfig = useMemo(
-    () => ({
-      filters: [
-        {
-          key: 'search',
-          field: 'search',
-          type: 'search' as const,
-          label: 'Buscar staff',
-          placeholder: 'Buscar por nombre, email...',
-          operator: 'ilike' as const,
-        },
-        {
-          key: 'is_active',
-          field: 'is_active',
-          type: 'boolean' as const,
-          label: 'Estado',
-          placeholder: 'Selecciona estado',
-          operator: 'eq' as const,
-        },
-        {
-          key: 'specialty_id',
-          field: 'specialty_id',
-          type: 'select' as const,
-          label: 'Especialidad',
-          placeholder: 'Selecciona especialidad',
-          operator: 'eq' as const,
-          options: specialties.map((specialty: Specialty) => ({
-            value: specialty.id,
-            label: specialty.name,
-          })),
-        },
-        {
-          key: 'created_range',
-          field: 'created_at',
-          type: 'dateRange' as const,
-          label: 'Fecha de registro',
-          placeholder: 'Selecciona rango de fechas',
-          operator: 'gte' as const,
-        },
-      ] as FilterConfig[],
-      onFiltersChange: (appliedFilters: any) => {
-        // Manejar cambios de filtros si es necesario
-        console.log('Filters changed:', appliedFilters)
-      },
-    }),
-    [specialties]
-  )
-
-  // Usar el hook useFilters para obtener los filtros aplicados
-  const { appliedFilters } = useFilters(filtersConfig.filters)
+  const orderByConfig: OrderByConfig = {
+    columns: [
+      { field: 'first_name', label: 'Nombre', sortable: true },
+      { field: 'last_name', label: 'Apellido', sortable: true },
+      { field: 'email', label: 'Email', sortable: true },
+      { field: 'created_at', label: 'Fecha de Creación', sortable: true },
+    ],
+  }
 
   return (
     <PageBase
-      title="Staff"
-      subtitle="Gestiona la información de tu equipo de trabajo"
+      title="Personal"
+      subtitle="Gestiona el personal de la clínica veterinaria"
       search={
         <SearchInput
           hasSidebarTriggerLeft
-          placeholder="Buscar miembro del staff"
+          placeholder="Buscar personal..."
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters {...filtersConfig} />
+              <Filters filters={filters} />
+              <OrderBy config={orderByConfig} />
               <StaffCreateButton />
             </ButtonGroup>
           }
         />
       }
     >
-      <StaffList filters={appliedFilters} />
+      <StaffList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
 }

@@ -62,19 +62,22 @@ import {
   List,
 } from 'lucide-react'
 import useStaff from '@/hooks/staff/use-staff-list'
+import type { FilterConfig } from '@/components/ui/filters'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 type ViewMode = 'table' | 'cards' | 'list'
 
 interface StaffListProps {
-  filters?: any
+  filterConfig?: FilterConfig[]
+  orderByConfig?: OrderByConfig
 }
 
-export function StaffList({ filters }: StaffListProps) {
+export function StaffList({ filterConfig, orderByConfig }: StaffListProps) {
   // Estado para controlar la vista actual
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useStaff con los filtros aplicados
-  const { data: staff = [], isLoading, error } = useStaff(filters)
+  const { data: staff = [], isLoading, error } = useStaff({})
 
   const columns: ColumnDef<StaffWithSpecialties>[] = [
     {

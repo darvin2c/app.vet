@@ -46,19 +46,22 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ChevronLeft, ChevronRight, Scale } from 'lucide-react'
 import useProductUnits from '@/hooks/product-units/use-product-unit-list'
+import type { FilterConfig } from '@/components/ui/filters'
+import type { OrderByConfig } from '@/components/ui/order-by'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
 
 interface ProductUnitListProps {
-  filters?: any
+  filterConfig?: FilterConfig[]
+  orderByConfig?: OrderByConfig
 }
 
-export function ProductUnitList({ filters }: ProductUnitListProps) {
+export function ProductUnitList({ filterConfig, orderByConfig }: ProductUnitListProps) {
   // Estado para controlar la vista actual
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useProductUnits con los filtros aplicados
-  const { data: units = [], isLoading, error } = useProductUnits(filters)
+  const { data: units = [], isLoading, error } = useProductUnits({})
 
   const columns: ColumnDef<ProductUnit>[] = [
     {
