@@ -11,6 +11,7 @@ import {
   Handshake,
   Scale,
   ShieldCheck,
+  BadgeDollarSign,
 } from 'lucide-react'
 
 import {
@@ -23,6 +24,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { title } from 'process'
 
 interface NavItem {
   title: string
@@ -69,6 +71,12 @@ const navigationGroups: NavGroup[] = [
         href: '/orders',
         icon: Scale,
         tooltip: 'Ordenes',
+      },
+      {
+        title: 'Pagos',
+        href: '/payments',
+        icon: BadgeDollarSign,
+        tooltip: 'Pagos',
       },
       {
         title: 'Productos',

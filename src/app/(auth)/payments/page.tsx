@@ -1,0 +1,82 @@
+import { PaymentList } from '@/components/payments/payment-list'
+import { PaymentCreateButton } from '@/components/payments/payment-create-button'
+import { PaymentImportButton } from '@/components/payments/payment-import-button'
+import { SearchInput } from '@/components/ui/search-input'
+import PageBase from '@/components/page-base'
+import { Filters, FilterConfig } from '@/components/ui/filters'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { OrderBy } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
+
+export default function PaymentsPage() {
+  // Configuración de filtros
+  const filters: FilterConfig[] = [
+    {
+      key: 'payment_method',
+      field: 'payment_method_id',
+      type: 'select',
+      label: 'Método de Pago',
+      placeholder: 'Selecciona método',
+      operator: 'eq',
+      options: [], // Se llenarían desde la base de datos
+    },
+    {
+      key: 'payment_date_range',
+      field: 'payment_date',
+      type: 'dateRange',
+      label: 'Fecha de Pago',
+      placeholder: 'Selecciona rango de fechas',
+      operator: 'gte',
+    },
+    {
+      key: 'amount_range',
+      field: 'amount',
+      type: 'number',
+      label: 'Monto',
+      placeholder: 'Monto mínimo',
+      operator: 'gte',
+    },
+  ]
+
+  const orderByConfig: OrderByConfig = {
+    columns: [
+      { field: 'payment_date', label: 'Fecha de Pago', sortable: true },
+      { field: 'amount', label: 'Monto', sortable: true },
+      {
+        field: 'payment_methods.name',
+        label: 'Método de Pago',
+        sortable: true,
+      },
+      { field: 'customers.first_name', label: 'Cliente', sortable: true },
+      { field: 'orders.order_number', label: 'Orden', sortable: true },
+      { field: 'created_at', label: 'Fecha de Registro', sortable: true },
+    ],
+  }
+
+  return (
+    <PageBase
+      title="Pagos"
+      subtitle="Gestiona los pagos de tus clientes"
+      search={
+        <SearchInput
+          hasSidebarTriggerLeft
+          placeholder="Buscar pago por referencia, notas o cliente"
+          size="lg"
+          suffix={
+            <ButtonGroup>
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
+              <PaymentImportButton variant="ghost" />
+              <PaymentCreateButton variant="ghost" />
+            </ButtonGroup>
+          }
+        />
+      }
+    >
+      <PaymentList filterConfig={filters} orderByConfig={orderByConfig} />
+    </PageBase>
+  )
+}
