@@ -77,8 +77,11 @@ export default function ProductsPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
               <ProductCreateButton variant={'ghost'} />
               <ProductImportButton variant={'ghost'} />
             </ButtonGroup>

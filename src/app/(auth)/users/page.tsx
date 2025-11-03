@@ -59,8 +59,11 @@ export default function UsersPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
             </ButtonGroup>
           }
         />
