@@ -11,6 +11,7 @@ import { FilterConfig, useFilters } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { ProductSelect } from '@/components/products/product-select'
 import { useMemo } from 'react'
+import { ProductMovementCreateButton } from '@/components/product-movements/product-movement-create-button'
 
 export default function KardexPage() {
   // Configuración de filtros específicos para Kardex
@@ -24,42 +25,12 @@ export default function KardexPage() {
       component: ProductSelect,
     },
     {
-      key: 'source',
-      field: 'source',
-      type: 'select',
-      label: 'Tipo de Movimiento',
-      placeholder: 'Seleccionar tipo',
-      operator: 'eq',
-      options: [
-        { label: 'Entrada', value: 'ENTRADA' },
-        { label: 'Salida', value: 'SALIDA' },
-        { label: 'Ajuste', value: 'AJUSTE' },
-        { label: 'Compra', value: 'COMPRA' },
-        { label: 'Venta', value: 'VENTA' },
-        { label: 'Devolución', value: 'DEVOLUCION' },
-        { label: 'Transferencia', value: 'TRANSFERENCIA' },
-      ],
-    },
-    {
       key: 'date_range',
       field: 'created_at',
       type: 'dateRange',
       label: 'Rango de Fechas',
       placeholder: 'Seleccionar rango de fechas',
       operator: 'gte',
-    },
-    {
-      key: 'quantity_type',
-      field: 'quantity',
-      type: 'select',
-      label: 'Tipo de Movimiento',
-      placeholder: 'Seleccionar tipo',
-      operator: 'eq',
-      options: [
-        { label: 'Entradas', value: 'positive' },
-        { label: 'Salidas', value: 'negative' },
-        { label: 'Todos', value: 'all' },
-      ],
     },
   ]
 
@@ -68,65 +39,8 @@ export default function KardexPage() {
       { field: 'created_at', label: 'Fecha', sortable: true },
       { field: 'quantity', label: 'Cantidad', sortable: true },
       { field: 'unit_cost', label: 'Costo Unitario', sortable: true },
-      { field: 'source', label: 'Tipo', sortable: true },
     ],
   }
-
-  // Obtener filtros aplicados para las métricas
-  const { appliedFilters } = useFilters(filters)
-
-  // Convertir filtros aplicados al formato esperado por el hook
-  const movementFilters = useMemo(() => {
-    const filterObj: any = {}
-
-    appliedFilters.forEach((filter) => {
-      if (filter.field === 'product_id' && filter.value) {
-        filterObj.product_id = filter.value
-      }
-      if (filter.field === 'source' && filter.value) {
-        filterObj.source = filter.value
-      }
-      if (filter.field === 'created_at' && filter.value) {
-        if (Array.isArray(filter.value) && filter.value.length === 2) {
-          filterObj.date_from = filter.value[0]
-          filterObj.date_to = filter.value[1]
-        }
-      }
-    })
-
-    return filterObj
-  }, [appliedFilters])
-
-  // Obtener datos para métricas
-  const { data: movements = [] } = useProductMovementList(movementFilters)
-
-  // Calcular métricas básicas
-  const metrics = useMemo(() => {
-    const totalMovements = movements.length
-    const entries = movements.filter((m) => m.quantity > 0)
-    const exits = movements.filter((m) => m.quantity < 0)
-    const adjustments = movements.filter((m) => m.quantity === 0)
-
-    const totalEntries = entries.reduce((sum, m) => sum + m.quantity, 0)
-    const totalExits = Math.abs(exits.reduce((sum, m) => sum + m.quantity, 0))
-
-    const totalValue = movements.reduce((sum, m) => {
-      return sum + (m.unit_cost ? m.unit_cost * Math.abs(m.quantity) : 0)
-    }, 0)
-
-    const uniqueProducts = new Set(movements.map((m) => m.product_id)).size
-
-    return {
-      totalMovements,
-      totalEntries,
-      totalExits,
-      totalAdjustments: adjustments.length,
-      totalValue,
-      uniqueProducts,
-      entriesCount: entries.length,
-      exitsCount: exits.length,
-    }
-  }, [movements])
 
   return (
     <PageBase
@@ -139,8 +53,12 @@ export default function KardexPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
+              <ProductMovementCreateButton variant={'ghost'} />
             </ButtonGroup>
           }
         />

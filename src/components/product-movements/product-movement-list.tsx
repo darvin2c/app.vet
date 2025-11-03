@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
   ArrowUpRightIcon,
+  CheckCircle2Icon,
   ChevronLeft,
   ChevronRight,
   Package,
@@ -64,7 +65,7 @@ import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
-import { Alert } from '../ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 
 export function ProductMovementList({
   filterConfig,
@@ -377,7 +378,9 @@ export function ProductMovementList({
   if (error) {
     return (
       <Alert variant={'destructive'}>
-        Error al cargar movimientos: {error.message}
+        <CheckCircle2Icon />
+        <AlertTitle>Error al cargar movimientos</AlertTitle>
+        <AlertDescription>{error.message}</AlertDescription>
       </Alert>
     )
   }
