@@ -78,9 +78,9 @@ export function AlertConfirmation({
               <DialogTitle className="text-left">{title}</DialogTitle>
             </div>
           </div>
-          <DialogDescription className="text-left pt-2">
+          <div className="text-muted-foreground text-sm pt-2">
             {description}
-          </DialogDescription>
+          </div>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
