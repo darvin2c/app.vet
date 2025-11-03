@@ -17,7 +17,14 @@ export function useSpecialtyList(params?: UseSpecialtyListParams) {
   const { filters = [], search, orders = [], is_active = true } = params || {}
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'specialties', filters, search, orders, is_active],
+    queryKey: [
+      currentTenant?.id,
+      'specialties',
+      filters,
+      search,
+      orders,
+      is_active,
+    ],
     queryFn: async () => {
       if (!currentTenant?.id) {
         return []

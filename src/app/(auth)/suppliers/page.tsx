@@ -1,5 +1,6 @@
 import { SupplierList } from '@/components/suppliers/supplier-list'
 import { SupplierCreateButton } from '@/components/suppliers/supplier-create-button'
+import { SupplierImportButton } from '@/components/suppliers/supplier-import-button'
 import { SearchInput } from '@/components/ui/search-input'
 import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
@@ -59,6 +60,7 @@ export default function SuppliersPage() {
             <ButtonGroup>
               <Filters filters={filters} />
               <OrderBy config={orderByConfig} />
+              <SupplierImportButton />
               <SupplierCreateButton />
             </ButtonGroup>
           }
