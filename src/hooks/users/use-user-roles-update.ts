@@ -2,10 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import {
-  UpdateUserRolesSchema,
-  ToggleSuperAdminSchema,
-} from '@/schemas/users.schema'
 
 export function useUserRoleUpdate() {
   const queryClient = useQueryClient()
@@ -35,48 +31,6 @@ export function useUserRoleUpdate() {
     },
     onSuccess: () => {
       toast.success('Rol actualizado correctamente')
-      queryClient.invalidateQueries({
-        queryKey: [currentTenant?.id, 'users'],
-      })
-    },
-    onError: (error: Error) => {
-      toast.error(error.message)
-    },
-  })
-}
-
-export function useUserSuperAdminToggle() {
-  const queryClient = useQueryClient()
-  const { currentTenant } = useCurrentTenantStore()
-
-  return useMutation({
-    mutationFn: async ({
-      userId,
-      isSuperuser,
-    }: {
-      userId: string
-      isSuperuser: boolean
-    }) => {
-      if (!currentTenant?.id) {
-        throw new Error('No hay tenant seleccionado')
-      }
-
-      const { error } = await supabase
-        .from('tenant_users')
-        .update({ is_superuser: isSuperuser })
-        .eq('user_id', userId)
-        .eq('tenant_id', currentTenant.id)
-
-      if (error) {
-        throw new Error(`Error al actualizar super admin: ${error.message}`)
-      }
-    },
-    onSuccess: (_, { isSuperuser }) => {
-      toast.success(
-        isSuperuser
-          ? 'Usuario marcado como super admin'
-          : 'Usuario desmarcado como super admin'
-      )
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'users'],
       })

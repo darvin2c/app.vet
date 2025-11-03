@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react'
 import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
-import useAppointments from '@/hooks/appointments/use-appointments'
+import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
 import { Tables } from '@/types/supabase.types'
 import dayjs from 'dayjs'
 import { AppointmentCreate } from '../appointments/appointment-create'

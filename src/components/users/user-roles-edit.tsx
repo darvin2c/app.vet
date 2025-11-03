@@ -18,10 +18,7 @@ import {
   updateUserRolesSchema,
   UpdateUserRolesSchema,
 } from '@/schemas/users.schema'
-import {
-  useUserRoleUpdate,
-  useUserSuperAdminToggle,
-} from '@/hooks/users/use-user-roles-update'
+import { useUserRoleUpdate } from '@/hooks/users/use-user-roles-update'
 import { Settings } from 'lucide-react'
 import { UserWithRole } from '@/hooks/users/use-user-list'
 
@@ -39,7 +36,6 @@ export function UserRolesEdit({
   trigger,
 }: UserRolesEditProps) {
   const updateUserRole = useUserRoleUpdate()
-  const toggleSuperAdmin = useUserSuperAdminToggle()
 
   const form = useForm({
     resolver: zodResolver(updateUserRolesSchema),

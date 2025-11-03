@@ -43,7 +43,7 @@ import {
 } from '@/components/ui/item'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppointmentTypeActions } from './appointment-type-actions'
-import { useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-types'
+import { useAppointmentTypeList as useAppointmentTypes } from '@/hooks/appointment-types/use-appointment-type-list'
 import type { Tables } from '@/types/supabase.types'
 
 type AppointmentType = Tables<'appointment_types'>

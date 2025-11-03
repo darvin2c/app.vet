@@ -1,1 +1,0 @@
-export { useAppointmentTypeList as useAppointmentTypes } from './use-appointment-type-list'

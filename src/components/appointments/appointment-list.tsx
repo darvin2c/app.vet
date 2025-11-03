@@ -43,7 +43,7 @@ import {
 } from '@/components/ui/item'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppointmentActions } from './appointment-actions'
-import { useAppointments } from '@/hooks/appointments/use-appointments'
+import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
 import type { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
