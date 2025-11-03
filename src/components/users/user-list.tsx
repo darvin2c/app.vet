@@ -47,8 +47,7 @@ import {
   Shield,
 } from 'lucide-react'
 import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
-import { useFilters } from '@/hooks/use-filters'
-import { FilterConfig } from '@/types/filters.types'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {

@@ -2,7 +2,7 @@
 
 import { BreedList } from './breed-list'
 import { BreedCreateButton } from './breed-create-button'
-import { FilterConfig } from '@/types/filters.types'
+import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 
 interface BreedsListProps {

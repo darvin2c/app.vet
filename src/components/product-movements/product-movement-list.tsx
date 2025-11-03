@@ -59,10 +59,10 @@ import useProductMovementList, {
 } from '@/hooks/product-movements/use-product-movement-list'
 import { ProductMovementActions } from './product-movement-actions'
 import { ProductMovementCreateButton } from './product-movement-create-button'
-import { useFilters } from '@/hooks/use-filters'
+import { useFilters } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import type { FilterConfig } from '@/types/filters.types'
+import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 
 export function ProductMovementList({

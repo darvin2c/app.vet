@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { AppliedFilter } from '@/types/filters.types'
+import { AppliedFilter } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 

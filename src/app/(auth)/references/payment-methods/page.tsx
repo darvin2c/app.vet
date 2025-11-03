@@ -7,7 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { PaymentMethodList } from '@/components/payment-methods/payment-method-list'
 import { PaymentMethodCreateButton } from '@/components/payment-methods/payment-method-create-button'
-import { FilterConfig } from '@/types/filters.types'
+import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 
 export default function PaymentMethodsPage() {

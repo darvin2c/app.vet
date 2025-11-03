@@ -5,7 +5,7 @@ import { SearchInput } from '@/components/ui/search-input'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
-import { FilterConfig } from '@/types/filters.types'
+import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 
 export default function SpeciesPage() {

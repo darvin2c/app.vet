@@ -7,10 +7,9 @@ import { SearchInput } from '@/components/ui/search-input'
 import { Filters } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { OrderBy } from '@/components/ui/order-by'
-import { FilterConfig } from '@/types/filters.types'
+import { FilterConfig, useFilters } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { ProductSelect } from '@/components/products/product-select'
-import { useFilters } from '@/hooks/use-filters'
 import { useMemo } from 'react'
 
 export default function KardexPage() {

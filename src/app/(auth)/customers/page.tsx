@@ -3,9 +3,8 @@ import { CustomerCreateButton } from '@/components/customers/customer-create-but
 import { CustomerImportButton } from '@/components/customers/customer-import-button'
 import { SearchInput } from '@/components/ui/search-input'
 import PageBase from '@/components/page-base'
-import { Filters } from '@/components/ui/filters'
+import { Filters, FilterConfig } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
-import { FilterConfig } from '@/types/filters.types'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 

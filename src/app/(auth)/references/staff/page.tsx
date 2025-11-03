@@ -8,8 +8,7 @@ import { Filters } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { useState, useCallback, useMemo } from 'react'
 import { StaffFilters } from '@/schemas/staff.schema'
-// import { useSpecialties } from '@/hooks/specialties/use-specialties'
-import type { FiltersConfig, AppliedFilter } from '@/types/filters.types'
+import { AppliedFilter } from '@/components/ui/filters'
 
 export default function StaffPage() {
   const [appliedFilters, setAppliedFilters] = useState<AppliedFilter[]>([])
@@ -42,7 +41,7 @@ export default function StaffPage() {
   }, [])
 
   // Configuración de filtros
-  const filtersConfig: FiltersConfig = useMemo(
+  const filtersConfig = useMemo(
     () => ({
       filters: [
         {

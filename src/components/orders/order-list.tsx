@@ -50,8 +50,7 @@ import {
   DollarSign,
 } from 'lucide-react'
 import useOrderList from '@/hooks/orders/use-order-list'
-import { useFilters } from '@/hooks/use-filters'
-import { FilterConfig } from '@/types/filters.types'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSimpleSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {

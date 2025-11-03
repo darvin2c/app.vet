@@ -18,14 +18,12 @@ import { AppointmentCreateButton } from '@/components/appointments/appointment-c
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
 import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
 import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
-import { ClinicalNoteCreateButton } from '@/components/clinical-notes/clinical-note-create-button'
-import { FilterConfig } from '@/types/filters.types'
+import { FilterConfig } from '@/components/ui/filters'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 
 export default function PetProfilePage() {
   const params = useParams()
   const petId = params.id as string
-  const { currentTenant } = useCurrentTenantStore()
   const [activeTab, setActiveTab] = useState('general')
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
 

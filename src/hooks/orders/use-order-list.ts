@@ -1,7 +1,7 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/types/filters.types'
+import { AppliedFilter } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 
 export default function useOrderList({

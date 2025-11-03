@@ -37,16 +37,13 @@ import { Badge } from '@/components/ui/badge'
 import { ButtonGroup } from '@/components/ui/button-group'
 
 import { cn } from '@/lib/utils'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { useDebounce } from '@/hooks/use-debounce'
-import { useFilters } from '@/hooks/use-filters'
+import { useFilters } from './use-filters'
 
 import type {
   FiltersConfig,
   FilterConfig,
   SupabaseOperator,
   AppliedFilter,
-  FilterValues,
   SearchFilterConfig,
   SelectFilterConfig,
   MultiSelectFilterConfig,
@@ -55,184 +52,9 @@ import type {
   BooleanFilterConfig,
   NumberFilterConfig,
   CustomFilterConfig,
-} from '@/types/filters.types'
-
-// Parsers PostgREST integrados en el hook
-function parseAsPostgREST(defaultOperator: SupabaseOperator = 'eq') {
-  return {
-    parse: (
-      value: string
-    ): { operator: SupabaseOperator; value: string } | null => {
-      if (!value) return null
-
-      // Buscar el patrón operator.value
-      const match = value.match(/^([a-zA-Z]+)\.(.*)$/)
-      if (match) {
-        const [, operator, val] = match
-        return {
-          operator: operator as SupabaseOperator,
-          value: val,
-        }
-      }
-
-      // Si no tiene formato PostgREST, asumir operador por defecto
-      return {
-        operator: defaultOperator,
-        value: value,
-      }
-    },
-
-    serialize: (
-      parsed: { operator: SupabaseOperator; value: string } | null
-    ): string => {
-      if (!parsed || !parsed.value) return ''
-      return `${parsed.operator}.${parsed.value}`
-    },
-
-    withDefault: (
-      defaultValue: { operator: SupabaseOperator; value: string } | null
-    ) => ({
-      ...parseAsPostgREST(defaultOperator),
-      defaultValue,
-    }),
-  }
-}
-
-function parseAsPostgRESTArray(defaultOperator: SupabaseOperator = 'in') {
-  return {
-    parse: (
-      value: string
-    ): { operator: SupabaseOperator; value: string[] } | null => {
-      if (!value) return null
-
-      // Buscar el patrón operator.(value1,value2,...)
-      const match = value.match(/^([a-zA-Z]+)\.\(([^)]*)\)$/)
-      if (match) {
-        const [, operator, valuesStr] = match
-        const values = valuesStr
-          ? valuesStr
-              .split(',')
-              .map((v) => v.trim())
-              .filter(Boolean)
-          : []
-        return {
-          operator: operator as SupabaseOperator,
-          value: values,
-        }
-      }
-
-      // Si no tiene formato PostgREST, asumir operador por defecto
-      const values = value
-        .split(',')
-        .map((v) => v.trim())
-        .filter(Boolean)
-      return {
-        operator: defaultOperator,
-        value: values,
-      }
-    },
-
-    serialize: (
-      parsed: { operator: SupabaseOperator; value: string[] } | null
-    ): string => {
-      if (!parsed || !parsed.value || parsed.value.length === 0) return ''
-      return `${parsed.operator}.(${parsed.value.join(',')})`
-    },
-
-    withDefault: (
-      defaultValue: { operator: SupabaseOperator; value: string[] } | null
-    ) => ({
-      ...parseAsPostgRESTArray(defaultOperator),
-      defaultValue,
-    }),
-  }
-}
-
-function parseAsPostgRESTDate(defaultOperator: SupabaseOperator = 'eq') {
-  return {
-    parse: (
-      value: string
-    ): { operator: SupabaseOperator; value: string } | null => {
-      if (!value) return null
-
-      // Buscar el patrón operator.date
-      const match = value.match(/^([a-zA-Z]+)\.(.*)$/)
-      if (match) {
-        const [, operator, dateValue] = match
-        return {
-          operator: operator as SupabaseOperator,
-          value: dateValue,
-        }
-      }
-
-      // Si no tiene formato PostgREST, asumir operador por defecto
-      return {
-        operator: defaultOperator,
-        value: value,
-      }
-    },
-
-    serialize: (
-      parsed: { operator: SupabaseOperator; value: string } | null
-    ): string => {
-      if (!parsed || !parsed.value) return ''
-      return `${parsed.operator}.${parsed.value}`
-    },
-
-    withDefault: (
-      defaultValue: { operator: SupabaseOperator; value: string } | null
-    ) => ({
-      ...parseAsPostgRESTDate(defaultOperator),
-      defaultValue,
-    }),
-  }
-}
-
-function parseAsPostgRESTSearch(defaultOperator: SupabaseOperator = 'ilike') {
-  return {
-    parse: (
-      value: string
-    ): { operator: SupabaseOperator; value: string } | null => {
-      if (!value) return null
-
-      // Buscar el patrón operator.*search*
-      const match = value.match(/^([a-zA-Z]+)\.(.*)$/)
-      if (match) {
-        const [, operator, searchValue] = match
-        // Remover asteriscos si están presentes
-        const cleanValue = searchValue.replace(/^\*|\*$/g, '')
-        return {
-          operator: operator as SupabaseOperator,
-          value: cleanValue,
-        }
-      }
-
-      // Si no tiene formato PostgREST, asumir operador por defecto
-      return {
-        operator: defaultOperator,
-        value: value,
-      }
-    },
-
-    serialize: (
-      parsed: { operator: SupabaseOperator; value: string } | null
-    ): string => {
-      if (!parsed || !parsed.value) return ''
-      // Para búsquedas, agregar asteriscos para LIKE
-      if (parsed.operator === 'like' || parsed.operator === 'ilike') {
-        return `${parsed.operator}.*${parsed.value}*`
-      }
-      return `${parsed.operator}.${parsed.value}`
-    },
-
-    withDefault: (
-      defaultValue: { operator: SupabaseOperator; value: string } | null
-    ) => ({
-      ...parseAsPostgRESTSearch(defaultOperator),
-      defaultValue,
-    }),
-  }
-}
+} from './filters.d'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { useDebounce } from '@/hooks/use-debounce'
 
 function extractPostgRESTValue(
   parsed: { operator: SupabaseOperator; value: any } | null
