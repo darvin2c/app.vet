@@ -88,15 +88,4 @@ export const navigationGroups: NavGroup[] = [
       },
     ],
   },
-  {
-    label: 'Seguridad',
-    items: [
-      {
-        title: 'Roles',
-        href: '/roles',
-        icon: Shield,
-        tooltip: 'Gestionar roles y permisos del sistema',
-      },
-    ],
-  },
 ]
