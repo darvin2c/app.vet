@@ -24,7 +24,7 @@ src/
 │   ├── <feature>/
 │   │   ├── <feature>-form.tsx # Dentro de form solo debe de tener los field necesarios para el formulario, no la logica del formulario.
 │   │   ├── <feature>-list.tsx
-│   │   ├── <feature>-<edit/create>.tsx # debes de usar un `./drawer-form.tsx` para mostrar el formulario
+│   │   ├── <feature>-<edit/create>.tsx # debes de usar un `./sheet.tsx` para mostrar el formulario
 │   │   ├── <feature>-import.tsx # debes de usar un `./data-import` para mostrar el importador dentro de un Sheet
 │   │   ├── <feature>-delete.tsx  # debe de usar ui/alert-confirmation
 │   │   ├── <feature>-actions.tsx
@@ -223,8 +223,8 @@ export function FeatureForm() {
             type="date"
             {...control.register('date_of_birth')}
           />
-          <FieldError errors={[errors.date_of_birth]} />
         </FieldContent>
+        <FieldError errors={[errors.date_of_birth]} />
       </Field>
     </div>
   );
@@ -275,8 +275,7 @@ export function FeatureForm() {
 - Para los botones de acción se usara `ui/responsive-button`
 - Los botones de acción (Crear, Actualizar, Cancelar, etc.) **NO** deben estar dentro del componente `<feature>-form.tsx`
 - Los botones de acción deben estar en los componentes de acción: `<feature>-create.tsx` y `<feature>-edit.tsx`
-- En formularios con `drawer-form.tsx` con el compondente `Drawer`, los botones deben ubicarse en el `DrawerFooter`, _no_ usar `drawer.tsx`
-- El componente `DrawerForm` no existe y no debe de ser creado.
+- En formularios con `sheet.tsx` con el compondente `Sheet`, los botones deben ubicarse en el `SheetFooter`, _no_ usar `drawer.tsx`
 - Los componentes de acción manejan la lógica del formulario, estados de carga y envío
 
 ## Páginas
