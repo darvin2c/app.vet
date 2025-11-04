@@ -11,7 +11,7 @@ export const specialtyBaseSchema = z.object({
     .max(500, 'La descripción no puede exceder 500 caracteres')
     .optional()
     .or(z.literal('')),
-  is_active: z.boolean().default(true),
+  is_active: z.coerce.boolean().default(true),
 })
 
 // Esquema para crear especialidad

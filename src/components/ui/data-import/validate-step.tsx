@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/tooltip'
 import { Alert } from '../alert'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
+import { ScrollArea } from '../scroll-area'
 
 interface ValidateStepProps {
   validationResult: ValidationResult
@@ -75,17 +76,17 @@ export function ValidateStep({
   }, [allRows])
 
   return (
-    <div className="space-y-6">
-      <div className="text-center">
+    <div className="space-y-2">
+      <div className="text-center py-2">
         <h3 className="text-lg font-semibold">Validar Datos</h3>
-        <p className="text-sm text-muted-foreground mt-1">
+        <p className="text-sm text-muted-foreground ">
           Revisa los datos importados y corrige los errores antes de continuar
         </p>
       </div>
 
       {/* Resumen de validación */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="text-center p-4 bg-muted/50 rounded-lg">
+        <div className="text-center p-2 bg-muted/50 rounded-lg">
           <div className="text-2xl font-bold">{totalRows}</div>
           <div className="text-sm text-muted-foreground">Total de filas</div>
         </div>
@@ -118,7 +119,7 @@ export function ValidateStep({
       )}
 
       {/* Tabla de datos */}
-      <div className="border rounded-lg">
+      <ScrollArea className="border rounded-lg max-h-[calc(100vh-400px)]">
         <Table>
           <TableHeader>
             <TableRow>
@@ -178,7 +179,7 @@ export function ValidateStep({
             })}
           </TableBody>
         </Table>
-      </div>
+      </ScrollArea>
 
       {invalidCount > 0 && invalidCount < totalRows && (
         <Alert>

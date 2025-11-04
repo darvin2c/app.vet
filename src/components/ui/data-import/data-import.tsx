@@ -5,6 +5,7 @@ import { StepIndicator } from './step-indicator'
 import { UploadStep } from './upload-step'
 import { ValidateStep } from './validate-step'
 import { ConfirmStep } from './confirm-step'
+import { ScrollArea } from '../scroll-area'
 
 const steps = [
   { key: 'upload' as const, label: 'Subir Archivo', number: 1 },
@@ -80,8 +81,7 @@ export function DataImport<T = any>({
   return (
     <div className="w-full max-w-4xl mx-auto px-6">
       <StepIndicator currentStep={state.step} steps={steps} />
-
-      <div className="bg-background p-6">{renderCurrentStep()}</div>
+      <div className="bg-background ">{renderCurrentStep()}</div>
     </div>
   )
 }

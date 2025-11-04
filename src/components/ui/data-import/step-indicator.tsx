@@ -18,7 +18,7 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
   const currentIndex = getCurrentStepIndex()
 
   return (
-    <div className="flex items-center justify-center space-x-4 mb-8">
+    <div className="flex items-center justify-center space-x-4 mb-2">
       {steps.map((step, index) => {
         const isCompleted = index < currentIndex
         const isCurrent = index === currentIndex
@@ -40,7 +40,7 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
                 `}
               >
                 {isCompleted ? (
-                  <Check className="h-5 w-5" />
+                  <Check className="h-4 w-4" />
                 ) : (
                   <span className="text-sm font-medium">{step.number}</span>
                 )}

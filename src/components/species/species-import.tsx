@@ -41,18 +41,15 @@ export function SpeciesImport({ open, onOpenChange }: SpeciesImportProps) {
             Importa especies desde un archivo CSV o Excel.
           </SheetDescription>
         </SheetHeader>
-
-        <ScrollArea className="mt-6">
-          <DataImport
-            schema={speciesCreateSchema}
-            onImport={handleImport}
-            isLoading={createSpeciesBulk.isPending}
-            templateName="especies_template.csv"
-            title="Importar Especies"
-            description="Importa especies desde un archivo CSV o Excel. Los campos requeridos son: name. Los campos opcionales son: description, is_active."
-            error={createSpeciesBulk.error?.message || null}
-          />
-        </ScrollArea>
+        <DataImport
+          schema={speciesCreateSchema}
+          onImport={handleImport}
+          isLoading={createSpeciesBulk.isPending}
+          templateName="especies_template.csv"
+          title="Importar Especies"
+          description="Importa especies desde un archivo CSV o Excel. Los campos requeridos son: name. Los campos opcionales son: description, is_active."
+          error={createSpeciesBulk.error?.message || null}
+        />
       </SheetContent>
     </Sheet>
   )
