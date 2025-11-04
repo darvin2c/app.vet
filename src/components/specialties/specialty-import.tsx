@@ -30,9 +30,11 @@ export function SpecialtyImport({ open, onOpenChange }: SpecialtyImportProps) {
       // Generar código automáticamente si no se proporciona
       const dataWithCode = data.map((item) => ({
         ...item,
-        code: item.code || item.name.toLowerCase().replace(/\s+/g, '_').substring(0, 20),
+        code:
+          item.code ||
+          item.name.toLowerCase().replace(/\s+/g, '_').substring(0, 20),
       }))
-      
+
       await createSpecialtyBulk.mutateAsync(dataWithCode)
       toast.success('Especialidades importadas exitosamente')
       onOpenChange(false)

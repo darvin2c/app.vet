@@ -83,7 +83,7 @@ export function AppointmentCreate({
         reason: data.reason,
         notes: data.notes,
       })
-      
+
       // Handle success
       form.reset()
       onOpenChange(false)

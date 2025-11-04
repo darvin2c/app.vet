@@ -31,7 +31,10 @@ export function ProductMovementForm({
   } = form
 
   // Observar la cantidad para determinar si es entrada o salida
-  const quantity = mode === 'update' && productMovement ? productMovement.quantity : watch('quantity')
+  const quantity =
+    mode === 'update' && productMovement
+      ? productMovement.quantity
+      : watch('quantity')
   const isEntry = quantity >= 0
 
   return (
@@ -41,7 +44,11 @@ export function ProductMovementForm({
           <FieldLabel htmlFor="product_id">Producto *</FieldLabel>
           <FieldContent>
             <ProductSelect
-              value={mode === 'update' && productMovement ? productMovement.product_id : (form.watch('product_id') || '')}
+              value={
+                mode === 'update' && productMovement
+                  ? productMovement.product_id
+                  : form.watch('product_id') || ''
+              }
               onValueChange={(value) => setValue('product_id', value)}
               placeholder="Seleccionar producto..."
               disabled={mode === 'update'}
@@ -63,7 +70,11 @@ export function ProductMovementForm({
               step="0.01"
               placeholder="0.00"
               disabled={mode === 'update'}
-              value={mode === 'update' && productMovement ? productMovement.quantity : undefined}
+              value={
+                mode === 'update' && productMovement
+                  ? productMovement.quantity
+                  : undefined
+              }
               {...form.register('quantity', {
                 valueAsNumber: true,
                 setValueAs: (value) => (value === '' ? 0 : Number(value)),
@@ -86,7 +97,11 @@ export function ProductMovementForm({
               step="0.01"
               placeholder="0.00"
               disabled={mode === 'update'}
-              value={mode === 'update' && productMovement ? (productMovement.unit_cost ?? '') : undefined}
+              value={
+                mode === 'update' && productMovement
+                  ? (productMovement.unit_cost ?? '')
+                  : undefined
+              }
               {...form.register('unit_cost', {
                 valueAsNumber: true,
                 setValueAs: (value) =>

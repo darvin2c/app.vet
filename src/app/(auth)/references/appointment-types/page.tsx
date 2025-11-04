@@ -46,7 +46,10 @@ export default function AppointmentTypesPage() {
         />
       }
     >
-      <AppointmentTypeList filterConfig={filters} orderByConfig={orderByConfig} />
+      <AppointmentTypeList
+        filterConfig={filters}
+        orderByConfig={orderByConfig}
+      />
     </PageBase>
   )
 }

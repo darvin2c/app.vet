@@ -40,12 +40,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
-  Tag,
-} from 'lucide-react'
+import { ArrowUpRightIcon, ChevronLeft, ChevronRight, Tag } from 'lucide-react'
 import useProductBrandList from '@/hooks/product-brands/use-product-brand-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
@@ -79,10 +74,13 @@ export function ProductBrandList({
   // Convertir appliedFilters y appliedSearch al formato esperado por el hook
   const filters = {
     search: appliedSearch,
-    ...appliedFilters.reduce((acc, filter) => {
-      acc[filter.field] = filter.value
-      return acc
-    }, {} as Record<string, any>),
+    ...appliedFilters.reduce(
+      (acc, filter) => {
+        acc[filter.field] = filter.value
+        return acc
+      },
+      {} as Record<string, any>
+    ),
   }
 
   const {
@@ -188,7 +186,10 @@ export function ProductBrandList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {productBrands.map((productBrand) => (
-        <Card key={productBrand.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={productBrand.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
@@ -260,8 +261,8 @@ export function ProductBrandList({
             </EmptyMedia>
             <EmptyTitle>No hay marcas de productos</EmptyTitle>
             <EmptyDescription>
-              No se encontraron marcas de productos que coincidan con los filtros
-              aplicados.
+              No se encontraron marcas de productos que coincidan con los
+              filtros aplicados.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>

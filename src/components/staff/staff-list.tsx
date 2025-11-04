@@ -82,7 +82,9 @@ export function StaffList({
     error,
   } = useStaffList({
     search: appliedSearch,
-    is_active: appliedFilters.find(f => f.field === 'is_active')?.value as boolean | undefined,
+    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
+      | boolean
+      | undefined,
   })
 
   const columns: ColumnDef<Staff>[] = [
@@ -206,7 +208,10 @@ export function StaffList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {staff.map((staffMember) => (
-        <Card key={staffMember.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={staffMember.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
@@ -246,12 +251,8 @@ export function StaffList({
               {staffMember.first_name} {staffMember.last_name}
             </ItemTitle>
             <ItemDescription>
-              {staffMember.email && (
-                <span>{staffMember.email}</span>
-              )}
-              {staffMember.phone && (
-                <span> • {staffMember.phone}</span>
-              )}
+              {staffMember.email && <span>{staffMember.email}</span>}
+              {staffMember.phone && <span> • {staffMember.phone}</span>}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <IsActiveDisplay value={staffMember.is_active} />

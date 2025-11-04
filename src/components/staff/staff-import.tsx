@@ -11,10 +11,7 @@ import { useStaffCreateBulk } from '@/hooks/staff/use-staff-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
-import {
-  CreateStaffSchema,
-  createStaffSchema,
-} from '@/schemas/staff.schema'
+import { CreateStaffSchema, createStaffSchema } from '@/schemas/staff.schema'
 
 interface StaffImportProps {
   open: boolean

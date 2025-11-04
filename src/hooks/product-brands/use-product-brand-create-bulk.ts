@@ -9,15 +9,19 @@ export function useProductBrandCreateBulk() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'product_brands'>, 'tenant_id'>[]) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'product_brands'>, 'tenant_id'>[]
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const productBrandData: TablesInsert<'product_brands'>[] = data.map((item) => ({
-        ...item,
-        tenant_id: currentTenant.id,
-      }))
+      const productBrandData: TablesInsert<'product_brands'>[] = data.map(
+        (item) => ({
+          ...item,
+          tenant_id: currentTenant.id,
+        })
+      )
 
       const { data: productBrands, error } = await supabase
         .from('product_brands')
@@ -35,7 +39,9 @@ export function useProductBrandCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'product_brands'],
       })
-      toast.success(`Se crearon ${productBrands.length} marcas de productos exitosamente`)
+      toast.success(
+        `Se crearon ${productBrands.length} marcas de productos exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear marcas de productos:', error)

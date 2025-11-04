@@ -25,10 +25,7 @@ interface PaymentCreateProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function PaymentCreate({
-  open,
-  onOpenChange,
-}: PaymentCreateProps) {
+export function PaymentCreate({ open, onOpenChange }: PaymentCreateProps) {
   const createPayment = usePaymentCreate()
 
   const form = useForm({

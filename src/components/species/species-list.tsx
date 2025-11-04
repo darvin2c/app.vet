@@ -183,7 +183,10 @@ export function SpeciesList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {species.map((speciesItem) => (
-        <Card key={speciesItem.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={speciesItem.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>

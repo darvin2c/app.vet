@@ -21,7 +21,10 @@ interface AppointmentTypeImportProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function AppointmentTypeImport({ open, onOpenChange }: AppointmentTypeImportProps) {
+export function AppointmentTypeImport({
+  open,
+  onOpenChange,
+}: AppointmentTypeImportProps) {
   const createAppointmentTypeBulk = useAppointmentTypeCreateBulk()
 
   const handleImport = async (data: CreateAppointmentTypeSchema[]) => {

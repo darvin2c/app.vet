@@ -45,7 +45,10 @@ export default function ProductCategoriesPage() {
         />
       }
     >
-      <ProductCategoryList filterConfig={filters} orderByConfig={orderByConfig} />
+      <ProductCategoryList
+        filterConfig={filters}
+        orderByConfig={orderByConfig}
+      />
     </PageBase>
   )
 }

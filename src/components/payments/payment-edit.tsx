@@ -28,11 +28,7 @@ interface PaymentEditProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function PaymentEdit({
-  payment,
-  open,
-  onOpenChange,
-}: PaymentEditProps) {
+export function PaymentEdit({ payment, open, onOpenChange }: PaymentEditProps) {
   const updatePayment = usePaymentUpdate()
 
   const form = useForm({
@@ -61,7 +57,8 @@ export function PaymentEdit({
         <SheetHeader>
           <SheetTitle>Editar Pago</SheetTitle>
           <SheetDescription>
-            Modifica la información del pago. Solo se pueden editar la referencia y las notas.
+            Modifica la información del pago. Solo se pueden editar la
+            referencia y las notas.
           </SheetDescription>
         </SheetHeader>
 

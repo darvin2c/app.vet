@@ -9,9 +9,7 @@ export default function usePaymentCreate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: Omit<TablesInsert<'payments'>, 'tenant_id'>
-    ) => {
+    mutationFn: async (data: Omit<TablesInsert<'payments'>, 'tenant_id'>) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }

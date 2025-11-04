@@ -40,12 +40,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
-  Tag,
-} from 'lucide-react'
+import { ArrowUpRightIcon, ChevronLeft, ChevronRight, Tag } from 'lucide-react'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
@@ -183,7 +178,10 @@ export function ProductCategoryList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {productCategories.map((productCategory) => (
-        <Card key={productCategory.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={productCategory.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
@@ -255,13 +253,15 @@ export function ProductCategoryList({
             </EmptyMedia>
             <EmptyTitle>No hay categorías de productos</EmptyTitle>
             <EmptyDescription>
-              No se encontraron categorías de productos que coincidan con los filtros
-              aplicados.
+              No se encontraron categorías de productos que coincidan con los
+              filtros aplicados.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>
             <div className="flex gap-2">
-              <ProductCategoryCreateButton>Crear Categoría</ProductCategoryCreateButton>
+              <ProductCategoryCreateButton>
+                Crear Categoría
+              </ProductCategoryCreateButton>
               <Button variant="outline">Importar Categoría</Button>
             </div>
           </EmptyContent>
@@ -284,7 +284,10 @@ export function ProductCategoryList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="product-categories" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="product-categories"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

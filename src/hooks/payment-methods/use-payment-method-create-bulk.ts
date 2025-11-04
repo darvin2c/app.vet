@@ -9,15 +9,19 @@ export function usePaymentMethodCreateBulk() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'payment_methods'>, 'tenant_id'>[]) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'payment_methods'>, 'tenant_id'>[]
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const paymentMethodData: TablesInsert<'payment_methods'>[] = data.map((item) => ({
-        ...item,
-        tenant_id: currentTenant.id,
-      }))
+      const paymentMethodData: TablesInsert<'payment_methods'>[] = data.map(
+        (item) => ({
+          ...item,
+          tenant_id: currentTenant.id,
+        })
+      )
 
       const { data: paymentMethods, error } = await supabase
         .from('payment_methods')
@@ -35,7 +39,9 @@ export function usePaymentMethodCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'payment_methods'],
       })
-      toast.success(`Se crearon ${paymentMethods.length} métodos de pago exitosamente`)
+      toast.success(
+        `Se crearon ${paymentMethods.length} métodos de pago exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear métodos de pago:', error)

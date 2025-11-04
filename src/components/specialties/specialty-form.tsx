@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { CreateSpecialtySchema } from '@/schemas/specialties.schema'
+import { IsActiveField } from '../ui/is-active-field'
 
 export function SpecialtyForm() {
   const {
@@ -23,7 +24,7 @@ export function SpecialtyForm() {
   const isActive = watch('is_active')
 
   return (
-    <div className="space-y-4">
+    <div className="px-2">
       <Field>
         <FieldLabel htmlFor="name">Nombre *</FieldLabel>
         <FieldContent>
@@ -60,22 +61,11 @@ export function SpecialtyForm() {
         </FieldContent>
       </Field>
 
-      <Field>
-        <FieldLabel htmlFor="is_active">Estado</FieldLabel>
-        <FieldContent>
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="is_active"
-              checked={isActive}
-              onCheckedChange={(checked) => setValue('is_active', checked)}
-            />
-            <span className="text-sm text-muted-foreground">
-              {isActive ? 'Activo' : 'Inactivo'}
-            </span>
-          </div>
-          <FieldError errors={[errors.is_active]} />
-        </FieldContent>
-      </Field>
+      <IsActiveField
+        name="is_active"
+        label="Estado Activo"
+        description="Indica si la especialidad está activa o inactiva."
+      />
     </div>
   )
 }

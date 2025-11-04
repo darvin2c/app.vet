@@ -42,13 +42,6 @@ export interface IsActiveFieldProps {
   allText?: string
 }
 
-// Opciones para el filtro
-const filterOptions = [
-  { value: 'all', label: 'Todos' },
-  { value: 'active', label: 'Activos' },
-  { value: 'inactive', label: 'Inactivos' },
-] as const
-
 // Componente principal
 export function IsActiveField({
   variant = 'form',

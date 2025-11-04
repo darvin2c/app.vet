@@ -53,7 +53,9 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ViewModeToggle, type ViewMode } from '@/components/ui/view-mode-toggle'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 
-import usePaymentList, { PaymentWithRelations } from '@/hooks/payments/use-payment-list'
+import usePaymentList, {
+  PaymentWithRelations,
+} from '@/hooks/payments/use-payment-list'
 import { PaymentActions } from './payment-actions'
 import { PaymentCreateButton } from './payment-create-button'
 import { useFilters } from '@/components/ui/filters'
@@ -64,8 +66,6 @@ import type { OrderByConfig } from '@/components/ui/order-by'
 
 import type { Tables } from '@/types/supabase.types'
 
-
-
 interface PaymentListProps {
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
@@ -74,7 +74,7 @@ interface PaymentListProps {
 export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
   // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
-  
+
   const { appliedFilters } = useFilters(filterConfig)
   const { appliedSearch } = useSearch()
   const orderByHook = useOrderBy(orderByConfig)
@@ -291,9 +291,7 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
 
             {payment.notes && (
               <div className="pt-2 border-t">
-                <p className="text-sm text-muted-foreground">
-                  {payment.notes}
-                </p>
+                <p className="text-sm text-muted-foreground">{payment.notes}</p>
               </div>
             )}
           </CardContent>
@@ -310,8 +308,10 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
           <ItemContent>
             <ItemTitle>${payment.amount.toFixed(2)}</ItemTitle>
             <ItemDescription>
-              {payment.customers ? `${payment.customers.first_name} ${payment.customers.last_name}` : 'Sin cliente'} -{' '}
-              {payment.payment_methods?.name || 'Sin método'}
+              {payment.customers
+                ? `${payment.customers.first_name} ${payment.customers.last_name}`
+                : 'Sin cliente'}{' '}
+              - {payment.payment_methods?.name || 'Sin método'}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <span>

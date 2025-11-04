@@ -93,11 +93,7 @@ export function PaymentMethodList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
-  const {
-    data: paymentMethods = [],
-    isPending,
-    error,
-  } = usePaymentMethodList()
+  const { data: paymentMethods = [], isPending, error } = usePaymentMethodList()
 
   const columns: ColumnDef<PaymentMethod>[] = [
     {
@@ -213,7 +209,10 @@ export function PaymentMethodList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {paymentMethods.map((paymentMethod) => (
-        <Card key={paymentMethod.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={paymentMethod.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
@@ -221,14 +220,23 @@ export function PaymentMethodList({
                 <p className="text-sm font-mono text-muted-foreground">
                   {paymentMethod.code}
                 </p>
-
               </div>
               <PaymentMethodActions paymentMethod={paymentMethod} />
             </div>
 
             <div className="flex justify-between items-center">
-              <Badge className={paymentTypeColors[paymentMethod.payment_type as keyof typeof paymentTypeColors]}>
-                {paymentTypeLabels[paymentMethod.payment_type as keyof typeof paymentTypeLabels]}
+              <Badge
+                className={
+                  paymentTypeColors[
+                    paymentMethod.payment_type as keyof typeof paymentTypeColors
+                  ]
+                }
+              >
+                {
+                  paymentTypeLabels[
+                    paymentMethod.payment_type as keyof typeof paymentTypeLabels
+                  ]
+                }
               </Badge>
               <IsActiveDisplay value={paymentMethod.is_active} />
             </div>
@@ -245,12 +253,20 @@ export function PaymentMethodList({
         <Item key={paymentMethod.id} variant="outline">
           <ItemContent>
             <ItemTitle>{paymentMethod.name}</ItemTitle>
-            <ItemDescription>
-              {paymentMethod.code}
-            </ItemDescription>
+            <ItemDescription>{paymentMethod.code}</ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              <Badge className={paymentTypeColors[paymentMethod.payment_type as keyof typeof paymentTypeColors]}>
-                {paymentTypeLabels[paymentMethod.payment_type as keyof typeof paymentTypeLabels]}
+              <Badge
+                className={
+                  paymentTypeColors[
+                    paymentMethod.payment_type as keyof typeof paymentTypeColors
+                  ]
+                }
+              >
+                {
+                  paymentTypeLabels[
+                    paymentMethod.payment_type as keyof typeof paymentTypeLabels
+                  ]
+                }
               </Badge>
               <IsActiveDisplay value={paymentMethod.is_active} />
             </div>
@@ -296,7 +312,9 @@ export function PaymentMethodList({
           </EmptyHeader>
           <EmptyContent>
             <div className="flex gap-2">
-              <PaymentMethodCreateButton>Crear Método de Pago</PaymentMethodCreateButton>
+              <PaymentMethodCreateButton>
+                Crear Método de Pago
+              </PaymentMethodCreateButton>
               <Button variant="outline">Importar Método de Pago</Button>
             </div>
           </EmptyContent>
@@ -319,7 +337,10 @@ export function PaymentMethodList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="payment-methods" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="payment-methods"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

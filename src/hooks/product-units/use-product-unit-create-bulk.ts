@@ -9,15 +9,19 @@ export function useProductUnitCreateBulk() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'product_units'>, 'tenant_id'>[]) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'product_units'>, 'tenant_id'>[]
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const productUnitData: TablesInsert<'product_units'>[] = data.map((item) => ({
-        ...item,
-        tenant_id: currentTenant.id,
-      }))
+      const productUnitData: TablesInsert<'product_units'>[] = data.map(
+        (item) => ({
+          ...item,
+          tenant_id: currentTenant.id,
+        })
+      )
 
       const { data: productUnits, error } = await supabase
         .from('product_units')
@@ -25,7 +29,9 @@ export function useProductUnitCreateBulk() {
         .select()
 
       if (error) {
-        throw new Error(`Error al crear unidades de productos: ${error.message}`)
+        throw new Error(
+          `Error al crear unidades de productos: ${error.message}`
+        )
       }
 
       return productUnits
@@ -35,7 +41,9 @@ export function useProductUnitCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'product_units'],
       })
-      toast.success(`Se crearon ${productUnits.length} unidades de productos exitosamente`)
+      toast.success(
+        `Se crearon ${productUnits.length} unidades de productos exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear unidades de productos:', error)

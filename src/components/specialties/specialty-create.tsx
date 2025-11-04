@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Sheet,
@@ -17,16 +17,14 @@ import {
   createSpecialtySchema,
 } from '@/schemas/specialties.schema'
 import useSpecialtyCreate from '@/hooks/specialties/use-specialty-create'
+import { Form } from '../ui/form'
 
 interface SpecialtyCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function SpecialtyCreate({
-  open,
-  onOpenChange,
-}: SpecialtyCreateProps) {
+export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
   const { mutate: createSpecialty, isPending } = useSpecialtyCreate()
 
   const form = useForm({
@@ -39,7 +37,7 @@ export function SpecialtyCreate({
     },
   })
 
-  const onSubmit = (data: any) => {
+  const onSubmit = (data: CreateSpecialtySchema) => {
     createSpecialty(data, {
       onSuccess: () => {
         form.reset()
@@ -50,7 +48,7 @@ export function SpecialtyCreate({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
+      <SheetContent className="!w-full !max-w-2xl">
         <SheetHeader>
           <SheetTitle>Nueva Especialidad</SheetTitle>
           <SheetDescription>
@@ -58,31 +56,31 @@ export function SpecialtyCreate({
           </SheetDescription>
         </SheetHeader>
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="px-6">
             <div className="flex-1 overflow-y-auto">
               <SpecialtyForm />
             </div>
-
-            <SheetFooter>
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-              >
-                Cancelar
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="submit"
-                isLoading={isPending}
-                disabled={isPending}
-              >
-                Crear Especialidad
-              </ResponsiveButton>
-            </SheetFooter>
           </form>
-        </FormProvider>
+        </Form>
+        <SheetFooter className="flex-row">
+          <ResponsiveButton
+            type="button"
+            variant="outline"
+            onClick={() => onOpenChange(false)}
+            disabled={isPending}
+          >
+            Cancelar
+          </ResponsiveButton>
+          <ResponsiveButton
+            type="submit"
+            onClick={form.handleSubmit(onSubmit)}
+            isLoading={isPending}
+            disabled={isPending}
+          >
+            Crear Especialidad
+          </ResponsiveButton>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

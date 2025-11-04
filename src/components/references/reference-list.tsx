@@ -1,4 +1,11 @@
-import { ItemGroup, Item, ItemMedia, ItemContent, ItemTitle, ItemDescription } from '@/components/ui/item'
+import {
+  ItemGroup,
+  Item,
+  ItemMedia,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+} from '@/components/ui/item'
 import { cn } from '@/lib/utils'
 import { navigationGroups } from './reference-navigation'
 import Link from 'next/link'

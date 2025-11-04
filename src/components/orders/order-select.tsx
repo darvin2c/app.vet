@@ -86,7 +86,8 @@ export function OrderSelect({
               <div className="flex items-center gap-2">
                 <ShoppingCart className="h-4 w-4" />
                 <span>
-                  {selectedOrder.order_number || `Orden #${selectedOrder.id.slice(0, 8)}`}
+                  {selectedOrder.order_number ||
+                    `Orden #${selectedOrder.id.slice(0, 8)}`}
                 </span>
                 <Badge
                   className={

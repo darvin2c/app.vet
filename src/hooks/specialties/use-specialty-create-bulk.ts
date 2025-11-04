@@ -9,7 +9,9 @@ export function useSpecialtyCreateBulk() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'specialties'>, 'tenant_id'>[]) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'specialties'>, 'tenant_id'>[]
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
@@ -35,7 +37,9 @@ export function useSpecialtyCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'specialties'],
       })
-      toast.success(`Se crearon ${specialties.length} especialidades exitosamente`)
+      toast.success(
+        `Se crearon ${specialties.length} especialidades exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear especialidades:', error)

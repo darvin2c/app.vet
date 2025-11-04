@@ -60,9 +60,7 @@ export function PaymentForm({
               type="date"
               disabled={mode === 'update'}
               value={
-                mode === 'update' && payment
-                  ? payment.payment_date
-                  : undefined
+                mode === 'update' && payment ? payment.payment_date : undefined
               }
               {...form.register('payment_date')}
             />

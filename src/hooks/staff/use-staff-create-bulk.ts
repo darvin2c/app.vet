@@ -35,7 +35,9 @@ export function useStaffCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'staff'],
       })
-      toast.success(`Se crearon ${staff.length} miembros del personal exitosamente`)
+      toast.success(
+        `Se crearon ${staff.length} miembros del personal exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear personal:', error)

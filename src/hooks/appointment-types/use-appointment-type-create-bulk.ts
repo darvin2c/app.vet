@@ -9,15 +9,19 @@ export function useAppointmentTypeCreateBulk() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'appointment_types'>, 'tenant_id'>[]) => {
+    mutationFn: async (
+      data: Omit<TablesInsert<'appointment_types'>, 'tenant_id'>[]
+    ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const appointmentTypeData: TablesInsert<'appointment_types'>[] = data.map((item) => ({
-        ...item,
-        tenant_id: currentTenant.id,
-      }))
+      const appointmentTypeData: TablesInsert<'appointment_types'>[] = data.map(
+        (item) => ({
+          ...item,
+          tenant_id: currentTenant.id,
+        })
+      )
 
       const { data: appointmentTypes, error } = await supabase
         .from('appointment_types')
@@ -35,7 +39,9 @@ export function useAppointmentTypeCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'appointment_types'],
       })
-      toast.success(`Se crearon ${appointmentTypes.length} tipos de cita exitosamente`)
+      toast.success(
+        `Se crearon ${appointmentTypes.length} tipos de cita exitosamente`
+      )
     },
     onError: (error) => {
       console.error('Error al crear tipos de cita:', error)

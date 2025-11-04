@@ -79,7 +79,9 @@ export function ProductUnitList({
   // Convertir filtros aplicados al formato esperado por el hook
   const filters = {
     search: appliedSearch,
-    is_active: appliedFilters.find(f => f.field === 'is_active')?.value as boolean | undefined,
+    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
+      | boolean
+      | undefined,
   }
 
   const {
@@ -187,7 +189,10 @@ export function ProductUnitList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {productUnits.map((productUnit) => (
-        <Card key={productUnit.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={productUnit.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
@@ -259,8 +264,8 @@ export function ProductUnitList({
             </EmptyMedia>
             <EmptyTitle>No hay unidades de producto</EmptyTitle>
             <EmptyDescription>
-              No se encontraron unidades de producto que coincidan con los filtros
-              aplicados.
+              No se encontraron unidades de producto que coincidan con los
+              filtros aplicados.
             </EmptyDescription>
           </EmptyHeader>
           <EmptyContent>

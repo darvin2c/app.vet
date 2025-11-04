@@ -79,10 +79,13 @@ export function AppointmentTypeList({
   // Convertir appliedFilters y appliedSearch al formato esperado por el hook
   const filters = {
     search: appliedSearch,
-    ...appliedFilters.reduce((acc, filter) => {
-      acc[filter.field] = filter.value
-      return acc
-    }, {} as Record<string, any>),
+    ...appliedFilters.reduce(
+      (acc, filter) => {
+        acc[filter.field] = filter.value
+        return acc
+      },
+      {} as Record<string, any>
+    ),
   }
 
   const {
@@ -198,14 +201,19 @@ export function AppointmentTypeList({
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {appointmentTypes.map((appointmentType) => (
-        <Card key={appointmentType.id} className="hover:shadow-md transition-shadow">
+        <Card
+          key={appointmentType.id}
+          className="hover:shadow-md transition-shadow"
+        >
           <CardContent className="p-6 space-y-3">
             <div className="flex justify-between items-start">
               <div>
                 <div className="flex items-center gap-2">
                   <div
                     className="w-3 h-3 rounded-full border"
-                    style={{ backgroundColor: appointmentType.color || '#3B82F6' }}
+                    style={{
+                      backgroundColor: appointmentType.color || '#3B82F6',
+                    }}
                   />
                   <h3 className="font-medium">{appointmentType.name}</h3>
                 </div>
@@ -217,8 +225,6 @@ export function AppointmentTypeList({
               </div>
               <AppointmentTypeActions appointmentType={appointmentType} />
             </div>
-
-
 
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={appointmentType.is_active} />
@@ -239,7 +245,9 @@ export function AppointmentTypeList({
               <div className="flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-full border"
-                  style={{ backgroundColor: appointmentType.color || '#3B82F6' }}
+                  style={{
+                    backgroundColor: appointmentType.color || '#3B82F6',
+                  }}
                 />
                 {appointmentType.name}
               </div>
@@ -315,7 +323,10 @@ export function AppointmentTypeList({
     <div className="space-y-4">
       {/* Controles de vista */}
       <div className="flex justify-end">
-        <ViewModeToggle onValueChange={setViewMode} resource="appointment-types" />
+        <ViewModeToggle
+          onValueChange={setViewMode}
+          resource="appointment-types"
+        />
       </div>
 
       {/* Contenido según la vista seleccionada */}

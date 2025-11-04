@@ -47,7 +47,8 @@ export function PaymentImport({ open, onOpenChange }: PaymentImportProps) {
       toast.success(`${results.length} pagos importados exitosamente`)
       onOpenChange(false)
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Error desconocido'
+      const errorMessage =
+        error instanceof Error ? error.message : 'Error desconocido'
       setError(errorMessage)
       toast.error('Error al importar pagos')
     } finally {
