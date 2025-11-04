@@ -9,8 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-// import { SpecialtyEdit } from './specialty-edit'
-// import { SpecialtyDelete } from './specialty-delete'
+import { SpecialtyEdit } from './specialty-edit'
+import { SpecialtyDelete } from './specialty-delete'
 import { Tables } from '@/types/supabase.types'
 
 interface SpecialtyActionsProps {
@@ -45,7 +45,7 @@ export function SpecialtyActions({ specialty }: SpecialtyActionsProps) {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* <SpecialtyEdit
+      <SpecialtyEdit
         specialty={specialty}
         open={editOpen}
         onOpenChange={setEditOpen}
@@ -55,7 +55,7 @@ export function SpecialtyActions({ specialty }: SpecialtyActionsProps) {
         specialty={specialty}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-      /> */}
+      />
     </>
   )
 }
