@@ -38,18 +38,6 @@ export function SpecialtyForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="code">Código</FieldLabel>
-        <FieldContent>
-          <Input
-            id="code"
-            placeholder="Código de la especialidad"
-            {...register('code')}
-          />
-          <FieldError errors={[errors.code]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
         <FieldLabel htmlFor="description">Descripción</FieldLabel>
         <FieldContent>
           <Textarea

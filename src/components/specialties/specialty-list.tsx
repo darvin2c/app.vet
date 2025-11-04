@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -41,6 +38,7 @@ import {
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
+  AlertCircle,
   ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
@@ -58,6 +56,8 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { SpecialtyImportButton } from './specialty-import-button'
 
 type Specialty = Database['public']['Tables']['specialties']['Row']
 
@@ -130,23 +130,10 @@ export function SpecialtyList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: specialties,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -237,11 +224,11 @@ export function SpecialtyList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
-          Error al cargar especialidades: {error.message}
-        </p>
-      </div>
+      <Alert className="text-center py-8">
+        <AlertCircle />
+        <AlertTitle>Error al cargar especialidades</AlertTitle>
+        <AlertDescription>{error.message}</AlertDescription>
+      </Alert>
     )
   }
 
@@ -262,7 +249,9 @@ export function SpecialtyList({
           <EmptyContent>
             <div className="flex gap-2">
               <SpecialtyCreateButton>Crear Especialidad</SpecialtyCreateButton>
-              <Button variant="outline">Importar Especialidad</Button>
+              <SpecialtyImportButton isResponsive={false}>
+                Importar Especialidad
+              </SpecialtyImportButton>
             </div>
           </EmptyContent>
           <Button

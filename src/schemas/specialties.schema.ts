@@ -6,7 +6,6 @@ export const specialtyBaseSchema = z.object({
     .string()
     .nonempty('El nombre de la especialidad es requerido')
     .max(100, 'El nombre no puede exceder 100 caracteres'),
-  code: z.string().nonempty('El código es requerido'),
   description: z
     .string()
     .max(500, 'La descripción no puede exceder 500 caracteres')

@@ -7,6 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { SpecialtyImportButton } from '@/components/specialties/specialty-import-button'
 
 export default function SpecialtiesPage() {
   const filters: FilterConfig[] = [
@@ -49,6 +50,7 @@ export default function SpecialtiesPage() {
                   variant: 'ghost',
                 }}
               />
+              <SpecialtyImportButton variant="ghost" />
               <SpecialtyCreateButton variant="ghost" />
             </ButtonGroup>
           }
