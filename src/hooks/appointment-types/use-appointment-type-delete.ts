@@ -2,8 +2,9 @@ import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+import { AppointmentTypeUpdate } from '@/schemas/appointment-types.schema'
 
-export function useDeleteAppointmentType() {
+export function useAppointmentTypeDelete() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
@@ -41,7 +42,9 @@ export function useDeleteAppointmentType() {
       return appointmentTypeId
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointment-types'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'appointment-types'],
+      })
       toast.success('Tipo de cita eliminado exitosamente')
     },
     onError: (error) => {

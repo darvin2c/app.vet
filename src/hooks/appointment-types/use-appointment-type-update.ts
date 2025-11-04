@@ -1,25 +1,20 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TablesUpdate } from '@/types/supabase.types'
-import { removeUndefined } from '@/lib/utils'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+import { AppointmentTypeUpdate } from '@/schemas/appointment-types.schema'
 
-export function useUpdateAppointmentType() {
+export function useAppointmentTypeUpdate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: TablesUpdate<'appointment_types'> & { id: string }
-    ) => {
+    mutationFn: async (data: { id: string; data: AppointmentTypeUpdate }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const { id, ...updateFields } = data
-      const updateData: TablesUpdate<'appointment_types'> =
-        removeUndefined(updateFields)
+      const { id, data: updateData } = data
 
       const { data: appointmentType, error } = await supabase
         .from('appointment_types')
@@ -36,7 +31,9 @@ export function useUpdateAppointmentType() {
       return appointmentType
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointment-types'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'appointment-types'],
+      })
       toast.success('Tipo de cita actualizado exitosamente')
     },
     onError: (error) => {

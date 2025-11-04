@@ -1,17 +1,15 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+import { AppointmentTypeCreate } from '@/schemas/appointment-types.schema'
 
 export function useAppointmentTypeCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: Omit<TablesInsert<'appointment_types'>, 'tenant_id'>
-    ) => {
+    mutationFn: async (data: AppointmentTypeCreate) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
@@ -32,7 +30,9 @@ export function useAppointmentTypeCreate() {
       return appointmentType
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointment-types'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'appointment-types'],
+      })
       toast.success('Tipo de cita creado exitosamente')
     },
     onError: (error) => {

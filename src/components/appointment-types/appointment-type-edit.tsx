@@ -1,33 +1,29 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { useForm, FormProvider } from 'react-hook-form'
+import { useAppointmentTypeUpdate } from '@/hooks/appointment-types/use-appointment-type-update'
 import { AppointmentTypeForm } from './appointment-type-form'
-import { useUpdateAppointmentType } from '@/hooks/appointment-types/use-update-appointment-type'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { ResponsiveButton } from '@/components/ui/responsive-button'
+import type { AppointmentType } from '@/types/supabase.types'
 import {
   UpdateAppointmentTypeSchema,
   updateAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
-import type { Tables } from '@/types/supabase.types'
-
-type AppointmentType = Tables<'appointment_types'>
+import { toast } from 'sonner'
 
 interface AppointmentTypeEditProps {
   appointmentType: AppointmentType
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  trigger?: React.ReactNode
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   onSuccess?: () => void
 }
 
@@ -35,83 +31,89 @@ export function AppointmentTypeEdit({
   appointmentType,
   open,
   onOpenChange,
-  trigger,
   onSuccess,
 }: AppointmentTypeEditProps) {
-  const updateAppointmentType = useUpdateAppointmentType()
+  const updateMutation = useAppointmentTypeUpdate()
 
   const form = useForm<UpdateAppointmentTypeSchema>({
     resolver: zodResolver(updateAppointmentTypeSchema),
     defaultValues: {
       name: appointmentType.name,
+      code: appointmentType.code || '',
       description: appointmentType.description || '',
-      color: appointmentType.color || '#3B82F6',
+      duration_minutes: appointmentType.duration_minutes,
+      color: appointmentType.color ?? '#3B82F6',
       is_active: appointmentType.is_active,
     },
   })
 
-  // Set form values when appointmentType changes
-  useEffect(() => {
-    if (appointmentType && open) {
-      form.reset({
-        name: appointmentType.name,
-        description: appointmentType.description || '',
-        color: appointmentType.color || '#3B82F6',
-        is_active: appointmentType.is_active,
+  const { handleSubmit, reset } = form
+
+  const onSubmit = handleSubmit(async (data: UpdateAppointmentTypeSchema) => {
+    try {
+      await updateMutation.mutateAsync({
+        id: appointmentType.id,
+        data,
+      })
+      toast.success('Tipo de cita actualizado', {
+        description: 'El tipo de cita ha sido actualizado exitosamente.',
+      })
+      onOpenChange?.(false)
+      onSuccess?.()
+    } catch (error) {
+      toast.error('Error', {
+        description:
+          'No se pudo actualizar el tipo de cita. Por favor, intenta de nuevo.',
       })
     }
-  }, [appointmentType, open, form])
+  })
 
-  const onSubmit = async (data: UpdateAppointmentTypeSchema) => {
-    await updateAppointmentType.mutateAsync({
-      ...data,
-      id: appointmentType.id,
-    })
-    onOpenChange(false)
-    onSuccess?.()
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      reset()
+    }
+    onOpenChange?.(open)
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      {trigger}
-      <DrawerContent className="!w-full !max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Tipo de Cita</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos del tipo de cita
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={handleOpenChange}>
+      <SheetContent className="sm:max-w-[500px]">
+        <SheetHeader>
+          <SheetTitle>Editar Tipo de Cita</SheetTitle>
+          <SheetDescription>
+            Modifica los campos para actualizar el tipo de cita.
+          </SheetDescription>
+        </SheetHeader>
 
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
+        <FormProvider {...form}>
+          <form
+            onSubmit={onSubmit}
+            className="flex flex-col h-[calc(100%-4rem)]"
+          >
+            <div className="flex-1 overflow-y-auto py-4">
               <AppointmentTypeForm />
-            </form>
-          </Form>
-        </div>
+            </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateAppointmentType.isPending}
-          >
-            {updateAppointmentType.isPending
-              ? 'Actualizando...'
-              : 'Actualizar Tipo'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateAppointmentType.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+            <SheetFooter>
+              <ResponsiveButton
+                type="button"
+                variant="outline"
+                onClick={() => handleOpenChange(false)}
+                isLoading={updateMutation.isPending}
+              >
+                Cancelar
+              </ResponsiveButton>
+              <ResponsiveButton
+                type="submit"
+                isLoading={updateMutation.isPending}
+                disabled={updateMutation.isPending}
+              >
+                Actualizar Tipo de Cita
+              </ResponsiveButton>
+            </SheetFooter>
+          </form>
+        </FormProvider>
+      </SheetContent>
+    </Sheet>
   )
 }

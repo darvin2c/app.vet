@@ -9,29 +9,27 @@ import {
 } from '@/components/ui/sheet'
 import { useAppointmentTypeCreateBulk } from '@/hooks/appointment-types/use-appointment-type-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { toast } from 'sonner'
 import {
-  CreateAppointmentTypeSchema,
   createAppointmentTypeSchema,
+  type CreateAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 interface AppointmentTypeImportProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 export function AppointmentTypeImport({
   open,
   onOpenChange,
 }: AppointmentTypeImportProps) {
-  const createAppointmentTypeBulk = useAppointmentTypeCreateBulk()
+  const createBulkMutation = useAppointmentTypeCreateBulk()
 
   const handleImport = async (data: CreateAppointmentTypeSchema[]) => {
     try {
-      await createAppointmentTypeBulk.mutateAsync(data)
-      toast.success('Tipos de cita importados exitosamente')
-      onOpenChange(false)
+      await createBulkMutation.mutateAsync(data)
+      onOpenChange?.(false)
     } catch (error) {
       // El error se manejará a través de la prop error del DataImport
       console.error('Error al importar tipos de cita:', error)
@@ -47,16 +45,15 @@ export function AppointmentTypeImport({
             Importa tipos de cita desde un archivo CSV o Excel.
           </SheetDescription>
         </SheetHeader>
-
         <ScrollArea className="mt-6">
           <DataImport
             schema={createAppointmentTypeSchema}
             onImport={handleImport}
-            isLoading={createAppointmentTypeBulk.isPending}
-            templateName="tipos_cita_template.csv"
+            isLoading={createBulkMutation.isPending}
+            templateName="tipos_de_cita_template.csv"
             title="Importar Tipos de Cita"
-            description="Importa tipos de cita desde un archivo CSV o Excel. Los campos requeridos son: name, duration_minutes. Los campos opcionales son: description, color, is_active."
-            error={createAppointmentTypeBulk.error?.message || null}
+            description="Importa tipos de cita desde un archivo CSV o Excel. Los campos requeridos son: name, duration_minutes, color. Los campos opcionales son: code, description, is_active."
+            error={createBulkMutation.error?.message || null}
           />
         </ScrollArea>
       </SheetContent>

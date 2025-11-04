@@ -1,41 +1,58 @@
 import { z } from 'zod'
 
-// Schema para crear un tipo de cita
-export const createAppointmentTypeSchema = z.object({
+// Esquema base para tipos de cita - basado en la tabla appointment_types de Supabase
+export const appointmentBaseSchema = z.object({
   name: z
     .string()
-    .min(1, 'El nombre es requerido')
-    .max(255, 'El nombre es muy largo'),
-  description: z.string().optional(),
-  duration_minutes: z.number().min(1, 'La duración debe ser mayor a 0'),
+    .nonempty('El nombre del tipo de cita es requerido')
+    .max(100, 'El nombre no puede exceder 100 caracteres'),
+  code: z
+    .string()
+    .max(50, 'El código no puede exceder 50 caracteres')
+    .optional()
+    .or(z.literal('')),
+  description: z
+    .string()
+    .max(500, 'La descripción no puede exceder 500 caracteres')
+    .optional()
+    .or(z.literal('')),
+  duration_minutes: z
+    .number()
+    .min(1, 'La duración debe ser mayor a 0')
+    .max(480, 'La duración no puede exceder 480 minutos (8 horas)'),
   color: z
     .string()
     .regex(
       /^#[0-9A-Fa-f]{6}$/,
       'El color debe ser un código hexadecimal válido (#ffffff)'
     ),
-  is_active: z.boolean(),
+  is_active: z.boolean().default(true),
 })
 
-// Schema para actualizar un tipo de cita
-export const updateAppointmentTypeSchema = createAppointmentTypeSchema.partial()
+// Esquema para crear tipo de cita
+export const createAppointmentTypeSchema = appointmentBaseSchema
 
-// Schema para filtros de tipos de citas
+// Esquema para actualizar tipo de cita
+export const updateAppointmentTypeSchema = appointmentBaseSchema
+  .partial()
+  .extend({
+    is_active: z.boolean().optional(),
+  })
+
+// Esquema para filtros de tipos de citas
 export const appointmentTypeFiltersSchema = z.object({
-  is_active: z.boolean().optional(),
   search: z.string().optional(),
+  is_active: z.boolean().optional(),
 })
 
-export type CreateAppointmentTypeSchema = z.infer<
-  typeof createAppointmentTypeSchema
->
-export type UpdateAppointmentTypeSchema = z.infer<
-  typeof updateAppointmentTypeSchema
->
-export type AppointmentTypeFiltersSchema = z.infer<
+// Tipos derivados
+export type AppointmentTypeCreate = z.infer<typeof createAppointmentTypeSchema>
+export type AppointmentTypeUpdate = z.infer<typeof updateAppointmentTypeSchema>
+export type AppointmentTypeFilters = z.infer<
   typeof appointmentTypeFiltersSchema
 >
 
-// Alias para compatibilidad
-export type AppointmentTypeSchema = CreateAppointmentTypeSchema
-export const appointmentTypeSchema = createAppointmentTypeSchema
+// Tipos para compatibilidad
+export type CreateAppointmentTypeSchema = AppointmentTypeCreate
+export type UpdateAppointmentTypeSchema = AppointmentTypeUpdate
+export const AppointmentTypeSchema = createAppointmentTypeSchema

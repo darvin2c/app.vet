@@ -1,30 +1,26 @@
 'use client'
 
 import { useState } from 'react'
+import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { AppointmentTypeDelete } from './appointment-type-delete'
-import type { Tables } from '@/types/supabase.types'
-
-type AppointmentType = Tables<'appointment_types'>
+import type { AppointmentType } from '@/types/supabase.types'
 
 interface AppointmentTypeActionsProps {
   appointmentType: AppointmentType
-  onEdit?: () => void
-  onDelete?: () => void
+  onSuccess?: () => void
 }
 
 export function AppointmentTypeActions({
   appointmentType,
-  onEdit,
-  onDelete,
+  onSuccess,
 }: AppointmentTypeActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -33,17 +29,20 @@ export function AppointmentTypeActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Abrir menú</span>
+          <Button variant="ghost" size="icon" className="h-8 w-8">
             <MoreHorizontal className="h-4 w-4" />
+            <span className="sr-only">Abrir menú</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Edit className="mr-2 h-4 w-4" />
+            <Pencil className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+          <DropdownMenuItem
+            onClick={() => setDeleteOpen(true)}
+            className="text-destructive"
+          >
             <Trash2 className="mr-2 h-4 w-4" />
             Eliminar
           </DropdownMenuItem>
@@ -54,14 +53,14 @@ export function AppointmentTypeActions({
         appointmentType={appointmentType}
         open={editOpen}
         onOpenChange={setEditOpen}
-        onSuccess={onEdit}
+        onSuccess={onSuccess}
       />
 
       <AppointmentTypeDelete
         appointmentType={appointmentType}
+        onSuccess={onSuccess}
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
-        onSuccess={onDelete}
       />
     </>
   )

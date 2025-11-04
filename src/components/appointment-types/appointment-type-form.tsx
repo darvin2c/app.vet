@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { IsActiveField } from '@/components/ui/is-active-field'
 import type {
   CreateAppointmentTypeSchema,
   UpdateAppointmentTypeSchema,
@@ -28,14 +29,17 @@ const PRESET_COLORS = [
 ]
 
 export function AppointmentTypeForm() {
-  const form = useFormContext<
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<
     CreateAppointmentTypeSchema | UpdateAppointmentTypeSchema
   >()
-  const {
-    formState: { errors },
-  } = form
 
-  const selectedColor = form.watch('color')
+  const selectedColor = watch('color')
+  const isActive = watch('is_active')
 
   return (
     <div className="space-y-4">
@@ -45,9 +49,17 @@ export function AppointmentTypeForm() {
           <Input
             id="name"
             placeholder="Ej: Consulta General"
-            {...form.register('name')}
+            {...register('name')}
           />
           <FieldError errors={[errors.name]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="code">Código</FieldLabel>
+        <FieldContent>
+          <Input id="code" placeholder="Ej: CONS_GEN" {...register('code')} />
+          <FieldError errors={[errors.code]} />
         </FieldContent>
       </Field>
 
@@ -57,9 +69,24 @@ export function AppointmentTypeForm() {
           <Textarea
             id="description"
             placeholder="Descripción del tipo de cita"
-            {...form.register('description')}
+            {...register('description')}
           />
           <FieldError errors={[errors.description]} />
+        </FieldContent>
+      </Field>
+
+      <Field>
+        <FieldLabel htmlFor="duration_minutes">Duración (minutos) *</FieldLabel>
+        <FieldContent>
+          <Input
+            id="duration_minutes"
+            type="number"
+            min="1"
+            max="480"
+            placeholder="30"
+            {...register('duration_minutes', { valueAsNumber: true })}
+          />
+          <FieldError errors={[errors.duration_minutes]} />
         </FieldContent>
       </Field>
 
@@ -72,13 +99,13 @@ export function AppointmentTypeForm() {
                 id="color"
                 type="color"
                 className="w-12 h-10 p-1 border rounded cursor-pointer"
-                {...form.register('color')}
+                {...register('color')}
               />
               <Input
                 type="text"
                 placeholder="#3B82F6"
                 className="flex-1"
-                {...form.register('color')}
+                {...register('color')}
               />
             </div>
             <div className="grid grid-cols-5 gap-2">
@@ -92,7 +119,7 @@ export function AppointmentTypeForm() {
                       : 'border-muted hover:border-muted-foreground'
                   }`}
                   style={{ backgroundColor: color }}
-                  onClick={() => form.setValue('color', color)}
+                  onClick={() => setValue('color', color)}
                   title={color}
                 />
               ))}
@@ -101,6 +128,12 @@ export function AppointmentTypeForm() {
           <FieldError errors={[errors.color]} />
         </FieldContent>
       </Field>
+
+      <IsActiveField
+        name="is_active"
+        label="Estado Activo"
+        description="Indica si el tipo de cita está activo o inactivo."
+      />
     </div>
   )
 }

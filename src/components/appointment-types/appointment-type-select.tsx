@@ -60,44 +60,30 @@ export function AppointmentTypeSelect({
     (type: AppointmentType) => type.id === value
   )
 
-  const handleSelect = (typeId: string) => {
-    if (!onValueChange) return
-    onValueChange(value === typeId ? '' : typeId)
+  const handleSelect = (id: string) => {
+    onValueChange?.(id)
     setOpen(false)
   }
 
   return (
     <>
-      <InputGroup>
+      <InputGroup className={cn('w-full', className)}>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
+            <Button
+              variant="outline"
               role="combobox"
               aria-expanded={open}
-              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
+              className="flex-1 justify-between"
               disabled={disabled}
             >
-              {selectedAppointmentType ? (
-                <div className="flex items-center gap-2">
-                  <Circle
-                    className="w-4 h-4 text-muted-foreground"
-                    style={{
-                      color: selectedAppointmentType.color || 'inherit',
-                    }}
-                  />
-                  <span>{selectedAppointmentType.name}</span>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
+              <span className="truncate">
+                {selectedAppointmentType?.name || placeholder}
+              </span>
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </InputGroupButton>
+            </Button>
           </PopoverTrigger>
-          <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-          >
+          <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
             <Command>
               <CommandInput
                 placeholder="Buscar tipo de cita..."
@@ -117,9 +103,7 @@ export function AppointmentTypeSelect({
                     <div className="flex items-center gap-2">
                       <Circle
                         className="w-4 h-4 text-muted-foreground"
-                        style={{
-                          color: type.color || 'inherit',
-                        }}
+                        style={{ color: type.color || 'inherit' }}
                       />
                       <div className="flex flex-col">
                         <span>{type.name}</span>
@@ -178,13 +162,7 @@ export function AppointmentTypeSelect({
         )}
       </InputGroup>
 
-      <AppointmentTypeCreate
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onAppointmentTypeCreated={() => {
-          // Refresh data if needed
-        }}
-      />
+      <AppointmentTypeCreate open={createOpen} onOpenChange={setCreateOpen} />
 
       {selectedAppointmentType && (
         <AppointmentTypeEdit

@@ -31,56 +31,37 @@ export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
     resolver: zodResolver(createSpecialtySchema),
     defaultValues: {
       name: '',
-      code: '',
       description: '',
       is_active: true,
     },
   })
 
-  const onSubmit = (data: CreateSpecialtySchema) => {
-    createSpecialty(data, {
-      onSuccess: () => {
-        form.reset()
-        onOpenChange(false)
-      },
-    })
+  const onSubmit = async (values: CreateSpecialtySchema) => {
+    await createSpecialty(values)
+    onOpenChange(false)
   }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl">
+      <SheetContent>
         <SheetHeader>
-          <SheetTitle>Nueva Especialidad</SheetTitle>
+          <SheetTitle>Crear Especialidad</SheetTitle>
           <SheetDescription>
-            Crea una nueva especialidad para el personal médico
+            Agrega una nueva especialidad para tu centro veterinario.
           </SheetDescription>
         </SheetHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-6">
-            <div className="flex-1 overflow-y-auto">
-              <SpecialtyForm />
-            </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <SpecialtyForm />
+
+            <SheetFooter>
+              <ResponsiveButton type="submit" isLoading={isPending}>
+                Crear Especialidad
+              </ResponsiveButton>
+            </SheetFooter>
           </form>
         </Form>
-        <SheetFooter className="flex-row">
-          <ResponsiveButton
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-          <ResponsiveButton
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={isPending}
-            disabled={isPending}
-          >
-            Crear Especialidad
-          </ResponsiveButton>
-        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

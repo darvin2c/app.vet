@@ -1,51 +1,43 @@
 'use client'
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { useDeleteAppointmentType } from '@/hooks/appointment-types/use-delete-appointment-type'
-import { toast } from 'sonner'
-import type { Tables } from '@/types/supabase.types'
-
-type AppointmentType = Tables<'appointment_types'>
+import { useAppointmentTypeDelete } from '@/hooks/appointment-types/use-appointment-type-delete'
+import type { AppointmentType } from '@/types/supabase.types'
 
 interface AppointmentTypeDeleteProps {
   appointmentType: AppointmentType
-  onSuccess?: () => void
   open: boolean
   onOpenChange: (open: boolean) => void
+  onSuccess?: () => void
 }
 
 export function AppointmentTypeDelete({
   appointmentType,
-  onSuccess,
   open,
   onOpenChange,
+  onSuccess,
 }: AppointmentTypeDeleteProps) {
-  const { mutate: deleteAppointmentType, isPending } =
-    useDeleteAppointmentType()
+  const deleteMutation = useAppointmentTypeDelete()
 
-  const handleDelete = () => {
-    deleteAppointmentType(appointmentType.id, {
-      onSuccess: () => {
-        toast.success('Tipo de cita eliminado correctamente')
-        onSuccess?.()
-        onOpenChange(false)
-      },
-      onError: (error: any) => {
-        toast.error('Error al eliminar el tipo de cita')
-        console.error('Error deleting appointment type:', error)
-      },
-    })
+  const handleDelete = async () => {
+    try {
+      await deleteMutation.mutateAsync(appointmentType.id)
+      onOpenChange(false)
+      onSuccess?.()
+    } catch (error) {
+      // El error ya es manejado por el hook useAppointmentTypeDelete
+    }
   }
 
   return (
     <AlertConfirmation
       isOpen={open}
       onClose={() => onOpenChange(false)}
-      title="¿Estás seguro?"
-      description={`Esta acción eliminará permanentemente el tipo de cita "${appointmentType.name}". Esta acción no se puede deshacer.`}
-      confirmText={appointmentType.name}
+      title="Eliminar Tipo de Cita"
+      description={`¿Estás seguro de que deseas eliminar el tipo de cita "${appointmentType.name}"? Esta acción no se puede deshacer.`}
+      confirmText="ELIMINAR"
       onConfirm={handleDelete}
-      isLoading={isPending}
+      isLoading={deleteMutation.isPending}
     />
   )
 }

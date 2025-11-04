@@ -22,7 +22,7 @@ export default function AppointmentTypesPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
-      { field: 'duration', label: 'Duración', sortable: true },
+      { field: 'duration_minutes', label: 'Duración', sortable: true },
       { field: 'created_at', label: 'Fecha de Creación', sortable: true },
     ],
   }
