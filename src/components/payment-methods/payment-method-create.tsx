@@ -82,7 +82,11 @@ export function PaymentMethodCreate({
               <PaymentMethodForm />
             </div>
             <DrawerFooter>
-              <Button type="submit" disabled={mutation.isPending}>
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={mutation.isPending}
+              >
                 {mutation.isPending ? 'Creando...' : 'Crear Método de Pago'}
               </Button>
               <Button

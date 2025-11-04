@@ -74,6 +74,7 @@ export function BreedCreate({
                 icon={Plus}
                 isLoading={createBreed.isPending}
                 disabled={createBreed.isPending}
+                onClick={form.handleSubmit(onSubmit)}
               >
                 {createBreed.isPending ? 'Creando...' : 'Crear Raza'}
               </ResponsiveButton>
