@@ -32,7 +32,10 @@ export default function useSpecialtyDelete() {
       toast.success('Especialidad eliminada exitosamente')
     },
     onError: (error: unknown) => {
-      const message = error instanceof Error ? error.message : 'Error al eliminar especialidad'
+      const message =
+        error instanceof Error
+          ? error.message
+          : 'Error al eliminar especialidad'
       console.error('Error al eliminar especialidad:', error)
       toast.error(message)
     },

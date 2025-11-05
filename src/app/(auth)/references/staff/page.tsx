@@ -7,6 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { StaffImportButton } from '@/components/staff/staff-import-button'
 
 export default function StaffPage() {
   const filters: FilterConfig[] = [
@@ -39,9 +40,20 @@ export default function StaffPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <StaffCreateButton />
+              <Filters
+                filters={filters}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <StaffImportButton variant="ghost" />
+              <StaffCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

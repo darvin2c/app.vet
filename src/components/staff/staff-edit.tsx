@@ -22,6 +22,8 @@ import {
 } from '@/schemas/staff.schema'
 import useStaffUpdate from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
+import { ScrollArea } from '../ui/scroll-area'
+import { Separator } from '../ui/separator'
 
 interface StaffEditProps {
   staff: Tables<'staff'>
@@ -35,12 +37,12 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const form = useForm<UpdateStaffSchema>({
     resolver: zodResolver(updateStaffSchema),
     defaultValues: {
-      first_name: staff.first_name,
-      last_name: staff.last_name,
+      first_name: staff.first_name || '',
+      last_name: staff.last_name || '',
       email: staff.email || undefined,
-      phone: staff.phone,
-      license_number: staff.license_number,
-      user_id: staff.user_id,
+      phone: staff.phone || undefined,
+      license_number: staff.license_number || undefined,
+      user_id: staff.user_id || undefined,
       is_active: staff.is_active,
     },
   })
@@ -48,12 +50,12 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   useEffect(() => {
     if (staff) {
       form.reset({
-        first_name: staff.first_name,
-        last_name: staff.last_name,
+        first_name: staff.first_name || '',
+        last_name: staff.last_name || '',
         email: staff.email || undefined,
-        phone: staff.phone,
-        license_number: staff.license_number,
-        user_id: staff.user_id,
+        phone: staff.phone || undefined,
+        license_number: staff.license_number || undefined,
+        user_id: staff.user_id || undefined,
         is_active: staff.is_active,
       })
     }
@@ -69,36 +71,36 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-4xl">
-        <SheetHeader>
-          <SheetTitle>Editar Personal</SheetTitle>
-          <SheetDescription>
-            Modifica los datos del miembro del personal.
-          </SheetDescription>
-        </SheetHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="px-4 overflow-y-auto">
-              <StaffForm />
-            </div>
-            <SheetFooter>
-              <Button
-                type="submit"
-                disabled={mutation.isPending}
-              >
-                Actualizar Personal
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
+      <SheetContent className="!w-full !max-w-2xl">
+        <ScrollArea className="!h-full">
+          <SheetHeader>
+            <SheetTitle>Editar Personal</SheetTitle>
+            <SheetDescription>
+              Modifica los datos del miembro del personal.
+            </SheetDescription>
+          </SheetHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="px-4 overflow-y-auto">
+                <StaffForm />
+              </div>
+            </form>
+          </Form>
+          <Separator className="mt-4" />
+          <SheetFooter className="flex-row">
+            <Button type="submit" disabled={mutation.isPending}>
+              Actualizar Personal
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={mutation.isPending}
+            >
+              Cancelar
+            </Button>
+          </SheetFooter>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )

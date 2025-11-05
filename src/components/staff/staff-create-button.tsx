@@ -2,10 +2,16 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { StaffCreate } from './staff-create'
 
-export function StaffCreateButton() {
+export function StaffCreateButton({
+  children,
+  ...props
+}: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -14,8 +20,9 @@ export function StaffCreateButton() {
         icon={Plus}
         tooltip="Nuevo Staff"
         onClick={() => setOpen(true)}
+        {...props}
       >
-        Nuevo Staff
+        {children || 'Nuevo'}
       </ResponsiveButton>
 
       <StaffCreate open={open} onOpenChange={setOpen} />

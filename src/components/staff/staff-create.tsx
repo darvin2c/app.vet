@@ -69,18 +69,12 @@ export function StaffCreate({
           </SheetDescription>
         </SheetHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="px-4">
               <StaffForm />
             </div>
             <SheetFooter>
-              <Button
-                type="submit"
-                disabled={mutation.isPending}
-              >
+              <Button type="submit" disabled={mutation.isPending}>
                 Crear Personal
               </Button>
               <Button

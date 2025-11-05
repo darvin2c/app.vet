@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js'
 
 // Esquema base para staff - basado en la tabla staff de Supabase
 export const staffBaseSchema = z.object({
@@ -6,23 +7,11 @@ export const staffBaseSchema = z.object({
     .string()
     .nonempty('El nombre es requerido')
     .max(100, 'El nombre no puede exceder 100 caracteres'),
-
   last_name: z
     .string()
-    .nullable()
-    .optional()
-    .refine(
-      (value) => {
-        if (!value) return true
-        return value.length <= 100
-      },
-      {
-        message: 'El apellido no puede exceder 100 caracteres',
-      }
-    ),
-
+    .nonempty('El apellido es requerido')
+    .max(100, 'El apellido no puede exceder 100 caracteres'),
   email: z.email('Formato de email inválido').or(z.literal('')).optional(),
-
   phone: z
     .string()
     .nullable()
@@ -30,8 +19,13 @@ export const staffBaseSchema = z.object({
     .refine(
       (value) => {
         if (!value) return true // Permitir valores vacíos
-        // Validar formato de teléfono básico (números, espacios, guiones, paréntesis)
-        return /^[\d\s\-\(\)\+]+$/.test(value)
+        try {
+          // Validación robusta usando libphonenumber-js
+          const parsed = parsePhoneNumber(value)
+          return parsed?.isValid() || isValidPhoneNumber(value)
+        } catch {
+          return false
+        }
       },
       {
         message: 'Formato de teléfono inválido',
