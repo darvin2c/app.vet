@@ -20,6 +20,7 @@ import {
 } from '@/schemas/appointment-types.schema'
 import { toast } from 'sonner'
 import { Form } from '../ui/form'
+import { Separator } from '../ui/separator'
 
 interface AppointmentTypeEditProps {
   appointmentType: Tables<'appointment_types'>
@@ -86,10 +87,8 @@ export function AppointmentTypeEdit({
 
         <Form {...form}>
           <form onSubmit={onSubmit}>
-            <div className="px-6">
-              <AppointmentTypeForm />
-            </div>
-
+            <AppointmentTypeForm />
+            <Separator className="mt-4" />
             <SheetFooter className="flex-row">
               <ResponsiveButton
                 type="button"

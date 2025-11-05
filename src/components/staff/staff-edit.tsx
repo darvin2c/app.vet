@@ -84,22 +84,22 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
               <div className="px-4 overflow-y-auto">
                 <StaffForm />
               </div>
+              <Separator className="mt-4" />
+              <SheetFooter className="flex-row">
+                <Button type="submit" disabled={mutation.isPending}>
+                  Actualizar Personal
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </SheetFooter>
             </form>
           </Form>
-          <Separator className="mt-4" />
-          <SheetFooter className="flex-row">
-            <Button type="submit" disabled={mutation.isPending}>
-              Actualizar Personal
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={mutation.isPending}
-            >
-              Cancelar
-            </Button>
-          </SheetFooter>
         </ScrollArea>
       </SheetContent>
     </Sheet>

@@ -22,6 +22,8 @@ import {
   type CreateStaffSchema,
 } from '@/schemas/staff.schema'
 import useCreateStaff from '@/hooks/staff/use-staff-create'
+import { ScrollArea } from '@radix-ui/react-scroll-area'
+import { Separator } from '../ui/separator'
 
 interface StaffCreateProps {
   children?: React.ReactNode
@@ -62,32 +64,33 @@ export function StaffCreate({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="!max-w-4xl">
-        <SheetHeader>
-          <SheetTitle>Crear Personal</SheetTitle>
-          <SheetDescription>
-            Completa los datos para crear un nuevo miembro del personal.
-          </SheetDescription>
-        </SheetHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <div className="px-4">
+        <ScrollArea className="!h-full">
+          <SheetHeader>
+            <SheetTitle>Crear Personal</SheetTitle>
+            <SheetDescription>
+              Completa los datos para crear un nuevo miembro del personal.
+            </SheetDescription>
+          </SheetHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
               <StaffForm />
-            </div>
-            <SheetFooter>
-              <Button type="submit" disabled={mutation.isPending}>
-                Crear Personal
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </SheetFooter>
-          </form>
-        </Form>
+              <Separator className="mt-4" />
+              <SheetFooter>
+                <Button type="submit" disabled={mutation.isPending}>
+                  Crear Personal
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </SheetFooter>
+            </form>
+          </Form>
+        </ScrollArea>
       </SheetContent>
     </Sheet>
   )
