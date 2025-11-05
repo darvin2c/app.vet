@@ -1,20 +1,22 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
-import { StaffFilters } from '@/schemas/staff.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedSort } from '@/components/ui/order-by'
 
-type Staff = Database['public']['Tables']['staff']['Row']
-
-type StaffWithSpecialties = Staff & {
-  specialties: Array<{ id: string; name: string; is_active: boolean }>
-}
-
-export default function useStaffList(filters?: StaffFilters) {
+export default function useStaffList({
+  filters,
+  orders,
+  search,
+}: {
+  filters?: AppliedFilter[]
+  orders?: AppliedSort[]
+  search?: string
+}) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'staff', filters],
+    queryKey: [currentTenant?.id, 'staff', filters, orders, search],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
@@ -40,22 +42,20 @@ export default function useStaffList(filters?: StaffFilters) {
         .order('created_at', { ascending: false })
 
       // Aplicar filtros
-      if (filters?.search) {
+      filters?.forEach((filter) => {
+        query.filter(filter.field, filter.operator, filter.value)
+      })
+
+      // Aplicar ordenamientos
+      orders?.forEach((order) => {
+        query.order(order.field, { ascending: order.direction === 'asc' })
+      })
+
+      // Aplicar búsqueda global
+      if (search) {
         query = query.or(
-          `full_name.ilike.%${filters.search}%,email.ilike.%${filters.search}%`
+          `full_name.ilike.%${search}%,email.ilike.%${search}%,last_name.ilike.%${search}%`
         )
-      }
-
-      if (filters?.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
-
-      if (filters?.created_from) {
-        query = query.gte('created_at', filters.created_from)
-      }
-
-      if (filters?.created_to) {
-        query = query.lte('created_at', filters.created_to)
       }
 
       const { data, error } = await query
@@ -64,35 +64,7 @@ export default function useStaffList(filters?: StaffFilters) {
         throw new Error(`Error al obtener staff: ${error.message}`)
       }
 
-      // Transformar los datos para incluir las especialidades con tipado seguro
-      const staffWithSpecialties: StaffWithSpecialties[] =
-        data?.map((staffMember) => ({
-          ...staffMember,
-          specialties:
-            (
-              staffMember as unknown as {
-                staff_specialties?: Array<{
-                  specialties?: {
-                    id: string
-                    name: string
-                    is_active: boolean
-                  } | null
-                }>
-              }
-            ).staff_specialties
-              ?.map((ss) => ss.specialties)
-              .filter(
-                (
-                  specialty
-                ): specialty is {
-                  id: string
-                  name: string
-                  is_active: boolean
-                } => specialty !== null && specialty !== undefined
-              ) || [],
-        })) || []
-
-      return staffWithSpecialties
+      return data
     },
     enabled: !!currentTenant?.id,
   })

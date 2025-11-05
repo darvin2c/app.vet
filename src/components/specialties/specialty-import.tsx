@@ -24,10 +24,9 @@ export function SpecialtyImport({ open, onOpenChange }: SpecialtyImportProps) {
   const createSpecialtyBulk = useSpecialtyCreateBulk()
 
   const handleImport = async (data: SpecialtyCreate[]) => {
-    const dataWithCode = data.map((item) => ({
-      ...item,
-    }))
-    await createSpecialtyBulk.mutateAsync(dataWithCode)
+    await createSpecialtyBulk.mutateAsync(
+      data.map((item) => createSpecialtySchema.parse(item))
+    )
     onOpenChange(false)
   }
 

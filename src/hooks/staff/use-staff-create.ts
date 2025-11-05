@@ -4,12 +4,14 @@ import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
+export type CreateStaff = Omit<TablesInsert<'staff'>, 'tenant_id'>
+
 export default function useStaffCreate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: Omit<TablesInsert<'staff'>, 'tenant_id'>) => {
+    mutationFn: async (data: CreateStaff) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }

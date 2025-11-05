@@ -82,9 +82,8 @@ export function StaffList({
     error,
   } = useStaffList({
     search: appliedSearch,
-    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
-      | boolean
-      | undefined,
+    filters: appliedFilters,
+    orders: orderByHook.appliedSorts,
   })
 
   const columns: ColumnDef<Staff>[] = [

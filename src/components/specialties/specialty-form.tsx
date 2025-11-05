@@ -9,19 +9,14 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { Switch } from '@/components/ui/switch'
-import { CreateSpecialtySchema } from '@/schemas/specialties.schema'
+import { SpecialtyCreate } from '@/schemas/specialties.schema'
 import { IsActiveField } from '../ui/is-active-field'
 
 export function SpecialtyForm() {
   const {
     register,
-    setValue,
-    watch,
     formState: { errors },
-  } = useFormContext<CreateSpecialtySchema>()
-
-  const isActive = watch('is_active')
+  } = useFormContext<SpecialtyCreate>()
 
   return (
     <div className="px-2">

@@ -48,14 +48,15 @@ export function StaffCreate({
       last_name: '',
       email: '',
       phone: '',
+      address: '',
       license_number: '',
-      user_id: null,
+      user_id: undefined,
       is_active: true,
     },
   })
 
   const onSubmit = async (data: CreateStaffSchema) => {
-    await mutation.mutateAsync(data)
+    await mutation.mutateAsync(createStaffSchema.parse(data))
     form.reset()
     setOpen(false)
   }

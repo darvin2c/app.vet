@@ -2,14 +2,12 @@
 
 import { useState } from 'react'
 import { Check, ChevronsUpDown, UserCheck, X, Plus, Edit } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -22,7 +20,6 @@ import { StaffCreate } from './staff-create'
 import { StaffEdit } from './staff-edit'
 import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
-import { getStaffFullName, getStaffInitials } from '@/lib/staff-utils'
 
 type Staff = Tables<'staff'>
 
@@ -48,10 +45,13 @@ export function StaffSelect({
 
   const { data: staff = [], isLoading } = useStaff({
     search: searchTerm,
-    is_active: true,
   })
 
   const selectedStaff = staff.find((member: Staff) => member.id === value)
+
+  const getStaffFullName = (member: Staff) => {
+    return `${member.first_name} ${member.last_name}`
+  }
 
   const handleSelect = (staffId: string) => {
     if (!onValueChange) return

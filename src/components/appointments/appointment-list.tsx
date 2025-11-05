@@ -47,7 +47,6 @@ import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-
 import type { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { getStaffFullName } from '@/lib/staff-utils'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -131,7 +130,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
       header: 'Personal',
       cell: ({ row }) => {
         const staff = row.getValue('staff') as Appointment['staff']
-        return staff ? getStaffFullName(staff) : '-'
+        return staff ? `${staff.first_name} ${staff.last_name}` : '-'
       },
     },
     {
@@ -290,7 +289,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                   <span className="text-sm font-medium">Personal: </span>
                   <span className="text-sm">
                     {appointment.staff
-                      ? getStaffFullName(appointment.staff)
+                      ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
                       : '-'}
                   </span>
                 </div>
@@ -346,7 +345,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
                 : 'Sin paciente'}{' '}
               •
               {appointment.staff
-                ? `Personal: ${getStaffFullName(appointment.staff)}`
+                ? `Personal: ${appointment.staff.first_name} ${appointment.staff.last_name}`
                 : 'Sin personal'}
             </ItemDescription>
             <div className="flex gap-2 mt-2">

@@ -10,7 +10,6 @@ import {
 import { useStaffCreateBulk } from '@/hooks/staff/use-staff-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { toast } from 'sonner'
 import { CreateStaffSchema, createStaffSchema } from '@/schemas/staff.schema'
 
 interface StaffImportProps {
@@ -22,14 +21,10 @@ export function StaffImport({ open, onOpenChange }: StaffImportProps) {
   const createStaffBulk = useStaffCreateBulk()
 
   const handleImport = async (data: CreateStaffSchema[]) => {
-    try {
-      await createStaffBulk.mutateAsync(data)
-      toast.success('Personal importado exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      // El error se manejará a través de la prop error del DataImport
-      console.error('Error al importar personal:', error)
-    }
+    await createStaffBulk.mutateAsync(
+      data.map((item) => createStaffSchema.parse(item))
+    )
+    onOpenChange(false)
   }
 
   return (

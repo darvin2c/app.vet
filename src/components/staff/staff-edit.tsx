@@ -64,7 +64,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const onSubmit = async (data: UpdateStaffSchema) => {
     await mutation.mutateAsync({
       id: staff.id,
-      data,
+      data: updateStaffSchema.parse(data),
     })
     onOpenChange(false)
   }

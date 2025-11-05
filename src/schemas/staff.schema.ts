@@ -31,7 +31,6 @@ export const staffBaseSchema = z.object({
         message: 'Formato de teléfono inválido',
       }
     ),
-
   license_number: z
     .string()
     .nullable()
@@ -46,7 +45,6 @@ export const staffBaseSchema = z.object({
         message: 'El número de licencia debe tener entre 3 y 50 caracteres',
       }
     ),
-
   address: z
     .string()
     .nullable()
@@ -60,10 +58,8 @@ export const staffBaseSchema = z.object({
         message: 'La dirección no puede exceder 500 caracteres',
       }
     ),
-
-  user_id: z.string().nullable(),
-
-  is_active: z.boolean(),
+  user_id: z.string().optional(),
+  is_active: z.coerce.boolean().optional().default(true),
 })
 
 // Esquema para crear staff
@@ -72,28 +68,6 @@ export const createStaffSchema = staffBaseSchema
 // Esquema para actualizar staff
 export const updateStaffSchema = staffBaseSchema.partial()
 
-// Esquema para filtros de staff
-export const staffFiltersSchema = z.object({
-  search: z.string().optional(),
-  is_active: z.boolean().optional(),
-  created_from: z.string().optional(),
-  created_to: z.string().optional(),
-})
-
 // Tipos TypeScript derivados de los esquemas
-export type CreateStaffSchema = z.infer<typeof createStaffSchema>
-export type UpdateStaffSchema = z.infer<typeof updateStaffSchema>
-export type StaffFilters = z.infer<typeof staffFiltersSchema>
-
-// Tipos para compatibilidad
-export type StaffSchema = CreateStaffSchema
-export const StaffSchema = createStaffSchema
-export type StaffSchemaType = CreateStaffSchema
-
-// Las especialidades ahora se obtienen dinámicamente de la tabla specialties
-// Se mantienen las opciones de estado activo
-
-export const StaffActiveOptions = [
-  { value: true, label: 'Activo' },
-  { value: false, label: 'Inactivo' },
-] as const
+export type CreateStaffSchema = z.input<typeof createStaffSchema>
+export type UpdateStaffSchema = z.input<typeof updateStaffSchema>
