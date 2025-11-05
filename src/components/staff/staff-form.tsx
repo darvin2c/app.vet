@@ -11,7 +11,6 @@ import {
   FieldLabel,
   FieldLegend,
   FieldSet,
-  FieldSeparator,
   FieldDescription,
 } from '@/components/ui/field'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
@@ -27,7 +26,7 @@ export function StaffForm() {
   } = form
 
   return (
-    <FieldGroup>
+    <FieldGroup className="px-2 space-y-2">
       {/* Datos personales */}
       <FieldSet>
         <Field>
@@ -99,8 +98,6 @@ export function StaffForm() {
         </Field>
       </FieldSet>
 
-      <FieldSeparator />
-
       {/* Profesional */}
       <FieldSet>
         <FieldLegend>Profesional</FieldLegend>
@@ -119,7 +116,6 @@ export function StaffForm() {
 
       {/* Cuenta */}
       <FieldSet>
-        <FieldLegend>Cuenta</FieldLegend>
         <Field>
           <FieldLabel htmlFor="user_id">Usuario</FieldLabel>
           <FieldContent>
@@ -141,7 +137,6 @@ export function StaffForm() {
 
       {/* Estado */}
       <FieldSet>
-        <FieldLegend>Estado</FieldLegend>
         <IsActiveFormField />
       </FieldSet>
     </FieldGroup>

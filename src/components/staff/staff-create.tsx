@@ -22,8 +22,8 @@ import {
   type CreateStaffSchema,
 } from '@/schemas/staff.schema'
 import useCreateStaff from '@/hooks/staff/use-staff-create'
-import { ScrollArea } from '@radix-ui/react-scroll-area'
 import { Separator } from '../ui/separator'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface StaffCreateProps {
   children?: React.ReactNode
@@ -62,8 +62,8 @@ export function StaffCreate({
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>{children}</SheetTrigger>
-      <SheetContent className="!max-w-4xl">
+      {children && <SheetTrigger asChild>{children}</SheetTrigger>}
+      <SheetContent className="!w-full !max-w-2xl">
         <ScrollArea className="!h-full">
           <SheetHeader>
             <SheetTitle>Crear Personal</SheetTitle>
@@ -73,7 +73,9 @@ export function StaffCreate({
           </SheetHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <StaffForm />
+              <div className="px-4">
+                <StaffForm />
+              </div>
               <Separator className="mt-4" />
               <SheetFooter>
                 <Button type="submit" disabled={mutation.isPending}>

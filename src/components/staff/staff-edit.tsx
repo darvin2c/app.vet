@@ -80,8 +80,8 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
             </SheetDescription>
           </SheetHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <div className="px-4 overflow-y-auto">
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="px-4 ">
                 <StaffForm />
               </div>
               <Separator className="mt-4" />
