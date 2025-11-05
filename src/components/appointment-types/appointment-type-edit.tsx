@@ -13,7 +13,7 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import type { AppointmentType } from '@/types/supabase.types'
+import type { Tables } from '@/types/supabase.types'
 import {
   UpdateAppointmentTypeSchema,
   updateAppointmentTypeSchema,
@@ -22,7 +22,7 @@ import { toast } from 'sonner'
 import { Form } from '../ui/form'
 
 interface AppointmentTypeEditProps {
-  appointmentType: AppointmentType
+  appointmentType: Tables<'appointment_types'>
   open?: boolean
   onOpenChange?: (open: boolean) => void
   onSuccess?: () => void

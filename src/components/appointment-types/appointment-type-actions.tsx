@@ -11,10 +11,10 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { AppointmentTypeDelete } from './appointment-type-delete'
-import type { AppointmentType } from '@/types/supabase.types'
+import type { Tables } from '@/types/supabase.types'
 
 interface AppointmentTypeActionsProps {
-  appointmentType: AppointmentType
+  appointmentType: Tables<'appointment_types'>
   onSuccess?: () => void
 }
 

@@ -10,6 +10,14 @@ type StaffWithSpecialties = Staff & {
   specialties: Array<{ id: string; name: string; is_active: boolean }>
 }
 
+// Tipo para el join de staff con especialidades
+type StaffWithSpecialtiesJoin = Staff & {
+  staff_specialties: Array<{
+    specialty_id: string
+    specialties: { id: string; name: string; is_active: boolean } | null
+  }>
+}
+
 export default function useStaffList(filters?: StaffFilters) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -66,12 +74,12 @@ export default function useStaffList(filters?: StaffFilters) {
 
       // Transformar los datos para incluir las especialidades con tipado seguro
       const staffWithSpecialties: StaffWithSpecialties[] =
-        data?.map((staffMember) => ({
+        (data as StaffWithSpecialtiesJoin[])?.map((staffMember) => ({
           ...staffMember,
           specialties:
-            (staffMember as any).staff_specialties
-              ?.map((ss: { specialties?: { id: string; name: string; is_active: boolean } | null }) => ss.specialties)
-              .filter(Boolean) || [],
+            staffMember.staff_specialties
+              ?.map((ss) => ss.specialties)
+              .filter((specialty): specialty is { id: string; name: string; is_active: boolean } => specialty !== null) || [],
         })) || []
 
       return staffWithSpecialties

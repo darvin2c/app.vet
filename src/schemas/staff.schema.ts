@@ -53,6 +53,20 @@ export const staffBaseSchema = z.object({
       }
     ),
 
+  address: z
+    .string()
+    .nullable()
+    .optional()
+    .refine(
+      (value) => {
+        if (!value) return true // Permitir valores vacíos
+        return value.length <= 500
+      },
+      {
+        message: 'La dirección no puede exceder 500 caracteres',
+      }
+    ),
+
   user_id: z.string().nullable(),
 
   is_active: z.boolean(),

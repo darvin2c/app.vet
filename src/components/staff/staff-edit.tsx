@@ -6,13 +6,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
@@ -68,23 +68,22 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Personal</DrawerTitle>
-          <DrawerDescription>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="!w-full !max-w-4xl">
+        <SheetHeader>
+          <SheetTitle>Editar Personal</SheetTitle>
+          <SheetDescription>
             Modifica los datos del miembro del personal.
-          </DrawerDescription>
-        </DrawerHeader>
+          </SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <StaffForm />
             </div>
-            <DrawerFooter>
+            <SheetFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit)}
                 disabled={mutation.isPending}
               >
                 Actualizar Personal
@@ -97,10 +96,10 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
               >
                 Cancelar
               </Button>
-            </DrawerFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

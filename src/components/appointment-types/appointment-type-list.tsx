@@ -7,7 +7,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table'
-import { Clock } from 'lucide-react'
+
 import { useAppointmentTypeList } from '@/hooks/appointment-types/use-appointment-type-list'
 import { AppointmentTypeActions } from './appointment-type-actions'
 import { Badge } from '@/components/ui/badge'
@@ -28,7 +28,6 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
-import type { AppointmentType } from '@/types/supabase.types'
 // added imports for filters/search/orderBy
 import { useFilters } from '@/components/ui/filters'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
@@ -36,6 +35,7 @@ import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { useSearch } from '@/hooks/use-search'
 import { OrderByTableHeader } from '@/components/ui/order-by'
+import { Tables } from '@/types/supabase.types'
 
 interface AppointmentTypeListProps {
   filterConfig: FilterConfig[]
@@ -44,6 +44,8 @@ interface AppointmentTypeListProps {
   view?: 'table' | 'cards' | 'list'
   onSuccess?: () => void
 }
+
+type AppointmentType = Tables<'appointment_types'>
 
 export function AppointmentTypeList({
   filterConfig,
@@ -78,32 +80,6 @@ export function AppointmentTypeList({
               style={{ backgroundColor: row.original.color || 'transparent' }}
             />
             <span className="font-medium">{row.original.name}</span>
-          </div>
-        ),
-      },
-      {
-        accessorKey: 'code',
-        header: 'Código',
-        cell: ({ row }) => (
-          <span className="text-muted-foreground">
-            {row.original.code || '-'}
-          </span>
-        ),
-      },
-      {
-        accessorKey: 'duration_minutes',
-        header: ({ header }) => (
-          <OrderByTableHeader
-            field="duration_minutes"
-            orderByHook={orderByHook}
-          >
-            Duración
-          </OrderByTableHeader>
-        ),
-        cell: ({ row }) => (
-          <div className="flex items-center gap-1 text-sm">
-            <Clock className="h-3 w-3" />
-            {row.original.duration_minutes} min
           </div>
         ),
       },
@@ -180,22 +156,11 @@ export function AppointmentTypeList({
               </Badge>
             </div>
 
-            {appointmentType.code && (
-              <p className="text-sm text-muted-foreground mb-2">
-                Código: {appointmentType.code}
-              </p>
-            )}
-
             {appointmentType.description && (
               <p className="text-sm text-muted-foreground mb-3">
                 {appointmentType.description}
               </p>
             )}
-
-            <div className="flex items-center gap-1 text-sm text-muted-foreground mb-3">
-              <Clock className="h-3 w-3" />
-              {appointmentType.duration_minutes} minutos
-            </div>
 
             <div className="flex justify-end">
               <AppointmentTypeActions
@@ -223,23 +188,12 @@ export function AppointmentTypeList({
               />
               <div className="flex-1">
                 <div className="font-medium">{appointmentType.name}</div>
-                {appointmentType.code && (
-                  <div className="text-sm text-muted-foreground">
-                    Código: {appointmentType.code}
-                  </div>
-                )}
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Clock className="h-3 w-3" />
-                  {appointmentType.duration_minutes} min
-                </div>
-                <Badge
-                  variant={appointmentType.is_active ? 'default' : 'secondary'}
-                >
-                  {appointmentType.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
-              </div>
+              <Badge
+                variant={appointmentType.is_active ? 'default' : 'secondary'}
+              >
+                {appointmentType.is_active ? 'Activo' : 'Inactivo'}
+              </Badge>
             </div>
             <AppointmentTypeActions
               appointmentType={appointmentType}

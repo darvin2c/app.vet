@@ -2,10 +2,10 @@
 
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import { useAppointmentTypeDelete } from '@/hooks/appointment-types/use-appointment-type-delete'
-import type { AppointmentType } from '@/types/supabase.types'
+import type { Tables } from '@/types/supabase.types'
 
 interface AppointmentTypeDeleteProps {
-  appointmentType: AppointmentType
+  appointmentType: Tables<'appointment_types'>
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void

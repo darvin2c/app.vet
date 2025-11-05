@@ -6,14 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
@@ -59,27 +59,26 @@ export function StaffCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Personal</DrawerTitle>
-          <DrawerDescription>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
+      <SheetContent className="!max-w-4xl">
+        <SheetHeader>
+          <SheetTitle>Crear Personal</SheetTitle>
+          <SheetDescription>
             Completa los datos para crear un nuevo miembro del personal.
-          </DrawerDescription>
-        </DrawerHeader>
+          </SheetDescription>
+        </SheetHeader>
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="space-y-4"
           >
             <div className="px-4">
               <StaffForm />
             </div>
-            <DrawerFooter>
+            <SheetFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
                 disabled={mutation.isPending}
               >
                 Crear Personal
@@ -92,10 +91,10 @@ export function StaffCreate({
               >
                 Cancelar
               </Button>
-            </DrawerFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }
