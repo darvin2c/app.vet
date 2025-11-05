@@ -43,9 +43,10 @@ export default function useSpecialtyUpdate() {
       })
       toast.success('Especialidad actualizada exitosamente')
     },
-    onError: (error: any) => {
+    onError: (error: unknown) => {
+      const message = error instanceof Error ? error.message : 'Error al actualizar especialidad'
       console.error('Error al actualizar especialidad:', error)
-      toast.error(error?.message || 'Error al actualizar especialidad')
+      toast.error(message)
     },
   })
 }

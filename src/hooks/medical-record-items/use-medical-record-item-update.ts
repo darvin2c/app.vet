@@ -17,11 +17,16 @@ export function useMedicalRecordItemUpdate() {
     }) => {
       const supabase = createClient()
 
+      // Validar tenant seleccionado para evitar non-null assertion
+      if (!currentTenant?.id) {
+        throw new Error('No hay tenant seleccionado')
+      }
+
       const { data: medicalRecordItem, error } = await supabase
         .from('record_items')
         .update(data)
         .eq('id', id)
-        .eq('tenant_id', currentTenant?.id!)
+        .eq('tenant_id', currentTenant.id)
         .select()
         .single()
 

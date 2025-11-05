@@ -6,6 +6,10 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 
+type StaffWithSpecialties = Staff & {
+  specialties: Array<{ id: string; name: string; is_active: boolean }>
+}
+
 export default function useStaffList(filters?: StaffFilters) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -60,13 +64,13 @@ export default function useStaffList(filters?: StaffFilters) {
         throw new Error(`Error al obtener staff: ${error.message}`)
       }
 
-      // Transformar los datos para incluir las especialidades
-      const staffWithSpecialties =
+      // Transformar los datos para incluir las especialidades con tipado seguro
+      const staffWithSpecialties: StaffWithSpecialties[] =
         data?.map((staffMember) => ({
           ...staffMember,
           specialties:
-            staffMember.staff_specialties
-              ?.map((ss: any) => ss.specialties)
+            (staffMember as any).staff_specialties
+              ?.map((ss: { specialties?: { id: string; name: string; is_active: boolean } | null }) => ss.specialties)
               .filter(Boolean) || [],
         })) || []
 
