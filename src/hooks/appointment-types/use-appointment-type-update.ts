@@ -2,14 +2,17 @@ import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
-import { AppointmentTypeUpdate } from '@/schemas/appointment-types.schema'
+import { TablesUpdate } from '@/types/supabase.types'
 
 export function useAppointmentTypeUpdate() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: { id: string; data: AppointmentTypeUpdate }) => {
+    mutationFn: async (data: {
+      id: string
+      data: Omit<TablesUpdate<'appointment_types'>, 'tenant_id'>
+    }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }

@@ -15,7 +15,7 @@ export function useAppointmentTypeDelete() {
       }
 
       // Verificar si hay citas asociadas activas
-      const { data: appointments } = await supabase
+      /*const { data: appointments } = await supabase
         .from('appointments')
         .select('id')
         .eq('appointment_type_id', appointmentTypeId)
@@ -27,7 +27,7 @@ export function useAppointmentTypeDelete() {
         throw new Error(
           'No se puede eliminar el tipo de cita porque tiene citas activas asociadas'
         )
-      }
+      }*/
 
       const { error } = await supabase
         .from('appointment_types')
@@ -48,7 +48,9 @@ export function useAppointmentTypeDelete() {
       toast.success('Tipo de cita eliminado exitosamente')
     },
     onError: (error) => {
-      toast.error(error.message)
+      toast.error('Error al eliminar tipo de cita', {
+        description: error.message,
+      })
     },
   })
 }

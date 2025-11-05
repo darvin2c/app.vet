@@ -18,6 +18,7 @@ import {
   createAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
 import { toast } from 'sonner'
+import { Form } from '../ui/form'
 
 interface AppointmentTypeCreateProps {
   open?: boolean
@@ -34,9 +35,7 @@ export function AppointmentTypeCreate({
     resolver: zodResolver(createAppointmentTypeSchema),
     defaultValues: {
       name: '',
-      code: '',
       description: '',
-      duration_minutes: 30,
       color: '#3B82F6',
       is_active: true,
     },
@@ -45,19 +44,9 @@ export function AppointmentTypeCreate({
   const { handleSubmit, reset } = form
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await createMutation.mutateAsync(data as CreateAppointmentTypeSchema)
-      toast.success('Tipo de cita creado', {
-        description: 'El tipo de cita ha sido creado exitosamente.',
-      })
-      reset()
-      onOpenChange?.(false)
-    } catch (error) {
-      toast.error('Error', {
-        description:
-          'No se pudo crear el tipo de cita. Por favor, intenta de nuevo.',
-      })
-    }
+    await createMutation.mutateAsync(data)
+    reset()
+    onOpenChange?.(false)
   })
 
   const handleOpenChange = (open: boolean) => {
@@ -69,7 +58,7 @@ export function AppointmentTypeCreate({
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent className="sm:max-w-[500px]">
+      <SheetContent className="!w-full !max-w-2xl">
         <SheetHeader>
           <SheetTitle>Crear Tipo de Cita</SheetTitle>
           <SheetDescription>
@@ -77,21 +66,19 @@ export function AppointmentTypeCreate({
           </SheetDescription>
         </SheetHeader>
 
-        <FormProvider {...form}>
-          <form
-            onSubmit={onSubmit}
-            className="flex flex-col h-[calc(100%-4rem)]"
-          >
-            <div className="flex-1 overflow-y-auto py-4">
+        <Form {...form}>
+          <form onSubmit={onSubmit}>
+            <div className="px-6">
               <AppointmentTypeForm />
             </div>
 
-            <SheetFooter>
+            <SheetFooter className="flex-row">
               <ResponsiveButton
                 type="button"
                 variant="outline"
                 onClick={() => handleOpenChange(false)}
                 isLoading={createMutation.isPending}
+                isResponsive={false}
               >
                 Cancelar
               </ResponsiveButton>
@@ -99,12 +86,13 @@ export function AppointmentTypeCreate({
                 type="submit"
                 isLoading={createMutation.isPending}
                 disabled={createMutation.isPending}
+                isResponsive={false}
               >
                 Crear Tipo de Cita
               </ResponsiveButton>
             </SheetFooter>
           </form>
-        </FormProvider>
+        </Form>
       </SheetContent>
     </Sheet>
   )

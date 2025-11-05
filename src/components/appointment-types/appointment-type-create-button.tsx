@@ -2,21 +2,27 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { AppointmentTypeCreate } from './appointment-type-create'
 
-export function AppointmentTypeCreateButton() {
+export function AppointmentTypeCreateButton({
+  children,
+  ...props
+}: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
       <ResponsiveButton
         variant="default"
-        size="sm"
         onClick={() => setOpen(true)}
+        {...props}
+        icon={Plus}
       >
-        <Plus className="h-4 w-4 mr-2" />
-        Nuevo Tipo de Cita
+        {children || 'Nuevo'}
       </ResponsiveButton>
 
       <AppointmentTypeCreate open={open} onOpenChange={setOpen} />

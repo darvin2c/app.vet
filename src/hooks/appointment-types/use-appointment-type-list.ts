@@ -1,11 +1,11 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { AppliedFilter } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 
-type AppointmentType = Database['public']['Tables']['appointment_types']['Row']
+type AppointmentType = Tables<'appointment_types'>
 
 interface UseAppointmentTypeListParams {
   filters?: AppliedFilter[]
@@ -45,19 +45,7 @@ export function useAppointmentTypeList({
 
       // Aplicar filtros
       filters.forEach((filter) => {
-        if (filter.operator === 'eq') {
-          query = query.eq(filter.field, filter.value)
-        } else if (filter.operator === 'gt') {
-          query = query.gt(filter.field, filter.value)
-        } else if (filter.operator === 'lt') {
-          query = query.lt(filter.field, filter.value)
-        } else if (filter.operator === 'gte') {
-          query = query.gte(filter.field, filter.value)
-        } else if (filter.operator === 'lte') {
-          query = query.lte(filter.field, filter.value)
-        } else if (filter.operator === 'ilike') {
-          query = query.ilike(filter.field, `%${filter.value}%`)
-        }
+        query = query.filter(filter.field, filter.operator, filter.value)
       })
 
       // Aplicar ordenamiento

@@ -39,10 +39,9 @@ export function AppointmentTypeForm() {
   >()
 
   const selectedColor = watch('color')
-  const isActive = watch('is_active')
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-2 px-2">
       <Field>
         <FieldLabel htmlFor="name">Nombre *</FieldLabel>
         <FieldContent>
@@ -56,14 +55,6 @@ export function AppointmentTypeForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="code">Código</FieldLabel>
-        <FieldContent>
-          <Input id="code" placeholder="Ej: CONS_GEN" {...register('code')} />
-          <FieldError errors={[errors.code]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
         <FieldLabel htmlFor="description">Descripción</FieldLabel>
         <FieldContent>
           <Textarea
@@ -72,21 +63,6 @@ export function AppointmentTypeForm() {
             {...register('description')}
           />
           <FieldError errors={[errors.description]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="duration_minutes">Duración (minutos) *</FieldLabel>
-        <FieldContent>
-          <Input
-            id="duration_minutes"
-            type="number"
-            min="1"
-            max="480"
-            placeholder="30"
-            {...register('duration_minutes', { valueAsNumber: true })}
-          />
-          <FieldError errors={[errors.duration_minutes]} />
         </FieldContent>
       </Field>
 

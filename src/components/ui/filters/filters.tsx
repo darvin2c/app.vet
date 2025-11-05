@@ -163,7 +163,6 @@ export function Filters({
   const triggerButton = (
     <ResponsiveButton
       variant="outline"
-      size="sm"
       className={cn(
         'relative',
         activeFiltersCount > 0 && 'border-primary text-primary'

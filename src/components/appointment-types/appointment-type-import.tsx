@@ -45,7 +45,7 @@ export function AppointmentTypeImport({
             Importa tipos de cita desde un archivo CSV o Excel.
           </SheetDescription>
         </SheetHeader>
-        <ScrollArea className="mt-6">
+        <ScrollArea className="h-[calc(100vh-100px)]">
           <DataImport
             schema={createAppointmentTypeSchema}
             onImport={handleImport}

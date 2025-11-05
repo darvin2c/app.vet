@@ -1,12 +1,13 @@
-import PageBase from '@/components/page-base'
-import { AppointmentTypeList } from '@/components/appointment-types/appointment-type-list'
+import { AppointmentTypeImportButton } from '@/components/appointment-types/appointment-type-import-button'
 import { AppointmentTypeCreateButton } from '@/components/appointment-types/appointment-type-create-button'
-import { SearchInput } from '@/components/ui/search-input'
-import { ButtonGroup } from '@/components/ui/button-group'
-import { Filters } from '@/components/ui/filters'
-import { OrderBy } from '@/components/ui/order-by'
+import { AppointmentTypeList } from '@/components/appointment-types/appointment-type-list'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { SearchInput } from '@/components/ui/search-input'
+import { ButtonGroup } from '@/components/ui/button-group'
+import PageBase from '@/components/page-base'
+import { Filters } from '@/components/ui/filters'
+import { OrderBy } from '@/components/ui/order-by'
 
 export default function AppointmentTypesPage() {
   const filters: FilterConfig[] = [
@@ -38,9 +39,20 @@ export default function AppointmentTypesPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <AppointmentTypeCreateButton />
+              <Filters
+                filters={filters}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <AppointmentTypeImportButton variant="ghost" />
+              <AppointmentTypeCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

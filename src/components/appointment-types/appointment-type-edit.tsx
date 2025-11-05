@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useAppointmentTypeUpdate } from '@/hooks/appointment-types/use-appointment-type-update'
 import { AppointmentTypeForm } from './appointment-type-form'
 import {
@@ -19,6 +19,7 @@ import {
   updateAppointmentTypeSchema,
 } from '@/schemas/appointment-types.schema'
 import { toast } from 'sonner'
+import { Form } from '../ui/form'
 
 interface AppointmentTypeEditProps {
   appointmentType: AppointmentType
@@ -39,9 +40,7 @@ export function AppointmentTypeEdit({
     resolver: zodResolver(updateAppointmentTypeSchema),
     defaultValues: {
       name: appointmentType.name,
-      code: appointmentType.code || '',
       description: appointmentType.description || '',
-      duration_minutes: appointmentType.duration_minutes,
       color: appointmentType.color ?? '#3B82F6',
       is_active: appointmentType.is_active,
     },
@@ -77,7 +76,7 @@ export function AppointmentTypeEdit({
 
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent className="sm:max-w-[500px]">
+      <SheetContent className="!w-full !max-w-2xl">
         <SheetHeader>
           <SheetTitle>Editar Tipo de Cita</SheetTitle>
           <SheetDescription>
@@ -85,21 +84,19 @@ export function AppointmentTypeEdit({
           </SheetDescription>
         </SheetHeader>
 
-        <FormProvider {...form}>
-          <form
-            onSubmit={onSubmit}
-            className="flex flex-col h-[calc(100%-4rem)]"
-          >
-            <div className="flex-1 overflow-y-auto py-4">
+        <Form {...form}>
+          <form onSubmit={onSubmit}>
+            <div className="px-6">
               <AppointmentTypeForm />
             </div>
 
-            <SheetFooter>
+            <SheetFooter className="flex-row">
               <ResponsiveButton
                 type="button"
                 variant="outline"
                 onClick={() => handleOpenChange(false)}
                 isLoading={updateMutation.isPending}
+                isResponsive={false}
               >
                 Cancelar
               </ResponsiveButton>
@@ -107,12 +104,13 @@ export function AppointmentTypeEdit({
                 type="submit"
                 isLoading={updateMutation.isPending}
                 disabled={updateMutation.isPending}
+                isResponsive={false}
               >
                 Actualizar Tipo de Cita
               </ResponsiveButton>
             </SheetFooter>
           </form>
-        </FormProvider>
+        </Form>
       </SheetContent>
     </Sheet>
   )
