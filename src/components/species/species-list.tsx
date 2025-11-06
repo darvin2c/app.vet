@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -41,6 +38,7 @@ import {
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
+  AlertCircle,
   ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
@@ -58,6 +56,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Alert, AlertDescription } from '../ui/alert'
 
 type Species = Database['public']['Tables']['species']['Row']
 
@@ -130,23 +129,10 @@ export function SpeciesList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: species,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -240,11 +226,12 @@ export function SpeciesList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
+      <Alert className="text-center py-8">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription className="text-red-500">
           Error al cargar especies: {error.message}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -293,7 +280,7 @@ export function SpeciesList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
