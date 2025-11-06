@@ -226,9 +226,9 @@ export function SpeciesList({
 
   if (error) {
     return (
-      <Alert className="text-center py-8">
+      <Alert variant="destructive">
         <AlertCircle className="h-4 w-4" />
-        <AlertDescription className="text-red-500">
+        <AlertDescription>
           Error al cargar especies: {error.message}
         </AlertDescription>
       </Alert>
