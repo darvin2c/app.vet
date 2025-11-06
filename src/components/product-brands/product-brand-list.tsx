@@ -71,23 +71,15 @@ export function ProductBrandList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
-  // Convertir appliedFilters y appliedSearch al formato esperado por el hook
-  const filters = {
-    search: appliedSearch,
-    ...appliedFilters.reduce(
-      (acc, filter) => {
-        acc[filter.field] = filter.value
-        return acc
-      },
-      {} as Record<string, any>
-    ),
-  }
-
   const {
     data: productBrands = [],
     isPending,
     error,
-  } = useProductBrandList(filters)
+  } = useProductBrandList({
+    search: appliedSearch,
+    filters: appliedFilters,
+    orders: orderByHook.appliedSorts,
+  })
 
   const columns: ColumnDef<ProductBrand>[] = [
     {
@@ -296,7 +288,7 @@ export function ProductBrandList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}

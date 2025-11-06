@@ -79,7 +79,7 @@ export function DataImport<T = any>({
   }
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-6">
+    <div className="w-full max-w-4xl mx-auto p-6">
       <StepIndicator currentStep={state.step} steps={steps} />
       <div className="bg-background ">{renderCurrentStep()}</div>
     </div>

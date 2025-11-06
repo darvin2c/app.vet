@@ -35,8 +35,12 @@ export default function useProductBrandUpdate() {
     },
     onSuccess: (data) => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ['product-brands'] })
-      queryClient.invalidateQueries({ queryKey: ['product-brand', data.id] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-brands'],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-brand', data.id],
+      })
 
       toast.success('Marca actualizada exitosamente', {
         description: `${data.name} ha sido actualizada`,

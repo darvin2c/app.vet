@@ -51,8 +51,8 @@ export function SpeciesDelete({
         description={
           <div className="space-y-2">
             <p>
-              ¿Estás seguro de que deseas eliminar la especie &quot;
-              {species.name}&quot;?
+              ¿Estás seguro de que deseas eliminar la especie
+              <span className="font-bold">{species.name}</span>?
             </p>
             <p className="text-sm text-muted-foreground">
               Esta acción no se puede deshacer. No podrás eliminar la especie si
@@ -60,7 +60,7 @@ export function SpeciesDelete({
             </p>
           </div>
         }
-        confirmText={species.name}
+        confirmText={'ELIMINAR'}
         isLoading={deleteSpecies.isPending}
       />
     </>

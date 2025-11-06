@@ -39,6 +39,7 @@ export function ProductBrandEdit({
     defaultValues: {
       name: brand.name,
       description: brand.description || '',
+      is_active: brand.is_active,
     },
   })
 
@@ -47,6 +48,7 @@ export function ProductBrandEdit({
       form.reset({
         name: brand.name,
         description: brand.description || '',
+        is_active: brand.is_active,
       })
     }
   }, [brand, form])

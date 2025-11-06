@@ -125,7 +125,7 @@ export function TableSkeleton({
       role="status"
       aria-label="Cargando tabla"
     >
-      <div className={cn('rounded-md border', tableClassName)}>
+      <div className={cn('', tableClassName)}>
         <div className="overflow-hidden">
           <table className="w-full">
             {/* Header de la tabla */}

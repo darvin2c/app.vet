@@ -7,6 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { SpeciesImportButton } from '@/components/species/species-import-button'
 
 export default function SpeciesPage() {
   const filters: FilterConfig[] = [
@@ -37,9 +38,20 @@ export default function SpeciesPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <SpeciesCreateButton />
+              <Filters
+                filters={filters}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <SpeciesImportButton variant="ghost" />
+              <SpeciesCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

@@ -7,6 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { ProductBrandImportButton } from '@/components/product-brands/product-brand-import-button'
 
 export default function ProductBrandsPage() {
   const filters: FilterConfig[] = [
@@ -37,9 +38,13 @@ export default function ProductBrandsPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <ProductBrandCreateButton />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
+              <ProductBrandImportButton variant="ghost" />
+              <ProductBrandCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

@@ -27,7 +27,9 @@ export default function useProductBrandDelete() {
     },
     onSuccess: () => {
       // Invalidar queries relacionadas
-      queryClient.invalidateQueries({ queryKey: ['product-brands'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'product-brands'],
+      })
 
       toast.success('Marca eliminada exitosamente')
     },

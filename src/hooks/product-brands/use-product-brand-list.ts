@@ -19,7 +19,7 @@ export default function useProductBrandList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['product-brands', currentTenant?.id, filters],
+    queryKey: [currentTenant?.id, 'product-brands', filters, orders, search],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
