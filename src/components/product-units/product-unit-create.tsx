@@ -17,11 +17,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductUnitForm } from './product-unit-form'
-import {
-  ProductUnitSchema,
-  type ProductUnitSchemaType,
-} from '@/schemas/product-units.schema'
 import useProductUnitCreate from '@/hooks/product-units/use-product-unit-create'
+import { productUnitCreateSchema } from '@/schemas/product-units.schema'
 
 interface ProductUnitCreateProps {
   children?: React.ReactNode
@@ -44,16 +41,16 @@ export function ProductUnitCreate({
   const open = controlled ? controlledOpen : internalOpen
   const onOpenChange = controlled ? controlledOnOpenChange : setInternalOpen
 
-  const form = useForm<ProductUnitSchemaType>({
-    resolver: zodResolver(ProductUnitSchema),
+  const form = useForm({
+    resolver: zodResolver(productUnitCreateSchema),
   })
 
-  const onSubmit = async (data: ProductUnitSchemaType) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     const result = await mutation.mutateAsync(data)
     form.reset()
     onOpenChange?.(false)
     onUnitCreated?.(result)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -66,10 +63,7 @@ export function ProductUnitCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4">
               <ProductUnitForm />
             </div>

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -11,11 +10,11 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataImport } from '@/components/ui/data-import'
 import { useProductUnitCreateBulk } from '@/hooks/product-units/use-product-unit-create-bulk'
-import {
-  createProductUnitSchema,
-  CreateProductUnitSchema,
-} from '@/schemas/product-units.schema'
 import { toast } from 'sonner'
+import {
+  ProductUnitCreateSchema,
+  productUnitImportSchema,
+} from '@/schemas/product-units.schema'
 
 interface ProductUnitImportProps {
   open: boolean
@@ -28,7 +27,7 @@ export function ProductUnitImport({
 }: ProductUnitImportProps) {
   const createProductUnitBulk = useProductUnitCreateBulk()
 
-  const handleImport = async (data: CreateProductUnitSchema[]) => {
+  const handleImport = async (data: ProductUnitCreateSchema[]) => {
     try {
       await createProductUnitBulk.mutateAsync(data)
       toast.success('Unidades de productos importadas exitosamente')
@@ -50,7 +49,7 @@ export function ProductUnitImport({
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createProductUnitSchema}
+            schema={productUnitImportSchema}
             onImport={handleImport}
             isLoading={createProductUnitBulk.isPending}
             templateName="unidades_productos_template.csv"

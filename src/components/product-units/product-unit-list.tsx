@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -41,6 +38,7 @@ import {
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
+  AlertCircle,
   ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
@@ -58,6 +56,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Alert, AlertDescription } from '../ui/alert'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
 
@@ -76,20 +75,14 @@ export function ProductUnitList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
-  // Convertir filtros aplicados al formato esperado por el hook
-  const filters = {
-    search: appliedSearch,
-    is_active: appliedFilters.find((f) => f.field === 'is_active')?.value as
-      | boolean
-      | undefined,
-  }
-
   const {
     data: productUnits = [],
     isPending,
     error,
   } = useProductUnits({
-    filters,
+    filters: appliedFilters,
+    orders: orderByHook.appliedSorts,
+    search: appliedSearch,
   })
 
   const columns: ColumnDef<ProductUnit>[] = [
@@ -136,23 +129,10 @@ export function ProductUnitList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: productUnits,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -246,11 +226,12 @@ export function ProductUnitList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
+      <Alert variant="destructive">
+        <AlertCircle className="h-4 w-4" />
+        <AlertDescription>
           Error al cargar unidades de producto: {error.message}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     )
   }
 

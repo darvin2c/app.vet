@@ -1,7 +1,6 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { CreateProductUnitSchema } from '@/schemas/product-units.schema'
 import { Input } from '@/components/ui/input'
 import {
   Field,
@@ -12,7 +11,7 @@ import {
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 
 export function ProductUnitForm() {
-  const form = useFormContext<CreateProductUnitSchema>()
+  const form = useFormContext()
   const {
     formState: { errors },
   } = form

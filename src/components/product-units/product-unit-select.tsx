@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Package, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
@@ -11,7 +10,6 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
-  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -46,7 +44,7 @@ export function ProductUnitSelect({
   const [editOpen, setEditOpen] = useState(false)
 
   const { data: productUnits = [], isLoading } = useProductUnitList({
-    filters: { search: searchTerm },
+    search: searchTerm,
   })
 
   const selectedProductUnit = productUnits.find(

@@ -16,12 +16,9 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductUnitForm } from './product-unit-form'
-import {
-  updateProductUnitSchema,
-  type UpdateProductUnitSchema,
-} from '@/schemas/product-units.schema'
 import useProductUnitUpdate from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
+import { productUnitUpdateSchema } from '@/schemas/product-units.schema'
 
 interface ProductUnitEditProps {
   unit: Tables<'product_units'>
@@ -36,8 +33,8 @@ export function ProductUnitEdit({
 }: ProductUnitEditProps) {
   const mutation = useProductUnitUpdate()
 
-  const form = useForm<UpdateProductUnitSchema>({
-    resolver: zodResolver(updateProductUnitSchema),
+  const form = useForm({
+    resolver: zodResolver(productUnitUpdateSchema),
     defaultValues: {
       name: unit.name,
       abbreviation: unit.abbreviation,
@@ -55,13 +52,13 @@ export function ProductUnitEdit({
     }
   }, [unit, form])
 
-  const onSubmit = async (data: UpdateProductUnitSchema) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await mutation.mutateAsync({
       id: unit.id,
       ...data,
     })
     onOpenChange(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -73,17 +70,14 @@ export function ProductUnitEdit({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <ProductUnitForm />
             </div>
             <DrawerFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={mutation.isPending}
               >
                 Actualizar Unidad

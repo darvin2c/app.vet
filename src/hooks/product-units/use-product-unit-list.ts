@@ -1,19 +1,23 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
-import { ProductUnitFiltersSchema } from '@/schemas/product-units.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedSort } from '@/components/ui/order-by'
+import { toast } from 'sonner'
 
-type ProductUnit = Database['public']['Tables']['product_units']['Row']
-
-export default function useProductUnitList(options?: {
-  filters?: ProductUnitFiltersSchema
+export default function useProductUnitList({
+  filters = [],
+  orders = [],
+  search,
+}: {
+  filters?: AppliedFilter[]
+  orders?: AppliedSort[]
+  search?: string
 }) {
-  const filters = options?.filters
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['product-units', currentTenant?.id, filters],
+    queryKey: [currentTenant?.id, 'product-units', filters, orders, search],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
@@ -26,22 +30,18 @@ export default function useProductUnitList(options?: {
         .order('created_at', { ascending: false })
 
       // Aplicar filtros
-      if (filters?.search) {
-        query = query.or(
-          `name.ilike.%${filters.search}%,code.ilike.%${filters.search}%`
-        )
-      }
+      filters.forEach((filter) => {
+        query.filter(filter.field, filter.operator, filter.value)
+      })
 
-      if (filters?.is_active !== undefined) {
-        query = query.eq('is_active', filters.is_active)
-      }
+      // Aplicar ordenamientos
+      orders.forEach((order) => {
+        query.order(order.field, { ascending: order.ascending })
+      })
 
-      if (filters?.created_from) {
-        query = query.gte('created_at', filters.created_from)
-      }
-
-      if (filters?.created_to) {
-        query = query.lte('created_at', filters.created_to)
+      // Aplicar búsqueda
+      if (search) {
+        query = query.or(`name.ilike.%${search}%,code.ilike.%${search}%`)
       }
 
       const { data, error } = await query
@@ -52,8 +52,7 @@ export default function useProductUnitList(options?: {
         )
       }
 
-      return data || []
+      return data
     },
-    enabled: !!currentTenant?.id,
   })
 }
