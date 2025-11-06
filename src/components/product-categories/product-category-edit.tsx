@@ -16,12 +16,9 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import {
-  updateProductCategorySchema,
-  type UpdateProductCategorySchema,
-} from '@/schemas/product-categories.schema'
 import useUpdateProductCategory from '@/hooks/product-categories/use-product-category-update'
 import { Tables } from '@/types/supabase.types'
+import { productCategoryUpdateSchema } from '@/schemas/product-categories.schema'
 
 interface ProductCategoryEditProps {
   category: Tables<'product_categories'>
@@ -36,8 +33,8 @@ export function ProductCategoryEdit({
 }: ProductCategoryEditProps) {
   const mutation = useUpdateProductCategory()
 
-  const form = useForm<UpdateProductCategorySchema>({
-    resolver: zodResolver(updateProductCategorySchema),
+  const form = useForm({
+    resolver: zodResolver(productCategoryUpdateSchema),
     defaultValues: {
       name: category.name,
       description: category.description || '',
@@ -55,13 +52,15 @@ export function ProductCategoryEdit({
     }
   }, [category, form])
 
-  const onSubmit = async (data: UpdateProductCategorySchema) => {
+  const { handleSubmit, reset } = form
+  const onSubmit = handleSubmit(async (data) => {
     await mutation.mutateAsync({
       id: category.id,
       ...data,
     })
     onOpenChange(false)
-  }
+    reset()
+  })
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -73,10 +72,7 @@ export function ProductCategoryEdit({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <ProductCategoryForm />
             </div>

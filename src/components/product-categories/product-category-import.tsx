@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -12,10 +11,9 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataImport } from '@/components/ui/data-import'
 import { useProductCategoryCreateBulk } from '@/hooks/product-categories/use-product-category-create-bulk'
 import {
-  createProductCategorySchema,
-  CreateProductCategorySchema,
+  ProductCategoryCreateSchema,
+  productCategoryImportSchema,
 } from '@/schemas/product-categories.schema'
-import { toast } from 'sonner'
 
 interface ProductCategoryImportProps {
   open: boolean
@@ -28,14 +26,9 @@ export function ProductCategoryImport({
 }: ProductCategoryImportProps) {
   const createProductCategoryBulk = useProductCategoryCreateBulk()
 
-  const handleImport = async (data: CreateProductCategorySchema[]) => {
-    try {
-      await createProductCategoryBulk.mutateAsync(data)
-      toast.success('Categorías de productos importadas exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Error al importar categorías de productos:', error)
-    }
+  const handleImport = async (data: ProductCategoryCreateSchema[]) => {
+    await createProductCategoryBulk.mutateAsync(data)
+    onOpenChange(false)
   }
 
   return (
@@ -50,7 +43,7 @@ export function ProductCategoryImport({
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createProductCategorySchema}
+            schema={productCategoryImportSchema}
             onImport={handleImport}
             isLoading={createProductCategoryBulk.isPending}
             templateName="categorias_productos_template.csv"

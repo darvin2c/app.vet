@@ -17,11 +17,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductCategoryForm } from './product-category-form'
-import {
-  createProductCategorySchema,
-  type CreateProductCategorySchema,
-} from '@/schemas/product-categories.schema'
 import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
+import { productCategoryCreateSchema } from '@/schemas/product-categories.schema'
 
 interface ProductCategoryCreateProps {
   children?: React.ReactNode
@@ -40,17 +37,17 @@ export function ProductCategoryCreate({
   const mutation = useProductCategoryCreate()
 
   const form = useForm({
-    resolver: zodResolver(createProductCategorySchema),
+    resolver: zodResolver(productCategoryCreateSchema),
     defaultValues: {
       is_active: true,
     },
   })
-
-  const onSubmit = async (data: CreateProductCategorySchema) => {
+  const { handleSubmit, reset } = form
+  const onSubmit = handleSubmit(async (data) => {
     await mutation.mutateAsync(data)
-    form.reset()
+    reset()
     setOpen(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -63,17 +60,14 @@ export function ProductCategoryCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4">
               <ProductCategoryForm />
             </div>
             <DrawerFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={mutation.isPending}
               >
                 Crear Categoría
