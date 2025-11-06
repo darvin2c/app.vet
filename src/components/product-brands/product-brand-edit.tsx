@@ -6,19 +6,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
 import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
 import { productBrandUpdateSchema } from '@/schemas/product-brands.schema'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface ProductBrandEditProps {
   brand: Tables<'product_brands'>
@@ -59,39 +60,41 @@ export function ProductBrandEdit({
   })
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Marca de Producto</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos de la marca de producto.
-          </DrawerDescription>
-        </DrawerHeader>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4 overflow-y-auto">
-              <ProductBrandForm />
-            </div>
-            <DrawerFooter>
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={mutation.isPending}
-              >
-                Actualizar Marca
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </Form>
-      </DrawerContent>
-    </Drawer>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="!w-full !max-w-2xl">
+        <ScrollArea>
+          <SheetHeader>
+            <SheetTitle>Editar Marca de Producto</SheetTitle>
+            <SheetDescription>
+              Modifica los datos de la marca de producto.
+            </SheetDescription>
+          </SheetHeader>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="px-4 overflow-y-auto">
+                <ProductBrandForm />
+              </div>
+              <SheetFooter className="flex-row">
+                <Button
+                  type="submit"
+                  onClick={onSubmit}
+                  disabled={mutation.isPending}
+                >
+                  Actualizar Marca
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </SheetFooter>
+            </form>
+          </Form>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

@@ -6,19 +6,20 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 import { productBrandCreateSchema } from '@/schemas/product-brands.schema'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface ProductBrandCreateProps {
   children?: React.ReactNode
@@ -52,40 +53,42 @@ export function ProductBrandCreate({
   })
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Marca de Producto</DrawerTitle>
-          <DrawerDescription>
-            Completa los datos para crear una nueva marca de producto.
-          </DrawerDescription>
-        </DrawerHeader>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4">
-              <ProductBrandForm />
-            </div>
-            <DrawerFooter>
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={mutation.isPending}
-              >
-                Crear Marca
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </Form>
-      </DrawerContent>
-    </Drawer>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>{children}</SheetTrigger>
+      <SheetContent className="!max-w-2xl">
+        <ScrollArea>
+          <SheetHeader>
+            <SheetTitle>Crear Marca de Producto</SheetTitle>
+            <SheetDescription>
+              Completa los datos para crear una nueva marca de producto.
+            </SheetDescription>
+          </SheetHeader>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="px-4">
+                <ProductBrandForm />
+              </div>
+              <SheetFooter className="flex-row">
+                <Button
+                  type="submit"
+                  onClick={onSubmit}
+                  disabled={mutation.isPending}
+                >
+                  Crear Marca
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </SheetFooter>
+            </form>
+          </Form>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }
