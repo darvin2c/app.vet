@@ -1,5 +1,6 @@
 import { z } from 'zod'
-import { isValidPhoneNumber, parsePhoneNumber } from 'libphonenumber-js'
+import { isValidPhoneNumber } from 'libphonenumber-js'
+import parsePhoneNumber from 'libphonenumber-js/max'
 
 // Esquema base para staff - basado en la tabla staff de Supabase
 export const staffBaseSchema = z.object({
@@ -59,15 +60,18 @@ export const staffBaseSchema = z.object({
       }
     ),
   user_id: z.string().optional(),
-  is_active: z.coerce.boolean().optional().default(true),
+  is_active: z.boolean().default(true),
 })
 
 // Esquema para crear staff
-export const createStaffSchema = staffBaseSchema
+export const staffCreateSchema = staffBaseSchema
 
 // Esquema para actualizar staff
-export const updateStaffSchema = staffBaseSchema.partial()
+export const staffUpdateSchema = staffBaseSchema.partial()
 
-// Tipos TypeScript derivados de los esquemas
-export type CreateStaffSchema = z.input<typeof createStaffSchema>
-export type UpdateStaffSchema = z.input<typeof updateStaffSchema>
+export const staffImportSchema = staffBaseSchema.extend({
+  is_active: z.coerce.boolean().default(true),
+})
+
+export type StaffCreateSchema = z.infer<typeof staffCreateSchema>
+export type StaffUpdateSchema = z.infer<typeof staffUpdateSchema>

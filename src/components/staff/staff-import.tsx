@@ -10,7 +10,7 @@ import {
 import { useStaffCreateBulk } from '@/hooks/staff/use-staff-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { CreateStaffSchema, createStaffSchema } from '@/schemas/staff.schema'
+import { StaffCreateSchema, staffImportSchema } from '@/schemas/staff.schema'
 
 interface StaffImportProps {
   open: boolean
@@ -20,10 +20,8 @@ interface StaffImportProps {
 export function StaffImport({ open, onOpenChange }: StaffImportProps) {
   const createStaffBulk = useStaffCreateBulk()
 
-  const handleImport = async (data: CreateStaffSchema[]) => {
-    await createStaffBulk.mutateAsync(
-      data.map((item) => createStaffSchema.parse(item))
-    )
+  const handleImport = async (data: StaffCreateSchema[]) => {
+    await createStaffBulk.mutateAsync(data)
     onOpenChange(false)
   }
 
@@ -39,7 +37,7 @@ export function StaffImport({ open, onOpenChange }: StaffImportProps) {
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createStaffSchema}
+            schema={staffImportSchema}
             onImport={handleImport}
             isLoading={createStaffBulk.isPending}
             templateName="personal_template.csv"

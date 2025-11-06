@@ -17,13 +17,10 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import {
-  createStaffSchema,
-  type CreateStaffSchema,
-} from '@/schemas/staff.schema'
 import useCreateStaff from '@/hooks/staff/use-staff-create'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
+import { staffCreateSchema } from '@/schemas/staff.schema'
 
 interface StaffCreateProps {
   children?: React.ReactNode
@@ -41,8 +38,8 @@ export function StaffCreate({
   const setOpen = controlledOnOpenChange ?? setInternalOpen
   const mutation = useCreateStaff()
 
-  const form = useForm<CreateStaffSchema>({
-    resolver: zodResolver(createStaffSchema),
+  const form = useForm({
+    resolver: zodResolver(staffCreateSchema),
     defaultValues: {
       first_name: '',
       last_name: '',
@@ -54,12 +51,12 @@ export function StaffCreate({
       is_active: true,
     },
   })
-
-  const onSubmit = async (data: CreateStaffSchema) => {
-    await mutation.mutateAsync(createStaffSchema.parse(data))
-    form.reset()
+  const { reset, handleSubmit } = form
+  const onSubmit = handleSubmit(async (data) => {
+    await mutation.mutateAsync(data)
+    reset()
     setOpen(false)
-  }
+  })
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -73,7 +70,7 @@ export function StaffCreate({
             </SheetDescription>
           </SheetHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
               <div className="px-4">
                 <StaffForm />
               </div>

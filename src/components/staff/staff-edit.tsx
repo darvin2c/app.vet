@@ -16,14 +16,11 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { StaffForm } from './staff-form'
-import {
-  updateStaffSchema,
-  type UpdateStaffSchema,
-} from '@/schemas/staff.schema'
 import useStaffUpdate from '@/hooks/staff/use-staff-update'
 import { Tables } from '@/types/supabase.types'
 import { ScrollArea } from '../ui/scroll-area'
 import { Separator } from '../ui/separator'
+import { staffUpdateSchema } from '@/schemas/staff.schema'
 
 interface StaffEditProps {
   staff: Tables<'staff'>
@@ -34,8 +31,8 @@ interface StaffEditProps {
 export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
   const mutation = useStaffUpdate()
 
-  const form = useForm<UpdateStaffSchema>({
-    resolver: zodResolver(updateStaffSchema),
+  const form = useForm({
+    resolver: zodResolver(staffUpdateSchema),
     defaultValues: {
       first_name: staff.first_name || '',
       last_name: staff.last_name || '',
@@ -61,13 +58,16 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
     }
   }, [staff, form])
 
-  const onSubmit = async (data: UpdateStaffSchema) => {
+  const { handleSubmit, reset } = form
+
+  const onSubmit = handleSubmit(async (data) => {
     await mutation.mutateAsync({
       id: staff.id,
-      data: updateStaffSchema.parse(data),
+      data: data,
     })
     onOpenChange(false)
-  }
+    reset()
+  })
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -80,7 +80,7 @@ export function StaffEdit({ staff, open, onOpenChange }: StaffEditProps) {
             </SheetDescription>
           </SheetHeader>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)}>
+            <form onSubmit={onSubmit}>
               <div className="px-4 ">
                 <StaffForm />
               </div>

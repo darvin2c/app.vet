@@ -1,7 +1,6 @@
 'use client'
 
 import { useFormContext, Controller } from 'react-hook-form'
-import { CreateStaffSchema, UpdateStaffSchema } from '@/schemas/staff.schema'
 import { Input } from '@/components/ui/input'
 import {
   Field,
@@ -19,7 +18,7 @@ import PhoneInput from '../ui/phone-input'
 import { AddressInput } from '../ui/address-input'
 
 export function StaffForm() {
-  const form = useFormContext<CreateStaffSchema | UpdateStaffSchema>()
+  const form = useFormContext()
   const {
     control,
     formState: { errors },

@@ -47,22 +47,12 @@ export function AppointmentTypeEdit({
   const { handleSubmit, reset } = form
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await updateMutation.mutateAsync({
-        id: appointmentType.id,
-        data,
-      })
-      toast.success('Tipo de cita actualizado', {
-        description: 'El tipo de cita ha sido actualizado exitosamente.',
-      })
-      onOpenChange?.(false)
-      onSuccess?.()
-    } catch (error) {
-      toast.error('Error', {
-        description:
-          'No se pudo actualizar el tipo de cita. Por favor, intenta de nuevo.',
-      })
-    }
+    await updateMutation.mutateAsync({
+      id: appointmentType.id,
+      data,
+    })
+    onOpenChange?.(false)
+    onSuccess?.()
   })
 
   const handleOpenChange = (open: boolean) => {
