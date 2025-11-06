@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { toast } from 'sonner'
 
 export function useSpeciesDelete() {
   const queryClient = useQueryClient()
@@ -10,24 +11,6 @@ export function useSpeciesDelete() {
     mutationFn: async (id: string) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
-      }
-
-      // Verificar si hay razas asociadas
-      const { data: breeds, error: breedsError } = await supabase
-        .from('breeds')
-        .select('id')
-        .eq('species_id', id)
-        .eq('tenant_id', currentTenant.id)
-        .limit(1)
-
-      if (breedsError) {
-        throw new Error(`Error al verificar razas: ${breedsError.message}`)
-      }
-
-      if (breeds && breeds.length > 0) {
-        throw new Error(
-          'No se puede eliminar la especie porque tiene razas asociadas'
-        )
       }
 
       const { error } = await supabase
@@ -46,6 +29,12 @@ export function useSpeciesDelete() {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'species'],
+      })
+      toast.success('Especie eliminada exitosamente')
+    },
+    onError: (error) => {
+      toast.error(`Error al eliminar especie`, {
+        description: error.message,
       })
     },
   })

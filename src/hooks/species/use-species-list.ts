@@ -5,16 +5,16 @@ import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 
-interface UseSpeciesParams {
+export function useSpeciesList({
+  filters = [],
+  search,
+  orders = [],
+}: {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
-  is_active?: boolean
-}
-
-export function useSpeciesList(params?: UseSpeciesParams) {
+}) {
   const { currentTenant } = useCurrentTenantStore()
-  const { filters = [], search, orders = [] } = params || {}
 
   return useQuery({
     queryKey: [currentTenant?.id, 'species', filters, search, orders],
@@ -30,26 +30,7 @@ export function useSpeciesList(params?: UseSpeciesParams) {
 
       // Aplicar filtros
       filters.forEach((filter) => {
-        switch (filter.operator) {
-          case 'eq':
-            query = query.eq(filter.field, filter.value)
-            break
-          case 'gte':
-            query = query.gte(filter.field, filter.value)
-            break
-          case 'lte':
-            query = query.lte(filter.field, filter.value)
-            break
-          case 'like':
-            query = query.like(filter.field, `%${filter.value}%`)
-            break
-          case 'ilike':
-            query = query.ilike(filter.field, `%${filter.value}%`)
-            break
-          case 'in':
-            query = query.in(filter.field, filter.value)
-            break
-        }
+        query = query.filter(filter.field, filter.operator, filter.value)
       })
 
       // Aplicar búsqueda
@@ -57,17 +38,11 @@ export function useSpeciesList(params?: UseSpeciesParams) {
         query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
       }
 
-      // Aplicar ordenamiento
-      if (orders.length > 0) {
-        orders.forEach((order) => {
-          query = query.order(order.field, {
-            ascending: order.direction === 'asc',
-          })
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
         })
-      } else {
-        // Orden por defecto
-        query = query.order('name')
-      }
+      })
 
       const { data, error } = await query
 
@@ -75,7 +50,7 @@ export function useSpeciesList(params?: UseSpeciesParams) {
         throw new Error(`Error al obtener especies: ${error.message}`)
       }
 
-      return data as Tables<'species'>[]
+      return data
     },
     enabled: !!currentTenant?.id,
   })

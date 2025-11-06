@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { SpeciesUpdate } from '@/schemas/species.schema'
+import { toast } from 'sonner'
 
 export function useSpeciesUpdate() {
   const queryClient = useQueryClient()
@@ -33,13 +34,22 @@ export function useSpeciesUpdate() {
 
       return species
     },
-    onSuccess: () => {
+    onSuccess: (species) => {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'species'],
       })
       queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'species', species.id],
+      })
+      queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'breeds'],
+      })
+      toast.success('Especie actualizada exitosamente')
+    },
+    onError: (error) => {
+      toast.error(`Error al actualizar especie`, {
+        description: error.message,
       })
     },
   })

@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { SpeciesCreate } from '@/schemas/species.schema'
+import { toast } from 'sonner'
 
 export function useSpeciesCreate() {
   const queryClient = useQueryClient()
@@ -35,6 +36,12 @@ export function useSpeciesCreate() {
       // Invalidar queries relacionadas
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'species'],
+      })
+      toast.success('Especie creada exitosamente')
+    },
+    onError: (error) => {
+      toast.error(`Error al crear especie`, {
+        description: error.message,
       })
     },
   })
