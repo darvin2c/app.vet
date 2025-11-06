@@ -1,10 +1,11 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, Fragment } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   useReactTable,
   HeaderGroup,
   Header,
@@ -42,6 +43,7 @@ import {
   ArrowUpRightIcon,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Stethoscope,
 } from 'lucide-react'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
@@ -57,6 +59,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { Alert, AlertDescription } from '../ui/alert'
+import { BreedList } from '../breeds/breed-list'
 
 type Species = Database['public']['Tables']['species']['Row']
 
@@ -69,6 +72,16 @@ export function SpeciesList({
 }) {
   // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
+  // Estado para expansión en tarjetas y lista
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set())
+  const toggleExpand = (id: string) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
@@ -127,12 +140,32 @@ export function SpeciesList({
         <SpeciesActions species={row.original} />
       ),
     },
+    {
+      id: 'expander',
+      header: () => null,
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="p-0 h-6 w-6"
+          onClick={row.getToggleExpandedHandler()}
+        >
+          {row.getIsExpanded() ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+      ),
+    },
   ]
 
   const table = useReactTable({
     data: species,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getExpandedRowModel: getExpandedRowModel(),
+    getRowCanExpand: () => true,
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -183,13 +216,30 @@ export function SpeciesList({
                   </p>
                 )}
               </div>
-              <SpeciesActions species={speciesItem} />
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => toggleExpand(speciesItem.id)}
+                >
+                  {expandedIds.has(speciesItem.id) ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </Button>
+                <SpeciesActions species={speciesItem} />
+              </div>
             </div>
-
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={speciesItem.is_active} />
             </div>
           </CardContent>
+          {expandedIds.has(speciesItem.id) && (
+            <div className="px-6 pb-6">
+              <BreedList speciesId={speciesItem.id} viewMode={viewMode} />
+            </div>
+          )}
         </Card>
       ))}
     </div>
@@ -199,20 +249,38 @@ export function SpeciesList({
   const renderListView = () => (
     <ItemGroup className="space-y-2">
       {species.map((speciesItem) => (
-        <Item key={speciesItem.id} variant="outline">
-          <ItemContent>
-            <ItemTitle>{speciesItem.name}</ItemTitle>
-            {speciesItem.description && (
-              <ItemDescription>{speciesItem.description}</ItemDescription>
-            )}
-            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              <IsActiveDisplay value={speciesItem.is_active} />
+        <Fragment key={speciesItem.id}>
+          <Item variant="outline">
+            <ItemContent>
+              <ItemTitle>{speciesItem.name}</ItemTitle>
+              {speciesItem.description && (
+                <ItemDescription>{speciesItem.description}</ItemDescription>
+              )}
+              <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                <IsActiveDisplay value={speciesItem.is_active} />
+              </div>
+            </ItemContent>
+            <ItemActions>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => toggleExpand(speciesItem.id)}
+              >
+                {expandedIds.has(speciesItem.id) ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+              </Button>
+              <SpeciesActions species={speciesItem} />
+            </ItemActions>
+          </Item>
+          {expandedIds.has(speciesItem.id) && (
+            <div className="px-2">
+              <BreedList speciesId={speciesItem.id} viewMode={viewMode} />
             </div>
-          </ItemContent>
-          <ItemActions>
-            <SpeciesActions species={speciesItem} />
-          </ItemActions>
-        </Item>
+          )}
+        </Fragment>
       ))}
     </ItemGroup>
   )
@@ -287,7 +355,38 @@ export function SpeciesList({
               </TableHeader>
               <TableBody>
                 {table.getRowModel().rows?.length ? (
-                  table.getRowModel().rows.map(renderTableRow)
+                  table.getRowModel().rows.map((row) => (
+                    <Fragment key={row.id}>
+                      <TableRow
+                        key={row.id}
+                        data-state={row.getIsSelected() && 'selected'}
+                      >
+                        {row
+                          .getVisibleCells()
+                          .map((cell: Cell<Species, unknown>) => (
+                            <TableCell key={cell.id}>
+                              {flexRender(
+                                cell.column.columnDef.cell,
+                                cell.getContext()
+                              )}
+                            </TableCell>
+                          ))}
+                      </TableRow>
+                      {row.getIsExpanded() && (
+                        <TableRow>
+                          <TableCell
+                            colSpan={columns.length}
+                            className="p-0 border-0"
+                          >
+                            <BreedList
+                              speciesId={row.original.id}
+                              viewMode={viewMode}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </Fragment>
+                  ))
                 ) : (
                   <TableRow>
                     <TableCell

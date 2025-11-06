@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -21,9 +21,19 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import {
+  ItemGroup,
+  Item,
+  ItemContent,
+  ItemTitle,
+  ItemDescription,
+  ItemActions,
+  ItemMedia,
+} from '@/components/ui/item'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
   Empty,
@@ -31,6 +41,7 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
+import { ViewModeToggle, type ViewMode } from '@/components/ui/view-mode-toggle'
 import { BreedActions } from './breed-actions'
 import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { Tables } from '@/types/supabase.types'
@@ -38,6 +49,8 @@ import { FilterConfig, useFilters } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { useSearch } from '@/hooks/use-search'
+import { format } from 'date-fns'
+import { ChevronRight, ChevronDown, Dog, Calendar, Info } from 'lucide-react'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null
@@ -47,16 +60,17 @@ interface BreedListProps {
   speciesId?: string
   filterConfig?: FilterConfig[]
   orderByConfig?: OrderByConfig
+  viewMode?: ViewMode
 }
 
 export function BreedList({
   speciesId,
   filterConfig = [],
   orderByConfig,
+  viewMode = 'table',
 }: BreedListProps) {
-  const [view, setView] = useState<'table' | 'card'>('table')
   const { appliedFilters } = useFilters(filterConfig)
-  const { appliedSorts } = useOrderBy()
+  const { appliedSorts } = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
   const {
@@ -75,7 +89,10 @@ export function BreedList({
       accessorKey: 'name',
       header: 'Nombre',
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
+        <div className="flex items-center gap-2">
+          <Dog className="h-4 w-4 text-muted-foreground" />
+          <span className="font-medium">{row.getValue('name')}</span>
+        </div>
       ),
     },
     {
@@ -96,7 +113,9 @@ export function BreedList({
       cell: ({ row }) => {
         const description = row.getValue('description') as string
         return description ? (
-          <div className="max-w-[200px] truncate">{description}</div>
+          <div className="max-w-[200px] truncate" title={description}>
+            {description}
+          </div>
         ) : (
           <span className="text-muted-foreground">Sin descripción</span>
         )
@@ -149,81 +168,106 @@ export function BreedList({
     )
   }
 
-  if (view === 'card') {
+  if (viewMode === 'cards') {
     return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {breeds.map((breed) => (
-          <Card key={breed.id}>
+          <Card key={breed.id} className="overflow-hidden">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">{breed.name}</CardTitle>
-                <BreedActions breed={breed} />
+                <div className="flex items-center gap-2">
+                  <Badge variant={breed.is_active ? 'default' : 'secondary'}>
+                    {breed.is_active ? 'Activo' : 'Inactivo'}
+                  </Badge>
+                </div>
               </div>
-              {breed.species && (
-                <CardDescription>
-                  <Badge variant="secondary">{breed.species.name}</Badge>
-                </CardDescription>
-              )}
+              <p className="text-sm text-muted-foreground">
+                {breed.description}
+              </p>
             </CardHeader>
             <CardContent>
-              {breed.description && (
-                <p className="text-sm text-muted-foreground mb-3">
-                  {breed.description}
-                </p>
-              )}
-              <div className="flex items-center justify-between">
-                <Badge
-                  variant={breed.is_active ? 'default' : 'secondary'}
-                  className="text-xs"
-                >
-                  {breed.is_active ? 'Activa' : 'Inactiva'}
-                </Badge>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Especie:</span>
+                  <Badge variant="outline">{breed.species?.name}</Badge>
+                </div>
+                <div className="flex items-center gap-2 text-sm">
+                  <span className="text-muted-foreground">Creado:</span>
+                  <span>
+                    {format(new Date(breed.created_at), 'dd/MM/yyyy')}
+                  </span>
+                </div>
               </div>
             </CardContent>
+            <CardFooter>
+              <BreedActions breed={breed} />
+            </CardFooter>
           </Card>
         ))}
       </div>
     )
   }
 
+  if (viewMode === 'list') {
+    return (
+      <ItemGroup>
+        {breeds.map((breed) => (
+          <Item key={breed.id} className="hover:bg-muted/50">
+            <ItemMedia>
+              <Dog className="h-10 w-10 text-muted-foreground" />
+            </ItemMedia>
+            <ItemContent>
+              <ItemTitle>{breed.name}</ItemTitle>
+              <ItemDescription>{breed.description}</ItemDescription>
+              <div className="flex items-center gap-4 mt-2">
+                <Badge variant="outline">{breed.species?.name}</Badge>
+                <Badge variant={breed.is_active ? 'default' : 'secondary'}>
+                  {breed.is_active ? 'Activo' : 'Inactivo'}
+                </Badge>
+                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                  <Calendar className="h-3 w-3" />
+                  <span>
+                    {format(new Date(breed.created_at), 'dd/MM/yyyy')}
+                  </span>
+                </div>
+              </div>
+            </ItemContent>
+            <ItemActions>
+              <BreedActions breed={breed} />
+            </ItemActions>
+          </Item>
+        ))}
+      </ItemGroup>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-2">
-          <Button
-            variant={view === 'table' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setView('table')}
-          >
-            Tabla
-          </Button>
-        </div>
-      </div>
-
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                ))}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => (
+                <TableHead key={header.id}>
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <Fragment key={row.id}>
                 <TableRow
-                  key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className="hover:bg-muted/50"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -234,20 +278,17 @@ export function BreedList({
                     </TableCell>
                   ))}
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No hay resultados.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+              </Fragment>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No hay resultados.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
     </div>
   )
 }
