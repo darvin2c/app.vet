@@ -17,24 +17,23 @@ export const appointmentBaseSchema = z.object({
       /^#[0-9A-Fa-f]{6}$/,
       'El color debe ser un código hexadecimal válido (#ffffff)'
     ),
-  is_active: z.coerce.boolean().default(true),
+  is_active: z.boolean().default(true),
 })
 
 // Esquema para crear tipo de cita
-export const createAppointmentTypeSchema = appointmentBaseSchema
+export const appointmentTypeCreateSchema = appointmentBaseSchema
 
 // Esquema para actualizar tipo de cita
-export const updateAppointmentTypeSchema = appointmentBaseSchema
-  .partial()
-  .extend({
-    is_active: z.boolean().optional(),
-  })
+export const appointmentTypeUpdateSchema = appointmentBaseSchema.partial()
+
+export const appointmentTypeImportSchema = appointmentBaseSchema.extend({
+  is_active: z.coerce.boolean().default(true),
+})
 
 // Tipos derivados
-export type AppointmentTypeCreate = z.infer<typeof createAppointmentTypeSchema>
-export type AppointmentTypeUpdate = z.infer<typeof updateAppointmentTypeSchema>
-
-// Tipos para compatibilidad
-export type CreateAppointmentTypeSchema = AppointmentTypeCreate
-export type UpdateAppointmentTypeSchema = AppointmentTypeUpdate
-export const AppointmentTypeSchema = createAppointmentTypeSchema
+export type AppointmentTypeCreateSchema = z.infer<
+  typeof appointmentTypeCreateSchema
+>
+export type AppointmentTypeUpdateSchema = z.infer<
+  typeof appointmentTypeUpdateSchema
+>

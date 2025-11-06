@@ -10,8 +10,8 @@ import {
 import { useAppointmentTypeCreateBulk } from '@/hooks/appointment-types/use-appointment-type-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
 import {
-  createAppointmentTypeSchema,
-  type CreateAppointmentTypeSchema,
+  AppointmentTypeCreateSchema,
+  appointmentTypeImportSchema,
 } from '@/schemas/appointment-types.schema'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
@@ -26,7 +26,7 @@ export function AppointmentTypeImport({
 }: AppointmentTypeImportProps) {
   const createBulkMutation = useAppointmentTypeCreateBulk()
 
-  const handleImport = async (data: CreateAppointmentTypeSchema[]) => {
+  const handleImport = async (data: AppointmentTypeCreateSchema[]) => {
     try {
       await createBulkMutation.mutateAsync(data)
       onOpenChange?.(false)
@@ -47,7 +47,7 @@ export function AppointmentTypeImport({
         </SheetHeader>
         <ScrollArea className="h-[calc(100vh-100px)]">
           <DataImport
-            schema={createAppointmentTypeSchema}
+            schema={appointmentTypeImportSchema}
             onImport={handleImport}
             isLoading={createBulkMutation.isPending}
             templateName="tipos_de_cita_template.csv"

@@ -1,7 +1,7 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { useAppointmentTypeCreate } from '@/hooks/appointment-types/use-appointment-type-create'
 import { AppointmentTypeForm } from './appointment-type-form'
 import {
@@ -13,12 +13,11 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import {
-  CreateAppointmentTypeSchema,
-  createAppointmentTypeSchema,
-} from '@/schemas/appointment-types.schema'
-import { toast } from 'sonner'
 import { Form } from '../ui/form'
+import {
+  AppointmentTypeCreateSchema,
+  appointmentTypeCreateSchema,
+} from '@/schemas/appointment-types.schema'
 
 interface AppointmentTypeCreateProps {
   open?: boolean
@@ -32,7 +31,7 @@ export function AppointmentTypeCreate({
   const createMutation = useAppointmentTypeCreate()
 
   const form = useForm({
-    resolver: zodResolver(createAppointmentTypeSchema),
+    resolver: zodResolver(appointmentTypeCreateSchema),
     defaultValues: {
       name: '',
       description: '',

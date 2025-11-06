@@ -14,13 +14,10 @@ import {
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import type { Tables } from '@/types/supabase.types'
-import {
-  UpdateAppointmentTypeSchema,
-  updateAppointmentTypeSchema,
-} from '@/schemas/appointment-types.schema'
 import { toast } from 'sonner'
 import { Form } from '../ui/form'
 import { Separator } from '../ui/separator'
+import { appointmentTypeUpdateSchema } from '@/schemas/appointment-types.schema'
 
 interface AppointmentTypeEditProps {
   appointmentType: Tables<'appointment_types'>
@@ -37,8 +34,8 @@ export function AppointmentTypeEdit({
 }: AppointmentTypeEditProps) {
   const updateMutation = useAppointmentTypeUpdate()
 
-  const form = useForm<UpdateAppointmentTypeSchema>({
-    resolver: zodResolver(updateAppointmentTypeSchema),
+  const form = useForm({
+    resolver: zodResolver(appointmentTypeUpdateSchema),
     defaultValues: {
       name: appointmentType.name,
       description: appointmentType.description || '',
@@ -49,7 +46,7 @@ export function AppointmentTypeEdit({
 
   const { handleSubmit, reset } = form
 
-  const onSubmit = handleSubmit(async (data: UpdateAppointmentTypeSchema) => {
+  const onSubmit = handleSubmit(async (data) => {
     try {
       await updateMutation.mutateAsync({
         id: appointmentType.id,

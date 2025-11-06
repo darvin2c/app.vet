@@ -10,10 +10,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { IsActiveField } from '@/components/ui/is-active-field'
-import type {
-  CreateAppointmentTypeSchema,
-  UpdateAppointmentTypeSchema,
-} from '@/schemas/appointment-types.schema'
 
 const PRESET_COLORS = [
   '#3B82F6', // Blue
@@ -34,9 +30,7 @@ export function AppointmentTypeForm() {
     setValue,
     watch,
     formState: { errors },
-  } = useFormContext<
-    CreateAppointmentTypeSchema | UpdateAppointmentTypeSchema
-  >()
+  } = useFormContext()
 
   const selectedColor = watch('color')
 
