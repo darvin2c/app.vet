@@ -2,23 +2,26 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { BreedCreate } from './breed-create'
-
-interface BreedCreateButtonProps {
-  selectedSpeciesId?: string
-}
 
 export function BreedCreateButton({
   selectedSpeciesId,
-}: BreedCreateButtonProps) {
+  children,
+  ...props
+}: ResponsiveButtonProps & {
+  selectedSpeciesId?: string
+}) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <ResponsiveButton onClick={() => setOpen(true)}>
+      <ResponsiveButton onClick={() => setOpen(true)} {...props}>
         <Plus className="h-4 w-4" />
-        Nueva Raza
+        {children || 'Nueva'}
       </ResponsiveButton>
 
       <BreedCreate

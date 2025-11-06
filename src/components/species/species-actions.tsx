@@ -1,12 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2, Plus } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Plus, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Tables } from '@/types/supabase.types'
@@ -33,10 +34,6 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Agregar Raza
-          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
@@ -47,6 +44,15 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Eliminar
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Agregar Raza
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
+            <Upload className="mr-2 h-4 w-4" />
+            Importar Razas
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

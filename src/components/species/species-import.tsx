@@ -22,14 +22,8 @@ export function SpeciesImport({ open, onOpenChange }: SpeciesImportProps) {
   const createSpeciesBulk = useSpeciesCreateBulk()
 
   const handleImport = async (data: SpeciesCreate[]) => {
-    try {
-      await createSpeciesBulk.mutateAsync(data)
-      toast.success('Especies importadas exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      // El error se manejará a través de la prop error del DataImport
-      console.error('Error al importar especies:', error)
-    }
+    await createSpeciesBulk.mutateAsync(data)
+    onOpenChange(false)
   }
 
   return (

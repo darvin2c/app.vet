@@ -39,7 +39,9 @@ export function useSpeciesCreateBulk() {
     },
     onError: (error) => {
       console.error('Error al crear especies:', error)
-      toast.error(error.message || 'Error al crear especies')
+      toast.error('Error al crear especies', {
+        description: error.message,
+      })
     },
   })
 }

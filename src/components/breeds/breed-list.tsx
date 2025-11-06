@@ -7,7 +7,6 @@ import {
   flexRender,
   type ColumnDef,
 } from '@tanstack/react-table'
-import { Badge } from '@/components/ui/badge'
 import {
   Table,
   TableBody,
@@ -16,13 +15,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   ItemGroup,
   Item,
@@ -30,7 +23,6 @@ import {
   ItemTitle,
   ItemDescription,
   ItemActions,
-  ItemMedia,
 } from '@/components/ui/item'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
@@ -38,6 +30,7 @@ import {
   EmptyHeader,
   EmptyTitle,
   EmptyDescription,
+  EmptyContent,
 } from '@/components/ui/empty'
 import { type ViewMode } from '@/components/ui/view-mode-toggle'
 import { BreedActions } from './breed-actions'
@@ -47,9 +40,10 @@ import { FilterConfig, useFilters } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { useSearch } from '@/hooks/use-search'
-import { format } from 'date-fns'
-import { Calendar } from 'lucide-react'
+import { ArrowUpRightIcon } from 'lucide-react'
 import { IsActiveDisplay } from '../ui/is-active-field'
+import { BreedCreateButton } from './breed-create-button'
+import { Button } from '../ui/button'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null
@@ -143,9 +137,26 @@ export function BreedList({
         <EmptyHeader>
           <EmptyTitle>No hay razas</EmptyTitle>
           <EmptyDescription>
-            No se encontraron razas con los filtros aplicados.
+            No se encontraron razas que coincidan con los filtros aplicados.
           </EmptyDescription>
         </EmptyHeader>
+        <EmptyContent>
+          <div className="flex gap-2">
+            <BreedCreateButton selectedSpeciesId={speciesId}>
+              Crear Raza
+            </BreedCreateButton>
+          </div>
+        </EmptyContent>
+        <Button
+          variant="link"
+          asChild
+          className="text-muted-foreground"
+          size="sm"
+        >
+          <a href="#">
+            Saber Más <ArrowUpRightIcon />
+          </a>
+        </Button>
       </Empty>
     )
   }
