@@ -17,11 +17,8 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import {
-  ProductBrandSchema,
-  type ProductBrandSchemaType,
-} from '@/schemas/product-brands.schema'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
+import { productBrandCreateSchema } from '@/schemas/product-brands.schema'
 
 interface ProductBrandCreateProps {
   children?: React.ReactNode
@@ -39,15 +36,20 @@ export function ProductBrandCreate({
   const setOpen = controlledOnOpenChange ?? setInternalOpen
   const mutation = useProductBrandCreate()
 
-  const form = useForm<ProductBrandSchemaType>({
-    resolver: zodResolver(ProductBrandSchema),
+  const form = useForm({
+    resolver: zodResolver(productBrandCreateSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+      is_active: true,
+    },
   })
 
-  const onSubmit = async (data: ProductBrandSchemaType) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await mutation.mutateAsync(data)
     form.reset()
     setOpen(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -60,17 +62,14 @@ export function ProductBrandCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4">
               <ProductBrandForm />
             </div>
             <DrawerFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={mutation.isPending}
               >
                 Crear Marca

@@ -45,7 +45,9 @@ export function useProductBrandCreateBulk() {
     },
     onError: (error) => {
       console.error('Error al crear marcas de productos:', error)
-      toast.error(error.message || 'Error al crear marcas de productos')
+      toast.error('Error al crear marcas de productos', {
+        description: error.message,
+      })
     },
   })
 }

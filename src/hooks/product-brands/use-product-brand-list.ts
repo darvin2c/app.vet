@@ -1,12 +1,21 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import { Tables } from '@/types/supabase.types'
-import { ProductBrandFilters } from '@/schemas/product-brands.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedSort } from '@/components/ui/order-by'
 
 type ProductBrand = Tables<'product_brands'>
 
-export default function useProductBrandList(filters?: ProductBrandFilters) {
+export default function useProductBrandList({
+  filters = [],
+  orders = [],
+  search,
+}: {
+  filters?: AppliedFilter[]
+  orders?: AppliedSort[]
+  search?: string
+}) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
@@ -23,8 +32,18 @@ export default function useProductBrandList(filters?: ProductBrandFilters) {
         .order('name', { ascending: true })
 
       // Aplicar filtros
-      if (filters?.search) {
-        query = query.ilike('name', `%${filters.search}%`)
+      filters.forEach((filter) => {
+        query.filter(filter.field, filter.operator, filter.value)
+      })
+
+      // Aplicar ordenamiento
+      orders.forEach((order) => {
+        query = query.order(order.field, { ascending: order.ascending })
+      })
+
+      // Aplicar búsqueda
+      if (search) {
+        query = query.ilike('name', `%${search}%`)
       }
 
       const { data, error } = await query

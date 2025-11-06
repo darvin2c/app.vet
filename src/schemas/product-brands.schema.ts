@@ -4,27 +4,15 @@ import { z } from 'zod'
 export const productBrandBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
   description: z.string().optional(),
+  is_active: z.boolean().default(true),
 })
 
 // Schema para crear product brand
-export const createProductBrandSchema = productBrandBaseSchema
-
-// Schema para actualizar product brand
-export const updateProductBrandSchema = productBrandBaseSchema.partial()
-
-// Schema para filtros
-export const productBrandFiltersSchema = z.object({
-  search: z.string().optional(),
+export const productBrandCreateSchema = productBrandBaseSchema
+export const productBrandUpdateSchema = productBrandBaseSchema.partial()
+export const productBrandImportSchema = productBrandBaseSchema.extend({
+  is_active: z.coerce.boolean().default(true),
 })
 
-// Tipos TypeScript
-export type ProductBrandBase = z.infer<typeof productBrandBaseSchema>
-export type CreateProductBrand = z.infer<typeof createProductBrandSchema>
-export type CreateProductBrandSchema = z.infer<typeof createProductBrandSchema>
-export type UpdateProductBrand = z.infer<typeof updateProductBrandSchema>
-export type UpdateProductBrandSchema = z.infer<typeof updateProductBrandSchema>
-export type ProductBrandFilters = z.infer<typeof productBrandFiltersSchema>
-
-// Tipos para compatibilidad
-export type ProductBrandSchemaType = CreateProductBrand
-export const ProductBrandSchema = createProductBrandSchema
+export type ProductBrandCreateSchema = z.infer<typeof productBrandCreateSchema>
+export type ProductBrandUpdateSchema = z.infer<typeof productBrandUpdateSchema>

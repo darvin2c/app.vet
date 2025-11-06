@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -11,11 +10,11 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataImport } from '@/components/ui/data-import'
 import { useProductBrandCreateBulk } from '@/hooks/product-brands/use-product-brand-create-bulk'
-import {
-  createProductBrandSchema,
-  CreateProductBrandSchema,
-} from '@/schemas/product-brands.schema'
 import { toast } from 'sonner'
+import {
+  ProductBrandCreateSchema,
+  productBrandImportSchema,
+} from '@/schemas/product-brands.schema'
 
 interface ProductBrandImportProps {
   open: boolean
@@ -28,14 +27,9 @@ export function ProductBrandImport({
 }: ProductBrandImportProps) {
   const createProductBrandBulk = useProductBrandCreateBulk()
 
-  const handleImport = async (data: CreateProductBrandSchema[]) => {
-    try {
-      await createProductBrandBulk.mutateAsync(data)
-      toast.success('Marcas de productos importadas exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Error al importar marcas de productos:', error)
-    }
+  const handleImport = async (data: ProductBrandCreateSchema[]) => {
+    await createProductBrandBulk.mutateAsync(data)
+    onOpenChange(false)
   }
 
   return (
@@ -50,7 +44,7 @@ export function ProductBrandImport({
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createProductBrandSchema}
+            schema={productBrandImportSchema}
             onImport={handleImport}
             isLoading={createProductBrandBulk.isPending}
             templateName="marcas_productos_template.csv"

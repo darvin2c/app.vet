@@ -16,12 +16,9 @@ import {
 import { Form } from '@/components/ui/form'
 
 import { ProductBrandForm } from './product-brand-form'
-import {
-  updateProductBrandSchema,
-  type UpdateProductBrandSchema,
-} from '@/schemas/product-brands.schema'
 import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-update'
 import { Tables } from '@/types/supabase.types'
+import { productBrandUpdateSchema } from '@/schemas/product-brands.schema'
 
 interface ProductBrandEditProps {
   brand: Tables<'product_brands'>
@@ -36,8 +33,8 @@ export function ProductBrandEdit({
 }: ProductBrandEditProps) {
   const mutation = useProductBrandUpdate()
 
-  const form = useForm<UpdateProductBrandSchema>({
-    resolver: zodResolver(updateProductBrandSchema),
+  const form = useForm({
+    resolver: zodResolver(productBrandUpdateSchema),
     defaultValues: {
       name: brand.name,
       description: brand.description || '',
@@ -53,13 +50,13 @@ export function ProductBrandEdit({
     }
   }, [brand, form])
 
-  const onSubmit = async (data: UpdateProductBrandSchema) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await mutation.mutateAsync({
       id: brand.id,
       ...data,
     })
     onOpenChange(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -71,17 +68,14 @@ export function ProductBrandEdit({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit as any)}
-            className="space-y-4"
-          >
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <ProductBrandForm />
             </div>
             <DrawerFooter>
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={mutation.isPending}
               >
                 Actualizar Marca
