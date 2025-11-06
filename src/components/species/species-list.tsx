@@ -100,6 +100,24 @@ export function SpeciesList({
 
   const columns: ColumnDef<Species>[] = [
     {
+      id: 'expander',
+      header: () => null,
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="sm"
+          className="p-0 h-6 w-6"
+          onClick={row.getToggleExpandedHandler()}
+        >
+          {row.getIsExpanded() ? (
+            <ChevronDown className="h-4 w-4" />
+          ) : (
+            <ChevronRight className="h-4 w-4" />
+          )}
+        </Button>
+      ),
+    },
+    {
       accessorKey: 'name',
       header: ({ header }) => (
         <OrderByTableHeader field="name" orderByHook={orderByHook}>
@@ -138,24 +156,6 @@ export function SpeciesList({
       id: 'actions',
       cell: ({ row }: { row: Row<Species> }) => (
         <SpeciesActions species={row.original} />
-      ),
-    },
-    {
-      id: 'expander',
-      header: () => null,
-      cell: ({ row }) => (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="p-0 h-6 w-6"
-          onClick={row.getToggleExpandedHandler()}
-        >
-          {row.getIsExpanded() ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
-        </Button>
       ),
     },
   ]

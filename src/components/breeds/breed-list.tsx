@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, Fragment } from 'react'
+import { Fragment } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
@@ -8,7 +8,6 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -20,7 +19,6 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -41,7 +39,7 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
-import { ViewModeToggle, type ViewMode } from '@/components/ui/view-mode-toggle'
+import { type ViewMode } from '@/components/ui/view-mode-toggle'
 import { BreedActions } from './breed-actions'
 import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { Tables } from '@/types/supabase.types'
@@ -50,7 +48,8 @@ import { OrderByConfig } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { useSearch } from '@/hooks/use-search'
 import { format } from 'date-fns'
-import { ChevronRight, ChevronDown, Dog, Calendar, Info } from 'lucide-react'
+import { Calendar } from 'lucide-react'
+import { IsActiveDisplay } from '../ui/is-active-field'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null
@@ -90,22 +89,9 @@ export function BreedList({
       header: 'Nombre',
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          <Dog className="h-4 w-4 text-muted-foreground" />
           <span className="font-medium">{row.getValue('name')}</span>
         </div>
       ),
-    },
-    {
-      accessorKey: 'species',
-      header: 'Especie',
-      cell: ({ row }) => {
-        const species = row.original.species
-        return species ? (
-          <Badge variant="secondary">{species.name}</Badge>
-        ) : (
-          <span className="text-muted-foreground">Sin especie</span>
-        )
-      },
     },
     {
       accessorKey: 'description',
@@ -124,11 +110,7 @@ export function BreedList({
     {
       accessorKey: 'is_active',
       header: 'Estado',
-      cell: ({ row }) => (
-        <Badge variant={row.getValue('is_active') ? 'default' : 'secondary'}>
-          {row.getValue('is_active') ? 'Activa' : 'Inactiva'}
-        </Badge>
-      ),
+      cell: ({ row }) => <IsActiveDisplay value={row.getValue('is_active')} />,
     },
     {
       id: 'actions',
@@ -177,29 +159,14 @@ export function BreedList({
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">{breed.name}</CardTitle>
                 <div className="flex items-center gap-2">
-                  <Badge variant={breed.is_active ? 'default' : 'secondary'}>
-                    {breed.is_active ? 'Activo' : 'Inactivo'}
-                  </Badge>
+                  <IsActiveDisplay value={breed.is_active} />
                 </div>
               </div>
               <p className="text-sm text-muted-foreground">
-                {breed.description}
+                {breed.description || 'Sin descripción'}
               </p>
             </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">Especie:</span>
-                  <Badge variant="outline">{breed.species?.name}</Badge>
-                </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <span className="text-muted-foreground">Creado:</span>
-                  <span>
-                    {format(new Date(breed.created_at), 'dd/MM/yyyy')}
-                  </span>
-                </div>
-              </div>
-            </CardContent>
+
             <CardFooter>
               <BreedActions breed={breed} />
             </CardFooter>
@@ -214,23 +181,13 @@ export function BreedList({
       <ItemGroup>
         {breeds.map((breed) => (
           <Item key={breed.id} className="hover:bg-muted/50">
-            <ItemMedia>
-              <Dog className="h-10 w-10 text-muted-foreground" />
-            </ItemMedia>
             <ItemContent>
               <ItemTitle>{breed.name}</ItemTitle>
-              <ItemDescription>{breed.description}</ItemDescription>
+              <ItemDescription>
+                {breed.description || 'Sin descripción'}
+              </ItemDescription>
               <div className="flex items-center gap-4 mt-2">
-                <Badge variant="outline">{breed.species?.name}</Badge>
-                <Badge variant={breed.is_active ? 'default' : 'secondary'}>
-                  {breed.is_active ? 'Activo' : 'Inactivo'}
-                </Badge>
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Calendar className="h-3 w-3" />
-                  <span>
-                    {format(new Date(breed.created_at), 'dd/MM/yyyy')}
-                  </span>
-                </div>
+                <IsActiveDisplay value={breed.is_active} />
               </div>
             </ItemContent>
             <ItemActions>
