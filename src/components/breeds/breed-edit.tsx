@@ -1,23 +1,22 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { BreedForm } from './breed-form'
 import { useBreedUpdate } from '@/hooks/breeds/use-breed-update'
 import { breedUpdateSchema, type BreedUpdate } from '@/schemas/breeds.schema'
 import { Tables } from '@/types/supabase.types'
-import { Pencil } from 'lucide-react'
+import { ScrollArea } from '../ui/scroll-area'
 
 interface BreedEditProps {
   open: boolean
@@ -26,7 +25,6 @@ interface BreedEditProps {
 }
 
 export function BreedEdit({ open, onOpenChange, breed }: BreedEditProps) {
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const updateBreed = useBreedUpdate()
 
   const form = useForm<BreedUpdate>({
@@ -51,57 +49,50 @@ export function BreedEdit({ open, onOpenChange, breed }: BreedEditProps) {
     }
   }, [breed, form])
 
-  const onSubmit = async (data: BreedUpdate) => {
-    try {
-      setIsSubmitting(true)
-      await updateBreed.mutateAsync({ id: breed.id, data })
-      toast.success('Raza actualizada exitosamente')
-      onOpenChange(false)
-    } catch (error) {
-      console.error('Error al actualizar raza:', error)
-      toast.error('Error al actualizar la raza')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
+  const onSubmit = form.handleSubmit(async (data: BreedUpdate) => {
+    await updateBreed.mutateAsync({ id: breed.id, data })
+    onOpenChange(false)
+    form.reset()
+  })
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[96vh]">
-        <DrawerHeader>
-          <DrawerTitle>Editar Raza</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos de la raza {breed.name}
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="max-w-2xl">
+        <ScrollArea>
+          <SheetHeader>
+            <SheetTitle>Editar Raza</SheetTitle>
+            <SheetDescription>
+              Modifica los datos de la raza {breed.name}
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <BreedForm />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="flex-1 overflow-y-auto px-4">
+            <FormProvider {...form}>
+              <form onSubmit={onSubmit} className="space-y-6">
+                <BreedForm />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            icon={Pencil}
-            isLoading={updateBreed.isPending}
-            disabled={updateBreed.isPending}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            {updateBreed.isPending ? 'Actualizando...' : 'Actualizar Raza'}
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <ResponsiveButton
+              type="submit"
+              isLoading={updateBreed.isPending}
+              disabled={updateBreed.isPending}
+              onClick={onSubmit}
+            >
+              {updateBreed.isPending ? 'Actualizando...' : 'Actualizar Raza'}
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updateBreed.isPending}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

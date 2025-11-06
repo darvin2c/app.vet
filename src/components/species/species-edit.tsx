@@ -1,18 +1,16 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpeciesForm } from './species-form'
 import {
@@ -21,7 +19,8 @@ import {
 } from '@/schemas/species.schema'
 import { useSpeciesUpdate } from '@/hooks/species/use-species-update'
 import { Tables } from '@/types/supabase.types'
-import { Edit } from 'lucide-react'
+import { ScrollArea } from '../ui/scroll-area'
+import { Form } from '../ui/form'
 
 interface SpeciesEditProps {
   species: Tables<'species'>
@@ -61,59 +60,53 @@ export function SpeciesEdit({
     })
   }, [species, form])
 
-  const onSubmit = async (data: SpeciesUpdate) => {
-    try {
-      await updateSpecies.mutateAsync({
-        id: species.id,
-        data,
-      })
-      toast.success('Especie actualizada exitosamente')
-      setOpen(false)
-      onSuccess?.()
-    } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : 'Error al actualizar la especie'
-      )
-    }
-  }
+  const onSubmit = form.handleSubmit(async (data) => {
+    await updateSpecies.mutateAsync({
+      id: species.id,
+      data,
+    })
+    setOpen(false)
+    onSuccess?.()
+    form.reset()
+  })
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className="!max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Especie</DrawerTitle>
-          <DrawerDescription>
-            Modifica la información de la especie &quot;{species.name}&quot;.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetContent className="!max-w-2xl">
+        <ScrollArea>
+          <SheetHeader>
+            <SheetTitle>Editar Especie</SheetTitle>
+            <SheetDescription>
+              Modifica la información de la especie &quot;{species.name}&quot;.
+            </SheetDescription>
+          </SheetHeader>
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-            <SpeciesForm />
-          </form>
-        </FormProvider>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="px-4">
+              <SpeciesForm />
+            </form>
+          </Form>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={updateSpecies.isPending}
-            disabled={updateSpecies.isPending}
-            type="submit"
-            variant="default"
-          >
-            Guardar Cambios
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => setOpen(false)}
-            disabled={updateSpecies.isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <ResponsiveButton
+              onClick={onSubmit}
+              isLoading={updateSpecies.isPending}
+              disabled={updateSpecies.isPending}
+              type="submit"
+              variant="default"
+            >
+              Guardar Cambios
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => setOpen(false)}
+              disabled={updateSpecies.isPending}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

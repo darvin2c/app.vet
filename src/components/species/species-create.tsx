@@ -1,21 +1,22 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { toast } from 'sonner'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpeciesForm } from './species-form'
 import { speciesCreateSchema } from '@/schemas/species.schema'
 import { useSpeciesCreate } from '@/hooks/species/use-species-create'
+import { ScrollArea } from '../ui/scroll-area'
+import { Form } from '../ui/form'
 
 interface SpeciesCreateProps {
   onSuccess?: () => void
@@ -42,45 +43,46 @@ export function SpeciesCreate({
     },
   })
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await createSpecies.mutateAsync(data)
-    toast.success('Especie creada exitosamente')
     form.reset()
     setOpen(false)
     onSuccess?.()
-  }
+  })
 
   return (
-    <Drawer open={isOpen} onOpenChange={setOpen}>
-      <DrawerContent className="!max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Nueva Especie</DrawerTitle>
-          <DrawerDescription>
-            Agrega una nueva especie al sistema. Las especies pueden tener
-            múltiples razas asociadas.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={isOpen} onOpenChange={setOpen}>
+      <SheetContent className="!max-w-2xl">
+        <ScrollArea>
+          <SheetHeader>
+            <SheetTitle>Crear Nueva Especie</SheetTitle>
+            <SheetDescription>
+              Agrega una nueva especie al sistema. Las especies pueden tener
+              múltiples razas asociadas.
+            </SheetDescription>
+          </SheetHeader>
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-            <SpeciesForm />
-          </form>
-        </FormProvider>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="px-4">
+              <SpeciesForm />
+            </form>
+          </Form>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={createSpecies.isPending}
-            type="submit"
-            variant="default"
-          >
-            Crear Especie
-          </ResponsiveButton>
-          <ResponsiveButton onClick={() => setOpen(false)} variant="outline">
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <ResponsiveButton
+              onClick={onSubmit}
+              isLoading={createSpecies.isPending}
+              type="submit"
+              variant="default"
+            >
+              Crear Especie
+            </ResponsiveButton>
+            <ResponsiveButton onClick={() => setOpen(false)} variant="outline">
+              Cancelar
+            </ResponsiveButton>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }
