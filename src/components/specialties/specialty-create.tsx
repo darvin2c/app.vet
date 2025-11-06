@@ -13,8 +13,8 @@ import {
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpecialtyForm } from './specialty-form'
 import {
-  CreateSpecialtySchema,
-  createSpecialtySchema,
+  SpecialtyCreateSchema,
+  specialtyCreateSchema,
 } from '@/schemas/specialties.schema'
 import useSpecialtyCreate from '@/hooks/specialties/use-specialty-create'
 import { Form } from '../ui/form'
@@ -28,7 +28,7 @@ export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
   const { mutate: createSpecialty, isPending } = useSpecialtyCreate()
 
   const form = useForm({
-    resolver: zodResolver(createSpecialtySchema),
+    resolver: zodResolver(specialtyCreateSchema),
     defaultValues: {
       name: '',
       description: '',
@@ -36,7 +36,7 @@ export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
     },
   })
 
-  const onSubmit = async (values: CreateSpecialtySchema) => {
+  const onSubmit = async (values: SpecialtyCreateSchema) => {
     await createSpecialty(values)
     onOpenChange(false)
   }

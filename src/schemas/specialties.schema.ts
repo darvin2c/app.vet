@@ -11,12 +11,16 @@ export const specialtyBaseSchema = z.object({
     .max(500, 'La descripción no puede exceder 500 caracteres')
     .optional()
     .or(z.literal('')),
-  is_active: z.coerce.boolean().default(true),
+  is_active: z.boolean(),
 })
 
 // Esquema para crear especialidad
-export const createSpecialtySchema = specialtyBaseSchema
+export const specialtyCreateSchema = specialtyBaseSchema
+export const specialtyUpdateSchema = specialtyBaseSchema
+export const specialtyImportSchema = specialtyBaseSchema.extend({
+  is_active: z.coerce.boolean().default(true),
+})
 
 // Tipos derivados
-export type SpecialtyCreate = z.input<typeof createSpecialtySchema>
-export type SpecialtyUpdate = z.input<typeof createSpecialtySchema>
+export type SpecialtyCreateSchema = z.infer<typeof specialtyCreateSchema>
+export type SpecialtyUpdateSchema = z.infer<typeof specialtyCreateSchema>

@@ -12,13 +12,13 @@ import {
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpecialtyForm } from './specialty-form'
-import {
-  UpdateSpecialtySchema,
-  updateSpecialtySchema,
-} from '@/schemas/specialties.schema'
 import useSpecialtyUpdate from '@/hooks/specialties/use-specialty-update'
 import { Form } from '@/components/ui/form'
 import { Tables } from '@/types/supabase.types'
+import {
+  SpecialtyUpdateSchema,
+  specialtyUpdateSchema,
+} from '@/schemas/specialties.schema'
 
 interface SpecialtyEditProps {
   specialty: Tables<'specialties'>
@@ -33,8 +33,8 @@ export function SpecialtyEdit({
 }: SpecialtyEditProps) {
   const updateSpecialty = useSpecialtyUpdate()
 
-  const form = useForm<UpdateSpecialtySchema>({
-    resolver: zodResolver(updateSpecialtySchema),
+  const form = useForm<SpecialtyUpdateSchema>({
+    resolver: zodResolver(specialtyUpdateSchema),
     defaultValues: {
       name: specialty.name,
       description: specialty.description ?? '',
@@ -42,7 +42,7 @@ export function SpecialtyEdit({
     },
   })
 
-  const onSubmit = async (values: UpdateSpecialtySchema) => {
+  const onSubmit = async (values: SpecialtyUpdateSchema) => {
     await updateSpecialty.mutateAsync({ id: specialty.id, data: values })
     onOpenChange(false)
   }

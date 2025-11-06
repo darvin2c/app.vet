@@ -18,8 +18,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { es } from 'date-fns/locale'
 import { format } from 'date-fns'
-import { getStaffFullName } from '@/lib/staff-utils'
-import { cn } from '@/lib/utils'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 
 // Tipo para el appointment con relaciones
@@ -124,7 +122,7 @@ export function AppointmentItem({
           <div className="flex items-center gap-2 mb-2">
             <UserCheck className="h-4 w-4 text-muted-foreground flex-shrink-0" />
             <p className="text-sm text-muted-foreground truncate">
-              Dr. {getStaffFullName(staff)}
+              Dr. {staff.first_name} {staff.last_name}
             </p>
           </div>
         )}

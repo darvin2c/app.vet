@@ -4,14 +4,14 @@ import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 
+export type SpecialtyCreate = Omit<TablesInsert<'specialties'>, 'tenant_id'>
+
 export function useSpecialtyCreateBulk() {
   const queryClient = useQueryClient()
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (
-      data: Omit<TablesInsert<'specialties'>, 'tenant_id'>[]
-    ) => {
+    mutationFn: async (data: SpecialtyCreate[]) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }

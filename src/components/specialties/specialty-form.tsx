@@ -9,14 +9,13 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import { SpecialtyCreate } from '@/schemas/specialties.schema'
 import { IsActiveField } from '../ui/is-active-field'
 
 export function SpecialtyForm() {
   const {
     register,
     formState: { errors },
-  } = useFormContext<SpecialtyCreate>()
+  } = useFormContext()
 
   return (
     <div className="px-2">

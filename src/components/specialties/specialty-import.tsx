@@ -7,13 +7,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { useSpecialtyCreateBulk } from '@/hooks/specialties/use-specialty-create-bulk'
+import {
+  SpecialtyCreate,
+  useSpecialtyCreateBulk,
+} from '@/hooks/specialties/use-specialty-create-bulk'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  createSpecialtySchema,
-  SpecialtyCreate,
-} from '@/schemas/specialties.schema'
+import { specialtyImportSchema } from '@/schemas/specialties.schema'
 
 interface SpecialtyImportProps {
   open: boolean
@@ -24,9 +24,7 @@ export function SpecialtyImport({ open, onOpenChange }: SpecialtyImportProps) {
   const createSpecialtyBulk = useSpecialtyCreateBulk()
 
   const handleImport = async (data: SpecialtyCreate[]) => {
-    await createSpecialtyBulk.mutateAsync(
-      data.map((item) => createSpecialtySchema.parse(item))
-    )
+    await createSpecialtyBulk.mutateAsync(data)
     onOpenChange(false)
   }
 
@@ -41,7 +39,7 @@ export function SpecialtyImport({ open, onOpenChange }: SpecialtyImportProps) {
         </SheetHeader>
         <ScrollArea className="max-h-[calc(100vh-100px)] pb-10">
           <DataImport
-            schema={createSpecialtySchema}
+            schema={specialtyImportSchema}
             onImport={handleImport}
             isLoading={createSpecialtyBulk.isPending}
             templateName="especialidades_template.csv"

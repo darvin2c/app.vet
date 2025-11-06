@@ -276,7 +276,8 @@ export function useDataImport<T = any>(
     const validData = state.validationResult.validRows.map(
       (row) => row.data as T
     )
-    onImport(validData)
+    const parsedData = validData.map((item) => schema.parse(item))
+    onImport(parsedData)
 
     setState((prev) => ({
       ...prev,
