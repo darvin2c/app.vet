@@ -27,4 +27,10 @@ export interface UsePaginationReturn {
   goToPrevious: () => void
   goToNext: () => void
   setPageSize: (size: number) => void
+  appliedPagination: AppliedPagination
+}
+
+export interface AppliedPagination {
+  page: number
+  pageSize: number
 }
