@@ -23,8 +23,8 @@ export default function PaymentMethodsPage() {
       key: 'payment_type',
       field: 'payment_type',
       label: 'Tipo de Pago',
-      type: 'select',
-      operator: 'eq',
+      type: 'multiselect',
+      operator: 'in',
       options: [
         { value: 'cash', label: 'Efectivo' },
         { value: 'card', label: 'Tarjeta' },

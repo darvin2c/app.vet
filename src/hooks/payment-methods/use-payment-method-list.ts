@@ -25,10 +25,30 @@ export function usePaymentMethodList({
         throw new Error('No tenant selected')
       }
 
-      const { data, error } = await supabase
+      // Build the query
+      let query = supabase
         .from('payment_methods')
         .select('*')
         .eq('tenant_id', currentTenant.id)
+
+      // Apply filters
+      filters.forEach((filter) => {
+        query = query.filter(filter.field, filter.operator, filter.value)
+      })
+
+      // Apply search
+      if (search) {
+        query = query.textSearch('name', search)
+      }
+
+      // Apply orders
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
+        })
+      })
+
+      const { data, error } = await query
 
       if (error) {
         throw error
