@@ -20,7 +20,11 @@ interface SelectFilterProps {
   onChange: (value: string) => void
 }
 
-export default function SelectFilter({ config, value, onChange }: SelectFilterProps) {
+export default function SelectFilter({
+  config,
+  value,
+  onChange,
+}: SelectFilterProps) {
   const handleValueChange = (newValue: string) => {
     if (newValue === '__all__') {
       onChange('')

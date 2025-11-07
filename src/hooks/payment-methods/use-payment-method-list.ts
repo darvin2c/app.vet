@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { Tables } from '@/types/supabase.types'
-import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 
 type PaymentMethod = Tables<'payment_methods'>
@@ -32,9 +32,7 @@ export function usePaymentMethodList({
         .eq('tenant_id', currentTenant.id)
 
       // Apply filters
-      filters.forEach((filter) => {
-        query = query.filter(filter.field, filter.operator, filter.value)
-      })
+      query = applySupabaseFilters(query, filters)
 
       // Apply search
       if (search) {

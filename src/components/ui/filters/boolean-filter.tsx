@@ -15,7 +15,11 @@ interface BooleanFilterProps {
   onChange: (value: string) => void
 }
 
-export default function BooleanFilter({ config, value, onChange }: BooleanFilterProps) {
+export default function BooleanFilter({
+  config,
+  value,
+  onChange,
+}: BooleanFilterProps) {
   const handleValueChange = (newValue: string) => {
     if (value === newValue) {
       onChange('')

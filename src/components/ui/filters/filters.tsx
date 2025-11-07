@@ -65,7 +65,7 @@ export function Filters({
   const renderFilter = (filter: FilterConfig) => {
     // Obtener el componente apropiado basado en el operador
     const FilterComponent = getFilterComponent(filter)
-    
+
     return (
       <FilterComponent
         key={filter.field}

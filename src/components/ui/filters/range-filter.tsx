@@ -9,12 +9,21 @@ interface RangeFilterProps {
   onChange: (value: any) => void
 }
 
-export default function RangeFilter({ config, value, onChange }: RangeFilterProps) {
+export default function RangeFilter({
+  config,
+  value,
+  onChange,
+}: RangeFilterProps) {
   const [fromValue, setFromValue] = React.useState('')
   const [toValue, setToValue] = React.useState('')
 
   React.useEffect(() => {
-    if (value && typeof value === 'object' && value.from !== undefined && value.to !== undefined) {
+    if (
+      value &&
+      typeof value === 'object' &&
+      value.from !== undefined &&
+      value.to !== undefined
+    ) {
       setFromValue(String(value.from))
       setToValue(String(value.to))
     }
@@ -36,7 +45,9 @@ export default function RangeFilter({ config, value, onChange }: RangeFilterProp
         <div className="space-y-1">
           <Label className="text-xs">Desde</Label>
           <Input
-            type={config.field.toLowerCase().includes('date') ? 'date' : 'number'}
+            type={
+              config.field.toLowerCase().includes('date') ? 'date' : 'number'
+            }
             placeholder="Desde"
             value={fromValue}
             onChange={(e) => handleFromChange(e.target.value)}
@@ -45,7 +56,9 @@ export default function RangeFilter({ config, value, onChange }: RangeFilterProp
         <div className="space-y-1">
           <Label className="text-xs">Hasta</Label>
           <Input
-            type={config.field.toLowerCase().includes('date') ? 'date' : 'number'}
+            type={
+              config.field.toLowerCase().includes('date') ? 'date' : 'number'
+            }
             placeholder="Hasta"
             value={toValue}
             onChange={(e) => handleToChange(e.target.value)}

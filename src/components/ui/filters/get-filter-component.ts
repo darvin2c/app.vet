@@ -16,7 +16,9 @@ import CustomFilter from './custom-filter'
  * @param config - Configuración del filtro
  * @returns Componente React apropiado para el operador
  */
-export function getFilterComponent(config: FilterConfig): React.ComponentType<any> {
+export function getFilterComponent(
+  config: FilterConfig
+): React.ComponentType<any> {
   // Si se proporciona un componente personalizado, usarlo
   if (config.component) {
     return config.component
@@ -40,10 +42,17 @@ export function getFilterComponent(config: FilterConfig): React.ComponentType<an
     case 'eq':
     case 'neq':
       // Detectar si es fecha o número basado en el nombre del campo
-      if (config.field.toLowerCase().includes('date') || config.field.toLowerCase().includes('time')) {
+      if (
+        config.field.toLowerCase().includes('date') ||
+        config.field.toLowerCase().includes('time')
+      ) {
         return DateFilter
       }
-      if (config.field.toLowerCase().includes('count') || config.field.toLowerCase().includes('amount') || config.field.toLowerCase().includes('price')) {
+      if (
+        config.field.toLowerCase().includes('count') ||
+        config.field.toLowerCase().includes('amount') ||
+        config.field.toLowerCase().includes('price')
+      ) {
         return NumberFilter
       }
       if (config.options && (config.options as any[]).length > 0) {
@@ -62,7 +71,10 @@ export function getFilterComponent(config: FilterConfig): React.ComponentType<an
     case 'lt':
     case 'lte':
       // Detectar si es fecha o número basado en el nombre del campo
-      if (config.field.toLowerCase().includes('date') || config.field.toLowerCase().includes('time')) {
+      if (
+        config.field.toLowerCase().includes('date') ||
+        config.field.toLowerCase().includes('time')
+      ) {
         return DateFilter
       }
       return NumberFilter
@@ -105,7 +117,10 @@ export function getFilterComponent(config: FilterConfig): React.ComponentType<an
  * @param field - Nombre del campo
  * @returns Tipo de entrada sugerido
  */
-export function getInputType(operator: SupabaseOperator, field: string): 'text' | 'number' | 'date' | 'boolean' | 'array' {
+export function getInputType(
+  operator: SupabaseOperator,
+  field: string
+): 'text' | 'number' | 'date' | 'boolean' | 'array' {
   switch (operator) {
     case 'like':
     case 'ilike':
@@ -118,10 +133,17 @@ export function getInputType(operator: SupabaseOperator, field: string): 'text' 
     case 'eq':
     case 'neq':
       // Detectar tipo basado en el nombre del campo
-      if (field.toLowerCase().includes('date') || field.toLowerCase().includes('time')) {
+      if (
+        field.toLowerCase().includes('date') ||
+        field.toLowerCase().includes('time')
+      ) {
         return 'date'
       }
-      if (field.toLowerCase().includes('count') || field.toLowerCase().includes('amount') || field.toLowerCase().includes('price')) {
+      if (
+        field.toLowerCase().includes('count') ||
+        field.toLowerCase().includes('amount') ||
+        field.toLowerCase().includes('price')
+      ) {
         return 'number'
       }
       return 'text'
@@ -130,7 +152,10 @@ export function getInputType(operator: SupabaseOperator, field: string): 'text' 
     case 'gte':
     case 'lt':
     case 'lte':
-      if (field.toLowerCase().includes('date') || field.toLowerCase().includes('time')) {
+      if (
+        field.toLowerCase().includes('date') ||
+        field.toLowerCase().includes('time')
+      ) {
         return 'date'
       }
       return 'number'
@@ -161,13 +186,15 @@ export function getInputType(operator: SupabaseOperator, field: string): 'text' 
  * @param operator - Operador de Supabase
  * @returns Opciones predeterminadas si las hay
  */
-export function getDefaultOptions(operator: SupabaseOperator): FilterOption[] | undefined {
+export function getDefaultOptions(
+  operator: SupabaseOperator
+): FilterOption[] | undefined {
   switch (operator) {
     case 'is':
       return [
         { label: 'Sí', value: true },
         { label: 'No', value: false },
-        { label: 'Vacío', value: 'null' }
+        { label: 'Vacío', value: 'null' },
       ]
 
     default:

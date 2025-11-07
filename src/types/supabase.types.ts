@@ -2010,7 +2010,7 @@ export type Database = {
         | 'paid'
         | 'cancelled'
         | 'refunded'
-      payment_type: 'cash' | 'app' | 'credit' | 'others'
+      payment_type: 'cash' | 'card' | 'transfer' | 'wallet' | 'other'
       pet_sex: 'M' | 'F'
       record_type:
         | 'consultation'
@@ -2160,7 +2160,7 @@ export const Constants = {
         'cancelled',
         'refunded',
       ],
-      payment_type: ['cash', 'app', 'credit', 'others'],
+      payment_type: ['cash', 'card', 'transfer', 'wallet', 'other'],
       pet_sex: ['M', 'F'],
       record_type: [
         'consultation',

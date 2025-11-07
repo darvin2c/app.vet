@@ -11,19 +11,27 @@ interface ArrayFilterProps {
   onChange: (value: string[]) => void
 }
 
-export default function ArrayFilter({ config, value = [], onChange }: ArrayFilterProps) {
+export default function ArrayFilter({
+  config,
+  value = [],
+  onChange,
+}: ArrayFilterProps) {
   const [inputValue, setInputValue] = React.useState('')
 
   const handleAdd = () => {
     if (inputValue.trim()) {
-      const newArray = Array.isArray(value) ? [...value, inputValue.trim()] : [inputValue.trim()]
+      const newArray = Array.isArray(value)
+        ? [...value, inputValue.trim()]
+        : [inputValue.trim()]
       onChange(newArray)
       setInputValue('')
     }
   }
 
   const handleRemove = (index: number) => {
-    const newArray = Array.isArray(value) ? value.filter((_, i) => i !== index) : []
+    const newArray = Array.isArray(value)
+      ? value.filter((_, i) => i !== index)
+      : []
     onChange(newArray)
   }
 
@@ -54,7 +62,7 @@ export default function ArrayFilter({ config, value = [], onChange }: ArrayFilte
           <Plus className="h-4 w-4" />
         </Button>
       </div>
-      
+
       {Array.isArray(value) && value.length > 0 && (
         <div className="flex flex-wrap gap-1">
           {value.map((item, index) => (

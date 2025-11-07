@@ -23,7 +23,11 @@ interface DateFilterProps {
   onChange: (value: string) => void
 }
 
-export default function DateFilter({ config, value, onChange }: DateFilterProps) {
+export default function DateFilter({
+  config,
+  value,
+  onChange,
+}: DateFilterProps) {
   const [open, setOpen] = useState(false)
   const selectedDate = value ? new Date(value) : undefined
 

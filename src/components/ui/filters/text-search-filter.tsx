@@ -1,7 +1,13 @@
 import React from 'react'
 import { FilterComponentProps } from './types'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface TextSearchFilterProps {
   config: any // Temporal para evitar errores de tipado
@@ -9,7 +15,11 @@ interface TextSearchFilterProps {
   onChange: (value: any) => void
 }
 
-export default function TextSearchFilter({ config, value, onChange }: TextSearchFilterProps) {
+export default function TextSearchFilter({
+  config,
+  value,
+  onChange,
+}: TextSearchFilterProps) {
   const [searchType, setSearchType] = React.useState(config.searchType || 'fts')
   const [searchValue, setSearchValue] = React.useState(value?.query || '')
 
@@ -28,7 +38,7 @@ export default function TextSearchFilter({ config, value, onChange }: TextSearch
       onChange({
         type: newType,
         query: searchValue.trim(),
-        config: config.searchConfig
+        config: config.searchConfig,
       })
     }
   }
@@ -39,7 +49,7 @@ export default function TextSearchFilter({ config, value, onChange }: TextSearch
       onChange({
         type: searchType,
         query: newValue.trim(),
-        config: config.searchConfig
+        config: config.searchConfig,
       })
     } else {
       onChange(null)
@@ -59,7 +69,7 @@ export default function TextSearchFilter({ config, value, onChange }: TextSearch
           <SelectItem value="wfts">Búsqueda de palabras web</SelectItem>
         </SelectContent>
       </Select>
-      
+
       <Input
         placeholder={config.placeholder || 'Buscar...'}
         value={searchValue}

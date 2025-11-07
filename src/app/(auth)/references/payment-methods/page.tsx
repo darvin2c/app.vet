@@ -9,9 +9,17 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { PaymentMethodImportButton } from '@/components/payment-methods/payment-method-import-button'
+import { Enums } from '@/types/supabase.types'
+
+type FilterConfigWithOptions = FilterConfig & {
+  options?: {
+    value: Enums<'payment_type'>
+    label: string
+  }[]
+}
 
 export default function PaymentMethodsPage() {
-  const filters: FilterConfig[] = [
+  const filters: FilterConfigWithOptions[] = [
     {
       field: 'is_active',
       label: 'Estado',
@@ -25,7 +33,7 @@ export default function PaymentMethodsPage() {
         { value: 'cash', label: 'Efectivo' },
         { value: 'card', label: 'Tarjeta' },
         { value: 'transfer', label: 'Transferencia' },
-        { value: 'check', label: 'Cheque' },
+        { value: 'wallet', label: 'Billetera electrónica' },
         { value: 'other', label: 'Otro' },
       ],
     },

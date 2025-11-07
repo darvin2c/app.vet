@@ -11,7 +11,11 @@ interface CustomFilterProps {
   onChange: (value: string) => void
 }
 
-export default function CustomFilter({ config, value, onChange }: CustomFilterProps) {
+export default function CustomFilter({
+  config,
+  value,
+  onChange,
+}: CustomFilterProps) {
   const Component = config.component
 
   return (

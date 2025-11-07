@@ -16,10 +16,16 @@ export function useFilters(filters: FilterConfig[]) {
     filters.forEach((filter) => {
       // Detectar tipo de filtro basado en el operador
       const filterType = getInputType(filter.operator, filter.field)
-      
+
       if (filterType === 'array') {
         result[filter.field] = parseAsArrayWithDefault
-      } else if (filter.operator === 'sl' || filter.operator === 'sr' || filter.operator === 'nxl' || filter.operator === 'nxr' || filter.operator === 'adj') {
+      } else if (
+        filter.operator === 'sl' ||
+        filter.operator === 'sr' ||
+        filter.operator === 'nxl' ||
+        filter.operator === 'nxr' ||
+        filter.operator === 'adj'
+      ) {
         // Rangos que requieren dos valores
         result[`${filter.field}_from`] = parseAsStringWithDefault
         result[`${filter.field}_to`] = parseAsStringWithDefault
@@ -44,7 +50,13 @@ export function useFilters(filters: FilterConfig[]) {
       const filterType = getInputType(filter.operator, filter.field)
 
       // Manejar rangos que requieren dos valores
-      if (filter.operator === 'sl' || filter.operator === 'sr' || filter.operator === 'nxl' || filter.operator === 'nxr' || filter.operator === 'adj') {
+      if (
+        filter.operator === 'sl' ||
+        filter.operator === 'sr' ||
+        filter.operator === 'nxl' ||
+        filter.operator === 'nxr' ||
+        filter.operator === 'adj'
+      ) {
         const fromValue = filterValues[`${filter.field}_from`]
         const toValue = filterValues[`${filter.field}_to`]
 
@@ -134,7 +146,10 @@ function getDefaultOperator(type: string) {
 /**
  * Determina el tipo de entrada basado en el operador y el campo
  */
-function getInputType(operator: SupabaseOperator, field: string): 'text' | 'number' | 'date' | 'boolean' | 'array' {
+function getInputType(
+  operator: SupabaseOperator,
+  field: string
+): 'text' | 'number' | 'date' | 'boolean' | 'array' {
   switch (operator) {
     case 'like':
     case 'ilike':
@@ -147,10 +162,17 @@ function getInputType(operator: SupabaseOperator, field: string): 'text' | 'numb
     case 'eq':
     case 'neq':
       // Detectar tipo basado en el nombre del campo
-      if (field.toLowerCase().includes('date') || field.toLowerCase().includes('time')) {
+      if (
+        field.toLowerCase().includes('date') ||
+        field.toLowerCase().includes('time')
+      ) {
         return 'date'
       }
-      if (field.toLowerCase().includes('count') || field.toLowerCase().includes('amount') || field.toLowerCase().includes('price')) {
+      if (
+        field.toLowerCase().includes('count') ||
+        field.toLowerCase().includes('amount') ||
+        field.toLowerCase().includes('price')
+      ) {
         return 'number'
       }
       return 'text'
@@ -159,7 +181,10 @@ function getInputType(operator: SupabaseOperator, field: string): 'text' | 'numb
     case 'gte':
     case 'lt':
     case 'lte':
-      if (field.toLowerCase().includes('date') || field.toLowerCase().includes('time')) {
+      if (
+        field.toLowerCase().includes('date') ||
+        field.toLowerCase().includes('time')
+      ) {
         return 'date'
       }
       return 'number'
@@ -194,14 +219,14 @@ function getProcessedValue(operator: SupabaseOperator, value: any): any {
     case 'ilike':
       // Agregar comodines para búsquedas parciales
       return `*${value}*`
-    
+
     case 'fts':
     case 'plfts':
     case 'phfts':
     case 'wfts':
       // Búsquedas de texto completo
       return { type: operator, query: value }
-    
+
     default:
       return value
   }

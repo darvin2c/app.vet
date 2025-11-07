@@ -18,7 +18,11 @@ export { default as RangeFilter } from './range-filter'
 export { default as TextSearchFilter } from './text-search-filter'
 
 // Utilities
-export { getFilterComponent, getInputType, getDefaultOptions } from './get-filter-component'
+export {
+  getFilterComponent,
+  getInputType,
+  getDefaultOptions,
+} from './get-filter-component'
 export { applySupabaseFilters } from './generate-supabase-filter'
 
 // Types
