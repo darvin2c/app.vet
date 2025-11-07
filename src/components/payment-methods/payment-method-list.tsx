@@ -105,17 +105,6 @@ export function PaymentMethodList({
 
   const columns: ColumnDef<PaymentMethod>[] = [
     {
-      accessorKey: 'code',
-      header: ({ header }) => (
-        <OrderByTableHeader field="code" orderByHook={orderByHook}>
-          Código
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<PaymentMethod> }) => (
-        <div className="font-mono text-sm">{row.getValue('code')}</div>
-      ),
-    },
-    {
       accessorKey: 'name',
       header: ({ header }) => (
         <OrderByTableHeader field="name" orderByHook={orderByHook}>
