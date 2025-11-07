@@ -1,13 +1,9 @@
-import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import { AppliedSort } from './types'
 
 /**
  * Aplica ordenamientos de Supabase a la consulta usando AppliedSort
  */
-export function applySupabaseSort(
-  query: PostgrestFilterBuilder<any, any, any, any> | any,
-  sorts: AppliedSort[]
-) {
+export function applySupabaseSort(query: any, sorts: AppliedSort[]) {
   if (!Array.isArray(sorts) || sorts.length === 0) return query
 
   sorts.forEach((order) => {

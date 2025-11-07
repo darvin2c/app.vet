@@ -1,13 +1,9 @@
-import type { PostgrestFilterBuilder } from '@supabase/postgrest-js'
 import type { AppliedFilter } from './types'
 
 /**
  * Construye una consulta de Supabase con filtros aplicados
  */
-export function applySupabaseFilters(
-  query: PostgrestFilterBuilder<any, any, any, any> | any,
-  filters: AppliedFilter[]
-) {
+export function applySupabaseFilters(query: any, filters: AppliedFilter[]) {
   if (!filters || filters.length === 0) return query
 
   for (const filter of filters) {
