@@ -65,7 +65,7 @@ export function BreedCreate({
                 <BreedForm selectedSpeciesId={selectedSpeciesId} />
               </div>
 
-              <SheetFooter>
+              <SheetFooter className="flex-row">
                 <ResponsiveButton
                   type="submit"
                   icon={Plus}

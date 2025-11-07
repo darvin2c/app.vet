@@ -74,7 +74,7 @@ export function BreedEdit({ open, onOpenChange, breed }: BreedEditProps) {
             </FormProvider>
           </div>
 
-          <SheetFooter>
+          <SheetFooter className="flex-row">
             <ResponsiveButton
               type="submit"
               isLoading={updateBreed.isPending}

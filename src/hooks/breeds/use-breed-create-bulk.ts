@@ -37,14 +37,8 @@ export function useBreedCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'breeds'],
       })
-
-      // Invalidar listas por especie, si aplica
-      breeds?.forEach((breed) => {
-        if (breed.species_id) {
-          queryClient.invalidateQueries({
-            queryKey: [currentTenant?.id, 'breeds', breed.species_id],
-          })
-        }
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'species'],
       })
 
       toast.success(`Se crearon ${breeds?.length ?? 0} razas exitosamente`)
