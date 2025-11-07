@@ -3,10 +3,7 @@
 import React, { useEffect } from 'react'
 import { Filter } from 'lucide-react'
 
-import {
-  ResponsiveButton,
-  ResponsiveButtonProps,
-} from '@/components/ui/responsive-button'
+import { ResponsiveButton } from '@/components/ui/responsive-button'
 import {
   Popover,
   PopoverContent,
@@ -63,11 +60,6 @@ export function Filters({
   }, [appliedFilters, onFiltersChange])
 
   const renderFilter = (filter: FilterConfig) => {
-    const commonProps = {
-      key: filter.key,
-      config: filter,
-    }
-
     switch (filter.type) {
       case 'search':
         return (
