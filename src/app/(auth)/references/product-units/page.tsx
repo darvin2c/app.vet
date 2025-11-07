@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { ProductUnitList } from '@/components/product-units/product-unit-list'
 import { ProductUnitCreateButton } from '@/components/product-units/product-unit-create-button'
@@ -49,4 +50,12 @@ export default function ProductUnitsPage() {
       <ProductUnitList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Unidades de Productos',
+    description:
+      'Define y gestiona las unidades de medida aplicables a tus productos.',
+  }
 }

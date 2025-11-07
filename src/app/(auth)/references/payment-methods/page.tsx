@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { PaymentMethodList } from '@/components/payment-methods/payment-method-list'
 import { PaymentMethodCreateButton } from '@/components/payment-methods/payment-method-create-button'
@@ -70,4 +71,12 @@ export default function PaymentMethodsPage() {
       <PaymentMethodList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Métodos de Pago',
+    description:
+      'Administra los métodos de pago disponibles y su configuración para el punto de venta.',
+  }
 }

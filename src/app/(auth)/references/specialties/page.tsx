@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { SpecialtyList } from '@/components/specialties/specialty-list'
 import { SpecialtyCreateButton } from '@/components/specialties/specialty-create-button'
@@ -60,4 +61,12 @@ export default function SpecialtiesPage() {
       <SpecialtyList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Especialidades',
+    description:
+      'Configura y administra las especialidades médicas disponibles en la clínica.',
+  }
 }

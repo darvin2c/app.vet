@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { SpeciesList } from '@/components/species/species-list'
 import { SpeciesCreateButton } from '@/components/species/species-create-button'
@@ -60,4 +61,12 @@ export default function SpeciesPage() {
       <SpeciesList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Especies',
+    description:
+      'Gestiona el catálogo de especies de animales para tus registros clínicos.',
+  }
 }

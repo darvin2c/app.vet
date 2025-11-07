@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { StaffList } from '@/components/staff/staff-list'
 import { StaffCreateButton } from '@/components/staff/staff-create-button'
@@ -62,4 +63,12 @@ export default function StaffPage() {
       <StaffList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Personal',
+    description:
+      'Administra el personal de la clínica: información, estados y roles.',
+  }
 }

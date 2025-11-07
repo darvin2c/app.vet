@@ -8,6 +8,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
+import type { Metadata } from 'next'
 
 export default function AppointmentTypesPage() {
   const filters: FilterConfig[] = [
@@ -64,4 +65,12 @@ export default function AppointmentTypesPage() {
       />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Tipos de Citas',
+    description:
+      'Gestiona y organiza los tipos de citas disponibles para la atención veterinaria.',
+  }
 }

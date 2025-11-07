@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { ProductCategoryList } from '@/components/product-categories/product-category-list'
 import { ProductCategoryCreateButton } from '@/components/product-categories/product-category-create-button'
@@ -51,4 +52,12 @@ export default function ProductCategoriesPage() {
       />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Categorías de Productos',
+    description:
+      'Organiza las categorías de productos para una gestión clara del inventario.',
+  }
 }

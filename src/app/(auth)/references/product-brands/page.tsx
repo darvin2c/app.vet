@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import PageBase from '@/components/page-base'
 import { ProductBrandList } from '@/components/product-brands/product-brand-list'
 import { ProductBrandCreateButton } from '@/components/product-brands/product-brand-create-button'
@@ -53,4 +54,12 @@ export default function ProductBrandsPage() {
       <ProductBrandList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Marcas de Productos',
+    description:
+      'Administra y categoriza las marcas de productos disponibles para tu inventario.',
+  }
 }
