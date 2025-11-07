@@ -42,26 +42,20 @@ export function PaymentMethodCreate({
   const form = useForm({
     resolver: zodResolver(PaymentMethodCreateSchema),
     defaultValues: {
-      code: '',
       name: '',
       payment_type: 'cash' as const,
       is_active: true,
-      sort_order: 0,
-      created_by: null,
-      updated_by: null,
+      ref_required: false,
     },
   })
 
   const onSubmit = async (data: PaymentMethodCreate) => {
     await mutation.mutateAsync(data)
     form.reset({
-      code: '',
       name: '',
       payment_type: 'cash' as const,
       is_active: true,
-      sort_order: 0,
-      created_by: null,
-      updated_by: null,
+      ref_required: false,
     })
     setOpen(false)
   }

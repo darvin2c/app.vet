@@ -37,18 +37,6 @@ export function PaymentMethodForm() {
   return (
     <div className="space-y-6">
       <Field>
-        <FieldLabel htmlFor="code">Código</FieldLabel>
-        <FieldContent>
-          <Input
-            id="code"
-            placeholder="Ej: EFE, TAR, TRA"
-            {...register('code')}
-          />
-          <FieldError errors={[errors.code]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
         <FieldLabel htmlFor="name">Nombre</FieldLabel>
         <FieldContent>
           <Input
@@ -78,19 +66,6 @@ export function PaymentMethodForm() {
             </SelectContent>
           </Select>
           <FieldError errors={[errors.payment_type]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="sort_order">Orden de visualización</FieldLabel>
-        <FieldContent>
-          <Input
-            id="sort_order"
-            type="number"
-            placeholder="Ej: 1, 2, 3..."
-            {...register('sort_order', { valueAsNumber: true })}
-          />
-          <FieldError errors={[errors.sort_order]} />
         </FieldContent>
       </Field>
 

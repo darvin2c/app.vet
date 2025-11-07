@@ -45,7 +45,7 @@ function PaymentSelectorContent({
 }: PaymentSelectorContentProps) {
   const form = useFormContext<POSPaymentSchema>()
   const { data: paymentMethods = [], isPending: isLoadingMethods } =
-    usePaymentMethodList()
+    usePaymentMethodList({})
   const { getPaymentType } = usePaymentType()
   const { order, addPayment } = usePOSStore()
 

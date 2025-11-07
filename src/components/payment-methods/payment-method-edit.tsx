@@ -39,22 +39,20 @@ export function PaymentMethodEdit({
   const form = useForm<PaymentMethodUpdate>({
     resolver: zodResolver(PaymentMethodUpdateSchema),
     defaultValues: {
-      code: paymentMethod.code,
       name: paymentMethod.name,
       payment_type: paymentMethod.payment_type,
       is_active: paymentMethod.is_active,
-      sort_order: paymentMethod.sort_order || 0,
+      ref_required: paymentMethod.ref_required,
     },
   })
 
   useEffect(() => {
     if (paymentMethod) {
       form.reset({
-        code: paymentMethod.code,
         name: paymentMethod.name,
         payment_type: paymentMethod.payment_type,
         is_active: paymentMethod.is_active,
-        sort_order: paymentMethod.sort_order || 0,
+        ref_required: paymentMethod.ref_required,
       })
     }
   }, [paymentMethod, form])

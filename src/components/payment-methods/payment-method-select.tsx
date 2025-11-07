@@ -23,6 +23,20 @@ import { Tables } from '@/types/supabase.types'
 
 type PaymentMethod = Tables<'payment_methods'>
 
+const paymentTypeLabels = {
+  cash: 'Efectivo',
+  app: 'App',
+  credit: 'Crédito',
+  others: 'Otros',
+} as const
+
+const paymentTypeColors = {
+  cash: 'bg-green-100 text-green-800',
+  app: 'bg-blue-100 text-blue-800',
+  credit: 'bg-purple-100 text-purple-800',
+  others: 'bg-gray-100 text-gray-800',
+} as const
+
 interface PaymentMethodSelectProps {
   value?: string
   onValueChange?: (value: string) => void
@@ -42,6 +56,10 @@ export function PaymentMethodSelect({
   const [searchTerm, setSearchTerm] = useState('')
 
   const { data: paymentMethods = [], isLoading } = usePaymentMethodList({})
+
+  const filteredMethods = paymentMethods.filter((method: PaymentMethod) =>
+    `${method.name}`.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   const selectedMethod = paymentMethods.find(
     (method: PaymentMethod) => method.id === value
@@ -105,7 +123,7 @@ export function PaymentMethodSelect({
               {filteredMethods.map((method: PaymentMethod) => (
                 <CommandItem
                   key={method.id}
-                  value={`${method.name} ${method.code}`}
+                  value={`${method.name}`}
                   onSelect={() => handleSelect(method.id)}
                 >
                   <div className="flex items-center gap-2">
@@ -113,9 +131,6 @@ export function PaymentMethodSelect({
                     <div className="flex flex-col">
                       <span>{method.name}</span>
                       <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground font-mono">
-                          {method.code}
-                        </span>
                         <Badge
                           className={
                             paymentTypeColors[

@@ -105,8 +105,8 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
             Fecha de Pago
           </OrderByTableHeader>
         ),
-        cell: ({ row }: { row: Row<PaymentWithRelations> }) => {
-          const date = row.getValue('payment_date') as string
+        cell: ({ row }) => {
+          const date = (row.original.payment_date as string) ?? ''
           return format(new Date(date), 'dd/MM/yyyy', { locale: es })
         },
       },
@@ -117,15 +117,15 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
             Monto
           </OrderByTableHeader>
         ),
-        cell: ({ row }: { row: Row<PaymentWithRelations> }) => {
-          const amount = row.getValue('amount') as number
+        cell: ({ row }) => {
+          const amount = (row.original.amount as number) ?? 0
           return `$${amount.toFixed(2)}`
         },
       },
       {
-        accessorKey: 'payment_methods.name',
+        id: 'payment_method_name',
         header: 'Método de Pago',
-        cell: ({ row }: { row: Row<PaymentWithRelations> }) => {
+        cell: ({ row }) => {
           const paymentMethod = row.original.payment_methods
           return paymentMethod ? (
             <div className="flex items-center gap-2">
@@ -140,17 +140,17 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
         },
       },
       {
-        accessorKey: 'customers.name',
+        id: 'customer_name',
         header: 'Cliente',
-        cell: ({ row }: { row: Row<PaymentWithRelations> }) => {
+        cell: ({ row }) => {
           const customer = row.original.customers
           return customer ? `${customer.first_name} ${customer.last_name}` : '-'
         },
       },
       {
-        accessorKey: 'orders.order_number',
+        id: 'order_info',
         header: 'Orden',
-        cell: ({ row }: { row: Row<PaymentWithRelations> }) => {
+        cell: ({ row }) => {
           const order = row.original.orders
           return order ? (
             <div className="flex items-center gap-2">
@@ -186,8 +186,8 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
     [orderByHook]
   )
 
-  const table = useReactTable({
-    data: payments,
+  const table = useReactTable<PaymentWithRelations>({
+    data: payments as PaymentWithRelations[],
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
