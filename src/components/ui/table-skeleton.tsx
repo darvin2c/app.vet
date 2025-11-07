@@ -130,7 +130,7 @@ export function TableSkeleton({
           <table className="w-full">
             {/* Header de la tabla */}
             {showHeader && (
-              <thead className="border-b bg-muted/50">
+              <thead className="bg-muted/50">
                 <tr>
                   {Array.from({ length: columns }).map((_, index) => (
                     <th
@@ -149,7 +149,7 @@ export function TableSkeleton({
               {Array.from({ length: rows }).map((_, rowIndex) => (
                 <tr
                   key={rowIndex}
-                  className="border-b transition-colors hover:bg-muted/50"
+                  className="transition-colors hover:bg-muted/50"
                 >
                   {Array.from({ length: columns }).map((_, colIndex) => (
                     <td key={colIndex} className="p-4 align-middle">

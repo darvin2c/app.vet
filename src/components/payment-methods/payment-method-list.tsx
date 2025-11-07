@@ -94,7 +94,7 @@ export function PaymentMethodList({
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<PaymentMethod> }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
+        <div>{row.getValue('name')}</div>
       ),
     },
 
@@ -298,7 +298,7 @@ export function PaymentMethodList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div className="">
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
