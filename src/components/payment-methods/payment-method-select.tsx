@@ -31,22 +31,6 @@ interface PaymentMethodSelectProps {
   className?: string
 }
 
-const paymentTypeLabels = {
-  cash: 'Efectivo',
-  card: 'Tarjeta',
-  transfer: 'Transferencia',
-  check: 'Cheque',
-  other: 'Otros',
-} as const
-
-const paymentTypeColors = {
-  cash: 'bg-green-100 text-green-800',
-  card: 'bg-blue-100 text-blue-800',
-  transfer: 'bg-purple-100 text-purple-800',
-  check: 'bg-orange-100 text-orange-800',
-  other: 'bg-gray-100 text-gray-800',
-} as const
-
 export function PaymentMethodSelect({
   value,
   onValueChange,
@@ -57,17 +41,7 @@ export function PaymentMethodSelect({
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data: paymentMethods = [], isLoading } = usePaymentMethodList()
-
-  // Filter active payment methods and by search term
-  const filteredMethods = paymentMethods.filter((method: PaymentMethod) => {
-    if (!method.is_active) return false
-    if (!searchTerm) return true
-    return (
-      method.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      method.code.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  })
+  const { data: paymentMethods = [], isLoading } = usePaymentMethodList({})
 
   const selectedMethod = paymentMethods.find(
     (method: PaymentMethod) => method.id === value

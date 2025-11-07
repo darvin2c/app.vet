@@ -93,7 +93,15 @@ export function PaymentMethodList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
 
-  const { data: paymentMethods = [], isPending, error } = usePaymentMethodList()
+  const {
+    data: paymentMethods = [],
+    isPending,
+    error,
+  } = usePaymentMethodList({
+    filters: appliedFilters,
+    search: appliedSearch,
+    orders: orderByHook.appliedSorts,
+  })
 
   const columns: ColumnDef<PaymentMethod>[] = [
     {
@@ -156,23 +164,10 @@ export function PaymentMethodList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: paymentMethods,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -217,9 +212,6 @@ export function PaymentMethodList({
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="font-medium">{paymentMethod.name}</h3>
-                <p className="text-sm font-mono text-muted-foreground">
-                  {paymentMethod.code}
-                </p>
               </div>
               <PaymentMethodActions paymentMethod={paymentMethod} />
             </div>
@@ -253,7 +245,6 @@ export function PaymentMethodList({
         <Item key={paymentMethod.id} variant="outline">
           <ItemContent>
             <ItemTitle>{paymentMethod.name}</ItemTitle>
-            <ItemDescription>{paymentMethod.code}</ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <Badge
                 className={

@@ -1,31 +1,25 @@
 import { z } from 'zod'
+import { Constants } from '@/types/supabase.types'
 
-export const PaymentMethodSchema = z.object({
-  id: z.string().uuid(),
-  code: z.string().nonempty('El código es requerido'),
+export const paymentMethodSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
-  payment_type: z.enum(['cash', 'app', 'credit', 'others']),
+  payment_type: z.enum(Constants.public.Enums.payment_type),
+  ref_required: z.boolean().default(false),
   is_active: z.boolean().default(true),
-  sort_order: z.number().nullable().optional(),
-  tenant_id: z.string().uuid(),
-  created_at: z.string(),
-  updated_at: z.string(),
-  created_by: z.string().uuid().nullable(),
-  updated_by: z.string().uuid().nullable(),
 })
 
-export const PaymentMethodCreateSchema = PaymentMethodSchema.omit({
-  id: true,
-  created_at: true,
-  updated_at: true,
-  tenant_id: true,
-}).extend({
-  is_active: z.boolean().optional().default(true),
-  sort_order: z.number().nullable().optional(),
+export const paymentMethodCreateSchema = paymentMethodSchema
+export const paymentMethodUpdateSchema = paymentMethodCreateSchema.partial()
+
+// Aliases to match component imports expecting PascalCase exports
+export { paymentMethodCreateSchema as PaymentMethodCreateSchema }
+export { paymentMethodUpdateSchema as PaymentMethodUpdateSchema }
+
+export const paymentMethodImportSchema = paymentMethodSchema.extend({
+  is_active: z.coerce.boolean().optional().default(true),
+  ref_required: z.coerce.boolean().optional().default(false),
 })
 
-export const PaymentMethodUpdateSchema = PaymentMethodCreateSchema.partial()
-
-export type PaymentMethod = z.infer<typeof PaymentMethodSchema>
-export type PaymentMethodCreate = z.infer<typeof PaymentMethodCreateSchema>
-export type PaymentMethodUpdate = z.infer<typeof PaymentMethodUpdateSchema>
+export type PaymentMethod = z.infer<typeof paymentMethodSchema>
+export type PaymentMethodCreate = z.infer<typeof paymentMethodCreateSchema>
+export type PaymentMethodUpdate = z.infer<typeof paymentMethodUpdateSchema>

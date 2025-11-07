@@ -12,7 +12,6 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataImport } from '@/components/ui/data-import'
 import { usePaymentMethodCreateBulk } from '@/hooks/payment-methods/use-payment-method-create-bulk'
 import {
-  PaymentMethodCreateSchema,
   PaymentMethodCreateSchema as createPaymentMethodSchema,
   PaymentMethodCreate,
 } from '@/schemas/payment-methods.schema'

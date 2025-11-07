@@ -20,27 +20,27 @@ export const usePaymentType = () => {
     () => [
       {
         value: 'cash',
-        label: 'Cash',
+        label: 'Efectivo',
         icon: Banknote,
-        description: 'Pay with cash',
+        description: 'Paga con efectivo',
       },
       {
         value: 'app',
         label: 'App',
         icon: Smartphone,
-        description: 'Pay with app',
+        description: 'Paga con la app',
       },
       {
         value: 'credit',
-        label: 'Credit Card',
+        label: 'Tarjeta de Crédito',
         icon: CreditCard,
-        description: 'Pay with credit card',
+        description: 'Paga con tarjeta de crédito',
       },
       {
         value: 'others',
-        label: 'Others',
+        label: 'Otros',
         icon: RectangleEllipsis,
-        description: 'Pay with others',
+        description: 'Paga con otros métodos',
       },
     ],
     []
