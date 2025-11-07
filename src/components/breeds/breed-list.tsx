@@ -44,6 +44,7 @@ import { ArrowUpRightIcon } from 'lucide-react'
 import { IsActiveDisplay } from '../ui/is-active-field'
 import { BreedCreateButton } from './breed-create-button'
 import { Button } from '../ui/button'
+import { BreedImportButton } from './breed-import-button'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null
@@ -145,6 +146,9 @@ export function BreedList({
             <BreedCreateButton selectedSpeciesId={speciesId}>
               Crear Raza
             </BreedCreateButton>
+            <BreedImportButton selectedSpeciesId={speciesId}>
+              Importar Razas
+            </BreedImportButton>
           </div>
         </EmptyContent>
         <Button

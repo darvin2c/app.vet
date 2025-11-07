@@ -14,6 +14,7 @@ import { Tables } from '@/types/supabase.types'
 import { SpeciesEdit } from './species-edit'
 import { SpeciesDelete } from './species-delete'
 import { BreedCreate } from '../breeds/breed-create'
+import { BreedImport } from '../breeds/breed-import'
 
 interface SpeciesActionsProps {
   species: Tables<'species'>
@@ -23,6 +24,7 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
   const [showBreedCreateDialog, setShowBreedCreateDialog] = useState(false)
+  const [showBreedImportDialog, setShowBreedImportDialog] = useState(false)
 
   return (
     <>
@@ -50,7 +52,7 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
             <Plus className="mr-2 h-4 w-4" />
             Agregar Raza
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
+          <DropdownMenuItem onClick={() => setShowBreedImportDialog(true)}>
             <Upload className="mr-2 h-4 w-4" />
             Importar Razas
           </DropdownMenuItem>
@@ -72,6 +74,12 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
       <BreedCreate
         open={showBreedCreateDialog}
         onOpenChange={setShowBreedCreateDialog}
+        selectedSpeciesId={species.id}
+      />
+
+      <BreedImport
+        open={showBreedImportDialog}
+        onOpenChange={setShowBreedImportDialog}
         selectedSpeciesId={species.id}
       />
     </>
