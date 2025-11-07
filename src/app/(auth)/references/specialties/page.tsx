@@ -13,10 +13,8 @@ import { SpecialtyImportButton } from '@/components/specialties/specialty-import
 export default function SpecialtiesPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

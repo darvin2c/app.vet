@@ -21,14 +21,17 @@ import { cn } from '@/lib/utils'
 import { useFilters } from './use-filters'
 import { useIsMobile } from '@/hooks/use-mobile'
 
-import { SearchFilter } from './search-filter'
-import { SelectFilter } from './select-filter'
-import { MultiSelectFilter } from './multiselect-filter'
-import { DateFilter } from './date-filter'
-import { DateRangeFilter } from './date-range-filter'
-import { BooleanFilter } from './boolean-filter'
-import { NumberFilter } from './number-filter'
-import { CustomFilter } from './custom-filter'
+import { getFilterComponent } from './get-filter-component'
+import SearchFilter from './search-filter'
+import SelectFilter from './select-filter'
+import MultiSelectFilter from './multiselect-filter'
+import DateFilter from './date-filter'
+import DateRangeFilter from './date-range-filter'
+import BooleanFilter from './boolean-filter'
+import NumberFilter from './number-filter'
+import CustomFilter from './custom-filter'
+import ArrayFilter from './array-filter'
+import TextSearchFilter from './text-search-filter'
 
 import type {
   FilterConfig,
@@ -60,94 +63,17 @@ export function Filters({
   }, [appliedFilters, onFiltersChange])
 
   const renderFilter = (filter: FilterConfig) => {
-    switch (filter.type) {
-      case 'search':
-        return (
-          <SearchFilter
-            key={filter.key}
-            config={filter as SearchFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'select':
-        return (
-          <SelectFilter
-            key={filter.key}
-            config={filter as SelectFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'multiselect':
-        return (
-          <MultiSelectFilter
-            key={filter.key}
-            config={filter as MultiSelectFilterConfig}
-            value={filterValues[filter.key] || []}
-            onChange={(value: string[]) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'date':
-        return (
-          <DateFilter
-            key={filter.key}
-            config={filter as DateFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'dateRange':
-        return (
-          <DateRangeFilter
-            key={filter.key}
-            config={filter as DateRangeFilterConfig}
-            fromValue={filterValues[`${filter.key}_from`] || ''}
-            toValue={filterValues[`${filter.key}_to`] || ''}
-            onChange={(from: string, to: string) => {
-              setFilter(`${filter.key}_from`, from)
-              setFilter(`${filter.key}_to`, to)
-            }}
-          />
-        )
-
-      case 'boolean':
-        return (
-          <BooleanFilter
-            key={filter.key}
-            config={filter as BooleanFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'number':
-        return (
-          <NumberFilter
-            key={filter.key}
-            config={filter as NumberFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      case 'custom':
-        return (
-          <CustomFilter
-            key={filter.key}
-            config={filter as CustomFilterConfig}
-            value={filterValues[filter.key] || ''}
-            onChange={(value: string) => setFilter(filter.key, value)}
-          />
-        )
-
-      default:
-        return null
-    }
+    // Obtener el componente apropiado basado en el operador
+    const FilterComponent = getFilterComponent(filter)
+    
+    return (
+      <FilterComponent
+        key={filter.field}
+        config={filter}
+        value={filterValues[filter.field] || ''}
+        onChange={(value: any) => setFilter(filter.field, value)}
+      />
+    )
   }
 
   const activeFiltersCount = appliedFilters.length

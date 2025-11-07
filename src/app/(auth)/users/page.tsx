@@ -11,26 +11,20 @@ export default function UsersPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'is_superuser',
       field: 'is_superuser',
-      type: 'boolean',
       label: 'Super Administrador',
       placeholder: 'Selecciona estado',
       operator: 'eq',
     },
     {
-      key: 'role_id',
       field: 'role_id',
-      type: 'select',
       label: 'Rol Asignado',
       placeholder: 'Selecciona rol',
       operator: 'eq',
       options: [], // Se cargarán dinámicamente desde el hook
     },
     {
-      key: 'created_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Fecha de registro',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',

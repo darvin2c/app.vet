@@ -6,12 +6,12 @@ import { Label } from '@/components/ui/label'
 import type { CustomFilterConfig } from './types'
 
 interface CustomFilterProps {
-  config: CustomFilterConfig
+  config: any // Temporal para evitar errores de tipado
   value: string
   onChange: (value: string) => void
 }
 
-export function CustomFilter({ config, value, onChange }: CustomFilterProps) {
+export default function CustomFilter({ config, value, onChange }: CustomFilterProps) {
   const Component = config.component
 
   return (

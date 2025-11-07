@@ -13,10 +13,8 @@ import { ProductBrandImportButton } from '@/components/product-brands/product-br
 export default function ProductBrandsPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

@@ -17,17 +17,13 @@ export default function KardexPage() {
   // Configuración de filtros específicos para Kardex
   const filters: FilterConfig[] = [
     {
-      key: 'product_id',
       field: 'product_id',
-      type: 'custom',
       label: 'Producto',
       operator: 'eq',
       component: ProductSelect,
     },
     {
-      key: 'date_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Rango de Fechas',
       placeholder: 'Seleccionar rango de fechas',
       operator: 'gte',

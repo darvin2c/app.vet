@@ -13,10 +13,8 @@ import type { Metadata } from 'next'
 export default function AppointmentTypesPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

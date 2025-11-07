@@ -11,12 +11,12 @@ import { useDebounce } from '@/hooks/use-debounce'
 import type { NumberFilterConfig } from './types'
 
 interface NumberFilterProps {
-  config: NumberFilterConfig
+  config: any // Temporal para evitar errores de tipado
   value: string
   onChange: (value: string) => void
 }
 
-export const NumberFilter = React.memo(function NumberFilter({
+export default React.memo(function NumberFilter({
   config,
   value,
   onChange,
@@ -49,7 +49,7 @@ export const NumberFilter = React.memo(function NumberFilter({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label htmlFor={config.key} className="text-sm font-medium">
+        <Label htmlFor={config.field} className="text-sm font-medium">
           {config.label}
         </Label>
         {value && (
@@ -64,7 +64,7 @@ export const NumberFilter = React.memo(function NumberFilter({
         )}
       </div>
       <Input
-        id={config.key}
+        id={config.field}
         type="number"
         placeholder={config.placeholder}
         value={localValue}

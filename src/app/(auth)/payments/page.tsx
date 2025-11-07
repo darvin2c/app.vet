@@ -12,26 +12,20 @@ export default function PaymentsPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'payment_method',
       field: 'payment_method_id',
-      type: 'select',
       label: 'Método de Pago',
       placeholder: 'Selecciona método',
       operator: 'eq',
       options: [], // Se llenarían desde la base de datos
     },
     {
-      key: 'payment_date_range',
       field: 'payment_date',
-      type: 'dateRange',
       label: 'Fecha de Pago',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',
     },
     {
-      key: 'amount_range',
       field: 'amount',
-      type: 'number',
       label: 'Monto',
       placeholder: 'Monto mínimo',
       operator: 'gte',

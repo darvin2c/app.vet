@@ -14,42 +14,32 @@ export default function ProductsPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
-      type: 'boolean',
       label: 'Estado',
       placeholder: 'Selecciona estado',
       operator: 'eq',
     },
     {
-      key: 'category_id',
       field: 'category_id',
-      type: 'custom',
       label: 'Categoría',
       operator: 'eq',
       component: ProductCategorySelect,
     },
     {
-      key: 'unit_id',
       field: 'unit_id',
-      type: 'select',
       label: 'Unidad',
       placeholder: 'Selecciona unidad',
       operator: 'eq',
       options: [],
     },
     {
-      key: 'min_stock_range',
       field: 'min_stock',
-      type: 'number',
       label: 'Stock mínimo',
       placeholder: 'Stock mínimo',
       operator: 'gte',
     },
     {
-      key: 'created_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Fecha de creación',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',

@@ -14,9 +14,7 @@ export default function OrdersPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'status',
       field: 'status',
-      type: 'select',
       label: 'Estado',
       placeholder: 'Selecciona estado',
       operator: 'eq',
@@ -29,25 +27,19 @@ export default function OrdersPage() {
       ],
     },
     {
-      key: 'customer_id',
       field: 'customer_id',
-      type: 'custom',
       label: 'Cliente',
       operator: 'eq',
       component: CustomerSelect,
     },
     {
-      key: 'pet_id',
       field: 'pet_id',
-      type: 'custom',
       label: 'Mascota',
       operator: 'eq',
       component: PetSelect,
     },
     {
-      key: 'currency',
       field: 'currency',
-      type: 'select',
       label: 'Moneda',
       placeholder: 'Selecciona moneda',
       operator: 'eq',
@@ -58,25 +50,19 @@ export default function OrdersPage() {
       ],
     },
     {
-      key: 'total_range_min',
       field: 'total',
-      type: 'number',
       label: 'Total mínimo',
       placeholder: 'Total mínimo',
       operator: 'gte',
     },
     {
-      key: 'total_range_max',
       field: 'total',
-      type: 'number',
       label: 'Total máximo',
       placeholder: 'Total máximo',
       operator: 'lte',
     },
     {
-      key: 'created_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Fecha de creación',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',

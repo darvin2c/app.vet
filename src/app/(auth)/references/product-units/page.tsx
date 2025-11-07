@@ -12,10 +12,8 @@ import type { OrderByConfig } from '@/components/ui/order-by'
 export default function ProductUnitsPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

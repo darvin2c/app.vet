@@ -32,11 +32,9 @@ export function POSProductGrid() {
     filters: selectedCategory
       ? [
           {
-            key: 'category_id',
             field: 'category_id',
             operator: 'eq',
             value: selectedCategory,
-            type: 'select',
           },
         ]
       : [],

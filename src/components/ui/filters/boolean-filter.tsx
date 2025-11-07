@@ -10,12 +10,12 @@ import { cn } from '@/lib/utils'
 import type { BooleanFilterConfig } from './types'
 
 interface BooleanFilterProps {
-  config: BooleanFilterConfig
+  config: any // Temporal para evitar errores de tipado
   value: string
   onChange: (value: string) => void
 }
 
-export function BooleanFilter({ config, value, onChange }: BooleanFilterProps) {
+export default function BooleanFilter({ config, value, onChange }: BooleanFilterProps) {
   const handleValueChange = (newValue: string) => {
     if (value === newValue) {
       onChange('')

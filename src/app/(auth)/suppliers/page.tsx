@@ -13,17 +13,13 @@ export default function SuppliersPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
-      type: 'boolean',
       label: 'Estado',
       placeholder: 'Selecciona estado',
       operator: 'eq',
     },
     {
-      key: 'created_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Fecha de creación',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',

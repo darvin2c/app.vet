@@ -13,10 +13,8 @@ import { StaffImportButton } from '@/components/staff/staff-import-button'
 export default function StaffPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

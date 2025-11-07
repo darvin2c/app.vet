@@ -13,17 +13,13 @@ import { PaymentMethodImportButton } from '@/components/payment-methods/payment-
 export default function PaymentMethodsPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
     {
-      key: 'payment_type',
       field: 'payment_type',
       label: 'Tipo de Pago',
-      type: 'multiselect',
       operator: 'in',
       options: [
         { value: 'cash', label: 'Efectivo' },

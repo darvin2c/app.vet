@@ -5,14 +5,21 @@ export { Filters } from './filters'
 export { useFilters } from './use-filters'
 
 // Individual filter components
-export { SearchFilter } from './search-filter'
-export { SelectFilter } from './select-filter'
-export { MultiSelectFilter } from './multiselect-filter'
-export { DateFilter } from './date-filter'
-export { DateRangeFilter } from './date-range-filter'
-export { BooleanFilter } from './boolean-filter'
-export { NumberFilter } from './number-filter'
-export { CustomFilter } from './custom-filter'
+export { default as SearchFilter } from './search-filter'
+export { default as SelectFilter } from './select-filter'
+export { default as MultiSelectFilter } from './multiselect-filter'
+export { default as DateFilter } from './date-filter'
+export { default as DateRangeFilter } from './date-range-filter'
+export { default as BooleanFilter } from './boolean-filter'
+export { default as NumberFilter } from './number-filter'
+export { default as CustomFilter } from './custom-filter'
+export { default as ArrayFilter } from './array-filter'
+export { default as RangeFilter } from './range-filter'
+export { default as TextSearchFilter } from './text-search-filter'
+
+// Utilities
+export { getFilterComponent, getInputType, getDefaultOptions } from './get-filter-component'
+export { applySupabaseFilters } from './generate-supabase-filter'
 
 // Types
 export type {
@@ -20,7 +27,6 @@ export type {
   AppliedFilter,
   FiltersProps,
   SupabaseOperator,
-  FilterType,
   FilterOption,
   SearchFilterConfig,
   SelectFilterConfig,
@@ -30,4 +36,8 @@ export type {
   BooleanFilterConfig,
   NumberFilterConfig,
   CustomFilterConfig,
+  ArrayFilterConfig,
+  RangeFilterConfig,
+  TextSearchFilterConfig,
+  FilterComponentProps,
 } from './types'

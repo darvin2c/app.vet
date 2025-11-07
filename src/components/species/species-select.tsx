@@ -43,11 +43,9 @@ export function SpeciesSelect({
     search: searchTerm,
     filters: [
       {
-        key: 'is_active',
         field: 'is_active',
         operator: 'eq',
         value: true,
-        type: 'boolean',
       },
     ],
   })

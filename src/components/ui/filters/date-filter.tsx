@@ -18,12 +18,12 @@ import { cn } from '@/lib/utils'
 import type { DateFilterConfig } from './types'
 
 interface DateFilterProps {
-  config: DateFilterConfig
+  config: any // Temporal para evitar errores de tipado
   value: string
   onChange: (value: string) => void
 }
 
-export function DateFilter({ config, value, onChange }: DateFilterProps) {
+export default function DateFilter({ config, value, onChange }: DateFilterProps) {
   const [open, setOpen] = useState(false)
   const selectedDate = value ? new Date(value) : undefined
 

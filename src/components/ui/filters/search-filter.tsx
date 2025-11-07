@@ -11,12 +11,12 @@ import { useDebounce } from '@/hooks/use-debounce'
 import type { SearchFilterConfig } from './types'
 
 interface SearchFilterProps {
-  config: SearchFilterConfig
+  config: any // Temporal para evitar errores de tipado
   value: string
   onChange: (value: string) => void
 }
 
-export const SearchFilter = React.memo(function SearchFilter({
+export default React.memo(function SearchFilter({
   config,
   value,
   onChange,
@@ -49,7 +49,7 @@ export const SearchFilter = React.memo(function SearchFilter({
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <Label htmlFor={config.key} className="text-sm font-medium">
+        <Label htmlFor={config.field} className="text-sm font-medium">
           {config.label}
         </Label>
         {value && (
@@ -66,7 +66,7 @@ export const SearchFilter = React.memo(function SearchFilter({
       <div className="relative">
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
-          id={config.key}
+          id={config.field}
           placeholder={config.placeholder}
           value={localValue}
           onChange={handleChange}

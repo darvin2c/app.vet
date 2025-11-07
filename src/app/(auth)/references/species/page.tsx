@@ -13,10 +13,8 @@ import { SpeciesImportButton } from '@/components/species/species-import-button'
 export default function SpeciesPage() {
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
       label: 'Estado',
-      type: 'boolean',
       operator: 'eq',
     },
   ]

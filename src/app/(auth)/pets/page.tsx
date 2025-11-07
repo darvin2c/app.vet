@@ -14,25 +14,19 @@ export default function PetsPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      key: 'is_active',
       field: 'is_active',
-      type: 'boolean',
       label: 'Estado',
       placeholder: 'Selecciona estado',
       operator: 'eq',
     },
     {
-      key: 'client_id',
       field: 'client_id',
-      type: 'custom',
       label: 'Cliente',
       operator: 'eq',
       component: CustomerSelect,
     },
     {
-      key: 'species_id',
       field: 'species_id',
-      type: 'select',
       label: 'Especie',
       placeholder: 'Selecciona especie',
       operator: 'eq',
@@ -45,9 +39,7 @@ export default function PetsPage() {
       ],
     },
     {
-      key: 'sex',
       field: 'sex',
-      type: 'select',
       label: 'Género',
       placeholder: 'Selecciona género',
       operator: 'eq',
@@ -57,9 +49,7 @@ export default function PetsPage() {
       ],
     },
     {
-      key: 'created_range',
       field: 'created_at',
-      type: 'dateRange',
       label: 'Fecha de registro',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',

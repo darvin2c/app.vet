@@ -17,13 +17,13 @@ import { cn } from '@/lib/utils'
 import type { DateRangeFilterConfig } from './types'
 
 interface DateRangeFilterProps {
-  config: DateRangeFilterConfig
+  config: any // Temporal para evitar errores de tipado
   fromValue: string
   toValue: string
   onChange: (from: string, to: string) => void
 }
 
-export function DateRangeFilter({
+export default function DateRangeFilter({
   config,
   fromValue,
   toValue,

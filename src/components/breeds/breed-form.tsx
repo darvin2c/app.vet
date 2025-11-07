@@ -39,11 +39,9 @@ export function BreedForm({ selectedSpeciesId }: BreedFormProps) {
   const { data: species = [] } = useSpeciesList({
     filters: [
       {
-        key: 'is_active',
         field: 'is_active',
         operator: 'eq',
         value: true,
-        type: 'boolean',
       },
     ],
   })

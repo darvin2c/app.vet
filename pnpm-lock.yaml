@@ -98,6 +98,9 @@ importers:
       '@sparticuz/chromium':
         specifier: ^141.0.0
         version: 141.0.0
+      '@supabase/postgrest-js':
+        specifier: ^2.80.0
+        version: 2.80.0
       '@supabase/ssr':
         specifier: ^0.7.0
         version: 0.7.0(@supabase/supabase-js@2.58.0)
@@ -1229,6 +1232,10 @@ packages:
 
   '@supabase/postgrest-js@1.21.4':
     resolution: {integrity: sha512-TxZCIjxk6/dP9abAi89VQbWWMBbybpGWyvmIzTd79OeravM13OjR/YEYeyUOPcM1C3QyvXkvPZhUfItvmhY1IQ==}
+
+  '@supabase/postgrest-js@2.80.0':
+    resolution: {integrity: sha512-yKzehXlRbDoXIQefdRQnvaI9BEogoWIp/7+y/m5enZDKW2IP9aAgq5tU72sThcwftDJvknnIpEHAABG3qviEng==}
+    engines: {node: '>=20.0.0'}
 
   '@supabase/realtime-js@2.15.5':
     resolution: {integrity: sha512-/Rs5Vqu9jejRD8ZeuaWXebdkH+J7V6VySbCZ/zQM93Ta5y3mAmocjioa/nzlB6qvFmyylUgKVS1KpE212t30OA==}
@@ -4663,6 +4670,10 @@ snapshots:
   '@supabase/postgrest-js@1.21.4':
     dependencies:
       '@supabase/node-fetch': 2.6.15
+
+  '@supabase/postgrest-js@2.80.0':
+    dependencies:
+      tslib: 2.8.1
 
   '@supabase/realtime-js@2.15.5':
     dependencies:

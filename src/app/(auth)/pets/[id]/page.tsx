@@ -52,17 +52,13 @@ export default function PetProfilePage() {
   // Configuración de filtros para parámetros clínicos
   const clinicalParameterFilters: FilterConfig[] = [
     {
-      key: 'measured_at_range',
       field: 'measured_at',
-      type: 'dateRange',
       label: 'Fecha de medición',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',
     },
     {
-      key: 'schema_version',
       field: 'schema_version',
-      type: 'select',
       label: 'Versión',
       placeholder: 'Selecciona versión',
       operator: 'eq',
