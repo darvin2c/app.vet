@@ -4,6 +4,7 @@ import { usePagination } from './use-pagination'
 import type { PaginationProps } from './types'
 import { cn } from '@/lib/utils'
 import { ButtonHTMLAttributes } from 'react'
+import { useMemo } from 'react'
 
 interface PageButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   page: number
@@ -80,32 +81,51 @@ function getPageNumbers(
 export function Pagination({
   totalItems,
   config,
+  ui,
   onPageChange,
   className,
 }: PaginationProps) {
-  const {
-    currentPage,
-    pageSize,
-    totalPages,
-    startItem,
-    endItem,
-    hasPrevious,
-    hasNext,
-    goToPage,
-    goToPrevious,
-    goToNext,
-  } = usePagination(totalItems, config)
+  const { currentPage, pageSize, goToPage, goToPrevious, goToNext } =
+    usePagination(config)
+
+  const effectivePage = useMemo(() => {
+    return currentPage ?? ui?.defaultPage ?? 1
+  }, [currentPage, ui?.defaultPage])
+
+  const effectivePageSize = useMemo(() => {
+    return pageSize ?? ui?.defaultPageSize ?? 10
+  }, [pageSize, ui?.defaultPageSize])
+
+  const totalPages = useMemo(() => {
+    return Math.ceil(totalItems / effectivePageSize) || 1
+  }, [totalItems, effectivePageSize])
+
+  const startItem = useMemo(() => {
+    return (effectivePage - 1) * effectivePageSize + 1
+  }, [effectivePage, effectivePageSize])
+
+  const endItem = useMemo(() => {
+    return Math.min(effectivePage * effectivePageSize, totalItems)
+  }, [effectivePage, effectivePageSize, totalItems])
+
+  const hasPrevious = useMemo(() => {
+    return effectivePage > 1
+  }, [effectivePage])
+
+  const hasNext = useMemo(() => {
+    return effectivePage < totalPages
+  }, [effectivePage, totalPages])
 
   const handlePageChange = (page: number) => {
     goToPage(page)
-    onPageChange?.(page, pageSize)
+    onPageChange?.(page, effectivePageSize)
   }
 
   if (totalPages <= 1) {
     return null
   }
 
-  const pageNumbers = getPageNumbers(currentPage, totalPages)
+  const pageNumbers = getPageNumbers(effectivePage, totalPages)
 
   return (
     <div
@@ -143,7 +163,7 @@ export function Pagination({
             <PageButton
               key={page}
               page={page}
-              isActive={page === currentPage}
+              isActive={page === effectivePage}
               onClick={() => handlePageChange(page)}
               aria-label={`Ir a página ${page}`}
             />

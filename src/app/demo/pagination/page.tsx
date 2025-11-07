@@ -106,7 +106,7 @@ export default function PaginationDemoPage() {
         {/* Componente de paginación */}
         <div className="border rounded-lg p-4">
           <h3 className="text-lg font-medium mb-4">Paginación</h3>
-          <Pagination totalItems={totalItems} onPageChange={handlePageChange} />
+          <Pagination totalItems={totalItems} ui={{ defaultPage: 1, defaultPageSize: 10 }} onPageChange={handlePageChange} />
         </div>
 
         {/* Ejemplo con configuración personalizada */}
@@ -119,8 +119,8 @@ export default function PaginationDemoPage() {
             config={{
               pageParam: 'customPage',
               pageSizeParam: 'customSize',
-              defaultPageSize: 5,
             }}
+            ui={{ defaultPage: 1, defaultPageSize: 5 }}
             onPageChange={(page, pageSize) => {
               console.log('Paginación personalizada:', { page, pageSize })
             }}

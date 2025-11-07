@@ -56,6 +56,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
+import { usePagination } from '../ui/pagination'
 
 type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
 
