@@ -7,6 +7,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { PaymentMethodImportButton } from '@/components/payment-methods/payment-method-import-button'
 
 export default function PaymentMethodsPage() {
   const filters: FilterConfig[] = [
@@ -54,9 +55,13 @@ export default function PaymentMethodsPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <PaymentMethodCreateButton />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
+              <PaymentMethodImportButton variant="ghost" />
+              <PaymentMethodCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />
