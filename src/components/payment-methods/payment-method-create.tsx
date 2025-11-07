@@ -16,12 +16,9 @@ import {
 } from '@/components/ui/drawer-form'
 
 import { PaymentMethodForm } from './payment-method-form'
-import {
-  PaymentMethodCreateSchema,
-  type PaymentMethodCreate,
-} from '@/schemas/payment-methods.schema'
 import { usePaymentMethodCreate } from '@/hooks/payment-methods/use-payment-method-create'
 import { Form } from '../ui/form'
+import { paymentMethodCreateSchema } from '@/schemas/payment-methods.schema'
 
 interface PaymentMethodCreateProps {
   children?: React.ReactNode
@@ -40,25 +37,20 @@ export function PaymentMethodCreate({
   const mutation = usePaymentMethodCreate()
 
   const form = useForm({
-    resolver: zodResolver(PaymentMethodCreateSchema),
+    resolver: zodResolver(paymentMethodCreateSchema),
     defaultValues: {
       name: '',
-      payment_type: 'cash' as const,
+      payment_type: 'cash',
       is_active: true,
       ref_required: false,
     },
   })
 
-  const onSubmit = async (data: PaymentMethodCreate) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await mutation.mutateAsync(data)
-    form.reset({
-      name: '',
-      payment_type: 'cash' as const,
-      is_active: true,
-      ref_required: false,
-    })
+    form.reset()
     setOpen(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -71,16 +63,12 @@ export function PaymentMethodCreate({
           </DrawerDescription>
         </DrawerHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4">
               <PaymentMethodForm />
             </div>
             <DrawerFooter>
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit)}
-                disabled={mutation.isPending}
-              >
+              <Button type="submit" disabled={mutation.isPending}>
                 {mutation.isPending ? 'Creando...' : 'Crear Método de Pago'}
               </Button>
               <Button

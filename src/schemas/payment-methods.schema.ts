@@ -11,15 +11,15 @@ export const paymentMethodSchema = z.object({
 export const paymentMethodCreateSchema = paymentMethodSchema
 export const paymentMethodUpdateSchema = paymentMethodCreateSchema.partial()
 
-// Aliases to match component imports expecting PascalCase exports
-export { paymentMethodCreateSchema as PaymentMethodCreateSchema }
-export { paymentMethodUpdateSchema as PaymentMethodUpdateSchema }
-
 export const paymentMethodImportSchema = paymentMethodSchema.extend({
   is_active: z.coerce.boolean().optional().default(true),
   ref_required: z.coerce.boolean().optional().default(false),
 })
 
-export type PaymentMethod = z.infer<typeof paymentMethodSchema>
-export type PaymentMethodCreate = z.infer<typeof paymentMethodCreateSchema>
-export type PaymentMethodUpdate = z.infer<typeof paymentMethodUpdateSchema>
+export type PaymentMethodSchema = z.infer<typeof paymentMethodSchema>
+export type PaymentMethodCreateSchema = z.infer<
+  typeof paymentMethodCreateSchema
+>
+export type PaymentMethodUpdateSchema = z.infer<
+  typeof paymentMethodUpdateSchema
+>

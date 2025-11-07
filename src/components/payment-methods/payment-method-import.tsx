@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -11,11 +10,11 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { DataImport } from '@/components/ui/data-import'
 import { usePaymentMethodCreateBulk } from '@/hooks/payment-methods/use-payment-method-create-bulk'
-import {
-  PaymentMethodCreateSchema as createPaymentMethodSchema,
-  PaymentMethodCreate,
-} from '@/schemas/payment-methods.schema'
 import { toast } from 'sonner'
+import {
+  PaymentMethodCreateSchema,
+  paymentMethodImportSchema,
+} from '@/schemas/payment-methods.schema'
 
 interface PaymentMethodImportProps {
   open: boolean
@@ -28,7 +27,7 @@ export function PaymentMethodImport({
 }: PaymentMethodImportProps) {
   const createPaymentMethodBulk = usePaymentMethodCreateBulk()
 
-  const handleImport = async (data: PaymentMethodCreate[]) => {
+  const handleImport = async (data: PaymentMethodCreateSchema[]) => {
     try {
       await createPaymentMethodBulk.mutateAsync(data)
       toast.success('Métodos de pago importados exitosamente')
@@ -50,7 +49,7 @@ export function PaymentMethodImport({
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createPaymentMethodSchema}
+            schema={paymentMethodImportSchema}
             onImport={handleImport}
             isLoading={createPaymentMethodBulk.isPending}
             templateName="metodos_pago_template.csv"

@@ -15,14 +15,8 @@ import { Input } from '@/components/ui/input'
 
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
-import {
-  PaymentMethodCreate,
-  PaymentMethodUpdate,
-} from '@/schemas/payment-methods.schema'
 import { Enums } from '@/types/supabase.types'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
-
-type PaymentMethodFormData = PaymentMethodCreate | PaymentMethodUpdate
 
 export function PaymentMethodForm() {
   const {
@@ -30,7 +24,7 @@ export function PaymentMethodForm() {
     formState: { errors },
     setValue,
     watch,
-  } = useFormContext<PaymentMethodFormData>()
+  } = useFormContext()
 
   const paymentType = watch('payment_type')
   const { paymentTypes } = usePaymentType()

@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -55,28 +52,12 @@ import {
   Item,
   ItemContent,
   ItemTitle,
-  ItemDescription,
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 
 type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
-
-const paymentTypeLabels = {
-  cash: 'Efectivo',
-  card: 'Tarjeta',
-  transfer: 'Transferencia',
-  check: 'Cheque',
-  other: 'Otro',
-} as const
-
-const paymentTypeColors = {
-  cash: 'bg-green-100 text-green-800',
-  card: 'bg-blue-100 text-blue-800',
-  transfer: 'bg-purple-100 text-purple-800',
-  check: 'bg-orange-100 text-orange-800',
-  other: 'bg-gray-100 text-gray-800',
-} as const
 
 export function PaymentMethodList({
   filterConfig,
@@ -92,6 +73,7 @@ export function PaymentMethodList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { getPaymentType } = usePaymentType()
 
   const {
     data: paymentMethods = [],
@@ -124,12 +106,12 @@ export function PaymentMethodList({
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<PaymentMethod> }) => {
-        const paymentType = row.getValue(
-          'payment_type'
-        ) as keyof typeof paymentTypeLabels
+        const paymentTypeObj = getPaymentType(row.getValue('payment_type'))
+        const Icon = paymentTypeObj?.icon
         return (
-          <Badge className={paymentTypeColors[paymentType]}>
-            {paymentTypeLabels[paymentType]}
+          <Badge className="gap-1" variant="outline">
+            {Icon && <Icon className="h-3 w-3" />}
+            {paymentTypeObj?.label ?? 'Otros'}
           </Badge>
         )
       },
@@ -192,70 +174,60 @@ export function PaymentMethodList({
   // Función para renderizar vista de tarjetas
   const renderCardsView = () => (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {paymentMethods.map((paymentMethod) => (
-        <Card
-          key={paymentMethod.id}
-          className="hover:shadow-md transition-shadow"
-        >
-          <CardContent className="p-6 space-y-3">
-            <div className="flex justify-between items-start">
-              <div>
-                <h3 className="font-medium">{paymentMethod.name}</h3>
+      {paymentMethods.map((paymentMethod) => {
+        const paymentTypeObj = getPaymentType(paymentMethod.payment_type)
+        const Icon = paymentTypeObj?.icon
+        return (
+          <Card
+            key={paymentMethod.id}
+            className="hover:shadow-md transition-shadow"
+          >
+            <CardContent className="p-6 space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-medium">{paymentMethod.name}</h3>
+                </div>
+                <PaymentMethodActions paymentMethod={paymentMethod} />
               </div>
-              <PaymentMethodActions paymentMethod={paymentMethod} />
-            </div>
 
-            <div className="flex justify-between items-center">
-              <Badge
-                className={
-                  paymentTypeColors[
-                    paymentMethod.payment_type as keyof typeof paymentTypeColors
-                  ]
-                }
-              >
-                {
-                  paymentTypeLabels[
-                    paymentMethod.payment_type as keyof typeof paymentTypeLabels
-                  ]
-                }
-              </Badge>
-              <IsActiveDisplay value={paymentMethod.is_active} />
-            </div>
-          </CardContent>
-        </Card>
-      ))}
+              <div className="flex justify-between items-center">
+                <Badge className="gap-1" variant="outline">
+                  {Icon && <Icon className="h-3 w-3" />}
+                  {paymentTypeObj?.label ?? 'Otros'}
+                </Badge>
+                <IsActiveDisplay value={paymentMethod.is_active} />
+              </div>
+            </CardContent>
+          </Card>
+        )
+      })}
     </div>
   )
 
   // Función para renderizar vista de lista
   const renderListView = () => (
     <ItemGroup className="space-y-2">
-      {paymentMethods.map((paymentMethod) => (
-        <Item key={paymentMethod.id} variant="outline">
-          <ItemContent>
-            <ItemTitle>{paymentMethod.name}</ItemTitle>
-            <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              <Badge
-                className={
-                  paymentTypeColors[
-                    paymentMethod.payment_type as keyof typeof paymentTypeColors
-                  ]
-                }
-              >
-                {
-                  paymentTypeLabels[
-                    paymentMethod.payment_type as keyof typeof paymentTypeLabels
-                  ]
-                }
-              </Badge>
-              <IsActiveDisplay value={paymentMethod.is_active} />
-            </div>
-          </ItemContent>
-          <ItemActions>
-            <PaymentMethodActions paymentMethod={paymentMethod} />
-          </ItemActions>
-        </Item>
-      ))}
+      {paymentMethods.map((paymentMethod) => {
+        const paymentTypeObj = getPaymentType(paymentMethod.payment_type)
+        const Icon = paymentTypeObj?.icon
+        return (
+          <Item key={paymentMethod.id} variant="outline">
+            <ItemContent>
+              <ItemTitle>{paymentMethod.name}</ItemTitle>
+              <div className="flex gap-4 text-sm text-muted-foreground mt-2">
+                <Badge className="gap-1" variant="outline">
+                  {Icon && <Icon className="h-3 w-3" />}
+                  {paymentTypeObj?.label ?? 'Otros'}
+                </Badge>
+                <IsActiveDisplay value={paymentMethod.is_active} />
+              </div>
+            </ItemContent>
+            <ItemActions>
+              <PaymentMethodActions paymentMethod={paymentMethod} />
+            </ItemActions>
+          </Item>
+        )
+      })}
     </ItemGroup>
   )
 

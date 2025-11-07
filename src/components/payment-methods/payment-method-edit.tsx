@@ -12,13 +12,12 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer-form'
 
 import { PaymentMethodForm } from './payment-method-form'
 import {
   PaymentMethodUpdateSchema,
-  type PaymentMethodUpdate,
+  paymentMethodUpdateSchema,
 } from '@/schemas/payment-methods.schema'
 import { usePaymentMethodUpdate } from '@/hooks/payment-methods/use-payment-method-update'
 import { Tables } from '@/types/supabase.types'
@@ -36,8 +35,8 @@ export function PaymentMethodEdit({
 }: PaymentMethodEditProps) {
   const mutation = usePaymentMethodUpdate()
 
-  const form = useForm<PaymentMethodUpdate>({
-    resolver: zodResolver(PaymentMethodUpdateSchema),
+  const form = useForm<PaymentMethodUpdateSchema>({
+    resolver: zodResolver(paymentMethodUpdateSchema),
     defaultValues: {
       name: paymentMethod.name,
       payment_type: paymentMethod.payment_type,
@@ -57,13 +56,13 @@ export function PaymentMethodEdit({
     }
   }, [paymentMethod, form])
 
-  const onSubmit = async (data: PaymentMethodUpdate) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     await mutation.mutateAsync({
       id: paymentMethod.id,
       data,
     })
     onOpenChange(false)
-  }
+  })
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -75,7 +74,7 @@ export function PaymentMethodEdit({
           </DrawerDescription>
         </DrawerHeader>
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={onSubmit} className="space-y-4">
             <div className="px-4 overflow-y-auto">
               <PaymentMethodForm />
             </div>
