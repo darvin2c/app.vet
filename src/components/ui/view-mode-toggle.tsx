@@ -77,8 +77,8 @@ export function ViewModeToggle({
   resource = 'products',
 }: ViewModeToggleProps) {
   // Estado interno que maneja completamente el valor con localStorage
-  const [currentValue, setCurrentValue] = React.useState<ViewMode>(() =>
-    value ?? getStoredViewMode(resource)
+  const [currentValue, setCurrentValue] = React.useState<ViewMode>(
+    () => value ?? getStoredViewMode(resource)
   )
 
   const handleValueChange = (newValue: ViewMode) => {
