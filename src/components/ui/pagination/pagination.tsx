@@ -93,7 +93,7 @@ export function Pagination({
   }, [currentPage, ui?.defaultPage])
 
   const effectivePageSize = useMemo(() => {
-    return pageSize ?? ui?.defaultPageSize ?? 10
+    return pageSize ?? ui?.defaultPage ?? 10
   }, [pageSize, ui?.defaultPageSize])
 
   const totalPages = useMemo(() => {

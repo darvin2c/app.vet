@@ -1,7 +1,4 @@
-export interface AppliedPagination {
-  page: number
-  pageSize: number
-}
+import { AppliedPagination } from './types'
 
 /**
  * Aplica paginación de Supabase a la consulta usando AppliedPagination

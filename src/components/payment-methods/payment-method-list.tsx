@@ -56,7 +56,8 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
-import { usePagination } from '../ui/pagination'
+import { Pagination, usePagination } from '../ui/pagination'
+import { Alert, AlertDescription } from '../ui/alert'
 
 type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
 
@@ -75,16 +76,15 @@ export function PaymentMethodList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { getPaymentType } = usePaymentType()
-
-  const {
-    data: paymentMethods = [],
-    isPending,
-    error,
-  } = usePaymentMethodList({
+  const { appliedPagination } = usePagination()
+  const { data, isPending, error } = usePaymentMethodList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const paymentMethods = data?.data || []
 
   const columns: ColumnDef<PaymentMethod>[] = [
     {
@@ -241,11 +241,11 @@ export function PaymentMethodList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
+      <Alert variant="destructive">
+        <AlertDescription className="text-red-500">
           Error al cargar métodos de pago: {error.message}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -362,6 +362,9 @@ export function PaymentMethodList({
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination totalItems={data.total} />
+      </div>
     </div>
   )
 }

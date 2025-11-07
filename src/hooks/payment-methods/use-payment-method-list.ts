@@ -5,8 +5,8 @@ import { Tables } from '@/types/supabase.types'
 import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
-
-type PaymentMethod = Tables<'payment_methods'>
+import { applySupabasePagination } from '@/components/ui/pagination/generate-supabase-pagination'
+import { AppliedPagination } from '@/components/ui/pagination/types'
 
 export function usePaymentMethodList({
   filters = [],
@@ -17,16 +17,28 @@ export function usePaymentMethodList({
       direction: 'asc',
     },
   ],
+  pagination = {
+    page: 1,
+    pageSize: 20,
+  },
 }: {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
+  pagination?: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'payment_methods', filters, search, orders],
-    queryFn: async (): Promise<PaymentMethod[]> => {
+    queryKey: [
+      currentTenant?.id,
+      'payment_methods',
+      filters,
+      search,
+      orders,
+      pagination,
+    ],
+    queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No tenant selected')
       }
@@ -34,32 +46,31 @@ export function usePaymentMethodList({
       // Build the query
       let query = supabase
         .from('payment_methods')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('tenant_id', currentTenant.id)
 
       // Apply filters
       query = applySupabaseFilters(query, filters)
       query = applySupabaseSort(query, orders)
-
-      // Apply orders
-      orders.forEach((order) => {
-        query = query.order(order.field, {
-          ascending: order.direction === 'asc',
-        })
-      })
+      query = applySupabasePagination(query, pagination)
 
       // Apply search
       if (search) {
         query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
       }
 
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw error
       }
 
-      return data
+      return {
+        data: data || [],
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+        total: count || 0,
+      }
     },
     enabled: !!currentTenant?.id,
   })

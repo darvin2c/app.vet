@@ -50,8 +50,8 @@ export function usePagination(config?: PaginationConfig): UsePaginationReturn {
 
   const appliedPagination: AppliedPagination = useMemo(
     () => ({
-      page: currentPage,
-      pageSize,
+      page: currentPage ?? 1,
+      pageSize: pageSize ?? 20,
     }),
     [currentPage, pageSize]
   )

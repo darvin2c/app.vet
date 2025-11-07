@@ -30,6 +30,11 @@ export interface UsePaginationReturn {
 }
 
 export interface AppliedPagination {
-  page: number | null
-  pageSize: number | null
+  page: number
+  pageSize: number
+}
+
+export interface PaginationData {
+  total: number
+  data: unknown[]
 }
