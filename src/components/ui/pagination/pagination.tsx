@@ -1,14 +1,81 @@
-import { ButtonGroup } from '@/components/ui/button-group'
 import { Button } from '@/components/ui/button'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
-} from 'lucide-react'
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { usePagination } from './use-pagination'
 import type { PaginationProps } from './types'
 import { cn } from '@/lib/utils'
+import { ButtonHTMLAttributes } from 'react'
+
+interface PageButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  page: number
+  isActive: boolean
+}
+
+function PageButton({ page, isActive, ...props }: PageButtonProps) {
+  return (
+    <Button
+      variant={isActive ? 'default' : 'ghost'}
+      size="sm"
+      className={cn(
+        'min-w-8 h-8 px-2',
+        isActive && 'bg-blue-500 hover:bg-blue-600 text-white'
+      )}
+      {...props}
+    >
+      {page}
+    </Button>
+  )
+}
+
+function Ellipsis() {
+  return (
+    <span className="flex items-center justify-center min-w-8 h-8 text-muted-foreground">
+      ...
+    </span>
+  )
+}
+
+function getPageNumbers(
+  currentPage: number,
+  totalPages: number
+): (number | 'ellipsis')[] {
+  const pages: (number | 'ellipsis')[] = []
+
+  if (totalPages <= 7) {
+    // Show all pages if 7 or fewer
+    for (let i = 1; i <= totalPages; i++) {
+      pages.push(i)
+    }
+  } else {
+    // Always show first page
+    pages.push(1)
+
+    if (currentPage <= 3) {
+      // Near the beginning
+      pages.push(2, 3, 4, 'ellipsis', totalPages)
+    } else if (currentPage >= totalPages - 2) {
+      // Near the end
+      pages.push(
+        'ellipsis',
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+        totalPages
+      )
+    } else {
+      // In the middle
+      pages.push(
+        'ellipsis',
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        'ellipsis',
+        totalPages
+      )
+    }
+  }
+
+  return pages
+}
 
 export function Pagination({
   totalItems,
@@ -38,49 +105,63 @@ export function Pagination({
     return null
   }
 
+  const pageNumbers = getPageNumbers(currentPage, totalPages)
+
   return (
     <div
       className={cn(
-        'flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-sm',
+        'flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 text-sm',
         className
       )}
     >
-      {/* Page info - ocultar en móvil muy pequeño */}
-      <div className="hidden sm:block text-muted-foreground">
+      {/* Page info - hidden on small screens */}
+      <div className="hidden sm:block text-muted-foreground absolute left-0">
         {startItem}-{endItem} de {totalItems}
       </div>
 
-      {/* Pagination controls */}
-      <ButtonGroup>
+      {/* Pagination controls - centered */}
+      <div className="flex items-center gap-1">
         {/* Previous page */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={goToPrevious}
           disabled={!hasPrevious}
           aria-label="Anterior"
+          className="min-w-8 h-8 px-2"
         >
           <ChevronLeft className="h-4 w-4" />
-          <span className="hidden sm:inline ml-1">Anterior</span>
         </Button>
 
-        {/* Current page / total */}
-        <div className="flex items-center justify-center min-w-[80px] px-3 py-2 text-sm font-medium border rounded-md bg-background">
-          {currentPage} de {totalPages}
-        </div>
+        {/* Page numbers */}
+        {pageNumbers.map((page, index) => {
+          if (page === 'ellipsis') {
+            return <Ellipsis key={`ellipsis-${index}`} />
+          }
+
+          return (
+            <PageButton
+              key={page}
+              page={page}
+              isActive={page === currentPage}
+              onClick={() => handlePageChange(page)}
+              aria-label={`Ir a página ${page}`}
+            />
+          )
+        })}
 
         {/* Next page */}
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
           onClick={goToNext}
           disabled={!hasNext}
           aria-label="Siguiente"
+          className="min-w-8 h-8 px-2"
         >
-          <span className="hidden sm:inline mr-1">Siguiente</span>
           <ChevronRight className="h-4 w-4" />
         </Button>
-      </ButtonGroup>
+      </div>
     </div>
   )
 }

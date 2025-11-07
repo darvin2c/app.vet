@@ -22,6 +22,13 @@ const generateMockData = (page: number, pageSize: number) => {
   }))
 }
 
+// Function to get status badge classes to avoid hydration errors
+const getStatusBadgeClasses = (status: string) => {
+  return status === 'Activo'
+    ? 'px-2 py-1 text-xs rounded-full bg-green-100 text-green-800'
+    : 'px-2 py-1 text-xs rounded-full bg-red-100 text-red-800'
+}
+
 export default function PaginationDemoPage() {
   const [currentData, setCurrentData] = useState(() => generateMockData(1, 10))
   const totalItems = 125 // Total de elementos de ejemplo
@@ -87,13 +94,7 @@ export default function PaginationDemoPage() {
                       {item.description}
                     </p>
                   </div>
-                  <div
-                    className={`px-2 py-1 text-xs rounded-full ${
-                      item.status === 'Activo'
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-red-100 text-red-800'
-                    }`}
-                  >
+                  <div className={getStatusBadgeClasses(item.status)}>
                     {item.status}
                   </div>
                 </div>
