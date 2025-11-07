@@ -87,7 +87,9 @@ export function useClinicalParameterList(params?: UseClinicalParametersParams) {
 
       // Apply sorting
       orders.forEach((order) => {
-        query = query.order(order.field, { ascending: order.ascending })
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
+        })
       })
 
       // Default sorting by measured_at desc

@@ -13,7 +13,6 @@ export default function useProductList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -67,7 +66,7 @@ export default function useProductList({
       // Aplicar ordenamiento
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

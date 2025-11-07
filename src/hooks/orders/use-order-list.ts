@@ -10,7 +10,6 @@ export default function useOrderList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -45,7 +44,7 @@ export default function useOrderList({
 
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

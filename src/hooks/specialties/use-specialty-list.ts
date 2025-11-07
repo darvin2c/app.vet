@@ -73,7 +73,7 @@ export function useSpecialtyList(params?: UseSpecialtyListParams) {
       if (orders.length > 0) {
         orders.forEach((order) => {
           query = query.order(order.field, {
-            ascending: order.ascending,
+            ascending: order.direction === 'asc',
           })
         })
       } else {

@@ -36,7 +36,7 @@ export default function useProductUnitList({
 
       // Aplicar ordenamientos
       orders.forEach((order) => {
-        query.order(order.field, { ascending: order.ascending })
+        query.order(order.field, { ascending: order.direction === 'asc' })
       })
 
       // Aplicar búsqueda

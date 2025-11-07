@@ -13,7 +13,6 @@ export function useRoleList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -56,7 +55,7 @@ export function useRoleList({
       // Aplicar ordenamiento
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

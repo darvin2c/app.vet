@@ -60,7 +60,7 @@ export function OrderSelect({
   const { data: orders = [], isLoading } = useOrderList({
     search: searchTerm,
     filters: [],
-    orders: [{ field: 'created_at', direction: 'desc', ascending: false }],
+    orders: [{ field: 'created_at', direction: 'desc' }],
   })
 
   const selectedOrder = orders.find((order: Order) => order.id === value)
@@ -119,66 +119,44 @@ export function OrderSelect({
               value={searchTerm}
               onValueChange={setSearchTerm}
             />
-            <CommandEmpty>
-              {isLoading ? 'Cargando...' : 'No se encontraron órdenes.'}
-            </CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-auto">
+            <CommandEmpty>No se encontraron órdenes.</CommandEmpty>
+            <CommandGroup>
               {orders.map((order: Order) => (
                 <CommandItem
                   key={order.id}
-                  value={`${order.order_number || order.id} ${order.total}`}
+                  value={order.id}
                   onSelect={() => handleSelect(order.id)}
                 >
                   <div className="flex items-center gap-2">
                     <ShoppingCart className="h-4 w-4" />
-                    <div className="flex flex-col">
-                      <span>
-                        {order.order_number || `Orden #${order.id.slice(0, 8)}`}
-                      </span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm text-muted-foreground">
-                          Total: ${order.total?.toFixed(2) || '0.00'}
-                        </span>
-                        <Badge
-                          className={
-                            orderStatusColors[
-                              order.status as keyof typeof orderStatusColors
-                            ]
-                          }
-                        >
-                          {
-                            orderStatusLabels[
-                              order.status as keyof typeof orderStatusLabels
-                            ]
-                          }
-                        </Badge>
-                      </div>
-                    </div>
+                    <span>
+                      {order.order_number || `Orden #${order.id.slice(0, 8)}`}
+                    </span>
+                    <Badge
+                      className={
+                        orderStatusColors[
+                          order.status as keyof typeof orderStatusColors
+                        ]
+                      }
+                    >
+                      {
+                        orderStatusLabels[
+                          order.status as keyof typeof orderStatusLabels
+                        ]
+                      }
+                    </Badge>
                   </div>
-                  <Check
-                    className={cn(
-                      'h-4 w-4',
-                      value === order.id ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
+                  {value === order.id ? (
+                    <Check className="ml-auto h-4 w-4" />
+                  ) : (
+                    <X className="ml-auto h-4 w-4" />
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>
           </Command>
         </PopoverContent>
       </Popover>
-
-      {selectedOrder && (
-        <InputGroupButton
-          variant="ghost"
-          onClick={() => onValueChange?.('')}
-          disabled={disabled}
-          aria-label="Limpiar selección"
-          className="h-full"
-        >
-          <X className="h-4 w-4" />
-        </InputGroupButton>
-      )}
     </InputGroup>
   )
 }

@@ -6,7 +6,6 @@ export default function useSuppliersNavigation(currentId: string) {
     orders: [
       {
         field: 'name',
-        ascending: true,
         direction: 'asc',
       },
     ],

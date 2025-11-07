@@ -19,7 +19,6 @@ export function useMedicalRecordList({
     {
       field: 'created_at',
       direction: 'desc',
-      ascending: false,
     },
   ],
 }: UseMedicalRecordListParams) {

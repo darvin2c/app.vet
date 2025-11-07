@@ -32,7 +32,6 @@ export default function useProductMovementList({
     {
       field: 'created_at',
       direction: 'desc',
-      ascending: false,
     },
   ],
   search,
@@ -85,7 +84,7 @@ export default function useProductMovementList({
 
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

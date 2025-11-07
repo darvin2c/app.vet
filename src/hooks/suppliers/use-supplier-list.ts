@@ -13,7 +13,6 @@ export default function useSupplierList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -50,7 +49,7 @@ export default function useSupplierList({
       // Aplicar ordenamiento
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

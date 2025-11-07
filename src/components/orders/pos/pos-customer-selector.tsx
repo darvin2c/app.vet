@@ -39,7 +39,7 @@ export function POSCustomerSelector() {
   const { data: customers = [], isLoading } = useCustomerList({
     search,
     filters: [],
-    orders: [{ field: 'first_name', ascending: true, direction: 'asc' }],
+    orders: [{ field: 'first_name', direction: 'asc' }],
   })
 
   const handleSelectCustomer = (customer: Tables<'customers'>) => {

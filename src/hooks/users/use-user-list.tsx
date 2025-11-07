@@ -17,7 +17,6 @@ export function useUserList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -50,7 +49,11 @@ export function useUserList({
       filters.forEach((filter) => {})
 
       // Aplicar ordenamiento
-      orders.forEach((order) => {})
+      orders.forEach((order) => {
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
+        })
+      })
 
       const { data, error } = await query
       if (error) {

@@ -19,7 +19,6 @@ export function useAppointmentTypeList({
   orders = [
     {
       field: 'created_at',
-      ascending: false,
       direction: 'desc',
     },
   ],
@@ -50,7 +49,9 @@ export function useAppointmentTypeList({
 
       // Aplicar ordenamiento
       orders.forEach((order) => {
-        query = query.order(order.field, { ascending: order.ascending })
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
+        })
       })
 
       const { data, error } = await query

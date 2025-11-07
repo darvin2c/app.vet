@@ -34,7 +34,6 @@ export default function usePaymentList({
     {
       field: 'created_at',
       direction: 'desc',
-      ascending: false,
     },
   ],
   search,
@@ -91,7 +90,7 @@ export default function usePaymentList({
 
       orders.forEach((order) => {
         query = query.order(order.field, {
-          ascending: order.ascending,
+          ascending: order.direction === 'asc',
         })
       })
 

@@ -63,18 +63,22 @@ function setStoredViewMode(resource: string, value: ViewMode) {
 
 export interface ViewModeToggleProps {
   onValueChange?: (value: ViewMode) => void
+  onChange?: (value: ViewMode) => void // Compatibilidad con uso previo
+  value?: ViewMode // Compatibilidad con uso previo
   className?: string
   resource?: string
 }
 
 export function ViewModeToggle({
   onValueChange,
+  onChange,
+  value,
   className,
   resource = 'products',
 }: ViewModeToggleProps) {
   // Estado interno que maneja completamente el valor con localStorage
   const [currentValue, setCurrentValue] = React.useState<ViewMode>(() =>
-    getStoredViewMode(resource)
+    value ?? getStoredViewMode(resource)
   )
 
   const handleValueChange = (newValue: ViewMode) => {
@@ -86,6 +90,7 @@ export function ViewModeToggle({
 
     // Llamar callback si existe
     onValueChange?.(newValue)
+    onChange?.(newValue)
   }
 
   // No necesitamos useEffect para notificar el valor inicial

@@ -221,7 +221,6 @@ export function useOrderBy(config?: OrderByConfig) {
     return currentSort.map((sort) => ({
       field: sort.field,
       direction: sort.direction,
-      ascending: sort.direction === 'asc',
       ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
     }))
   }, [currentSort])
@@ -353,15 +352,6 @@ export function useOrderBy(config?: OrderByConfig) {
     [currentSort]
   )
 
-  // Función para obtener filtros listos para Supabase
-  const getSupabaseSorts = useCallback(() => {
-    return appliedSorts.map((sort) => ({
-      column: sort.field,
-      ascending: sort.ascending,
-      ...(sort.foreignTable && { foreignTable: sort.foreignTable }),
-    }))
-  }, [appliedSorts])
-
   return {
     // Estado actual
     currentSort,
@@ -375,9 +365,6 @@ export function useOrderBy(config?: OrderByConfig) {
     // Funciones de consulta
     getSortDirection,
     isSorted,
-
-    // Integración con Supabase
-    getSupabaseSorts,
 
     // Configuración
     config,

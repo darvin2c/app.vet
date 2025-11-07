@@ -51,7 +51,6 @@ export type OrderByValues = OrderByValue[]
 export interface AppliedSort {
   field: string
   direction: SortDirection
-  ascending: boolean // Para compatibilidad con Supabase
   /**
    * Tabla foránea si aplica
    */

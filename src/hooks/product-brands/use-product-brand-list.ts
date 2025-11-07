@@ -38,7 +38,9 @@ export default function useProductBrandList({
 
       // Aplicar ordenamiento
       orders.forEach((order) => {
-        query = query.order(order.field, { ascending: order.ascending })
+        query = query.order(order.field, {
+          ascending: order.direction === 'asc',
+        })
       })
 
       // Aplicar búsqueda
