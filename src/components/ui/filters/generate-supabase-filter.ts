@@ -9,10 +9,13 @@ export function applySupabaseFilters<
   T extends keyof Database['public']['Tables'],
 >(
   query: PostgrestFilterBuilder<
+    any,
+    Database['public'],
+    Database['public']['Tables'][T]['Row'],
     Database['public']['Tables'][T]['Row'],
     T,
-    Database['public']['Tables'][T]['Row'],
-    T
+    any,
+    any
   >,
   filters: AppliedFilter[]
 ) {
@@ -78,8 +81,8 @@ export function applySupabaseFilters<
         break // ov
 
       // Texto completo -> usar textSearch
-      case 'fts': // to_tsquery (raw)
-        query = query.textSearch(field, value, { type: 'raw' })
+      case 'fts':
+        query = query.filter(field, 'fts' as any, value) // to_tsquery
         break
       case 'plfts': // plainto_tsquery
         query = query.textSearch(field, value, { type: 'plain' })
