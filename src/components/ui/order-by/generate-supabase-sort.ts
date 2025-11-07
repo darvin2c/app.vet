@@ -12,7 +12,7 @@ export function applySupabaseSort(query: any, sorts: AppliedSort[]) {
       query = query.order(order.field, {
         ascending: order.direction === 'asc',
         foreignTable: order.foreignTable,
-      } as any)
+      })
     } else {
       query = query.order(order.field, {
         ascending: order.direction === 'asc',

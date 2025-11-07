@@ -7,11 +7,7 @@ export function applySupabaseFilters(query: any, filters: AppliedFilter[]) {
   if (!filters || filters.length === 0) return query
 
   for (const filter of filters) {
-    const { field, operator, value } = filter as {
-      field: string
-      operator: string
-      value: unknown
-    }
+    const { field, operator, value } = filter
 
     switch (operator) {
       // Comparación básica
