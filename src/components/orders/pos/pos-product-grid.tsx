@@ -1,11 +1,11 @@
 'use client'
 
-import { useState, useMemo } from 'react'
-import { Card, CardContent } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { useState, useMemo } from 'react'
 import {
   Item,
   ItemMedia,
@@ -17,20 +17,25 @@ import {
 } from '@/components/ui/item'
 import { Plus, Package, Tag } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
-import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Tables } from '@/types/supabase.types'
+import { usePagination } from '@/components/ui/pagination'
 
 type Product = Tables<'products'>
 
 export function POSProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
-
+  const { appliedPagination } = usePagination()
   // Fetch products using existing hook
   const { data: products = [], isLoading: isLoadingProducts } = useProductList({
     search: '',
     filters: selectedCategory
       ? [
+          {
+            field: 'is_active',
+            operator: 'eq',
+            value: true,
+          },
           {
             field: 'category_id',
             operator: 'eq',
@@ -41,8 +46,8 @@ export function POSProductGrid() {
   })
 
   // Fetch categories using existing hook
-  const { data: categories = [], isLoading: isLoadingCategories } =
-    useProductCategoryList({})
+  const { data, isLoading: isLoadingCategories } = useProductCategoryList({})
+  const categories = data?.data || []
 
   const filteredProducts = useMemo(() => {
     return products

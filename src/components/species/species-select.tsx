@@ -21,6 +21,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import { usePagination } from '../ui/pagination'
 
 interface SpeciesSelectProps {
   value?: string
@@ -39,7 +40,8 @@ export function SpeciesSelect({
 }: SpeciesSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const { data: species = [], isLoading } = useSpeciesList({
+  const { appliedPagination } = usePagination()
+  const { data, isLoading } = useSpeciesList({
     search: searchTerm,
     filters: [
       {
@@ -48,7 +50,9 @@ export function SpeciesSelect({
         value: true,
       },
     ],
+    pagination: appliedPagination,
   })
+  const species = data?.data || []
 
   const selectedSpecies = species.find((s: Species) => s.id === value)
 

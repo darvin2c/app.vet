@@ -8,7 +8,6 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
-import { ProductUnitImport } from '@/components/product-units/product-unit-import'
 import { ProductUnitImportButton } from '@/components/product-units/product-unit-import-button'
 
 export default function ProductUnitsPage() {

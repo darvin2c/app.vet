@@ -21,6 +21,7 @@ import useProductCategoryList from '@/hooks/product-categories/use-product-categ
 import { ProductCategoryCreate } from './product-category-create'
 import { ProductCategoryEdit } from './product-category-edit'
 import { Tables } from '@/types/supabase.types'
+import { usePagination } from '../ui/pagination'
 
 type ProductCategory = Tables<'product_categories'>
 
@@ -43,9 +44,19 @@ export function ProductCategorySelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-  const { data: categories = [], isLoading } = useProductCategoryList({
+  const { appliedPagination } = usePagination()
+  const { data, isLoading } = useProductCategoryList({
     search: searchTerm,
+    filters: [
+      {
+        field: 'is_active',
+        operator: 'eq',
+        value: true,
+      },
+    ],
+    pagination: appliedPagination,
   })
+  const categories = data?.data || []
 
   const selectedCategory = categories.find(
     (category: ProductCategory) => category.id === value

@@ -32,19 +32,19 @@ import {
   EmptyDescription,
   EmptyContent,
 } from '@/components/ui/empty'
-import { type ViewMode } from '@/components/ui/view-mode-toggle'
-import { BreedActions } from './breed-actions'
-import { useBreedsList } from '@/hooks/breeds/use-breed-list'
-import { Tables } from '@/types/supabase.types'
-import { FilterConfig, useFilters } from '@/components/ui/filters'
-import { OrderByConfig } from '@/components/ui/order-by'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import { useSearch } from '@/components/ui/search-input/use-search'
-import { ArrowUpRightIcon } from 'lucide-react'
-import { IsActiveDisplay } from '../ui/is-active-field'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { FilterConfig, useFilters } from '@/components/ui/filters'
+import { type ViewMode } from '@/components/ui/view-mode-toggle'
+import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { BreedCreateButton } from './breed-create-button'
-import { Button } from '../ui/button'
 import { BreedImportButton } from './breed-import-button'
+import { OrderByConfig } from '@/components/ui/order-by'
+import { IsActiveDisplay } from '../ui/is-active-field'
+import { BreedActions } from './breed-actions'
+import { Tables } from '@/types/supabase.types'
+import { ArrowUpRightIcon } from 'lucide-react'
+import { Button } from '../ui/button'
 
 type Breed = Tables<'breeds'> & {
   species: Tables<'species'> | null
@@ -83,8 +83,8 @@ export function BreedList({
       accessorKey: 'name',
       header: 'Nombre',
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <span className="font-medium">{row.getValue('name')}</span>
+        <div>
+          <span>{row.getValue('name')}</span>
         </div>
       ),
     },
@@ -94,7 +94,7 @@ export function BreedList({
       cell: ({ row }) => {
         const description = row.getValue('description') as string
         return description ? (
-          <div className="max-w-[200px] truncate" title={description}>
+          <div className="truncate" title={description}>
             {description}
           </div>
         ) : (

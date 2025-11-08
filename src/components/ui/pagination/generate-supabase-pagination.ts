@@ -5,7 +5,7 @@ import { AppliedPagination } from './types'
  */
 export function applySupabasePagination(
   query: any,
-  pagination: AppliedPagination
+  pagination?: AppliedPagination
 ) {
   if (!pagination) return query
 

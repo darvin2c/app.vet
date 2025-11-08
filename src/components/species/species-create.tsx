@@ -17,6 +17,7 @@ import { speciesCreateSchema } from '@/schemas/species.schema'
 import { useSpeciesCreate } from '@/hooks/species/use-species-create'
 import { ScrollArea } from '../ui/scroll-area'
 import { Form } from '../ui/form'
+import { Field } from '../ui/field'
 
 interface SpeciesCreateProps {
   onSuccess?: () => void
@@ -69,17 +70,22 @@ export function SpeciesCreate({
           </Form>
 
           <SheetFooter>
-            <ResponsiveButton
-              onClick={onSubmit}
-              isLoading={createSpecies.isPending}
-              type="submit"
-              variant="default"
-            >
-              Crear Especie
-            </ResponsiveButton>
-            <ResponsiveButton onClick={() => setOpen(false)} variant="outline">
-              Cancelar
-            </ResponsiveButton>
+            <Field orientation="horizontal">
+              <ResponsiveButton
+                onClick={onSubmit}
+                isLoading={createSpecies.isPending}
+                type="submit"
+                variant="default"
+              >
+                Crear Especie
+              </ResponsiveButton>
+              <ResponsiveButton
+                onClick={() => setOpen(false)}
+                variant="outline"
+              >
+                Cancelar
+              </ResponsiveButton>
+            </Field>
           </SheetFooter>
         </ScrollArea>
       </SheetContent>

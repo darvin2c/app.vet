@@ -3,7 +3,6 @@ import { useQuery } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
-import { toast } from 'sonner'
 import {
   AppliedPagination,
   applySupabasePagination,
@@ -19,7 +18,7 @@ export default function useProductUnitList({
   filters?: AppliedFilter[]
   orders?: AppliedSort[]
   search?: string
-  pagination: AppliedPagination
+  pagination?: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 

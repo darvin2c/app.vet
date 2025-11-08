@@ -36,7 +36,7 @@ export function BreedForm({ selectedSpeciesId }: BreedFormProps) {
   const speciesId = watch('species_id')
 
   // Obtener lista de especies activas
-  const { data: species = [] } = useSpeciesList({
+  const { data } = useSpeciesList({
     filters: [
       {
         field: 'is_active',
@@ -45,6 +45,7 @@ export function BreedForm({ selectedSpeciesId }: BreedFormProps) {
       },
     ],
   })
+  const species = data?.data || []
 
   return (
     <div className="space-y-4">

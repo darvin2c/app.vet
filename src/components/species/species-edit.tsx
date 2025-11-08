@@ -21,6 +21,7 @@ import { useSpeciesUpdate } from '@/hooks/species/use-species-update'
 import { Tables } from '@/types/supabase.types'
 import { ScrollArea } from '../ui/scroll-area'
 import { Form } from '../ui/form'
+import { Field } from '../ui/field'
 
 interface SpeciesEditProps {
   species: Tables<'species'>
@@ -88,22 +89,24 @@ export function SpeciesEdit({
           </Form>
 
           <SheetFooter>
-            <ResponsiveButton
-              onClick={onSubmit}
-              isLoading={updateSpecies.isPending}
-              disabled={updateSpecies.isPending}
-              type="submit"
-              variant="default"
-            >
-              Guardar Cambios
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => setOpen(false)}
-              disabled={updateSpecies.isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
+            <Field orientation="horizontal">
+              <ResponsiveButton
+                onClick={onSubmit}
+                isLoading={updateSpecies.isPending}
+                disabled={updateSpecies.isPending}
+                type="submit"
+                variant="default"
+              >
+                Guardar Cambios
+              </ResponsiveButton>
+              <ResponsiveButton
+                variant="outline"
+                onClick={() => setOpen(false)}
+                disabled={updateSpecies.isPending}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </Field>
           </SheetFooter>
         </ScrollArea>
       </SheetContent>

@@ -43,9 +43,10 @@ export function ProductUnitSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: productUnits = [], isLoading } = useProductUnitList({
+  const { data, isLoading } = useProductUnitList({
     search: searchTerm,
   })
+  const productUnits = data?.data || []
 
   const selectedProductUnit = productUnits.find(
     (unit: ProductUnit) => unit.id === value
