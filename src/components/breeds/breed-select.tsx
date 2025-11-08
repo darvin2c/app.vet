@@ -1,10 +1,11 @@
 'use client'
 
-import { useState } from 'react'
-import { Dog, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
+import { Dog, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import { useBreedsList } from '@/hooks/breeds/use-breed-list'
+import { Tables } from '@/types/supabase.types'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 import {
   Command,
   CommandEmpty,
@@ -17,10 +18,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { useBreedsList } from '@/hooks/breeds/use-breed-list'
-import { Tables } from '@/types/supabase.types'
-
-type Breed = Tables<'breeds'> & { species: Tables<'species'> | null }
 
 interface BreedSelectProps {
   value?: string
@@ -44,12 +41,13 @@ export function BreedSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: breeds = [], isLoading } = useBreedsList({
+  const { data, isLoading } = useBreedsList({
     search: searchTerm,
     species_id: speciesId,
   })
+  const breeds = data?.data || []
 
-  const selectedBreed = breeds.find((breed: Breed) => breed.id === value)
+  const selectedBreed = breeds.find((breed) => breed.id === value)
 
   const handleSelect = (breedId: string) => {
     if (!onValueChange) return
@@ -94,7 +92,7 @@ export function BreedSelect({
                 {isLoading ? 'Cargando...' : 'No se encontraron razas.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {breeds.map((breed: Breed) => (
+                {breeds.map((breed) => (
                   <CommandItem
                     key={breed.id}
                     value={breed.name}

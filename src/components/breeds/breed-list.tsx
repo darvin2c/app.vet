@@ -48,7 +48,7 @@ import { Button } from '../ui/button'
 import { Pagination, usePagination } from '../ui/pagination'
 
 type Breed = Tables<'breeds'> & {
-  species?: Tables<'species'> | null
+  species: Tables<'species'>
 }
 
 interface BreedListProps {
