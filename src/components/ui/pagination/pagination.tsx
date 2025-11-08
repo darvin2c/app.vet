@@ -74,22 +74,29 @@ function getPageNumbers(
 }
 
 export function Pagination({
-  totalItems,
   page,
   pageSize,
   showPageSizeSelector,
+  currentPage,
+  goToPage,
+  goToPrevious,
+  goToNext,
+  setPageSize,
+  totalItems = 0,
   maxPageButtons,
   onPageChange,
   className,
-}: PaginationProps & { totalItems: number }) {
-  const totalPages = Math.ceil((totalItems ?? 0) / pageSize) || 1
-  const startItem = (page - 1) * pageSize + 1
-  const endItem = Math.min(page * pageSize, totalItems ?? 0)
-  const hasPrevious = page > 1
-  const hasNext = page < totalPages
+}: PaginationProps) {
+  const effectivePage = currentPage ?? page
+  const totalPages = Math.ceil(totalItems / pageSize) || 1
+  const startItem = (effectivePage - 1) * pageSize + 1
+  const endItem = Math.min(effectivePage * pageSize, totalItems)
+  const hasPrevious = effectivePage > 1
+  const hasNext = effectivePage < totalPages
 
   const handlePageChange = (nextPage: number) => {
     const validPage = Math.max(1, Math.min(nextPage, totalPages))
+    goToPage(validPage)
     onPageChange?.(validPage, pageSize)
   }
 
@@ -97,7 +104,11 @@ export function Pagination({
     return null
   }
 
-  const pageNumbers = getPageNumbers(page, totalPages, maxPageButtons ?? 7)
+  const pageNumbers = getPageNumbers(
+    effectivePage,
+    totalPages,
+    maxPageButtons ?? 7
+  )
 
   return (
     <div
@@ -117,7 +128,10 @@ export function Pagination({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handlePageChange(page - 1)}
+          onClick={() => {
+            goToPrevious()
+            onPageChange?.(Math.max(1, effectivePage - 1), pageSize)
+          }}
           disabled={!hasPrevious}
           aria-label="Anterior"
           className="min-w-8 h-8 px-2"
@@ -135,7 +149,7 @@ export function Pagination({
             <PageButton
               key={p}
               page={p}
-              isActive={p === page}
+              isActive={p === effectivePage}
               onClick={() => handlePageChange(p)}
               aria-label={`Ir a página ${p}`}
             />
@@ -146,7 +160,10 @@ export function Pagination({
         <Button
           variant="ghost"
           size="sm"
-          onClick={() => handlePageChange(page + 1)}
+          onClick={() => {
+            goToNext()
+            onPageChange?.(Math.min(effectivePage + 1, totalPages), pageSize)
+          }}
           disabled={!hasNext}
           aria-label="Siguiente"
           className="min-w-8 h-8 px-2"

@@ -31,12 +31,12 @@ const getStatusBadgeClasses = (status: string) => {
 }
 
 export default function PaginationDemoPage() {
-  const {
-    appliedPagination: { page, pageSize },
-    paginationProps,
-  } = usePagination()
+  const { appliedPagination, paginationProps } = usePagination()
+  const { page, pageSize } = appliedPagination
 
-  const [currentData, setCurrentData] = useState(() => generateMockData(page, pageSize))
+  const [currentData, setCurrentData] = useState(() =>
+    generateMockData(page, pageSize)
+  )
   const totalItems = 125 // Total de elementos de ejemplo
 
   const handlePageChange = (nextPage: number, nextPageSize: number) => {
@@ -115,6 +115,10 @@ export default function PaginationDemoPage() {
             totalItems={totalItems}
             page={paginationProps.page}
             pageSize={paginationProps.pageSize}
+            goToPage={paginationProps.goToPage}
+            goToPrevious={paginationProps.goToPrevious}
+            goToNext={paginationProps.goToNext}
+            setPageSize={paginationProps.setPageSize}
             onPageChange={handlePageChange}
           />
         </div>
@@ -132,16 +136,22 @@ export default function PaginationDemoPage() {
 }
 
 function CustomPaginationExample() {
-  const {
-    appliedPagination: { page, pageSize },
-    paginationProps,
-  } = usePagination('customPage', 'customSize')
+  const { appliedPagination, paginationProps } = usePagination({
+    pageParam: 'customPage',
+    pageSizeParam: 'customSize',
+  })
+  const { page, pageSize } = appliedPagination
 
-  const [currentData, setCurrentData] = useState(() => generateMockData(page, pageSize))
+  const [currentData, setCurrentData] = useState(() =>
+    generateMockData(page, pageSize)
+  )
 
   const handlePageChange = (nextPage: number, nextPageSize: number) => {
     setCurrentData(generateMockData(nextPage, nextPageSize))
-    console.log('Paginación personalizada:', { page: nextPage, pageSize: nextPageSize })
+    console.log('Paginación personalizada:', {
+      page: nextPage,
+      pageSize: nextPageSize,
+    })
   }
 
   return (
@@ -149,6 +159,10 @@ function CustomPaginationExample() {
       totalItems={85}
       page={paginationProps.page}
       pageSize={paginationProps.pageSize}
+      goToPage={paginationProps.goToPage}
+      goToPrevious={paginationProps.goToPrevious}
+      goToNext={paginationProps.goToNext}
+      setPageSize={paginationProps.setPageSize}
       onPageChange={handlePageChange}
     />
   )

@@ -2,6 +2,11 @@ export interface PaginationProps {
   page: number
   pageSize: number
   showPageSizeSelector?: boolean
+  currentPage?: number
+  goToPage: (page: number) => void
+  goToPrevious: () => void
+  goToNext: () => void
+  setPageSize: (size: number) => void
   totalItems?: number
   maxPageButtons?: number
   onPageChange?: (page: number, pageSize: number) => void
@@ -11,10 +16,6 @@ export interface PaginationProps {
 }
 
 export interface UsePaginationReturn {
-  goToPage: (page: number) => void
-  goToPrevious: () => void
-  goToNext: () => void
-  setPageSize: (size: number) => void
   paginationProps: PaginationProps
   appliedPagination: AppliedPagination
 }

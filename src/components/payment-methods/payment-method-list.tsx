@@ -22,7 +22,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Database } from '@/types/supabase.types'
+import { Database, Tables } from '@/types/supabase.types'
 import { PaymentMethodActions } from './payment-method-actions'
 import { PaymentMethodCreateButton } from './payment-method-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -38,12 +38,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
-  CreditCard,
-} from 'lucide-react'
+import { ArrowUpRightIcon, CreditCard } from 'lucide-react'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
@@ -59,7 +54,7 @@ import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { Pagination, usePagination } from '../ui/pagination'
 import { Alert, AlertDescription } from '../ui/alert'
 
-type PaymentMethod = Database['public']['Tables']['payment_methods']['Row']
+type PaymentMethod = Tables<'payment_methods'>
 
 export function PaymentMethodList({
   filterConfig,
@@ -76,9 +71,7 @@ export function PaymentMethodList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { getPaymentType } = usePaymentType()
-  const { appliedPagination, paginationProps } = usePagination({
-    defaultPageSize: 3,
-  })
+  const { appliedPagination, paginationProps } = usePagination()
   const { data, isPending, error } = usePaymentMethodList({
     filters: appliedFilters,
     search: appliedSearch,

@@ -59,11 +59,11 @@ export function usePagination(
   )
 
   return {
-    goToPage,
-    goToPrevious,
-    goToNext,
-    setPageSize: handleSetPageSize,
     paginationProps: {
+      goToPage,
+      goToPrevious,
+      goToNext,
+      setPageSize: handleSetPageSize,
       page: appliedPagination.page,
       pageSize: appliedPagination.pageSize,
       pageParam,
