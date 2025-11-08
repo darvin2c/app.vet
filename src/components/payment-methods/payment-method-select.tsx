@@ -20,6 +20,7 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { Tables } from '@/types/supabase.types'
+import { usePagination } from '../ui/pagination'
 
 type PaymentMethod = Tables<'payment_methods'>
 
@@ -54,14 +55,18 @@ export function PaymentMethodSelect({
 }: PaymentMethodSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
+  const { appliedPagination } = usePagination()
 
-  const { data: paymentMethods = [], isLoading } = usePaymentMethodList({})
-
-  const filteredMethods = paymentMethods.filter((method: PaymentMethod) =>
+  const { data, isLoading } = usePaymentMethodList({
+    search: searchTerm,
+    pagination: appliedPagination,
+  })
+  const paymentMethodsList = data?.data || []
+  const filteredMethods = paymentMethodsList.filter((method: PaymentMethod) =>
     `${method.name}`.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
-  const selectedMethod = paymentMethods.find(
+  const selectedMethod = paymentMethodsList.find(
     (method: PaymentMethod) => method.id === value
   )
 

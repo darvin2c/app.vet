@@ -21,6 +21,7 @@ import { useAppointmentTypeList } from '@/hooks/appointment-types/use-appointmen
 import { AppointmentTypeCreate } from './appointment-type-create'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { Tables } from '@/types/supabase.types'
+import { usePagination } from '../ui/pagination'
 
 type AppointmentType = Tables<'appointment_types'>
 
@@ -44,9 +45,12 @@ export function AppointmentTypeSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: appointmentTypes = [], isLoading } = useAppointmentTypeList({
+  const { appliedPagination } = usePagination()
+  const { data, isLoading } = useAppointmentTypeList({
     search: searchTerm,
+    pagination: appliedPagination,
   })
+  const appointmentTypes = data?.data || []
 
   const selectedAppointmentType = appointmentTypes.find(
     (type: AppointmentType) => type.id === value

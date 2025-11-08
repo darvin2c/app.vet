@@ -35,6 +35,7 @@ import {
   POSPaymentSchema,
 } from '@/schemas/pos-payment.schema'
 import { Form } from '@/components/ui/form'
+import { usePagination } from '@/components/ui/pagination'
 
 interface PaymentSelectorContentProps {
   onPaymentAdded?: () => void
@@ -44,8 +45,11 @@ function PaymentSelectorContent({
   onPaymentAdded,
 }: PaymentSelectorContentProps) {
   const form = useFormContext<POSPaymentSchema>()
-  const { data: paymentMethods = [], isPending: isLoadingMethods } =
-    usePaymentMethodList({})
+  const { appliedPagination } = usePagination()
+  const { data, isPending: isLoadingMethods } = usePaymentMethodList({
+    pagination: appliedPagination,
+  })
+  const paymentMethods = data?.data || []
   const { getPaymentType } = usePaymentType()
   const { order, addPayment } = usePOSStore()
 

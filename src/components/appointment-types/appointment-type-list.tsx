@@ -36,6 +36,8 @@ import type { OrderByConfig } from '@/components/ui/order-by'
 import { useSearch } from '@/hooks/use-search'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { Tables } from '@/types/supabase.types'
+import { Pagination, usePagination } from '../ui/pagination'
+import { IsActiveDisplay } from '../ui/is-active-field'
 
 interface AppointmentTypeListProps {
   filterConfig: FilterConfig[]
@@ -57,12 +59,16 @@ export function AppointmentTypeList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
-  const { data: appointmentTypes = [], isLoading } = useAppointmentTypeList({
+  const { data, isLoading } = useAppointmentTypeList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const appointmentTypes = data?.data || []
 
   const columns = useMemo<ColumnDef<AppointmentType>[]>(
     () => [
@@ -90,11 +96,7 @@ export function AppointmentTypeList({
             Estado
           </OrderByTableHeader>
         ),
-        cell: ({ row }) => (
-          <Badge variant={row.original.is_active ? 'default' : 'secondary'}>
-            {row.original.is_active ? 'Activo' : 'Inactivo'}
-          </Badge>
-        ),
+        cell: ({ row }) => <IsActiveDisplay value={row.original.is_active} />,
       },
       {
         id: 'actions',
@@ -134,78 +136,74 @@ export function AppointmentTypeList({
     )
   }
 
-  if (view === 'cards') {
-    return (
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {appointmentTypes.map((appointmentType) => (
-          <Card key={appointmentType.id} className="p-4">
-            <div className="flex items-start justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-4 h-4 rounded-full border"
-                  style={{
-                    backgroundColor: appointmentType.color || 'transparent',
-                  }}
-                />
-                <h3 className="font-semibold">{appointmentType.name}</h3>
-              </div>
-              <Badge
-                variant={appointmentType.is_active ? 'default' : 'secondary'}
-              >
-                {appointmentType.is_active ? 'Activo' : 'Inactivo'}
-              </Badge>
-            </div>
-
-            {appointmentType.description && (
-              <p className="text-sm text-muted-foreground mb-3">
-                {appointmentType.description}
-              </p>
-            )}
-
-            <div className="flex justify-end">
-              <AppointmentTypeActions
-                appointmentType={appointmentType}
-                onSuccess={onSuccess}
-              />
-            </div>
-          </Card>
-        ))}
-      </div>
-    )
-  }
-
-  if (view === 'list') {
-    return (
-      <ItemGroup>
-        {appointmentTypes.map((appointmentType) => (
-          <Item key={appointmentType.id}>
-            <div className="flex items-center gap-3 flex-1">
+  const renderCardsView = (
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {appointmentTypes.map((appointmentType) => (
+        <Card key={appointmentType.id} className="p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2">
               <div
                 className="w-4 h-4 rounded-full border"
                 style={{
                   backgroundColor: appointmentType.color || 'transparent',
                 }}
               />
-              <div className="flex-1">
-                <div className="font-medium">{appointmentType.name}</div>
-              </div>
-              <Badge
-                variant={appointmentType.is_active ? 'default' : 'secondary'}
-              >
-                {appointmentType.is_active ? 'Activo' : 'Inactivo'}
-              </Badge>
+              <h3 className="font-semibold">{appointmentType.name}</h3>
             </div>
+            <Badge
+              variant={appointmentType.is_active ? 'default' : 'secondary'}
+            >
+              {appointmentType.is_active ? 'Activo' : 'Inactivo'}
+            </Badge>
+          </div>
+
+          {appointmentType.description && (
+            <p className="text-sm text-muted-foreground mb-3">
+              {appointmentType.description}
+            </p>
+          )}
+
+          <div className="flex justify-end">
             <AppointmentTypeActions
               appointmentType={appointmentType}
               onSuccess={onSuccess}
             />
-          </Item>
-        ))}
-      </ItemGroup>
-    )
-  }
+          </div>
+        </Card>
+      ))}
+    </div>
+  )
 
-  return (
+  const renderListView = (
+    <ItemGroup>
+      {appointmentTypes.map((appointmentType) => (
+        <Item key={appointmentType.id}>
+          <div className="flex items-center gap-3 flex-1">
+            <div
+              className="w-4 h-4 rounded-full border"
+              style={{
+                backgroundColor: appointmentType.color || 'transparent',
+              }}
+            />
+            <div className="flex-1">
+              <div className="font-medium">{appointmentType.name}</div>
+            </div>
+            <Badge
+              variant={appointmentType.is_active ? 'default' : 'secondary'}
+            >
+              {appointmentType.is_active ? 'Activo' : 'Inactivo'}
+            </Badge>
+          </div>
+          <AppointmentTypeActions
+            appointmentType={appointmentType}
+            onSuccess={onSuccess}
+          />
+        </Item>
+      ))}
+    </ItemGroup>
+  )
+
+  const renderTableView = (
     <Table>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
@@ -237,5 +235,16 @@ export function AppointmentTypeList({
           : null}
       </TableBody>
     </Table>
+  )
+
+  return (
+    <div>
+      {view === 'cards' && renderCardsView}
+      {view === 'list' && renderListView}
+      {view === 'table' && renderTableView}
+      <div>
+        <Pagination {...paginationProps} totalItems={data?.total} />
+      </div>
+    </div>
   )
 }
