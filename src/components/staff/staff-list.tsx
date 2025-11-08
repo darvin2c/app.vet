@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -40,12 +37,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-} from 'lucide-react'
+import { ArrowUpRightIcon, Users } from 'lucide-react'
 import useStaffList from '@/hooks/staff/use-staff-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/hooks/use-search'
@@ -58,6 +50,8 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Pagination, usePagination } from '../ui/pagination'
+import { Alert, AlertDescription } from '../ui/alert'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 
@@ -75,16 +69,16 @@ export function StaffList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
-  const {
-    data: staff = [],
-    isPending,
-    error,
-  } = useStaffList({
+  const { data, isPending, error } = useStaffList({
     search: appliedSearch,
     filters: appliedFilters,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const staff = data?.data || []
 
   const columns: ColumnDef<Staff>[] = [
     {
@@ -154,23 +148,10 @@ export function StaffList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: staff,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -274,11 +255,11 @@ export function StaffList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
+      <Alert variant="destructive">
+        <AlertDescription>
           Error al cargar personal: {error.message}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -326,7 +307,7 @@ export function StaffList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
@@ -347,48 +328,14 @@ export function StaffList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                staff.length
-              )}{' '}
-              de {staff.length} miembros del personal
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data?.total} />
+      </div>
     </div>
   )
 }

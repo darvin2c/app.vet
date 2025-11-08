@@ -1,22 +1,32 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
+import { AppliedPagination } from '@/components/ui/pagination'
+import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
+import { applySupabasePagination } from '@/components/ui/pagination/generate-supabase-pagination'
 
 export default function useStaffList({
-  filters,
-  orders,
+  filters = [],
+  orders = [
+    {
+      field: 'created_at',
+      direction: 'desc',
+    },
+  ],
   search,
+  pagination,
 }: {
   filters?: AppliedFilter[]
   orders?: AppliedSort[]
   search?: string
+  pagination: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'staff', filters, orders, search],
+    queryKey: [currentTenant?.id, 'staff', filters, orders, search, pagination],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
@@ -36,20 +46,19 @@ export default function useStaffList({
               is_active
             )
           )
-        `
+        `,
+          { count: 'exact' }
         )
         .eq('tenant_id', currentTenant.id)
-        .order('created_at', { ascending: false })
 
       // Aplicar filtros
-      filters?.forEach((filter) => {
-        query.filter(filter.field, filter.operator, filter.value)
-      })
+      query = applySupabaseFilters(query, filters)
 
       // Aplicar ordenamientos
-      orders?.forEach((order) => {
-        query.order(order.field, { ascending: order.direction === 'asc' })
-      })
+      query = applySupabaseSort(query, orders)
+
+      // Aplicar paginación
+      query = applySupabasePagination(query, pagination)
 
       // Aplicar búsqueda global
       if (search) {
@@ -58,13 +67,17 @@ export default function useStaffList({
         )
       }
 
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw new Error(`Error al obtener staff: ${error.message}`)
       }
 
-      return data
+      return {
+        data,
+        total: count || 0,
+        ...pagination,
+      }
     },
     enabled: !!currentTenant?.id,
   })
