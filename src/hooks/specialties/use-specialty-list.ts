@@ -2,19 +2,34 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
+import { AppliedPagination } from '@/components/ui/pagination'
+import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
+import { applySupabasePagination } from '@/components/ui/pagination/generate-supabase-pagination'
 
 interface UseSpecialtyListParams {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
-  is_active?: boolean
+  pagination?: AppliedPagination
 }
 
-export function useSpecialtyList(params?: UseSpecialtyListParams) {
+export function useSpecialtyList({
+  filters = [],
+  search,
+  orders = [
+    {
+      field: 'created_at',
+      direction: 'asc',
+    },
+  ],
+  pagination = {
+    page: 1,
+    pageSize: 10,
+  },
+}: UseSpecialtyListParams) {
   const { currentTenant } = useCurrentTenantStore()
-  const { filters = [], search, orders = [], is_active = true } = params || {}
 
   return useQuery({
     queryKey: [
@@ -23,71 +38,42 @@ export function useSpecialtyList(params?: UseSpecialtyListParams) {
       filters,
       search,
       orders,
-      is_active,
+      pagination,
     ],
     queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('No tenant selected')
       }
 
       let query = supabase
         .from('specialties')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('tenant_id', currentTenant.id)
 
-      // Aplicar filtro de activos por defecto
-      if (is_active !== undefined) {
-        query = query.eq('is_active', is_active)
-      }
-
       // Aplicar filtros
-      filters.forEach((filter) => {
-        switch (filter.operator) {
-          case 'eq':
-            query = query.eq(filter.field, filter.value)
-            break
-          case 'gte':
-            query = query.gte(filter.field, filter.value)
-            break
-          case 'lte':
-            query = query.lte(filter.field, filter.value)
-            break
-          case 'like':
-            query = query.like(filter.field, `%${filter.value}%`)
-            break
-          case 'ilike':
-            query = query.ilike(filter.field, `%${filter.value}%`)
-            break
-          case 'in':
-            query = query.in(filter.field, filter.value)
-            break
-        }
-      })
+      query = applySupabaseFilters(query, filters)
+      // Aplicar ordenamiento
+      query = applySupabaseSort(query, orders)
+      // Aplicar paginación
+      query = applySupabasePagination(query, pagination)
 
       // Aplicar búsqueda
       if (search) {
         query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
       }
 
-      // Aplicar ordenamiento
-      if (orders.length > 0) {
-        orders.forEach((order) => {
-          query = query.order(order.field, {
-            ascending: order.direction === 'asc',
-          })
-        })
-      } else {
-        // Orden por defecto
-        query = query.order('name')
-      }
-
-      const { data, error } = await query
+      const { data, error, count } = await query
 
       if (error) {
         throw new Error(`Error al obtener especialidades: ${error.message}`)
       }
 
-      return data || []
+      return {
+        data: data || [],
+        total: count || 0,
+        page: pagination.page,
+        pageSize: pagination.pageSize,
+      }
     },
     enabled: !!currentTenant?.id,
   })
