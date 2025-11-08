@@ -42,10 +42,8 @@ export default function PaymentMethodsPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
-      { field: 'code', label: 'Código', sortable: true },
       { field: 'payment_type', label: 'Tipo', sortable: true },
-      { field: 'sort_order', label: 'Orden', sortable: true },
-      { field: 'created_at', label: 'Fecha de Creación', sortable: true },
+      { field: 'is_active', label: 'Activo', sortable: true },
     ],
   }
 
