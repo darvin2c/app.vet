@@ -6,6 +6,7 @@ import { AppliedSort } from '@/components/ui/order-by'
 import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
 import { applySupabasePagination } from '@/components/ui/pagination/generate-supabase-pagination'
 import { AppliedPagination } from '@/components/ui/pagination/types'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 export function usePaymentMethodList({
   filters = [],
@@ -51,9 +52,7 @@ export function usePaymentMethodList({
       query = applySupabasePagination(query, pagination)
 
       // Apply search
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
-      }
+      query = applySupabaseSearch(query, search, ['name'])
 
       const { data, count, error } = await query
 
