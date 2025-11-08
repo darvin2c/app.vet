@@ -59,7 +59,7 @@ import usePaymentList, {
 import { PaymentActions } from './payment-actions'
 import { PaymentCreateButton } from './payment-create-button'
 import { useFilters } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'

@@ -53,7 +53,7 @@ import {
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import useCustomerList from '@/hooks/customers/use-customer-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,

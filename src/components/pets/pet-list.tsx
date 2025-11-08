@@ -43,7 +43,7 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ChevronLeft, ChevronRight, PawPrint } from 'lucide-react'
 import { usePets } from '@/hooks/pets/use-pet-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,

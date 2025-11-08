@@ -51,7 +51,7 @@ import {
 } from 'lucide-react'
 import useOrderList from '@/hooks/orders/use-order-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSimpleSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -108,14 +108,14 @@ export function OrderList({
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
-  const search = useSimpleSearch()
+  const { appliedSearch } = useSearch()
   const {
     data: orders = [],
     isPending,
     error,
   } = useOrderList({
     filters: appliedFilters,
-    search: search,
+    search: appliedSearch,
     orders: orderByHook.appliedSorts,
   })
 

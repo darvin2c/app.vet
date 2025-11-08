@@ -48,7 +48,7 @@ import {
 } from 'lucide-react'
 import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,

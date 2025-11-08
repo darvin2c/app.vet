@@ -46,7 +46,7 @@ import {
 } from 'lucide-react'
 import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,

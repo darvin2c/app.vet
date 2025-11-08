@@ -61,7 +61,7 @@ import useProductMovementList, {
 import { ProductMovementActions } from './product-movement-actions'
 import { ProductMovementCreateButton } from './product-movement-create-button'
 import { useFilters } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
+import { useSearch } from '@/components/ui/search-input/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
