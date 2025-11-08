@@ -36,11 +36,11 @@ export function POSCustomerSelector() {
 
   const { customer: selectedCustomer, setCustomer } = usePOSStore()
 
-  const { data: customers = [], isLoading } = useCustomerList({
+  const { data, isLoading } = useCustomerList({
     search,
-    filters: [],
     orders: [{ field: 'first_name', direction: 'asc' }],
   })
+  const customers = data?.data || []
 
   const handleSelectCustomer = (customer: Tables<'customers'>) => {
     setCustomer(customer)

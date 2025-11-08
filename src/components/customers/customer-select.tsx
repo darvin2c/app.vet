@@ -22,6 +22,7 @@ import useCustomerList from '@/hooks/customers/use-customer-list'
 import { CustomerCreate } from './customer-create'
 import { CustomerEdit } from './customer-edit'
 import { Tables } from '@/types/supabase.types'
+import { usePagination } from '../ui/pagination'
 
 type Customer = Tables<'customers'>
 
@@ -44,12 +45,13 @@ export function CustomerSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const { appliedPagination } = usePagination()
 
-  const { data: customers = [], isLoading } = useCustomerList({
+  const { data, isLoading } = useCustomerList({
     search: searchTerm,
-    filters: [],
-    orders: [],
+    pagination: appliedPagination,
   })
+  const customers = data?.data || []
 
   const selectedCustomer = customers.find(
     (customer: Customer) => customer.id === value

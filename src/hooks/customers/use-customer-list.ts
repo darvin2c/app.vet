@@ -2,57 +2,73 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
-import { AppliedSort } from '@/components/ui/order-by'
-
-type Customer = Tables<'customers'>
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
+import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
+import {
+  AppliedPagination,
+  applySupabasePagination,
+} from '@/components/ui/pagination'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 export default function useCustomerList({
   filters = [],
-  orders = [],
+  orders = [
+    {
+      field: 'created_at',
+      direction: 'desc',
+    },
+  ],
   search,
+  pagination,
 }: {
   filters?: AppliedFilter[]
   orders?: AppliedSort[]
   search?: string
+  pagination?: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'customers', filters],
-    queryFn: async (): Promise<Customer[]> => {
+    queryKey: [
+      currentTenant?.id,
+      'customers',
+      filters,
+      search,
+      orders,
+      pagination,
+    ],
+    queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('Tenant ID no está definido')
       }
 
       let query = supabase
         .from('customers')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('tenant_id', currentTenant.id)
 
-      filters.forEach((filter) => {
-        query = query.filter(filter.field, filter.operator, filter.value)
-      })
+      query = applySupabaseFilters(query, filters)
+      query = applySupabasePagination(query, pagination)
+      query = applySupabaseSort(query, orders)
+      query = applySupabaseSearch(query, search, [
+        'first_name',
+        'last_name',
+        'doc_id',
+        'email',
+        'phone',
+      ])
 
-      // Aplicar filtros
-      if (search) {
-        query = query.or(`full_name.ilike.%${search}%,email.ilike.%${search}%`)
-      }
-
-      // Aplicar ordenamientos
-      orders.forEach((order) => {
-        query = query.order(order.field, {
-          ascending: order.direction === 'asc',
-        })
-      })
-
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw new Error(`Error al obtener clientes: ${error.message}`)
       }
 
-      return data || []
+      return {
+        data: data || [],
+        total: count || 0,
+        ...pagination,
+      }
     },
   })
 }

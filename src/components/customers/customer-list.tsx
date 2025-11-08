@@ -63,6 +63,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Pagination, usePagination } from '../ui/pagination'
 
 type Customer = Tables<'customers'>
 
@@ -80,23 +81,16 @@ export function CustomerList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
   // Convertir filtros aplicados al formato esperado por useCustomerLis
-  const {
-    data: customers = [],
-    isPending,
-    error,
-  } = useCustomerList({
+  const { data, isPending, error } = useCustomerList({
     filters: appliedFilters,
     orders: orderByHook.appliedSorts,
     search: appliedSearch,
+    pagination: appliedPagination,
   })
-  // Callback para manejar la selección de clientes
-  const handleCustomerSelect = useCallback((customer: Customer) => {
-    // Aquí se puede implementar la lógica de selección si es necesaria
-    console.log('Customer selected:', customer)
-  }, [])
-
+  const customers = data?.data || []
   // Configuración de columnas para la tabla
   const columns: ColumnDef<Customer>[] = [
     {
@@ -185,34 +179,14 @@ export function CustomerList({
     },
     {
       id: 'actions',
-      cell: ({ row }) => (
-        <CustomerActions
-          customer={row.original}
-          onView={handleCustomerSelect}
-        />
-      ),
+      cell: ({ row }) => <CustomerActions customer={row.original} />,
     },
   ]
-
-  // Configuración de la tabla con React Table
-  const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
     data: customers,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -238,7 +212,6 @@ export function CustomerList({
         key={row.id}
         data-state={row.getIsSelected() && 'selected'}
         className="cursor-pointer hover:bg-muted/50"
-        onClick={() => handleCustomerSelect(row.original)}
       >
         {row.getVisibleCells().map((cell: Cell<Customer, unknown>) => (
           <TableCell key={cell.id}>
@@ -247,13 +220,13 @@ export function CustomerList({
         ))}
       </TableRow>
     ),
-    [handleCustomerSelect]
+    []
   )
 
   // Función para renderizar vista de tabla
   const renderTableView = () => (
     <>
-      <div className="rounded-md border">
+      <div>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map(renderTableHeader)}
@@ -274,43 +247,6 @@ export function CustomerList({
           </TableBody>
         </Table>
       </div>
-
-      {/* Paginación */}
-      <div className="flex items-center justify-between space-x-2 py-4">
-        <div className="text-sm text-muted-foreground">
-          Mostrando{' '}
-          {table.getState().pagination.pageIndex *
-            table.getState().pagination.pageSize +
-            1}{' '}
-          a{' '}
-          {Math.min(
-            (table.getState().pagination.pageIndex + 1) *
-              table.getState().pagination.pageSize,
-            customers.length
-          )}{' '}
-          de {customers.length} clientes
-        </div>
-        <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronLeft className="h-4 w-4" />
-            Anterior
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Siguiente
-            <ChevronRight className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
     </>
   )
 
@@ -330,7 +266,6 @@ export function CustomerList({
           <Card
             key={customer.id}
             className="cursor-pointer hover:shadow-md transition-shadow"
-            onClick={() => handleCustomerSelect(customer)}
           >
             <CardContent className="p-6 space-y-3">
               <div className="flex items-start justify-between">
@@ -342,10 +277,7 @@ export function CustomerList({
                     <h3 className="font-semibold">{fullName}</h3>
                   </div>
                 </div>
-                <CustomerActions
-                  customer={customer}
-                  onView={handleCustomerSelect}
-                />
+                <CustomerActions customer={customer} />
               </div>
 
               <div className="space-y-2">
@@ -392,12 +324,7 @@ export function CustomerList({
           .slice(0, 2)
 
         return (
-          <Item
-            key={customer.id}
-            variant="outline"
-            className="cursor-pointer"
-            onClick={() => handleCustomerSelect(customer)}
-          >
+          <Item key={customer.id} variant="outline" className="cursor-pointer">
             <ItemContent>
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10">
@@ -426,10 +353,7 @@ export function CustomerList({
               </div>
             </ItemContent>
             <ItemActions>
-              <CustomerActions
-                customer={customer}
-                onView={handleCustomerSelect}
-              />
+              <CustomerActions customer={customer} />
             </ItemActions>
           </Item>
         )
@@ -485,6 +409,9 @@ export function CustomerList({
       {viewMode === 'table' && renderTableView()}
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data.total} />
+      </div>
     </div>
   )
 }
