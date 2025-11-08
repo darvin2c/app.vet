@@ -12,9 +12,9 @@ import {
   InputGroupInput,
   InputGroupText,
 } from '@/components/ui/input-group'
-import { Kbd } from './kbd'
-import { SidebarTrigger as SidebarTriggerLeft } from './sidebar-left'
-import { SidebarTrigger as SidebarTriggerRight } from './sidebar-right'
+import { Kbd } from '@/components/ui/kbd'
+import { SidebarTrigger as SidebarTriggerLeft } from '@/components/ui/sidebar-left'
+import { SidebarTrigger as SidebarTriggerRight } from '@/components/ui/sidebar-right'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsFetching } from '@tanstack/react-query'

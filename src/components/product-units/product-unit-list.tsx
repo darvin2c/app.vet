@@ -46,7 +46,6 @@ import {
 } from 'lucide-react'
 import useProductUnits from '@/hooks/product-units/use-product-unit-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -57,6 +56,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { Alert, AlertDescription } from '../ui/alert'
+import { useSearch } from '../ui/search-input'
 
 type ProductUnit = Database['public']['Tables']['product_units']['Row']
 

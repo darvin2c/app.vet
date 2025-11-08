@@ -48,7 +48,6 @@ import {
 } from 'lucide-react'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -60,6 +59,7 @@ import {
 } from '@/components/ui/item'
 import { Alert, AlertDescription } from '../ui/alert'
 import { BreedList } from '../breeds/breed-list'
+import { useSearch } from '../ui/search-input'
 
 type Species = Database['public']['Tables']['species']['Row']
 

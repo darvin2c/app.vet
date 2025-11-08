@@ -20,6 +20,7 @@ import { StaffCreate } from './staff-create'
 import { StaffEdit } from './staff-edit'
 import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
+import { usePagination } from '../ui/pagination'
 
 type Staff = Tables<'staff'>
 
@@ -42,10 +43,13 @@ export function StaffSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
+  const { appliedPagination } = usePagination()
 
-  const { data: staff = [], isLoading } = useStaff({
+  const { data, isLoading } = useStaff({
     search: searchTerm,
+    pagination: appliedPagination,
   })
+  const staff = data?.data || []
 
   const selectedStaff = staff.find((member: Staff) => member.id === value)
 

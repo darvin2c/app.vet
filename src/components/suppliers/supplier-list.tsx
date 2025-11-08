@@ -41,7 +41,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ChevronLeft, ChevronRight, Building, Handshake } from 'lucide-react'
 import useSupplierList from '@/hooks/suppliers/use-supplier-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -51,6 +50,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { useSearch } from '../ui/search-input'
 
 type Supplier = Database['public']['Tables']['suppliers']['Row']
 

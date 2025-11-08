@@ -40,7 +40,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { ArrowUpRightIcon, Users } from 'lucide-react'
 import useStaffList from '@/hooks/staff/use-staff-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -52,6 +51,7 @@ import {
 } from '@/components/ui/item'
 import { Pagination, usePagination } from '../ui/pagination'
 import { Alert, AlertDescription } from '../ui/alert'
+import { useSearch } from '../ui/search-input'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 

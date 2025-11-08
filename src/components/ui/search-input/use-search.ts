@@ -26,9 +26,3 @@ export function useSearch(urlParamName = 'search', debounceMs = 300) {
     clear: () => setSearch(''),
   }
 }
-
-// Simple hook that just returns the applied search value
-export function useSimpleSearch(urlParamName = 'search', debounceMs = 300) {
-  const { appliedSearch } = useSearch(urlParamName, debounceMs)
-  return appliedSearch
-}

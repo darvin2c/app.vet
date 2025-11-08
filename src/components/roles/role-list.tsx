@@ -48,7 +48,6 @@ import {
 } from 'lucide-react'
 import { useRoleList } from '@/hooks/roles/use-role-list'
 import { FilterConfig, useFilters } from '@/components/ui/filters'
-import { useSearch } from '@/hooks/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
@@ -59,6 +58,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { PermissionsDisplay } from './permissions-display'
+import { useSearch } from '../ui/search-input'
 
 type Role = Tables<'roles'>
 
