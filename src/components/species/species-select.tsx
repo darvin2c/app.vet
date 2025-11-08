@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Check, ChevronsUpDown, Zap, X, Plus, Edit } from 'lucide-react'
+import { Check, ChevronsUpDown, Zap, X } from 'lucide-react'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
 import { Tables } from '@/types/supabase.types'
 
@@ -22,22 +22,42 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { usePagination } from '../ui/pagination'
+import { Avatar, AvatarFallback } from '../ui/avatar'
 
-interface SpeciesSelectProps {
-  value?: string
-  onValueChange?: (value: string) => void
+// Base props shared across both modes
+type SpeciesSelectBaseProps = {
   placeholder?: string
   disabled?: boolean
   className?: string
 }
 
-export function SpeciesSelect({
-  value,
-  onValueChange,
-  placeholder = 'Seleccionar especie...',
-  disabled = false,
-  className,
-}: SpeciesSelectProps) {
+// Single-select props
+type SpeciesSelectSingleProps = SpeciesSelectBaseProps & {
+  value?: string
+  onValueChange?: (value: string) => void
+  multiple?: false
+}
+
+// Multi-select props
+type SpeciesSelectMultiProps = SpeciesSelectBaseProps & {
+  value?: string[]
+  onValueChange?: (value: string[]) => void
+  multiple: true
+}
+
+// Discriminated union by `multiple`
+type SpeciesSelectProps = SpeciesSelectSingleProps | SpeciesSelectMultiProps
+
+export function SpeciesSelect(props: SpeciesSelectProps) {
+  const multiple = props.multiple === true
+  const value = props.value
+  const onValueChange = props.onValueChange
+  const {
+    placeholder = 'Seleccionar especie...',
+    disabled = false,
+    className,
+  } = props
+
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const { appliedPagination } = usePagination()
@@ -54,11 +74,25 @@ export function SpeciesSelect({
   })
   const species = data?.data || []
 
-  const selectedSpecies = species.find((s: Species) => s.id === value)
+  const selectedIds = multiple ? (Array.isArray(value) ? value : []) : []
+  const singleValue = !multiple && typeof value === 'string' ? value : ''
+  const selectedSpecies = !multiple
+    ? species.find((s: Species) => s.id === singleValue)
+    : undefined
 
   const handleSelect = (speciesId: string) => {
     if (!onValueChange) return
-    onValueChange(value === speciesId ? '' : speciesId)
+    if (multiple) {
+      const next = selectedIds.includes(speciesId)
+        ? selectedIds.filter((id) => id !== speciesId)
+        : [...selectedIds, speciesId]
+      ;(onValueChange as (v: string[]) => void)?.(next)
+      // keep popover open in multi-select
+      return
+    }
+    ;(onValueChange as (v: string) => void)?.(
+      singleValue === speciesId ? '' : speciesId
+    )
     setOpen(false)
   }
 
@@ -74,7 +108,16 @@ export function SpeciesSelect({
               className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
             >
-              {selectedSpecies ? (
+              {multiple ? (
+                selectedIds.length > 0 ? (
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-muted-foreground" />
+                    <span>{selectedIds.length} seleccionadas</span>
+                  </div>
+                ) : (
+                  <span className="text-muted-foreground">{placeholder}</span>
+                )
+              ) : selectedSpecies ? (
                 <div className="flex items-center gap-2">
                   <Zap className="w-4 h-4 text-muted-foreground" />
                   <span>{selectedSpecies.name}</span>
@@ -95,37 +138,53 @@ export function SpeciesSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron especies.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {species.map((s: Species) => (
-                  <CommandItem
-                    key={s.id}
-                    value={s.name}
-                    onSelect={() => handleSelect(s.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">{s.name}</span>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === s.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? 'Cargando...' : 'No se encontraron especies.'}
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {species.map((s: Species) => (
+                    <CommandItem
+                      key={s.id}
+                      value={s.name}
+                      onSelect={() => handleSelect(s.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar>
+                          <AvatarFallback>
+                            {s.name.toUpperCase().slice(0, 1)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <span>{s.name}</span>
+                      </div>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          multiple
+                            ? selectedIds.includes(s.id)
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                            : singleValue === s.id
+                              ? 'opacity-100'
+                              : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>
 
-        {selectedSpecies && (
+        {(multiple ? selectedIds.length > 0 : !!selectedSpecies) && (
           <InputGroupButton
             variant="ghost"
-            onClick={() => onValueChange?.('')}
+            onClick={() =>
+              multiple
+                ? (onValueChange as (v: string[]) => void)?.([])
+                : (onValueChange as (v: string) => void)?.('')
+            }
             disabled={disabled}
             aria-label="Limpiar selección"
             className="h-full"

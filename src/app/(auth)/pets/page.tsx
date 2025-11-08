@@ -29,8 +29,8 @@ export default function PetsPage() {
     {
       field: 'species_id',
       label: 'Especie',
-      operator: 'eq',
-      component: <SpeciesSelect />,
+      operator: 'in',
+      component: <SpeciesSelect multiple />,
     },
     {
       field: 'sex',
