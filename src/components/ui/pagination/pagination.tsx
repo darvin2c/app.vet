@@ -1,10 +1,8 @@
 import { Button } from '@/components/ui/button'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { usePagination } from './use-pagination'
 import type { PaginationProps } from './types'
 import { cn } from '@/lib/utils'
 import { ButtonHTMLAttributes } from 'react'
-import { useMemo } from 'react'
 
 interface PageButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   page: number
@@ -37,24 +35,22 @@ function Ellipsis() {
 
 function getPageNumbers(
   currentPage: number,
-  totalPages: number
+  totalPages: number,
+  maxButtons: number = 7
 ): (number | 'ellipsis')[] {
   const pages: (number | 'ellipsis')[] = []
 
-  if (totalPages <= 7) {
-    // Show all pages if 7 or fewer
+  if (totalPages <= maxButtons) {
     for (let i = 1; i <= totalPages; i++) {
       pages.push(i)
     }
   } else {
-    // Always show first page
     pages.push(1)
 
-    if (currentPage <= 3) {
-      // Near the beginning
+    const edge = 3
+    if (currentPage <= edge) {
       pages.push(2, 3, 4, 'ellipsis', totalPages)
-    } else if (currentPage >= totalPages - 2) {
-      // Near the end
+    } else if (currentPage >= totalPages - (edge - 1)) {
       pages.push(
         'ellipsis',
         totalPages - 3,
@@ -63,7 +59,6 @@ function getPageNumbers(
         totalPages
       )
     } else {
-      // In the middle
       pages.push(
         'ellipsis',
         currentPage - 1,
@@ -80,52 +75,29 @@ function getPageNumbers(
 
 export function Pagination({
   totalItems,
-  config,
-  ui,
+  page,
+  pageSize,
+  showPageSizeSelector,
+  maxPageButtons,
   onPageChange,
   className,
-}: PaginationProps) {
-  const { currentPage, pageSize, goToPage, goToPrevious, goToNext } =
-    usePagination(config)
+}: PaginationProps & { totalItems: number }) {
+  const totalPages = Math.ceil((totalItems ?? 0) / pageSize) || 1
+  const startItem = (page - 1) * pageSize + 1
+  const endItem = Math.min(page * pageSize, totalItems ?? 0)
+  const hasPrevious = page > 1
+  const hasNext = page < totalPages
 
-  const effectivePage = useMemo(() => {
-    return currentPage ?? ui?.defaultPage ?? 1
-  }, [currentPage, ui?.defaultPage])
-
-  const effectivePageSize = useMemo(() => {
-    return pageSize ?? ui?.defaultPage ?? 10
-  }, [pageSize, ui?.defaultPageSize])
-
-  const totalPages = useMemo(() => {
-    return Math.ceil(totalItems / effectivePageSize) || 1
-  }, [totalItems, effectivePageSize])
-
-  const startItem = useMemo(() => {
-    return (effectivePage - 1) * effectivePageSize + 1
-  }, [effectivePage, effectivePageSize])
-
-  const endItem = useMemo(() => {
-    return Math.min(effectivePage * effectivePageSize, totalItems)
-  }, [effectivePage, effectivePageSize, totalItems])
-
-  const hasPrevious = useMemo(() => {
-    return effectivePage > 1
-  }, [effectivePage])
-
-  const hasNext = useMemo(() => {
-    return effectivePage < totalPages
-  }, [effectivePage, totalPages])
-
-  const handlePageChange = (page: number) => {
-    goToPage(page)
-    onPageChange?.(page, effectivePageSize)
+  const handlePageChange = (nextPage: number) => {
+    const validPage = Math.max(1, Math.min(nextPage, totalPages))
+    onPageChange?.(validPage, pageSize)
   }
 
   if (totalPages <= 1) {
     return null
   }
 
-  const pageNumbers = getPageNumbers(effectivePage, totalPages)
+  const pageNumbers = getPageNumbers(page, totalPages, maxPageButtons ?? 7)
 
   return (
     <div
@@ -145,7 +117,7 @@ export function Pagination({
         <Button
           variant="ghost"
           size="sm"
-          onClick={goToPrevious}
+          onClick={() => handlePageChange(page - 1)}
           disabled={!hasPrevious}
           aria-label="Anterior"
           className="min-w-8 h-8 px-2"
@@ -154,18 +126,18 @@ export function Pagination({
         </Button>
 
         {/* Page numbers */}
-        {pageNumbers.map((page, index) => {
-          if (page === 'ellipsis') {
+        {pageNumbers.map((p, index) => {
+          if (p === 'ellipsis') {
             return <Ellipsis key={`ellipsis-${index}`} />
           }
 
           return (
             <PageButton
-              key={page}
-              page={page}
-              isActive={page === effectivePage}
-              onClick={() => handlePageChange(page)}
-              aria-label={`Ir a página ${page}`}
+              key={p}
+              page={p}
+              isActive={p === page}
+              onClick={() => handlePageChange(p)}
+              aria-label={`Ir a página ${p}`}
             />
           )
         })}
@@ -174,7 +146,7 @@ export function Pagination({
         <Button
           variant="ghost"
           size="sm"
-          onClick={goToNext}
+          onClick={() => handlePageChange(page + 1)}
           disabled={!hasNext}
           aria-label="Siguiente"
           className="min-w-8 h-8 px-2"
@@ -182,6 +154,11 @@ export function Pagination({
           <ChevronRight className="h-4 w-4" />
         </Button>
       </div>
+
+      {/* Optional: page size selector placeholder (no UI change for now) */}
+      {showPageSizeSelector && (
+        <div className="sr-only">Selector de tamaño de página pendiente</div>
+      )}
     </div>
   )
 }

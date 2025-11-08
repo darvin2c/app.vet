@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { useState } from 'react'
+import { usePagination } from '@/components/ui/pagination/use-pagination'
 
 // Mock data generator
 const generateMockData = (page: number, pageSize: number) => {
@@ -30,13 +31,19 @@ const getStatusBadgeClasses = (status: string) => {
 }
 
 export default function PaginationDemoPage() {
-  const [currentData, setCurrentData] = useState(() => generateMockData(1, 10))
+  const {
+    appliedPagination: { page, pageSize },
+    paginationProps,
+  } = usePagination()
+
+  const [currentData, setCurrentData] = useState(() =>
+    generateMockData(page, pageSize)
+  )
   const totalItems = 125 // Total de elementos de ejemplo
 
-  const handlePageChange = (page: number, pageSize: number) => {
-    // En una aplicación real, aquí harías fetch de los datos
-    setCurrentData(generateMockData(page, pageSize))
-    console.log('Página cambiada:', { page, pageSize })
+  const handlePageChange = (nextPage: number, nextPageSize: number) => {
+    setCurrentData(generateMockData(nextPage, nextPageSize))
+    console.log('Página cambiada:', { page: nextPage, pageSize: nextPageSize })
   }
 
   return (
@@ -108,7 +115,8 @@ export default function PaginationDemoPage() {
           <h3 className="text-lg font-medium mb-4">Paginación</h3>
           <Pagination
             totalItems={totalItems}
-            ui={{ defaultPage: 1, defaultPageSize: 10 }}
+            page={paginationProps.page}
+            pageSize={paginationProps.pageSize}
             onPageChange={handlePageChange}
           />
         </div>
@@ -118,19 +126,37 @@ export default function PaginationDemoPage() {
           <h3 className="text-lg font-medium mb-4">
             Paginación con Configuración Personalizada
           </h3>
-          <Pagination
-            totalItems={85}
-            config={{
-              pageParam: 'customPage',
-              pageSizeParam: 'customSize',
-            }}
-            ui={{ defaultPage: 1, defaultPageSize: 5 }}
-            onPageChange={(page, pageSize) => {
-              console.log('Paginación personalizada:', { page, pageSize })
-            }}
-          />
+          <CustomPaginationExample />
         </div>
       </div>
     </PageBase>
+  )
+}
+
+function CustomPaginationExample() {
+  const {
+    appliedPagination: { page, pageSize },
+    paginationProps,
+  } = usePagination('customPage', 'customSize')
+
+  const [currentData, setCurrentData] = useState(() =>
+    generateMockData(page, pageSize)
+  )
+
+  const handlePageChange = (nextPage: number, nextPageSize: number) => {
+    setCurrentData(generateMockData(nextPage, nextPageSize))
+    console.log('Paginación personalizada:', {
+      page: nextPage,
+      pageSize: nextPageSize,
+    })
+  }
+
+  return (
+    <Pagination
+      totalItems={85}
+      page={paginationProps.page}
+      pageSize={paginationProps.pageSize}
+      onPageChange={handlePageChange}
+    />
   )
 }

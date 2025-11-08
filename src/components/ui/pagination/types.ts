@@ -1,40 +1,25 @@
-export interface PaginationConfig {
+export interface PaginationProps {
+  page: number
+  pageSize: number
+  showPageSizeSelector?: boolean
+  totalItems?: number
+  maxPageButtons?: number
+  onPageChange?: (page: number, pageSize: number) => void
   pageParam?: string
   pageSizeParam?: string
-}
-
-export interface PaginationUIConfig {
-  defaultPage?: number
-  defaultPageSize?: number
-  pageSizeOptions?: number[]
-  showPageSizeSelector?: boolean
-  maxPageButtons?: number
-}
-
-export interface PaginationProps {
-  totalItems: number
-  config?: PaginationConfig
-  ui?: PaginationUIConfig
-  onPageChange?: (page: number, pageSize: number) => void
   className?: string
 }
 
 export interface UsePaginationReturn {
-  currentPage: number | null
-  pageSize: number | null
   goToPage: (page: number) => void
   goToPrevious: () => void
   goToNext: () => void
   setPageSize: (size: number) => void
+  paginationProps: PaginationProps
   appliedPagination: AppliedPagination
 }
 
 export interface AppliedPagination {
   page: number
   pageSize: number
-}
-
-export interface PaginationData {
-  total: number
-  data: unknown[]
 }

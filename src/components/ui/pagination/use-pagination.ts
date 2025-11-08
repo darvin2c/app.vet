@@ -1,28 +1,13 @@
 import { useQueryState, parseAsInteger } from 'nuqs'
 import { useCallback, useMemo } from 'react'
-import type {
-  AppliedPagination,
-  PaginationConfig,
-  UsePaginationReturn,
-} from './types'
+import type { AppliedPagination, UsePaginationReturn } from './types'
 
-const DEFAULT_CONFIG: Required<PaginationConfig> = {
-  pageParam: 'page',
-  pageSizeParam: 'pageSize',
-}
-
-export function usePagination(config?: PaginationConfig): UsePaginationReturn {
-  const mergedConfig = { ...DEFAULT_CONFIG, ...config }
-
-  const [currentPage, setCurrentPage] = useQueryState(
-    mergedConfig.pageParam,
-    parseAsInteger
-  )
-
-  const [pageSize, setPageSize] = useQueryState(
-    mergedConfig.pageSizeParam,
-    parseAsInteger
-  )
+export function usePagination(
+  pageParam: string = 'page',
+  pageSizeParam: string = 'pageSize'
+): UsePaginationReturn {
+  const [currentPage, setCurrentPage] = useQueryState(pageParam, parseAsInteger)
+  const [pageSize, setPageSize] = useQueryState(pageSizeParam, parseAsInteger)
 
   const goToPage = useCallback(
     (page: number) => {
@@ -51,18 +36,22 @@ export function usePagination(config?: PaginationConfig): UsePaginationReturn {
   const appliedPagination: AppliedPagination = useMemo(
     () => ({
       page: currentPage ?? 1,
-      pageSize: pageSize ?? 20,
+      pageSize: pageSize ?? 10,
     }),
     [currentPage, pageSize]
   )
 
   return {
-    currentPage,
-    pageSize,
     goToPage,
     goToPrevious,
     goToNext,
     setPageSize: handleSetPageSize,
+    paginationProps: {
+      page: appliedPagination.page,
+      pageSize: appliedPagination.pageSize,
+      pageParam,
+      pageSizeParam,
+    },
     appliedPagination,
   }
 }
