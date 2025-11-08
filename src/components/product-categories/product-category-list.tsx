@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Database } from '@/types/supabase.types'
+import { Database, Tables } from '@/types/supabase.types'
 import { ProductCategoryActions } from './product-category-actions'
 import { ProductCategoryCreateButton } from './product-category-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -55,7 +55,7 @@ import {
 } from '@/components/ui/item'
 import { Pagination, usePagination } from '../ui/pagination'
 
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+type ProductCategory = Tables<'product_categories'>
 
 export function ProductCategoryList({
   filterConfig,

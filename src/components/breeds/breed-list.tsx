@@ -45,9 +45,10 @@ import { BreedActions } from './breed-actions'
 import { Tables } from '@/types/supabase.types'
 import { ArrowUpRightIcon } from 'lucide-react'
 import { Button } from '../ui/button'
+import { Pagination, usePagination } from '../ui/pagination'
 
 type Breed = Tables<'breeds'> & {
-  species: Tables<'species'> | null
+  species?: Tables<'species'> | null
 }
 
 interface BreedListProps {
@@ -66,17 +67,19 @@ export function BreedList({
   const { appliedFilters } = useFilters(filterConfig)
   const { appliedSorts } = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination({
+    pageParam: 'pageBreed',
+  })
 
-  const {
-    data: breeds = [],
-    isLoading,
-    error,
-  } = useBreedsList({
+  const { data, isLoading, error } = useBreedsList({
     species_id: speciesId,
     filters: appliedFilters,
     search: appliedSearch,
     orders: appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const breeds = data?.data || []
 
   const columns: ColumnDef<Breed>[] = [
     {
@@ -165,56 +168,52 @@ export function BreedList({
     )
   }
 
-  if (viewMode === 'cards') {
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {breeds.map((breed) => (
-          <Card key={breed.id} className="overflow-hidden">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{breed.name}</CardTitle>
-                <div className="flex items-center gap-2">
-                  <IsActiveDisplay value={breed.is_active} />
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                {breed.description || 'Sin descripción'}
-              </p>
-            </CardHeader>
-
-            <CardFooter>
-              <BreedActions breed={breed} />
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-    )
-  }
-
-  if (viewMode === 'list') {
-    return (
-      <ItemGroup>
-        {breeds.map((breed) => (
-          <Item key={breed.id} className="hover:bg-muted/50">
-            <ItemContent>
-              <ItemTitle>{breed.name}</ItemTitle>
-              <ItemDescription>
-                {breed.description || 'Sin descripción'}
-              </ItemDescription>
-              <div className="flex items-center gap-4 mt-2">
+  const renderBreedCards = (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {breeds.map((breed) => (
+        <Card key={breed.id} className="overflow-hidden">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-lg">{breed.name}</CardTitle>
+              <div className="flex items-center gap-2">
                 <IsActiveDisplay value={breed.is_active} />
               </div>
-            </ItemContent>
-            <ItemActions>
-              <BreedActions breed={breed} />
-            </ItemActions>
-          </Item>
-        ))}
-      </ItemGroup>
-    )
-  }
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {breed.description || 'Sin descripción'}
+            </p>
+          </CardHeader>
 
-  return (
+          <CardFooter>
+            <BreedActions breed={breed} />
+          </CardFooter>
+        </Card>
+      ))}
+    </div>
+  )
+
+  const renderBreedList = (
+    <ItemGroup className="space-y-2">
+      {breeds.map((breed) => (
+        <Item variant="outline" key={breed.id} className="hover:bg-muted/50">
+          <ItemContent>
+            <ItemTitle>{breed.name}</ItemTitle>
+            <ItemDescription>
+              {breed.description || 'Sin descripción'}
+            </ItemDescription>
+            <div className="flex items-center gap-4 mt-2">
+              <IsActiveDisplay value={breed.is_active} />
+            </div>
+          </ItemContent>
+          <ItemActions>
+            <BreedActions breed={breed} />
+          </ItemActions>
+        </Item>
+      ))}
+    </ItemGroup>
+  )
+
+  const renderBreedTable = (
     <div className="space-y-4">
       <Table>
         <TableHeader>
@@ -261,6 +260,17 @@ export function BreedList({
           )}
         </TableBody>
       </Table>
+    </div>
+  )
+
+  return (
+    <div>
+      {viewMode === 'cards' && renderBreedCards}
+      {viewMode === 'list' && renderBreedList}
+      {viewMode === 'table' && renderBreedTable}
+      <div>
+        <Pagination {...paginationProps} totalItems={data?.total} />
+      </div>
     </div>
   )
 }

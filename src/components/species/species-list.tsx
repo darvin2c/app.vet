@@ -275,7 +275,7 @@ export function SpeciesList({
             </ItemActions>
           </Item>
           {expandedIds.has(speciesItem.id) && (
-            <div className="px-2">
+            <div className="pl-6">
               <BreedList speciesId={speciesItem.id} viewMode={viewMode} />
             </div>
           )}
@@ -402,8 +402,8 @@ export function SpeciesList({
         </>
       )}
 
-      {viewMode === 'cards' && renderCardsView()}
-      {viewMode === 'list' && renderListView()}
+      {/*viewMode === 'cards' && renderCardsView()*/}
+      {(viewMode === 'list' || viewMode === 'cards') && renderListView()}
       <Pagination {...paginationProps} totalItems={data?.total} />
     </div>
   )

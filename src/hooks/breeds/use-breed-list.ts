@@ -1,20 +1,30 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
-import { Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
-import { AppliedSort } from '@/components/ui/order-by'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
+import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
+import {
+  AppliedPagination,
+  applySupabasePagination,
+} from '@/components/ui/pagination'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 interface UseBreedsParams {
   species_id?: string
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
+  pagination?: AppliedPagination
 }
 
-export function useBreedsList(params?: UseBreedsParams) {
+export function useBreedsList({
+  species_id,
+  filters = [],
+  search,
+  orders = [],
+  pagination,
+}: UseBreedsParams) {
   const { currentTenant } = useCurrentTenantStore()
-  const { species_id, filters = [], search, orders = [] } = params || {}
 
   return useQuery({
     queryKey: [
@@ -24,10 +34,11 @@ export function useBreedsList(params?: UseBreedsParams) {
       filters,
       search,
       orders,
+      pagination,
     ],
     queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('No se ha seleccionado un tenant')
       }
 
       let query = supabase
@@ -39,65 +50,36 @@ export function useBreedsList(params?: UseBreedsParams) {
             id,
             name
           )
-        `
+        `,
+          {
+            count: 'exact',
+          }
         )
         .eq('tenant_id', currentTenant.id)
 
-      // Filtro por especie específica
-      if (species_id) {
-        query = query.eq('species_id', species_id)
-      }
+      // Filtro
+      query = applySupabaseFilters(query, filters)
 
-      // Aplicar filtros
-      filters.forEach((filter) => {
-        switch (filter.operator) {
-          case 'eq':
-            query = query.eq(filter.field, filter.value)
-            break
-          case 'gte':
-            query = query.gte(filter.field, filter.value)
-            break
-          case 'lte':
-            query = query.lte(filter.field, filter.value)
-            break
-          case 'like':
-            query = query.like(filter.field, `%${filter.value}%`)
-            break
-          case 'ilike':
-            query = query.ilike(filter.field, `%${filter.value}%`)
-            break
-          case 'in':
-            query = query.in(filter.field, filter.value)
-            break
-        }
-      })
+      // Aplicar ordenamiento por defecto
+      query = applySupabaseSort(query, orders)
+
+      // Aplicar paginación
+      query = applySupabasePagination(query, pagination)
 
       // Aplicar búsqueda
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
-      }
+      query = applySupabaseSearch(query, search, ['name', 'description'])
 
-      // Aplicar ordenamiento
-      if (orders.length > 0) {
-        orders.forEach((order) => {
-          query = query.order(order.field, {
-            ascending: order.direction === 'asc',
-          })
-        })
-      } else {
-        // Orden por defecto
-        query = query.order('name')
-      }
-
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw new Error(`Error al obtener razas: ${error.message}`)
       }
 
-      return data as (Tables<'breeds'> & {
-        species: Tables<'species'> | null
-      })[]
+      return {
+        data,
+        total: count || 0,
+        ...pagination,
+      }
     },
     enabled: !!currentTenant?.id,
   })
