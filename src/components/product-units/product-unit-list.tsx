@@ -21,7 +21,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { ProductUnitActions } from './product-unit-actions'
 import { ProductUnitCreateButton } from './product-unit-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -57,8 +57,9 @@ import {
 } from '@/components/ui/item'
 import { Alert, AlertDescription } from '../ui/alert'
 import { useSearch } from '../ui/search-input'
+import { Pagination, usePagination } from '../ui/pagination'
 
-type ProductUnit = Database['public']['Tables']['product_units']['Row']
+type ProductUnit = Tables<'product_units'>
 
 export function ProductUnitList({
   filterConfig,
@@ -74,16 +75,15 @@ export function ProductUnitList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
-  const {
-    data: productUnits = [],
-    isPending,
-    error,
-  } = useProductUnits({
+  const { data, isPending, error } = useProductUnits({
     filters: appliedFilters,
     orders: orderByHook.appliedSorts,
     search: appliedSearch,
+    pagination: appliedPagination,
   })
+  const productUnits = data?.data || []
 
   const columns: ColumnDef<ProductUnit>[] = [
     {
@@ -280,7 +280,7 @@ export function ProductUnitList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
@@ -301,48 +301,14 @@ export function ProductUnitList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                productUnits.length
-              )}{' '}
-              de {productUnits.length} unidades
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data.total} />
+      </div>
     </div>
   )
 }

@@ -8,6 +8,8 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { ProductUnitImport } from '@/components/product-units/product-unit-import'
+import { ProductUnitImportButton } from '@/components/product-units/product-unit-import-button'
 
 export default function ProductUnitsPage() {
   const filters: FilterConfig[] = [
@@ -21,8 +23,7 @@ export default function ProductUnitsPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
-      { field: 'symbol', label: 'Símbolo', sortable: true },
-      { field: 'created_at', label: 'Fecha de Creación', sortable: true },
+      { field: 'abbreviation', label: 'Abreviatura', sortable: true },
     ],
   }
 
@@ -37,9 +38,15 @@ export default function ProductUnitsPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <ProductUnitCreateButton />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{
+                  variant: 'ghost',
+                }}
+              />
+              <ProductUnitImportButton variant="ghost" />
+              <ProductUnitCreateButton variant="ghost" />
             </ButtonGroup>
           }
         />

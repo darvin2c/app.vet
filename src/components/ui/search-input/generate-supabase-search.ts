@@ -3,10 +3,10 @@
  */
 export function applySupabaseSearch(
   query: any,
-  search: string,
-  fields: string[]
+  search?: string,
+  fields?: string[]
 ) {
-  if (!search) return query
+  if (!search || !fields) return query
 
   // Aplicar búsqueda en múltiples campos
   query = query.or(

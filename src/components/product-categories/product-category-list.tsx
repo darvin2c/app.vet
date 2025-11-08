@@ -53,6 +53,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Pagination, usePagination } from '../ui/pagination'
 
 type ProductCategory = Database['public']['Tables']['product_categories']['Row']
 
@@ -70,16 +71,16 @@ export function ProductCategoryList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
-  const {
-    data: productCategories = [],
-    isPending,
-    error,
-  } = useProductCategoryList({
+  const { data, isPending, error } = useProductCategoryList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const productCategories = data?.data || []
 
   const columns: ColumnDef<ProductCategory>[] = [
     {
@@ -90,7 +91,7 @@ export function ProductCategoryList({
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<ProductCategory> }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
+        <div>{row.getValue('name')}</div>
       ),
     },
     {
@@ -125,23 +126,10 @@ export function ProductCategoryList({
     },
   ]
 
-  const [sorting, setSorting] = useState<SortingState>([])
-
   const table = useReactTable({
     data: productCategories,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
@@ -293,7 +281,7 @@ export function ProductCategoryList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
@@ -314,48 +302,14 @@ export function ProductCategoryList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                productCategories.length
-              )}{' '}
-              de {productCategories.length} categorías
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data.total} />
+      </div>
     </div>
   )
 }

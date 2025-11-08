@@ -8,6 +8,7 @@ import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { ProductCategoryImportButton } from '@/components/product-categories/product-category-import-button'
 
 export default function ProductCategoriesPage() {
   const filters: FilterConfig[] = [
@@ -36,9 +37,13 @@ export default function ProductCategoriesPage() {
           size="lg"
           suffix={
             <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <ProductCategoryCreateButton />
+              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+              <OrderBy
+                config={orderByConfig}
+                triggerProps={{ variant: 'ghost' }}
+              />
+              <ProductCategoryImportButton variant={'ghost'} />
+              <ProductCategoryCreateButton variant={'ghost'} />
             </ButtonGroup>
           }
         />

@@ -1,11 +1,13 @@
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
+import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
-import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
-import { AppliedSort } from '@/components/ui/order-by'
-
-type ProductCategory = Database['public']['Tables']['product_categories']['Row']
+import {
+  AppliedPagination,
+  applySupabasePagination,
+} from '@/components/ui/pagination'
 
 export default function useProductCategoryList({
   filters = [],
@@ -16,10 +18,12 @@ export default function useProductCategoryList({
       direction: 'desc',
     },
   ],
+  pagination,
 }: {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
+  pagination: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -27,38 +31,34 @@ export default function useProductCategoryList({
     queryKey: [
       currentTenant?.id,
       'product-categories',
-      JSON.stringify(filters),
+      filters,
       search,
-      JSON.stringify(orders),
+      orders,
+      pagination,
     ],
-    queryFn: async (): Promise<ProductCategory[]> => {
+    queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('No tenant selected')
       }
 
       let query = supabase
         .from('product_categories')
-        .select('*')
+        .select('*', { count: 'exact' })
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      filters.forEach((filter) => {
-        query.filter(filter.field, filter.operator, filter.value)
-      })
+      query = applySupabaseFilters(query, filters)
 
       // Aplicar ordenamiento
-      orders.forEach((order) => {
-        query = query.order(order.field, {
-          ascending: order.direction === 'asc',
-        })
-      })
+      query = applySupabaseSort(query, orders)
+
+      // aplicar paginación
+      query = applySupabasePagination(query, pagination)
 
       // Aplicar búsqueda global
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,description.ilike.%${search}%`)
-      }
+      query = applySupabaseSearch(query, search, ['name', 'description'])
 
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw new Error(
@@ -66,7 +66,11 @@ export default function useProductCategoryList({
         )
       }
 
-      return data || []
+      return {
+        data: data || [],
+        total: count || 0,
+        ...pagination,
+      }
     },
     enabled: !!currentTenant?.id,
   })
