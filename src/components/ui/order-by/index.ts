@@ -12,3 +12,5 @@ export { useOrderBy } from './use-order-by'
 
 // Tipos
 export * from './types'
+
+export { applySupabaseSort } from './generate-supabase-sort'

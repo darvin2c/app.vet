@@ -5,3 +5,4 @@ export type {
   UsePaginationReturn,
   AppliedPagination,
 } from './types'
+export { applySupabasePagination } from './generate-supabase-pagination'
