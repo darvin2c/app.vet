@@ -20,23 +20,10 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { Tables } from '@/types/supabase.types'
-import { usePagination } from '../ui/pagination'
+import { usePagination } from '@/components/ui/pagination/use-pagination'
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 
 type PaymentMethod = Tables<'payment_methods'>
-
-const paymentTypeLabels = {
-  cash: 'Efectivo',
-  app: 'App',
-  credit: 'Crédito',
-  others: 'Otros',
-} as const
-
-const paymentTypeColors = {
-  cash: 'bg-green-100 text-green-800',
-  app: 'bg-blue-100 text-blue-800',
-  credit: 'bg-purple-100 text-purple-800',
-  others: 'bg-gray-100 text-gray-800',
-} as const
 
 interface PaymentMethodSelectProps {
   value?: string
@@ -56,18 +43,21 @@ export function PaymentMethodSelect({
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const { appliedPagination } = usePagination()
+  const { getPaymentType } = usePaymentType()
 
   const { data, isLoading } = usePaymentMethodList({
     search: searchTerm,
     pagination: appliedPagination,
   })
-  const paymentMethodsList = data?.data || []
-  const filteredMethods = paymentMethodsList.filter((method: PaymentMethod) =>
+
+  const paymentMethodsList: PaymentMethod[] = data?.data ?? []
+
+  const filteredMethods = paymentMethodsList.filter((method) =>
     `${method.name}`.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const selectedMethod = paymentMethodsList.find(
-    (method: PaymentMethod) => method.id === value
+    (method) => method.id === value
   )
 
   const handleSelect = (methodId: string) => {
@@ -93,16 +83,12 @@ export function PaymentMethodSelect({
                 <span>{selectedMethod.name}</span>
                 <Badge
                   className={
-                    paymentTypeColors[
-                      selectedMethod.payment_type as keyof typeof paymentTypeColors
-                    ]
+                    getPaymentType(selectedMethod.payment_type)?.badgeClass ??
+                    'bg-gray-100 text-gray-800'
                   }
                 >
-                  {
-                    paymentTypeLabels[
-                      selectedMethod.payment_type as keyof typeof paymentTypeLabels
-                    ]
-                  }
+                  {getPaymentType(selectedMethod.payment_type)?.label ??
+                    'Otros'}
                 </Badge>
               </div>
             ) : (
@@ -125,7 +111,7 @@ export function PaymentMethodSelect({
               {isLoading ? 'Cargando...' : 'No se encontraron métodos de pago.'}
             </CommandEmpty>
             <CommandGroup className="max-h-64 overflow-auto">
-              {filteredMethods.map((method: PaymentMethod) => (
+              {filteredMethods.map((method) => (
                 <CommandItem
                   key={method.id}
                   value={`${method.name}`}
@@ -138,16 +124,12 @@ export function PaymentMethodSelect({
                       <div className="flex items-center gap-2">
                         <Badge
                           className={
-                            paymentTypeColors[
-                              method.payment_type as keyof typeof paymentTypeColors
-                            ]
+                            getPaymentType(method.payment_type)?.badgeClass ??
+                            'bg-gray-100 text-gray-800'
                           }
                         >
-                          {
-                            paymentTypeLabels[
-                              method.payment_type as keyof typeof paymentTypeLabels
-                            ]
-                          }
+                          {getPaymentType(method.payment_type)?.label ??
+                            'Otros'}
                         </Badge>
                       </div>
                     </div>
