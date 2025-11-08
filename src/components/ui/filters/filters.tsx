@@ -27,6 +27,13 @@ import { getFilterComponent } from './get-filter-component'
 import type { FilterConfig, FiltersProps } from './types'
 import { Form } from '@/components/ui/form'
 import CustomFilter from './custom-filter'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '../sheet'
 
 export function Filters({
   filters,
@@ -107,22 +114,26 @@ export function Filters({
 
   if (isMobile) {
     return (
-      <Drawer>
-        <DrawerTrigger asChild>{triggerButton}</DrawerTrigger>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Filtros</DrawerTitle>
-          </DrawerHeader>
+      <Sheet>
+        <SheetTrigger asChild>{triggerButton}</SheetTrigger>
+        <SheetContent side="bottom">
+          <SheetHeader>
+            <SheetTitle>Filtros</SheetTitle>
+          </SheetHeader>
           <div className="px-4 pb-4">{filtersContent}</div>
-        </DrawerContent>
-      </Drawer>
+        </SheetContent>
+      </Sheet>
     )
   }
 
   return (
     <Popover>
       <PopoverTrigger asChild>{triggerButton}</PopoverTrigger>
-      <PopoverContent className="w-80" align="end">
+      <PopoverContent
+        onClick={(e) => e.stopPropagation()}
+        className="w-80"
+        align="end"
+      >
         {filtersContent}
       </PopoverContent>
     </Popover>
