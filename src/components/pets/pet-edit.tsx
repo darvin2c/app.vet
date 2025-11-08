@@ -3,20 +3,23 @@
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { updatePetSchema, UpdatePetSchema } from '@/schemas/pets.schema'
+import { petUpdateSchema, UpdatePetSchema } from '@/schemas/pets.schema'
 import { useUpdatePet } from '@/hooks/pets/use-pet-update'
 import { Tables } from '@/types/supabase.types'
 import { PetForm } from './pet-form'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Form } from '../ui/form'
 import { Button } from '../ui/button'
+import { Field } from '../ui/field'
+import { ScrollArea } from '../ui/scroll-area'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -26,9 +29,9 @@ interface PetEditProps {
 
 export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
   const updatePet = useUpdatePet()
-
-  const form = useForm<UpdatePetSchema>({
-    resolver: zodResolver(updatePetSchema),
+  const isMobile = useIsMobile()
+  const form = useForm({
+    resolver: zodResolver(petUpdateSchema),
     defaultValues: {
       name: pet.name,
       species_id: pet.species_id,
@@ -59,52 +62,57 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     }
   }, [pet, form])
 
-  const onSubmit = async (data: UpdatePetSchema) => {
+  const onSubmit = form.handleSubmit(async (data: UpdatePetSchema) => {
     await updatePet.mutateAsync({
       id: pet.id,
       data,
     })
     onOpenChange(false)
-  }
+    form.reset()
+  })
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Mascota</DrawerTitle>
-          <DrawerDescription>
-            Modifica la información de la mascota.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent
+        side={isMobile ? 'bottom' : 'right'}
+        className="!w-full !max-w-4xl"
+      >
+        <ScrollArea className="max-h-screen">
+          <SheetHeader>
+            <SheetTitle>Editar Mascota</SheetTitle>
+            <SheetDescription>
+              Modifica la información de la mascota.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
-              <PetForm mode="edit" pet={pet} />
-            </form>
-          </Form>
-        </div>
+          <div className="px-4 overflow-y-auto">
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <PetForm mode="edit" pet={pet} />
+              </form>
+            </Form>
+          </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updatePet.isPending}
-          >
-            {updatePet.isPending ? 'Actualizando...' : 'Actualizar Mascota'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updatePet.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <Field orientation="horizontal">
+              <Button
+                type="submit"
+                onClick={onSubmit}
+                disabled={updatePet.isPending}
+              >
+                {updatePet.isPending ? 'Actualizando...' : 'Actualizar Mascota'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={updatePet.isPending}
+              >
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

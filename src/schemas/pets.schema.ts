@@ -7,7 +7,10 @@ export const petBaseSchema = z.object({
     .nonempty('El nombre es requerido')
     .max(100, 'El nombre no puede exceder 100 caracteres'),
 
-  species_id: z.string().nonempty('La especie es requerida'),
+  species_id: z
+    .string()
+    .uuid('ID de especie inválido')
+    .nonempty('La especie es requerida'),
 
   breed_id: z.string().uuid('ID de raza inválido').optional(),
 
@@ -36,26 +39,19 @@ export const petBaseSchema = z.object({
     .optional(),
 
   notes: z.string().optional(),
+  is_active: z.boolean().default(true),
 })
 
 // Esquema para crear mascota
-export const createPetSchema = petBaseSchema
+export const petCreateSchema = petBaseSchema
 
 // Esquema para actualizar mascota
-export const updatePetSchema = petBaseSchema.partial().omit({ client_id: true })
+export const petUpdateSchema = petBaseSchema.partial()
 
-// Esquema para filtros de mascota
-export const petFiltersSchema = z.object({
-  search: z.string().optional(),
-  client_id: z.string().uuid().optional(),
-  species_id: z.string().uuid().optional(),
-  breed_id: z.string().uuid().optional(),
-  sex: z.enum(['M', 'F']).optional(),
-  created_from: z.string().optional(),
-  created_to: z.string().optional(),
+export const petImportSchema = petBaseSchema.extend({
+  is_active: z.coerce.boolean().default(true),
 })
 
 // Tipos TypeScript derivados de los esquemas
-export type CreatePetSchema = z.infer<typeof createPetSchema>
-export type UpdatePetSchema = z.infer<typeof updatePetSchema>
-export type PetFilters = z.infer<typeof petFiltersSchema>
+export type CreatePetSchema = z.infer<typeof petCreateSchema>
+export type UpdatePetSchema = z.infer<typeof petUpdateSchema>
