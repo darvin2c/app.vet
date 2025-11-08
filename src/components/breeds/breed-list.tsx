@@ -68,12 +68,18 @@ export function BreedList({
   const { appliedSorts } = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { appliedPagination, paginationProps } = usePagination({
-    pageParam: 'pageBreed',
+    pageParam: `page.${speciesId}`,
   })
 
   const { data, isLoading, error } = useBreedsList({
-    species_id: speciesId,
-    filters: appliedFilters,
+    filters: [
+      ...appliedFilters,
+      {
+        field: 'species_id',
+        operator: 'eq',
+        value: speciesId,
+      },
+    ],
     search: appliedSearch,
     orders: appliedSorts,
     pagination: appliedPagination,

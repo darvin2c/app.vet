@@ -275,7 +275,7 @@ export function SpeciesList({
             </ItemActions>
           </Item>
           {expandedIds.has(speciesItem.id) && (
-            <div className="pl-6">
+            <div className="pl-8">
               <BreedList speciesId={speciesItem.id} viewMode={viewMode} />
             </div>
           )}

@@ -18,7 +18,6 @@ interface UseBreedsParams {
 }
 
 export function useBreedsList({
-  species_id,
   filters = [],
   search,
   orders = [],
@@ -30,7 +29,6 @@ export function useBreedsList({
     queryKey: [
       currentTenant?.id,
       'breeds',
-      species_id,
       filters,
       search,
       orders,
