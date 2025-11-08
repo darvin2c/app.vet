@@ -26,6 +26,7 @@ import { getFilterComponent } from './get-filter-component'
 
 import type { FilterConfig, FiltersProps } from './types'
 import { Form } from '@/components/ui/form'
+import CustomFilter from './custom-filter'
 
 export function Filters({
   filters,
@@ -47,11 +48,25 @@ export function Filters({
   }, [appliedFilters, onFiltersChange])
 
   const renderFilter = (filter: FilterConfig) => {
-    // Obtener el componente apropiado basado en el operador
+    // Obtener el componente apropiado basado en el operador o personalizado
     const FilterComponent = getFilterComponent(filter)
 
+    // Si es un elemento React personalizado, usar CustomFilter para inyectar props
+    if (React.isValidElement(FilterComponent)) {
+      return (
+        <CustomFilter
+          key={filter.field}
+          config={filter}
+          value={filterValues[filter.field] || ''}
+          onChange={(value: any) => setFilter(filter.field, value)}
+        />
+      )
+    }
+
+    // Si es un componente tipo, renderizar con props estándar
+    const CompType = FilterComponent as React.ComponentType<any>
     return (
-      <FilterComponent
+      <CompType
         key={filter.field}
         config={filter}
         value={filterValues[filter.field] || ''}

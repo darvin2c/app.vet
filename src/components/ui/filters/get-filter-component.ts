@@ -18,10 +18,15 @@ import CustomFilter from './custom-filter'
  */
 export function getFilterComponent(
   config: FilterConfig
-): React.ComponentType<any> {
+): React.ComponentType<any> | React.ReactElement<any> {
   // Si se proporciona un componente personalizado, usarlo
   if (config.component) {
-    return config.component
+    // Si es un elemento React, lo devolvemos tal cual
+    if (React.isValidElement(config.component)) {
+      return config.component
+    }
+    // Si es un componente tipo, usamos CustomFilter para inyectar props de valor/cambio
+    return CustomFilter as any
   }
 
   // Mapear operadores a componentes

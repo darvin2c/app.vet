@@ -45,7 +45,7 @@ export interface FilterConfig {
   placeholder?: string
   defaultValue?: any
   options?: FilterOption[]
-  component?: React.ComponentType<any> // Componente personalizado opcional
+  component?: React.ComponentType<any> | React.ReactElement // Componente personalizado opcional (tipo o elemento)
 }
 
 // Filtro aplicado
@@ -123,5 +123,5 @@ export interface TextSearchFilterConfig extends FilterConfig {
 
 export interface CustomFilterConfig extends FilterConfig {
   operator: SupabaseOperator
-  component: React.ComponentType<any>
+  component: React.ComponentType<any> | React.ReactElement
 }

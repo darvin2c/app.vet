@@ -9,6 +9,7 @@ import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { CustomerSelect } from '@/components/customers/customer-select'
+import { SpeciesSelect } from '@/components/species/species-select'
 
 export default function PetsPage() {
   // Configuración de filtros
@@ -28,15 +29,8 @@ export default function PetsPage() {
     {
       field: 'species_id',
       label: 'Especie',
-      placeholder: 'Selecciona especie',
       operator: 'eq',
-      options: [
-        { value: 'perro', label: 'Perro' },
-        { value: 'gato', label: 'Gato' },
-        { value: 'ave', label: 'Ave' },
-        { value: 'reptil', label: 'Reptil' },
-        { value: 'otro', label: 'Otro' },
-      ],
+      component: <SpeciesSelect />,
     },
     {
       field: 'sex',
@@ -47,12 +41,6 @@ export default function PetsPage() {
         { value: 'M', label: 'Macho' },
         { value: 'F', label: 'Hembra' },
       ],
-    },
-    {
-      field: 'created_at',
-      label: 'Fecha de registro',
-      placeholder: 'Selecciona rango de fechas',
-      operator: 'gte',
     },
   ]
 
