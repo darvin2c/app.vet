@@ -47,8 +47,8 @@ import { ArrowUpRightIcon } from 'lucide-react'
 import { Button } from '../ui/button'
 import { Pagination, usePagination } from '../ui/pagination'
 
-type Breed = Tables<'breeds'> & {
-  species: Tables<'species'>
+type BreedRow = Tables<'breeds'> & {
+  species: Pick<Tables<'species'>, 'id' | 'name'>
 }
 
 interface BreedListProps {
@@ -79,9 +79,9 @@ export function BreedList({
     pagination: appliedPagination,
   })
 
-  const breeds = data?.data || []
+  const breeds: BreedRow[] = (data?.data as BreedRow[]) || []
 
-  const columns: ColumnDef<Breed>[] = [
+  const columns: ColumnDef<BreedRow>[] = [
     {
       accessorKey: 'name',
       header: 'Nombre',
@@ -117,7 +117,7 @@ export function BreedList({
     },
   ]
 
-  const table = useReactTable({
+  const table = useReactTable<BreedRow>({
     data: breeds,
     columns,
     getCoreRowModel: getCoreRowModel(),
