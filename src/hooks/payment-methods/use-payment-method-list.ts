@@ -1,7 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
-import { Tables } from '@/types/supabase.types'
 import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort } from '@/components/ui/order-by'
 import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
@@ -17,15 +16,12 @@ export function usePaymentMethodList({
       direction: 'asc',
     },
   ],
-  pagination = {
-    page: 1,
-    pageSize: 20,
-  },
+  pagination,
 }: {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
-  pagination?: AppliedPagination
+  pagination: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 

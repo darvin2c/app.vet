@@ -107,7 +107,7 @@ export function Pagination({
       )}
     >
       {/* Page info - hidden on small screens */}
-      <div className="hidden sm:block text-muted-foreground absolute left-0">
+      <div className="hidden sm:block text-muted-foreground left-0">
         {startItem}-{endItem} de {totalItems}
       </div>
 

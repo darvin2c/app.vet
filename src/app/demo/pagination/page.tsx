@@ -36,9 +36,7 @@ export default function PaginationDemoPage() {
     paginationProps,
   } = usePagination()
 
-  const [currentData, setCurrentData] = useState(() =>
-    generateMockData(page, pageSize)
-  )
+  const [currentData, setCurrentData] = useState(() => generateMockData(page, pageSize))
   const totalItems = 125 // Total de elementos de ejemplo
 
   const handlePageChange = (nextPage: number, nextPageSize: number) => {
@@ -139,16 +137,11 @@ function CustomPaginationExample() {
     paginationProps,
   } = usePagination('customPage', 'customSize')
 
-  const [currentData, setCurrentData] = useState(() =>
-    generateMockData(page, pageSize)
-  )
+  const [currentData, setCurrentData] = useState(() => generateMockData(page, pageSize))
 
   const handlePageChange = (nextPage: number, nextPageSize: number) => {
     setCurrentData(generateMockData(nextPage, nextPageSize))
-    console.log('Paginación personalizada:', {
-      page: nextPage,
-      pageSize: nextPageSize,
-    })
+    console.log('Paginación personalizada:', { page: nextPage, pageSize: nextPageSize })
   }
 
   return (

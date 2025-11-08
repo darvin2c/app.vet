@@ -76,7 +76,9 @@ export function PaymentMethodList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { getPaymentType } = usePaymentType()
-  const { appliedPagination } = usePagination()
+  const { appliedPagination, paginationProps } = usePagination({
+    defaultPageSize: 3,
+  })
   const { data, isPending, error } = usePaymentMethodList({
     filters: appliedFilters,
     search: appliedSearch,
@@ -320,50 +322,13 @@ export function PaymentMethodList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                paymentMethods.length
-              )}{' '}
-              de {paymentMethods.length} métodos de pago
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
-      <div>
-        <Pagination totalItems={data.total} />
+      <div className="px-6">
+        <Pagination totalItems={data.total} {...paginationProps} />
       </div>
     </div>
   )
