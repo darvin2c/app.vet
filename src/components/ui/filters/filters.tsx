@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect } from 'react'
+import { useForm } from 'react-hook-form'
 import { Filter } from 'lucide-react'
 
 import { ResponsiveButton } from '@/components/ui/responsive-button'
@@ -24,6 +25,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { getFilterComponent } from './get-filter-component'
 
 import type { FilterConfig, FiltersProps } from './types'
+import { Form } from '@/components/ui/form'
 
 export function Filters({
   filters,
@@ -33,6 +35,9 @@ export function Filters({
 }: FiltersProps) {
   const isMobile = useIsMobile()
   const { filterValues, appliedFilters, setFilter } = useFilters(filters)
+
+  // Crear contexto de formulario para encapsular el contenido
+  const form = useForm({ mode: 'onChange' })
 
   // Llamar onFiltersChange cuando cambien los filtros aplicados
   useEffect(() => {
@@ -77,10 +82,12 @@ export function Filters({
   )
 
   const filtersContent = (
-    <div className="space-y-4">
-      {filters.map(renderFilter)}
-      {children}
-    </div>
+    <Form {...form}>
+      <form className="space-y-4">
+        {filters.map(renderFilter)}
+        {children}
+      </form>
+    </Form>
   )
 
   if (isMobile) {
