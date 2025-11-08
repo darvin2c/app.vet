@@ -22,16 +22,22 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
+import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
+import { useSearch } from '@/components/ui/search-input/use-search'
+import { useOrderBy } from '@/components/ui/order-by/use-order-by'
+import { useFilters, FilterConfig } from '@/components/ui/filters'
+import { TableSkeleton } from '@/components/ui/table-skeleton'
+import { OrderByTableHeader } from '@/components/ui/order-by'
+import { OrderByConfig } from '@/components/ui/order-by'
 import { Card, CardContent } from '@/components/ui/card'
+import { PetCreateButton } from './pet-create-button'
+import { Tables } from '@/types/supabase.types'
+import { Pagination, usePagination } from '../ui/pagination'
+import { Badge } from '@/components/ui/badge'
+import { PetActions } from './pet-actions'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { PetActions } from './pet-actions'
-import { PetCreateButton } from './pet-create-button'
-import { OrderByTableHeader } from '@/components/ui/order-by'
-import { useOrderBy } from '@/components/ui/order-by/use-order-by'
-import { OrderByConfig } from '@/components/ui/order-by'
+import { PawPrint } from 'lucide-react'
 import {
   Empty,
   EmptyHeader,
@@ -39,12 +45,6 @@ import {
   EmptyTitle,
   EmptyDescription,
 } from '@/components/ui/empty'
-import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ChevronLeft, ChevronRight, PawPrint } from 'lucide-react'
-import { usePets } from '@/hooks/pets/use-pet-list'
-import { useFilters, FilterConfig } from '@/components/ui/filters'
-import { useSearch } from '@/components/ui/search-input/use-search'
-import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
   Item,
   ItemContent,
@@ -53,12 +53,16 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { Tables } from '@/types/supabase.types'
+import { usePetList } from '@/hooks/pets/use-pet-list'
 
-type Pet = Tables<'pets'> & {
-  customers: Tables<'customers'> | null
-  species: Tables<'species'> | null
-  breeds: Tables<'breeds'> | null
+// Ajuste de tipo de fila para coincidir con el select del hook
+type PetRow = Tables<'pets'> & {
+  customers: Pick<
+    Tables<'customers'>,
+    'id' | 'first_name' | 'last_name' | 'email' | 'phone'
+  > | null
+  species: Pick<Tables<'species'>, 'id' | 'name'> | null
+  breeds: Pick<Tables<'breeds'>, 'id' | 'name'> | null
 }
 
 export function PetList({
@@ -75,20 +79,18 @@ export function PetList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
+  const { appliedPagination, paginationProps } = usePagination()
 
-  // Usar el hook usePets con los filtros aplicados
-  console.log(appliedFilters, orderByHook.appliedSorts, appliedSearch)
-  const {
-    data: pets = [],
-    isPending,
-    error,
-  } = usePets({
+  const { data, isPending, error } = usePetList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
 
-  const columns: ColumnDef<Pet>[] = [
+  const pets: PetRow[] = (data?.data ?? []) as PetRow[]
+
+  const columns: ColumnDef<PetRow>[] = [
     {
       accessorKey: 'name',
       header: ({ header }) => (
@@ -96,8 +98,8 @@ export function PetList({
           Nombre
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Pet> }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
+      cell: ({ row }: { row: Row<PetRow> }) => (
+        <div>{row.getValue('name')}</div>
       ),
     },
     {
@@ -107,7 +109,7 @@ export function PetList({
           Cliente
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Pet> }) => {
+      cell: ({ row }: { row: Row<PetRow> }) => {
         const pet = row.original
         return (
           <div className="text-sm">
@@ -125,7 +127,7 @@ export function PetList({
           Especie
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Pet> }) => {
+      cell: ({ row }: { row: Row<PetRow> }) => {
         const pet = row.original
         return (
           <div className="text-sm text-muted-foreground">
@@ -141,7 +143,7 @@ export function PetList({
           Raza
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Pet> }) => {
+      cell: ({ row }: { row: Row<PetRow> }) => {
         const pet = row.original
         return (
           <div className="text-sm text-muted-foreground">
@@ -153,7 +155,7 @@ export function PetList({
     {
       accessorKey: 'sex',
       header: 'Sexo',
-      cell: ({ row }: { row: Row<Pet> }) => {
+      cell: ({ row }: { row: Row<PetRow> }) => {
         const sex = row.getValue('sex') as string
         return (
           <Badge variant={sex === 'M' ? 'default' : 'secondary'}>
@@ -165,34 +167,23 @@ export function PetList({
 
     {
       id: 'actions',
-      cell: ({ row }: { row: Row<Pet> }) => <PetActions pet={row.original} />,
+      cell: ({ row }: { row: Row<PetRow> }) => (
+        <PetActions pet={row.original} />
+      ),
     },
   ]
-
-  const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
     data: pets,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 10,
-      },
-    },
   })
 
   // Función para renderizar el encabezado de la tabla
   const renderTableHeader = useCallback(
-    (headerGroup: HeaderGroup<Pet>) => (
+    (headerGroup: HeaderGroup<PetRow>) => (
       <TableRow key={headerGroup.id}>
-        {headerGroup.headers.map((header: Header<Pet, unknown>) => (
+        {headerGroup.headers.map((header: Header<PetRow, unknown>) => (
           <TableHead key={header.id}>
             {header.isPlaceholder
               ? null
@@ -206,9 +197,9 @@ export function PetList({
 
   // Función para renderizar las filas de la tabla
   const renderTableRow = useCallback(
-    (row: Row<Pet>) => (
+    (row: Row<PetRow>) => (
       <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-        {row.getVisibleCells().map((cell: Cell<Pet, unknown>) => (
+        {row.getVisibleCells().map((cell: Cell<PetRow, unknown>) => (
           <TableCell key={cell.id}>
             {flexRender(cell.column.columnDef.cell, cell.getContext())}
           </TableCell>
@@ -378,48 +369,12 @@ export function PetList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                pets.length
-              )}{' '}
-              de {pets.length} mascotas
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <Pagination {...paginationProps} totalItems={data.total} />
     </div>
   )
 }

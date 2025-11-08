@@ -1,31 +1,35 @@
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { Tables } from '@/types/supabase.types'
-import { AppliedFilter } from '@/components/ui/filters'
-import { AppliedSort } from '@/components/ui/order-by'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
+import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-
-type Pet = Tables<'pets'> & {
-  customers: Tables<'customers'> | null
-  breeds: Tables<'breeds'> | null
-  species: Tables<'species'> | null
-}
+import {
+  AppliedPagination,
+  applySupabasePagination,
+} from '@/components/ui/pagination'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 interface UsePetsParams {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
+  pagination?: AppliedPagination
 }
 
-export function usePets(params?: UsePetsParams) {
-  const { filters = [], search, orders = [] } = params || {}
+export function usePetList({
+  filters = [],
+  search,
+  orders = [],
+  pagination,
+}: UsePetsParams) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'pets', filters, search, orders],
+    queryKey: [currentTenant?.id, 'pets', filters, search, orders, pagination],
     queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('Tenant ID is required')
       }
 
       let query = supabase
@@ -48,61 +52,29 @@ export function usePets(params?: UsePetsParams) {
             id,
             name
           )
-        `
+        `,
+          {
+            count: 'exact',
+          }
         )
         .eq('tenant_id', currentTenant.id)
 
-      // Aplicar búsqueda
-      if (search) {
-        query = query.or(`name.ilike.%${search}%,microchip.ilike.%${search}%`)
-      }
+      query = applySupabaseFilters(query, filters)
+      query = applySupabaseSort(query, orders)
+      query = applySupabasePagination(query, pagination)
+      query = applySupabaseSearch(query, search, ['name', 'microchip'])
 
-      // Aplicar filtros
-      filters.forEach((filter) => {
-        switch (filter.field) {
-          case 'client_id':
-            query = query.eq('client_id', filter.value)
-            break
-          case 'species_id':
-            query = query.eq('species_id', filter.value)
-            break
-          case 'breed_id':
-            query = query.eq('breed_id', filter.value)
-            break
-          case 'sex':
-            query = query.eq('sex', filter.value)
-            break
-          case 'is_active':
-            query = query.eq('is_active', filter.value)
-            break
-          case 'created_from':
-            query = query.gte('created_at', filter.value)
-            break
-          case 'created_to':
-            query = query.lte('created_at', filter.value)
-            break
-        }
-      })
-
-      // Aplicar ordenamiento
-      if (orders.length > 0) {
-        orders.forEach((order) => {
-          query = query.order(order.field, {
-            ascending: order.direction === 'asc',
-          })
-        })
-      } else {
-        // Orden por defecto
-        query = query.order('created_at', { ascending: false })
-      }
-
-      const { data, error } = await query
+      const { data, count, error } = await query
 
       if (error) {
         throw new Error(`Error al obtener mascotas: ${error.message}`)
       }
 
-      return data as Pet[]
+      return {
+        data: data || [],
+        total: count || 0,
+        ...pagination,
+      }
     },
     enabled: !!currentTenant?.id,
   })

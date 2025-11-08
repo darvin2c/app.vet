@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Heart, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
@@ -17,7 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { usePets } from '@/hooks/pets/use-pet-list'
+import { usePetList } from '@/hooks/pets/use-pet-list'
 import { PetCreate } from './pet-create'
 import { PetEdit } from './pet-edit'
 import { Tables } from '@/types/supabase.types'
@@ -46,7 +45,7 @@ export function PetSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: pets = [], isLoading } = usePets({
+  const { data, isLoading } = usePetList({
     search: searchTerm,
     filters: customerId
       ? [
@@ -55,11 +54,17 @@ export function PetSelect({
             operator: 'eq',
             value: customerId,
           },
+          {
+            field: 'is_active',
+            operator: 'eq',
+            value: true,
+          },
         ]
       : [],
   })
+  const pets = data?.data
 
-  const selectedPet = pets.find((pet: Pet) => pet.id === value)
+  const selectedPet = pets?.find((pet) => pet.id === value)
 
   const handleSelect = (petId: string) => {
     if (!onValueChange) return
@@ -104,7 +109,7 @@ export function PetSelect({
                 {isLoading ? 'Cargando...' : 'No se encontraron mascotas.'}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
-                {pets.map((pet: Pet) => (
+                {pets?.map((pet) => (
                   <CommandItem
                     key={pet.id}
                     value={pet.name}
