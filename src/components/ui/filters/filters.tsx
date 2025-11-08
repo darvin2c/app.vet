@@ -22,29 +22,8 @@ import { useFilters } from './use-filters'
 import { useIsMobile } from '@/hooks/use-mobile'
 
 import { getFilterComponent } from './get-filter-component'
-import SearchFilter from './search-filter'
-import SelectFilter from './select-filter'
-import MultiSelectFilter from './multiselect-filter'
-import DateFilter from './date-filter'
-import DateRangeFilter from './date-range-filter'
-import BooleanFilter from './boolean-filter'
-import NumberFilter from './number-filter'
-import CustomFilter from './custom-filter'
-import ArrayFilter from './array-filter'
-import TextSearchFilter from './text-search-filter'
 
-import type {
-  FilterConfig,
-  FiltersProps,
-  SearchFilterConfig,
-  SelectFilterConfig,
-  MultiSelectFilterConfig,
-  DateFilterConfig,
-  DateRangeFilterConfig,
-  BooleanFilterConfig,
-  NumberFilterConfig,
-  CustomFilterConfig,
-} from './types'
+import type { FilterConfig, FiltersProps } from './types'
 
 export function Filters({
   filters,
@@ -81,13 +60,13 @@ export function Filters({
   const triggerButton = (
     <ResponsiveButton
       variant="outline"
+      icon={Filter}
       className={cn(
         'relative',
         activeFiltersCount > 0 && 'border-primary text-primary'
       )}
       {...triggerProps}
     >
-      <Filter className="h-4 w-4" />
       Filtros
       {activeFiltersCount > 0 && (
         <span className="ml-1 rounded-full bg-primary px-1.5 py-0.5 text-xs text-primary-foreground">
