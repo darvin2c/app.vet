@@ -1,80 +1,70 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { AlertTriangle } from 'lucide-react'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
+import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 
-/**
- * Bloquea toda la interfaz mientras el tenant esté inactivo.
- * - Modal sin opción de cierre mientras `currentTenant.is_active === false`.
- * - Ofrece acción para reactivar el tenant.
- * - Usa Dialog con overlay y sin botón de cerrar.
- */
-export default function TenantIsInactiveModal() {
+export default function TenantIsInactive() {
   const { currentTenant } = useCurrentTenantStore()
   const isInactive = !!currentTenant && currentTenant.is_active === false
-  const { mutate: updateTenant, isPending } = useTenantUpdate()
+  const { mutateAsync: updateTenant, isPending } = useTenantUpdate()
+  const [isConfirmOpen, setIsConfirmOpen] = React.useState(false)
 
-  const handleReactivate = () => {
-    if (!currentTenant?.id) return
-    updateTenant({ is_active: true })
-  }
+  if (!isInactive) return null
 
-  // Evita cerrar el modal por cualquier interacción externa o tecla Escape
-  const preventClose = (e: Event) => {
-    e.preventDefault()
+  const handleReactivate = async () => {
+    await updateTenant({ is_active: true })
   }
 
   return (
-    <Dialog open={isInactive} onOpenChange={() => {}}>
-      <DialogContent
-        className="max-w-lg"
-        showCloseButton={false}
-        onPointerDownOutside={preventClose}
-        onInteractOutside={preventClose as any}
-        onEscapeKeyDown={preventClose as any}
-      >
-        <DialogHeader>
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
-              <AlertTriangle className="h-5 w-5 text-destructive" />
-            </div>
-            <DialogTitle>Cuenta inactiva</DialogTitle>
+    <div className="sticky top-0 z-50 w-full bg-destructive/10 border-b border-destructive/30">
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-destructive/10">
+            <AlertTriangle className="h-4 w-4 text-destructive" />
           </div>
-          <DialogDescription>
-            La cuenta del tenant
-            {currentTenant?.name ? ` "${currentTenant.name}"` : ''} está
-            inactiva. Para continuar usando la aplicación, debes reactivarla.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-2 text-sm">
-          <p>
-            Mientras la cuenta esté inactiva, todas las funcionalidades
-            permanecerán bloqueadas.
-          </p>
-          <p>
-            Puedes reactivar la cuenta ahora. Esta acción habilitará
-            inmediatamente el acceso.
-          </p>
+          <div className="text-sm">
+            <p className="font-medium">
+              Cuenta inactiva
+              {currentTenant?.name ? `: "${currentTenant.name}"` : ''}
+            </p>
+            <p className="text-muted-foreground">
+              La cuenta del tenant está deshabilitada. Reactívala para continuar
+              usando la aplicación.
+            </p>
+          </div>
         </div>
-
-        <DialogFooter>
-          <Button onClick={handleReactivate} disabled={isPending}>
-            {isPending ? 'Reactivando…' : 'Reactivar cuenta'}
+        <div>
+          <Button
+            variant="destructive"
+            onClick={() => setIsConfirmOpen(true)}
+            disabled={isPending}
+          >
+            {isPending ? 'Reactivando…' : 'Reactivar'}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </div>
+      </div>
+
+      <AlertConfirmation
+        isOpen={isConfirmOpen}
+        onClose={() => setIsConfirmOpen(false)}
+        onConfirm={handleReactivate}
+        title="Confirmar reactivación"
+        description={
+          <div className="space-y-2">
+            <p>
+              Esta acción reactivará la cuenta del tenant
+              {currentTenant?.name ? ` "${currentTenant.name}"` : ''}.
+            </p>
+            <p>Para confirmar, escribe la palabra requerida.</p>
+          </div>
+        }
+        confirmText="REACTIVAR"
+        isLoading={isPending}
+      />
+    </div>
   )
 }
