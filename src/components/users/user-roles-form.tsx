@@ -25,7 +25,6 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
   const { data: roles = [], isPending: rolesLoading } = useRoleList({})
 
   // Watch the role_ids field and superuser status
-  const roleIds = form.watch('role_ids')
   const isSuperuser = form.watch('is_superuser')
   const errors = form.formState.errors
 
@@ -102,7 +101,7 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
                 form.setValue('is_superuser', checked)
                 // Si se activa super usuario, quitar otros roles
                 if (checked) {
-                  form.setValue('role_ids', ['no-role'])
+                  form.setValue('role_ids', null)
                 }
               }}
             />
@@ -118,14 +117,9 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
         </FieldLabel>
         <FieldContent>
           <RoleSelect
-            value={
-              roleIds?.[0] === 'no-role' || !roleIds?.[0]
-                ? undefined
-                : roleIds[0]
-            }
             onValueChange={(value) => {
-              // Si no hay valor seleccionado, establecer 'no-role'
-              form.setValue('role_ids', [value || 'no-role'])
+              // Si no hay valor seleccionado, establecer null
+              form.setValue('role_ids', value || null)
             }}
             disabled={isSuperuser}
             placeholder="Seleccionar rol..."

@@ -48,6 +48,9 @@ export function UserRolesEdit({
       userId: user.id,
       data,
     })
+    if (onOpenChange) {
+      onOpenChange(false)
+    }
   })
 
   const getFullName = (user: UserWithRole) => {
