@@ -9,6 +9,7 @@ import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import type { Metadata } from 'next'
+import CanAccess from '@/components/ui/can-access'
 
 export default function AppointmentTypesPage() {
   const filters: FilterConfig[] = [
@@ -28,40 +29,42 @@ export default function AppointmentTypesPage() {
   }
 
   return (
-    <PageBase
-      title="Tipos de Citas"
-      subtitle="Gestiona los tipos de citas disponibles"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar tipos de citas..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters
-                filters={filters}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <AppointmentTypeImportButton variant="ghost" />
-              <AppointmentTypeCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
+    <CanAccess resource="appointment-types" action="read">
+      <PageBase
+        title="Tipos de Citas"
+        subtitle="Gestiona los tipos de citas disponibles"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar tipos de citas..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <AppointmentTypeImportButton variant="ghost" />
+                <AppointmentTypeCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <AppointmentTypeList
+          filterConfig={filters}
+          orderByConfig={orderByConfig}
         />
-      }
-    >
-      <AppointmentTypeList
-        filterConfig={filters}
-        orderByConfig={orderByConfig}
-      />
-    </PageBase>
+      </PageBase>
+    </CanAccess>
   )
 }
 

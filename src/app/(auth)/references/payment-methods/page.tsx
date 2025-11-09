@@ -10,6 +10,7 @@ import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { PaymentMethodImportButton } from '@/components/payment-methods/payment-method-import-button'
 import { Enums } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 type FilterConfigWithOptions = FilterConfig & {
   options?: {
@@ -48,30 +49,38 @@ export default function PaymentMethodsPage() {
   }
 
   return (
-    <PageBase
-      title="Métodos de Pago"
-      subtitle="Gestiona los métodos de pago disponibles"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar métodos de pago..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <PaymentMethodImportButton variant="ghost" />
-              <PaymentMethodCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
+    <CanAccess resource="payment-methods" action="read">
+      <PageBase
+        title="Métodos de Pago"
+        subtitle="Gestiona los métodos de pago disponibles"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar métodos de pago..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <PaymentMethodImportButton variant="ghost" />
+                <PaymentMethodCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <PaymentMethodList
+          filterConfig={filters}
+          orderByConfig={orderByConfig}
         />
-      }
-    >
-      <PaymentMethodList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+      </PageBase>
+    </CanAccess>
   )
 }
 

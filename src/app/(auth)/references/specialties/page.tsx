@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { SpecialtyImportButton } from '@/components/specialties/specialty-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function SpecialtiesPage() {
   const filters: FilterConfig[] = [
@@ -27,37 +28,39 @@ export default function SpecialtiesPage() {
   }
 
   return (
-    <PageBase
-      title="Especialidades"
-      subtitle="Gestiona las especialidades médicas disponibles"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar especialidades..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters
-                filters={filters}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <SpecialtyImportButton variant="ghost" />
-              <SpecialtyCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <SpecialtyList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="specialties" action="read">
+      <PageBase
+        title="Especialidades"
+        subtitle="Gestiona las especialidades médicas disponibles"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar especialidades..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <SpecialtyImportButton variant="ghost" />
+                <SpecialtyCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <SpecialtyList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }
 

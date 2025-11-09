@@ -8,6 +8,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
+import CanAccess from '@/components/ui/can-access'
 
 export default function SuppliersPage() {
   // Configuración de filtros
@@ -44,26 +45,28 @@ export default function SuppliersPage() {
   }
 
   return (
-    <PageBase
-      title="Proveedores"
-      subtitle="Gestiona los proveedores de tu clínica veterinaria"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar proveedores..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <SupplierImportButton />
-              <SupplierCreateButton />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <SupplierList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="suppliers" action="read">
+      <PageBase
+        title="Proveedores"
+        subtitle="Gestiona los proveedores de tu clínica veterinaria"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar proveedores..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters filters={filters} />
+                <OrderBy config={orderByConfig} />
+                <SupplierImportButton />
+                <SupplierCreateButton />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <SupplierList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

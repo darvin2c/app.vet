@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { CustomerSelect } from '@/components/customers/customer-select'
 import { PetSelect } from '@/components/pets/pet-select'
+import CanAccess from '@/components/ui/can-access'
 
 export default function OrdersPage() {
   // Configuración de filtros
@@ -80,25 +81,27 @@ export default function OrdersPage() {
   }
 
   return (
-    <PageBase
-      title="Órdenes de Venta"
-      subtitle="Gestiona las órdenes de venta y facturación"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar por número de orden, cliente o mascota"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <OrderCreateButton variant={'ghost'} />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <OrderList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="orders" action="read">
+      <PageBase
+        title="Órdenes de Venta"
+        subtitle="Gestiona las órdenes de venta y facturación"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar por número de orden, cliente o mascota"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters filters={filters} />
+                <OrderBy config={orderByConfig} />
+                <OrderCreateButton variant={'ghost'} />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <OrderList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

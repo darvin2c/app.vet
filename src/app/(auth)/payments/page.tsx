@@ -7,6 +7,7 @@ import { Filters, FilterConfig } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
+import CanAccess from '@/components/ui/can-access'
 
 export default function PaymentsPage() {
   // Configuración de filtros
@@ -48,29 +49,34 @@ export default function PaymentsPage() {
   }
 
   return (
-    <PageBase
-      title="Pagos"
-      subtitle="Gestiona los pagos de tus clientes"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar pago por referencia, notas o cliente"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <PaymentImportButton variant="ghost" />
-              <PaymentCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <PaymentList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="payments" action="read">
+      <PageBase
+        title="Pagos"
+        subtitle="Gestiona los pagos de tus clientes"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar pago por referencia, notas o cliente"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <PaymentImportButton variant="ghost" />
+                <PaymentCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <PaymentList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { ProductBrandImportButton } from '@/components/product-brands/product-brand-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function ProductBrandsPage() {
   const filters: FilterConfig[] = [
@@ -27,30 +28,38 @@ export default function ProductBrandsPage() {
   }
 
   return (
-    <PageBase
-      title="Marcas de Productos"
-      subtitle="Gestiona las marcas de productos disponibles"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar marcas..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <ProductBrandImportButton variant="ghost" />
-              <ProductBrandCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
+    <CanAccess resource="product-brands" action="read">
+      <PageBase
+        title="Marcas de Productos"
+        subtitle="Gestiona las marcas de productos disponibles"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar marcas..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <ProductBrandImportButton variant="ghost" />
+                <ProductBrandCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <ProductBrandList
+          filterConfig={filters}
+          orderByConfig={orderByConfig}
         />
-      }
-    >
-      <ProductBrandList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+      </PageBase>
+    </CanAccess>
   )
 }
 

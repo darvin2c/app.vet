@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
 import { ProductImportButton } from '@/components/products/product-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -57,29 +58,34 @@ export default function ProductsPage() {
   }
 
   return (
-    <PageBase
-      title="Productos"
-      subtitle="Gestiona el catálogo de productos"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar producto"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <ProductImportButton variant={'ghost'} />
-              <ProductCreateButton variant={'ghost'} />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <ProductList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="products" action="read">
+      <PageBase
+        title="Productos"
+        subtitle="Gestiona el catálogo de productos"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar producto"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <ProductImportButton variant={'ghost'} />
+                <ProductCreateButton variant={'ghost'} />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <ProductList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

@@ -6,6 +6,7 @@ import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
+import CanAccess from '@/components/ui/can-access'
 
 export default function UsersPage() {
   // Configuración de filtros
@@ -43,27 +44,32 @@ export default function UsersPage() {
   }
 
   return (
-    <PageBase
-      title="Usuarios"
-      subtitle="Gestiona los usuarios y sus roles en el sistema"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar usuario por nombre o email"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <UserList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="users" action="read">
+      <PageBase
+        title="Usuarios"
+        subtitle="Gestiona los usuarios y sus roles en el sistema"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar usuario por nombre o email"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <UserList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

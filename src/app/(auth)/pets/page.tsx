@@ -10,6 +10,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { CustomerSelect } from '@/components/customers/customer-select'
 import { SpeciesSelect } from '@/components/species/species-select'
+import CanAccess from '@/components/ui/can-access'
 
 export default function PetsPage() {
   // Configuración de filtros
@@ -57,36 +58,38 @@ export default function PetsPage() {
   }
 
   return (
-    <PageBase
-      title="Mascotas"
-      subtitle="Gestiona las mascotas registradas en el sistema"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar por nombre o microchip"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters
-                filters={filters}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <PetImportButton variant="ghost" />
-              <PetCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <PetList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="pets" action="read">
+      <PageBase
+        title="Mascotas"
+        subtitle="Gestiona las mascotas registradas en el sistema"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar por nombre o microchip"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <PetImportButton variant="ghost" />
+                <PetCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <PetList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

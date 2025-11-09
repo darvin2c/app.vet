@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { ProductUnitImportButton } from '@/components/product-units/product-unit-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function ProductUnitsPage() {
   const filters: FilterConfig[] = [
@@ -27,32 +28,37 @@ export default function ProductUnitsPage() {
   }
 
   return (
-    <PageBase
-      title="Unidades de Productos"
-      subtitle="Gestiona las unidades de medida para productos"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar unidades..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <ProductUnitImportButton variant="ghost" />
-              <ProductUnitCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <ProductUnitList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="product-units" action="read">
+      <PageBase
+        title="Unidades de Productos"
+        subtitle="Gestiona las unidades de medida para productos"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar unidades..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <ProductUnitImportButton variant="ghost" />
+                <ProductUnitCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <ProductUnitList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }
 

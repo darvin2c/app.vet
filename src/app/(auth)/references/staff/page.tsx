@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { StaffImportButton } from '@/components/staff/staff-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function StaffPage() {
   const filters: FilterConfig[] = [
@@ -29,37 +30,39 @@ export default function StaffPage() {
   }
 
   return (
-    <PageBase
-      title="Personal"
-      subtitle="Gestiona el personal de la clínica veterinaria"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar personal..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters
-                filters={filters}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <StaffImportButton variant="ghost" />
-              <StaffCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <StaffList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="staff" action="read">
+      <PageBase
+        title="Personal"
+        subtitle="Gestiona el personal de la clínica veterinaria"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar personal..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <StaffImportButton variant="ghost" />
+                <StaffCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <StaffList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }
 

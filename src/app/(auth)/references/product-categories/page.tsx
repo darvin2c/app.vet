@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { ProductCategoryImportButton } from '@/components/product-categories/product-category-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function ProductCategoriesPage() {
   const filters: FilterConfig[] = [
@@ -27,33 +28,38 @@ export default function ProductCategoriesPage() {
   }
 
   return (
-    <PageBase
-      title="Categorías de Productos"
-      subtitle="Gestiona las categorías de productos disponibles"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar categorías..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <ProductCategoryImportButton variant={'ghost'} />
-              <ProductCategoryCreateButton variant={'ghost'} />
-            </ButtonGroup>
-          }
+    <CanAccess resource="product-categories" action="read">
+      <PageBase
+        title="Categorías de Productos"
+        subtitle="Gestiona las categorías de productos disponibles"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar categorías..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <ProductCategoryImportButton variant={'ghost'} />
+                <ProductCategoryCreateButton variant={'ghost'} />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <ProductCategoryList
+          filterConfig={filters}
+          orderByConfig={orderByConfig}
         />
-      }
-    >
-      <ProductCategoryList
-        filterConfig={filters}
-        orderByConfig={orderByConfig}
-      />
-    </PageBase>
+      </PageBase>
+    </CanAccess>
   )
 }
 

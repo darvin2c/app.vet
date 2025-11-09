@@ -7,6 +7,7 @@ import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
+import CanAccess from '@/components/ui/can-access'
 
 export default function RolesPage() {
   // Configuración de filtros
@@ -36,25 +37,27 @@ export default function RolesPage() {
   }
 
   return (
-    <PageBase
-      title="Roles"
-      subtitle="Gestiona los roles y permisos del sistema"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar rol"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} />
-              <OrderBy config={orderByConfig} />
-              <RoleCreateButton variant={'ghost'} />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <RoleList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="roles" action="read">
+      <PageBase
+        title="Roles"
+        subtitle="Gestiona los roles y permisos del sistema"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar rol"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters filters={filters} />
+                <OrderBy config={orderByConfig} />
+                <RoleCreateButton variant={'ghost'} />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <RoleList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }

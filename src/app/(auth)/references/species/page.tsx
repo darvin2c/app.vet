@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { SpeciesImportButton } from '@/components/species/species-import-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function SpeciesPage() {
   const filters: FilterConfig[] = [
@@ -27,37 +28,39 @@ export default function SpeciesPage() {
   }
 
   return (
-    <PageBase
-      title="Especies"
-      subtitle="Gestiona las especies de animales"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar especies..."
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters
-                filters={filters}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{
-                  variant: 'ghost',
-                }}
-              />
-              <SpeciesImportButton variant="ghost" />
-              <SpeciesCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <SpeciesList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="species" action="read">
+      <PageBase
+        title="Especies"
+        subtitle="Gestiona las especies de animales"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar especies..."
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{
+                    variant: 'ghost',
+                  }}
+                />
+                <SpeciesImportButton variant="ghost" />
+                <SpeciesCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <SpeciesList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }
 
