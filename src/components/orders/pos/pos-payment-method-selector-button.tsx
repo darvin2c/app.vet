@@ -9,30 +9,26 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
-import { FormProvider, UseFormReturn } from 'react-hook-form'
-import { POSPaymentSchema } from '@/schemas/pos-payment.schema'
-import { PosPaymentSelectorContent } from './pos-payment-method-selector'
-
-
+import { PosPaymentMethodSelector } from './pos-payment-method-selector'
+import { useState } from 'react'
 
 export function PosPaymentMethodSelectorButton() {
-
-const [open, setOpen] = useState(false) 
+  const [open, setOpen] = useState(false)
 
   return (
-    <Sheet >
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button className="w-full h-12" size="lg">
+        <Button variant="outline" size="sm">
           <Plus className="h-4 w-4 mr-2" />
           Agregar Pago
         </Button>
       </SheetTrigger>
-      <SheetContent side="bottom" className="h-[90vh]">
-        <SheetHeader className="pb-4">
-          <SheetTitle>Agregar Pago</SheetTitle>
+      <SheetContent side="bottom">
+        <SheetHeader>
+          <SheetTitle></SheetTitle>
         </SheetHeader>
-        <div className="overflow-y-auto">
-            <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+        <div className="overflow-y-auto px-6 pb-6">
+          <PosPaymentMethodSelector onPaymentAdded={() => setOpen(false)} />
         </div>
       </SheetContent>
     </Sheet>

@@ -18,6 +18,7 @@ import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import { Separator } from '@/components/ui/separator'
 import { PosPaymentMethodSelector } from './pos-payment-method-selector'
+import { PosPaymentMethodSelectorButton } from './pos-payment-method-selector-button'
 interface POSPaymentProps {
   onBack: () => void
 }
@@ -127,15 +128,19 @@ export function POSPayment({ onBack }: POSPaymentProps) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 p-4 h-full">
           {/* Left Column: Payment History */}
           <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <ShoppingCart className="h-4 w-4" />
-              <h3 className="font-medium">Historial de Pagos</h3>
-              {remainingAmount > 0 && (
-                <Badge variant="outline" className="text-xs">
-                  Pendiente: S/ {remainingAmount.toFixed(2)}
-                </Badge>
-              )}
-              <PosPaymentMethodSelectorButton />
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <ShoppingCart className="h-4 w-4" />
+                <h3 className="font-medium">Historial de Pagos</h3>
+                {remainingAmount > 0 && (
+                  <Badge variant="outline" className="text-xs">
+                    Pendiente: S/ {remainingAmount.toFixed(2)}
+                  </Badge>
+                )}
+              </div>
+              <div className="block lg:hidden">
+                <PosPaymentMethodSelectorButton />
+              </div>
             </div>
             <div className="border rounded-lg overflow-hidden">
               <ScrollArea className="h-[400px]">

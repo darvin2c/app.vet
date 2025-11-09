@@ -253,9 +253,11 @@ export function PosPaymentSelectorContent({
   )
 }
 
-export function PosPaymentMethodSelector() {
-  const isMobile = useIsMobile()
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
+export function PosPaymentMethodSelector({
+  onPaymentAdded,
+}: {
+  onPaymentAdded?: () => void
+}) {
   const { order } = usePOSStore()
 
   const form = useForm<POSPaymentSchema>({
@@ -266,12 +268,6 @@ export function PosPaymentMethodSelector() {
       notes: '',
     },
   })
-
-  const handlePaymentAdded = () => {
-    if (isMobile) {
-      setIsSheetOpen(false)
-    }
-  }
 
   // Desktop: Show inline
   return (
@@ -285,9 +281,9 @@ export function PosPaymentMethodSelector() {
           </Badge>
         )}
       </div>
-      <div className="border rounded-lg p-4">
+      <div>
         <Form {...form}>
-          <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+          <PosPaymentSelectorContent onPaymentAdded={onPaymentAdded} />
         </Form>
       </div>
     </div>
