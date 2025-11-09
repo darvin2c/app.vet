@@ -141,24 +141,32 @@ export function TenantCurrencyTimezoneSettings() {
                 />
                 <FieldError errors={[form.formState.errors.timezone]} />
               </Field>
+              <FieldSeparator />
+              <Field className="justify-end" orientation="responsive">
+                <Button
+                  type="submit"
+                  disabled={updateTenantMutation.isPending}
+                  className="min-w-[100px]"
+                >
+                  {updateTenantMutation.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Guardando...
+                    </>
+                  ) : (
+                    'Guardar'
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                  className="min-w-[100px]"
+                >
+                  Cancelar
+                </Button>
+              </Field>
             </FieldGroup>
-            {/* Save Button */}
-            <div className="flex justify-end pt-4">
-              <Button
-                type="submit"
-                disabled={updateTenantMutation.isPending}
-                className="min-w-[100px]"
-              >
-                {updateTenantMutation.isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Guardando...
-                  </>
-                ) : (
-                  'Guardar'
-                )}
-              </Button>
-            </div>
           </FieldSet>
         </form>
       </CardContent>

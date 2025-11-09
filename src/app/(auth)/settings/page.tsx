@@ -1,11 +1,11 @@
 'use client'
 
-import { TenantGeneralSettings } from '@/components/settings/tenant-general-settings'
 import { TenantBusinessSettings } from '@/components/settings/tenant-business-settings'
-import { TenantOperationalSettings } from '@/components/settings/tenant-operational-settings'
 import { TenantBrandingSettings } from '@/components/settings/tenant-branding-settings'
 import { TenantDangerZone } from '@/components/settings/tenant-danger-zone'
 import PageBase from '@/components/page-base'
+import TenantGeneralInfoCard from '@/components/settings/tenant-general-info-card'
+import TenantLegalLocationCard from '@/components/settings/tenant-legal-location-card'
 
 export default function SettingsPage() {
   return (
@@ -14,9 +14,9 @@ export default function SettingsPage() {
       subtitle="Gestiona la configuración de tu organización"
     >
       <div className="space-y-6 max-w-5xl w-full mx-auto">
-        <TenantGeneralSettings />
+        <TenantGeneralInfoCard />
+        <TenantLegalLocationCard />
         <TenantBusinessSettings />
-        <TenantOperationalSettings />
         <TenantBrandingSettings />
         <TenantDangerZone />
       </div>

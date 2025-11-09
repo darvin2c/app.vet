@@ -250,26 +250,33 @@ export function TenantBusinessHoursSettings() {
                   </div>
                 </div>
               )}
+              <FieldSeparator />
+              <Field className="justify-end" orientation="responsive">
+                <Button
+                  type="submit"
+                  disabled={updateTenant.isPending}
+                  size="sm"
+                  className="min-w-[100px]"
+                >
+                  {updateTenant.isPending ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Guardando...
+                    </>
+                  ) : (
+                    'Guardar'
+                  )}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.reset()}
+                  className="min-w-[100px]"
+                >
+                  Cancelar
+                </Button>
+              </Field>
             </FieldGroup>
-
-            {/* Save Button */}
-            <div className="flex pt-6 justify-end">
-              <Button
-                type="submit"
-                disabled={updateTenant.isPending}
-                size="sm"
-                className="min-w-[100px]"
-              >
-                {updateTenant.isPending ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Guardando...
-                  </>
-                ) : (
-                  'Guardar'
-                )}
-              </Button>
-            </div>
           </form>
         </FieldSet>
       </CardContent>
