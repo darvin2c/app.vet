@@ -123,10 +123,14 @@ export default function usePerms() {
 
   const canAccess = useCallback(
     (perm: string) => {
+      if (isSuperuser) {
+        return true
+      }
+
       const perms = role?.perms || []
       return perms.every((p) => p === perm)
     },
-    [getPerm]
+    [getPerm, isSuperuser]
   )
 
   const getTreePerms = useCallback((): TreeGroup[] => {
