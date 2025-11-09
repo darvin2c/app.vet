@@ -122,15 +122,16 @@ export default function usePerms() {
   )
 
   const canAccess = useCallback(
-    (perm: string) => {
-      if (isSuperuser) {
-        return true
-      }
+    (perm?: string) => {
+      if (isSuperuser) return true // Superusuario: todo permitido
+      if (!perm) return false // Si el componente no definió permiso → no accede
 
       const perms = role?.perms || []
-      return perms.every((p) => p === perm)
+      if (perms.length === 0) return false // Sin permisos asignados → no accede
+
+      return perms.includes(perm) // Verifica si el permiso requerido está en la lista
     },
-    [getPerm, isSuperuser]
+    [isSuperuser, role]
   )
 
   const getTreePerms = useCallback((): TreeGroup[] => {

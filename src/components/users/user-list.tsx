@@ -87,7 +87,6 @@ export function UserList({
   })
 
   const users = data?.data || []
-  console.log('users', users)
   // Función para obtener las iniciales del usuario
   const getUserInitials = (user: UserWithRole) => {
     const firstName = user.first_name || ''
