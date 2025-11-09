@@ -28,7 +28,7 @@ type TreeGroup = Group & {
 }
 
 export default function usePerms() {
-  const { data: profile } = useProfile()
+  const { data: profile, isFetched } = useProfile()
   const { role, isSuperuser } = profile || {}
 
   const GROUPS = useMemo(
@@ -123,6 +123,7 @@ export default function usePerms() {
 
   const canAccess = useCallback(
     (perm?: string) => {
+      if (!isFetched) return true
       if (isSuperuser) return true // Superusuario: todo permitido
       if (!perm) return false // Si el componente no definió permiso → no accede
 

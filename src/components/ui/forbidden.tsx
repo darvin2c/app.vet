@@ -8,24 +8,17 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from './empty'
-import React, {
-  ReactNode,
-  cloneElement,
-  isValidElement,
-  ReactElement,
-  JSX,
-} from 'react'
-import { cn } from '@/lib/utils'
+import React, { ReactNode, cloneElement, isValidElement } from 'react'
 
 const ForbiddenPage = () => (
   <Empty>
     <EmptyHeader>
       <EmptyMedia>
-        <CircleOff />
+        <CircleOff className="text-muted-foreground" />
       </EmptyMedia>
       <EmptyTitle>403 - Prohibido</EmptyTitle>
       <EmptyDescription>
-        No tienes permisos para acceder a esta página.
+        No tienes permisos suficientes para acceder.
       </EmptyDescription>
     </EmptyHeader>
   </Empty>

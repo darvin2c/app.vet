@@ -7,6 +7,7 @@ import { Filters, FilterConfig } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { OrderBy } from '@/components/ui/order-by'
 import { OrderByConfig } from '@/components/ui/order-by'
+import CanAccess from '@/components/ui/can-access'
 
 export default function CustomersPage() {
   // Configuración de filtros
@@ -36,29 +37,34 @@ export default function CustomersPage() {
   }
 
   return (
-    <PageBase
-      title="Clientes"
-      subtitle="Gestiona la información de tus clientes"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar cliente"
-          size="lg"
-          suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
-              />
-              <CustomerImportButton variant="ghost" />
-              <CustomerCreateButton variant="ghost" />
-            </ButtonGroup>
-          }
-        />
-      }
-    >
-      <CustomerList filterConfig={filters} orderByConfig={orderByConfig} />
-    </PageBase>
+    <CanAccess resource="customers" action="read">
+      <PageBase
+        title="Clientes"
+        subtitle="Gestiona la información de tus clientes"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar cliente"
+            size="lg"
+            suffix={
+              <ButtonGroup>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'ghost' }}
+                />
+                <CustomerImportButton variant="ghost" />
+                <CustomerCreateButton variant="ghost" />
+              </ButtonGroup>
+            }
+          />
+        }
+      >
+        <CustomerList filterConfig={filters} orderByConfig={orderByConfig} />
+      </PageBase>
+    </CanAccess>
   )
 }
