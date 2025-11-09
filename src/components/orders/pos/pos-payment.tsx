@@ -18,7 +18,6 @@ import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import { Separator } from '@/components/ui/separator'
 import { PosPaymentMethodSelector } from './pos-payment-method-selector'
-
 interface POSPaymentProps {
   onBack: () => void
 }
@@ -136,6 +135,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
                   Pendiente: S/ {remainingAmount.toFixed(2)}
                 </Badge>
               )}
+              <PosPaymentMethodSelectorButton />
             </div>
             <div className="border rounded-lg overflow-hidden">
               <ScrollArea className="h-[400px]">

@@ -144,7 +144,7 @@ export function PosPaymentTable() {
 
               return (
                 <div
-                  key={payment.id}
+                  key={index}
                   className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
                 >
                   <div className="flex items-center gap-3 flex-1">

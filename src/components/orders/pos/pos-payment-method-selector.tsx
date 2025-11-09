@@ -36,7 +36,6 @@ import {
 } from '@/schemas/pos-payment.schema'
 import { Form } from '@/components/ui/form'
 import { usePagination } from '@/components/ui/pagination'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Collapsible,
   CollapsibleContent,
@@ -47,7 +46,7 @@ interface PosPaymentSelectorContentProps {
   onPaymentAdded?: () => void
 }
 
-function PosPaymentSelectorContent({
+export function PosPaymentSelectorContent({
   onPaymentAdded,
 }: PosPaymentSelectorContentProps) {
   const form = useFormContext<POSPaymentSchema>()
@@ -272,30 +271,6 @@ export function PosPaymentMethodSelector() {
     if (isMobile) {
       setIsSheetOpen(false)
     }
-  }
-
-  // Mobile: Show as Sheet
-  if (isMobile) {
-    return (
-      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetTrigger asChild>
-          <Button className="w-full h-12" size="lg">
-            <Plus className="h-4 w-4 mr-2" />
-            Agregar Pago
-          </Button>
-        </SheetTrigger>
-        <SheetContent side="bottom" className="h-[90vh]">
-          <SheetHeader className="pb-4">
-            <SheetTitle>Agregar Pago</SheetTitle>
-          </SheetHeader>
-          <div className="overflow-y-auto">
-            <FormProvider {...form}>
-              <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
-            </FormProvider>
-          </div>
-        </SheetContent>
-      </Sheet>
-    )
   }
 
   // Desktop: Show inline
