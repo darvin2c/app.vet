@@ -29,7 +29,6 @@ import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEdit } from './order-edit'
 import { OrderPaymentSheet } from './order-payment-sheet'
-import { canEditOrder } from '@/schemas/orders.schema'
 
 import { downloadPDF, previewDocument } from '@/lib/print-utils'
 interface OrderActionsProps {
@@ -44,7 +43,7 @@ export function OrderActions({ order }: OrderActionsProps) {
   const [isDownloading, setIsDownloading] = useState(false)
 
   // Verificar si la orden puede ser editada
-  const isEditable = canEditOrder(order.status)
+  const isEditable = false
   const getEditTooltipMessage = () => {
     if (order.status === 'paid') return 'No se puede editar una orden pagada'
     if (order.status === 'cancelled')

@@ -28,7 +28,14 @@ export default function useOrderList({
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, orders, filters, orders, pagination, search],
+    queryKey: [
+      currentTenant?.id,
+      'orders',
+      filters,
+      orders,
+      pagination,
+      search,
+    ],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')

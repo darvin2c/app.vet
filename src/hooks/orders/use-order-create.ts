@@ -81,6 +81,9 @@ export default function useOrderCreate() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'orders'],
       })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'payments'],
+      })
       toast.success('Orden creada exitosamente')
     },
     onError: (error) => {

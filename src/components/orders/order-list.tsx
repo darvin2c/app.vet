@@ -61,12 +61,14 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { orderStatusOptions } from '@/schemas/orders.schema'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { DateDisplay } from '../ui/date-picker'
 import { CurrencyDisplay } from '../ui/current-input'
 import useOrderStatus from '@/hooks/orders/use-order-status'
+import { Pagination, usePagination } from '../ui/pagination'
+import { Alert, AlertDescription } from '../ui/alert'
+import { OrderIcon } from '../icons'
 
 // Función para obtener la variante del badge según el estado
 function getStatusBadgeVariant(
@@ -109,16 +111,14 @@ export function OrderList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
-  const {
-    data: orders = [],
-    isPending,
-    error,
-  } = useOrderList({
+  const { appliedPagination, paginationProps } = usePagination()
+  const { data, isPending, error } = useOrderList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
-
+  const orders = data?.data || []
   const { getOrderStatus } = useOrderStatus()
 
   const columns: ColumnDef<Order>[] = [
@@ -130,7 +130,7 @@ export function OrderList({
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<Order> }) => (
-        <div className="font-medium">{row.getValue('order_number')}</div>
+        <div>{row.getValue('order_number')}</div>
       ),
     },
     {
@@ -357,7 +357,7 @@ export function OrderList({
 
   // Función para renderizar vista de tabla
   const renderTableView = () => (
-    <div className="rounded-md border">
+    <div>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map(renderTableHeader)}
@@ -377,63 +377,17 @@ export function OrderList({
     </div>
   )
 
-  // Función para renderizar paginación
-  const renderPagination = () => (
-    <div className="flex items-center justify-between space-x-2 py-4">
-      <div className="text-sm text-muted-foreground">
-        Mostrando{' '}
-        {table.getState().pagination.pageIndex *
-          table.getState().pagination.pageSize +
-          1}{' '}
-        a{' '}
-        {Math.min(
-          (table.getState().pagination.pageIndex + 1) *
-            table.getState().pagination.pageSize,
-          orders.length
-        )}{' '}
-        de {orders.length} órdenes
-      </div>
-      <div className="flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Siguiente
-          <ChevronRight className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  )
-
   if (isPending) {
     return <TableSkeleton />
   }
 
   if (error) {
     return (
-      <Empty>
-        <EmptyHeader>
-          <EmptyMedia>
-            <XCircle className="h-8 w-8" />
-          </EmptyMedia>
-          <EmptyTitle>Error al cargar órdenes</EmptyTitle>
-          <EmptyDescription>
-            Ocurrió un error al cargar las órdenes. Por favor, intenta
-            nuevamente.
-          </EmptyDescription>
-        </EmptyHeader>
-      </Empty>
+      <Alert variant="destructive">
+        <AlertDescription>
+          Ocurrió un error al cargar las órdenes. Por favor, intenta nuevamente.
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -442,7 +396,7 @@ export function OrderList({
       <Empty>
         <EmptyHeader>
           <EmptyMedia>
-            <ShoppingCart className="h-8 w-8" />
+            <OrderIcon className="h-9 w-9" />
           </EmptyMedia>
           <EmptyTitle>No hay órdenes</EmptyTitle>
           <EmptyDescription>
@@ -458,19 +412,14 @@ export function OrderList({
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-muted-foreground">
-          {orders.length}{' '}
-          {orders.length === 1 ? 'orden encontrada' : 'órdenes encontradas'}
-        </div>
+      <div className="flex items-center justify-end">
         <ViewModeToggle onValueChange={setViewMode} resource="orders" />
       </div>
 
       {viewMode === 'table' && renderTableView()}
       {viewMode === 'cards' && renderCardView()}
       {viewMode === 'list' && renderListView()}
-
-      {orders.length > 0 && renderPagination()}
+      <Pagination {...paginationProps} totalItems={data.total} />
     </div>
   )
 }

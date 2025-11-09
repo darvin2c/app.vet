@@ -1,12 +1,7 @@
-import { supabase } from '@/lib/supabase/client'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import {
-  UpdateOrderSchema,
-  calculateBalance,
-  getOrderStatusFromPayment,
-} from '@/schemas/orders.schema'
-import { TablesUpdate } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { TablesUpdate } from '@/types/supabase.types'
+import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 
 export default function useOrderUpdate() {
@@ -19,37 +14,19 @@ export default function useOrderUpdate() {
       data,
     }: {
       id: string
-      data: Omit<UpdateOrderSchema, 'id'>
+      data: Omit<TablesUpdate<'orders'>, 'tenant_id'>
     }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      // Calcular balance usando la función del schema si se proporcionan total y paid_amount
-      let balance: number | undefined
-      if (data.total !== undefined && data.paid_amount !== undefined) {
-        balance = calculateBalance(data.total, data.paid_amount)
-      }
-
-      // Determinar el estado basado en el pago si no se proporciona pero hay datos de pago
-      let status = data.status
-      if (
-        !status &&
-        data.total !== undefined &&
-        data.paid_amount !== undefined
-      ) {
-        status = getOrderStatusFromPayment(data.paid_amount, data.total)
-      }
-
       const orderData: TablesUpdate<'orders'> = {
         customer_id: data.customer_id,
         order_number: data.order_number,
-        status: status,
         subtotal: data.subtotal,
         tax: data.tax,
         total: data.total,
         paid_amount: data.paid_amount,
-        balance: balance,
         notes: data.notes,
         updated_at: new Date().toISOString(),
       }
