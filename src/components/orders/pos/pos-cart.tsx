@@ -28,6 +28,7 @@ import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
 import { CurrencyDisplay } from '@/components/ui/current-input'
+import { ProductIcon, RemoveIcon, ServiceIcon } from '@/components/icons'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
@@ -184,9 +185,13 @@ function CartItemCard({
     (item.unit_price || 0) * (item.quantity || 0) - (item.discount || 0)
 
   return (
-    <Item size="sm">
+    <Item size="sm" className="py-1 px-2">
       <ItemMedia>
-        <Package className="h-5 w-5 text-gray-400" />
+        {item.product?.is_service ? (
+          <ServiceIcon className="h-5 w-5 text-gray-400" />
+        ) : (
+          <ProductIcon className="h-5 w-5 text-gray-400" />
+        )}
       </ItemMedia>
 
       <ItemContent>
@@ -225,7 +230,7 @@ function CartItemCard({
             onClick={() => onRemove(item.product_id || '')}
             className="h-8 w-8 p-0 text-red-400 hover:text-red-500"
           >
-            <Trash2 className="h-4 w-4" />
+            <RemoveIcon className="h-4 w-4" />
           </Button>
           <Button
             variant="ghost"
