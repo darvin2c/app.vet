@@ -63,6 +63,7 @@ export default function useProductList({
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
+      console.log(filters)
       query = applySupabaseFilters(query, filters)
       query = applySupabaseSort(query, orders)
       query = applySupabasePagination(query, pagination)

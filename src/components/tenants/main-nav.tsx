@@ -12,6 +12,7 @@ import {
   Scale,
   ShieldCheck,
   BadgeDollarSign,
+  Stethoscope,
 } from 'lucide-react'
 
 import {
@@ -87,7 +88,7 @@ const navigationGroups: NavGroup[] = [
       {
         title: 'Servicios',
         href: '/services',
-        icon: Handshake,
+        icon: Stethoscope,
         tooltip: 'Servicios',
       },
       {

@@ -9,6 +9,7 @@ import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
 import { ProductImportButton } from '@/components/products/product-import-button'
+import { ServicesList } from '@/components/services/services-list'
 
 export default function ProductsPage() {
   // Configuración de filtros
@@ -79,7 +80,7 @@ export default function ProductsPage() {
         />
       }
     >
-      <ProductList filterConfig={filters} orderByConfig={orderByConfig} />
+      <ServicesList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
 }
