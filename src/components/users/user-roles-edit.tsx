@@ -3,14 +3,14 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { UserRolesForm } from './user-roles-form'
@@ -18,6 +18,7 @@ import { assignUserToTenantSchema } from '@/schemas/users.schema'
 import { useUserRoleUpdate } from '@/hooks/users/use-user-roles-update'
 import { Settings } from 'lucide-react'
 import { UserWithRole } from '@/hooks/users/use-user-list'
+import { Field } from '../ui/field'
 
 interface UserRolesEditProps {
   user: UserWithRole
@@ -56,31 +57,31 @@ export function UserRolesEdit({
   }
 
   // Si se proporcionan open y onOpenChange, usar modo controlado
-  const drawerProps =
+  const sheetProps =
     open !== undefined && onOpenChange !== undefined
       ? { open, onOpenChange }
       : {}
 
   return (
-    <Drawer {...drawerProps}>
-      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+    <Sheet {...sheetProps}>
+      {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
 
       {/* Si no hay trigger, usar el botón por defecto solo si no está en modo controlado */}
       {!trigger && open === undefined && (
-        <DrawerTrigger asChild>
+        <SheetTrigger asChild>
           <Button variant="ghost" size="sm">
             <Settings className="h-4 w-4" />
           </Button>
-        </DrawerTrigger>
+        </SheetTrigger>
       )}
 
-      <DrawerContent className="!w-full !max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Roles de Usuario</DrawerTitle>
-          <DrawerDescription>
+      <SheetContent side="right" className="!w-full !max-w-xl">
+        <SheetHeader>
+          <SheetTitle>Editar Roles de Usuario</SheetTitle>
+          <SheetDescription>
             Gestiona los roles y permisos de {getFullName(user)}
-          </DrawerDescription>
-        </DrawerHeader>
+          </SheetDescription>
+        </SheetHeader>
 
         <div className="px-4 overflow-y-auto">
           <Form {...form}>
@@ -90,23 +91,27 @@ export function UserRolesEdit({
           </Form>
         </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            disabled={updateUserRole.isPending}
-          >
-            {updateUserRole.isPending ? 'Actualizando...' : 'Actualizar Roles'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
-            disabled={updateUserRole.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+        <SheetFooter>
+          <Field orientation="horizontal">
+            <Button
+              type="submit"
+              onClick={onSubmit}
+              disabled={updateUserRole.isPending}
+            >
+              {updateUserRole.isPending
+                ? 'Actualizando...'
+                : 'Actualizar Roles'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
+              disabled={updateUserRole.isPending}
+            >
+              Cancelar
+            </Button>
+          </Field>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
