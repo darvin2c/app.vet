@@ -23,9 +23,6 @@ export function PermissionsTree({
   const treeData = useMemo(() => getTreePerms(), [getTreePerms])
 
   const [expandedGroups, setExpandedGroups] = useState<Set<string>>(new Set())
-  const [expandedResources, setExpandedResources] = useState<Set<string>>(
-    new Set()
-  )
 
   // Expandir todos los grupos por defecto
   useEffect(() => {
@@ -40,18 +37,6 @@ export function PermissionsTree({
         newSet.delete(groupValue)
       } else {
         newSet.add(groupValue)
-      }
-      return newSet
-    })
-  }, [])
-
-  const toggleResource = useCallback((resourceValue: string) => {
-    setExpandedResources((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(resourceValue)) {
-        newSet.delete(resourceValue)
-      } else {
-        newSet.add(resourceValue)
       }
       return newSet
     })
@@ -178,7 +163,10 @@ export function PermissionsTree({
               variant="ghost"
               size="sm"
               className="h-6 w-6 p-0"
-              onClick={() => toggleGroup(group.value)}
+              onClick={(e) => {
+                e.preventDefault()
+                toggleGroup(group.value)
+              }}
             >
               {expandedGroups.has(group.value) ? (
                 <ChevronDown className="h-4 w-4" />

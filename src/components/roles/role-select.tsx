@@ -21,6 +21,7 @@ import { useRoleList } from '@/hooks/roles/use-role-list'
 import { Tables } from '@/types/supabase.types'
 import { RoleCreate } from './role-create'
 import { RoleEdit } from './role-edit'
+import { usePagination } from '../ui/pagination'
 
 type Role = Tables<'roles'>
 
@@ -43,11 +44,12 @@ export function RoleSelect({
   const [searchTerm, setSearchTerm] = useState('')
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
-
-  const { data: roles = [], isLoading } = useRoleList({
+  const { appliedPagination } = usePagination()
+  const { data, isLoading } = useRoleList({
     search: searchTerm,
+    pagination: appliedPagination,
   })
-
+  const roles = data?.data || []
   const selectedRole = roles.find((role) => role.id === value)
 
   const handleSelect = (roleId: string) => {

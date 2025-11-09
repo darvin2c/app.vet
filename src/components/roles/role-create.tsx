@@ -3,18 +3,21 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { RoleForm } from './role-form'
 import { CreateRoleSchema, createRoleSchema } from '@/schemas/roles.schema'
 import { useRoleCreate } from '@/hooks/roles/use-role-create'
+import { Field } from '../ui/field'
 
 interface RoleCreateProps {
   open: boolean
@@ -40,40 +43,49 @@ export function RoleCreate({ open, onOpenChange }: RoleCreateProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Rol</DrawerTitle>
-          <DrawerDescription>
-            Define un nuevo rol y asigna los permisos correspondientes.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className={`!w-full !max-w-4xl`} side="right">
+        <ScrollArea className="h-full">
+          <SheetHeader>
+            <SheetTitle>Crear Rol</SheetTitle>
+            <SheetDescription>
+              Define un nuevo rol y asigna los permisos correspondientes.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="px-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <RoleForm />
-            </form>
-          </Form>
-        </div>
+          <div className="flex-1 min-h-0">
+            <div className="px-4">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <RoleForm />
+                </form>
+              </Form>
+            </div>
+          </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={createRole.isPending}
-          >
-            {createRole.isPending ? 'Creando...' : 'Crear Rol'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createRole.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <Field orientation="horizontal">
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit)}
+                disabled={createRole.isPending}
+              >
+                {createRole.isPending ? 'Creando...' : 'Crear Rol'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={createRole.isPending}
+              >
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }
