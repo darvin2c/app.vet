@@ -11,9 +11,9 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import {
-  CreditCard,
-  Banknote,
-  Smartphone,
+  // CreditCard,
+  // Banknote,
+  // Smartphone,
   MoreHorizontal,
   Trash2,
   Receipt,
@@ -28,23 +28,12 @@ import {
   EmptyTitle,
 } from '../../ui/empty'
 import { CurrencyDisplay } from '@/components/ui/current-input'
-
-const paymentTypeIcons = {
-  cash: Banknote,
-  app: Smartphone,
-  credit: CreditCard,
-  others: MoreHorizontal,
-}
-
-const paymentTypeLabels = {
-  cash: 'Efectivo',
-  app: 'App',
-  credit: 'Crédito',
-  others: 'Otros',
-}
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
+import { Enums } from '@/types/supabase.types'
 
 export function PosPaymentTable() {
   const { payments, removePayment, order } = usePOSStore()
+  const { getPaymentType } = usePaymentType()
 
   const handleRemovePayment = (paymentId?: string) => {
     if (!paymentId) {
@@ -99,11 +88,13 @@ export function PosPaymentTable() {
               </TableHeader>
               <TableBody>
                 {payments.map((payment, index) => {
-                  const Icon =
-                    paymentTypeIcons[
-                      payment.payment_method
-                        ?.payment_type as keyof typeof paymentTypeIcons
-                    ] || MoreHorizontal
+                  const paymentType = payment.payment_method?.payment_type
+                    ? getPaymentType(
+                        payment.payment_method
+                          .payment_type as Enums<'payment_type'>
+                      )
+                    : undefined
+                  const Icon = paymentType?.icon || MoreHorizontal
 
                   return (
                     <TableRow key={payment.id}>
@@ -118,10 +109,7 @@ export function PosPaymentTable() {
                                 'Método desconocido'}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {paymentTypeLabels[
-                                payment.payment_method
-                                  ?.payment_type as keyof typeof paymentTypeLabels
-                              ] || 'Otros'}
+                              {paymentType?.label || 'Otros'}
                             </p>
                           </div>
                         </div>
@@ -156,11 +144,12 @@ export function PosPaymentTable() {
           {/* Mobile Card View */}
           <div className="md:hidden space-y-3 p-4">
             {payments.map((payment, index) => {
-              const Icon =
-                paymentTypeIcons[
-                  payment.payment_method
-                    ?.payment_type as keyof typeof paymentTypeIcons
-                ] || MoreHorizontal
+              const paymentType = payment.payment_method?.payment_type
+                ? getPaymentType(
+                    payment.payment_method.payment_type as Enums<'payment_type'>
+                  )
+                : undefined
+              const Icon = paymentType?.icon || MoreHorizontal
 
               return (
                 <div
@@ -176,10 +165,7 @@ export function PosPaymentTable() {
                         {payment.payment_method?.name || 'Método desconocido'}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {paymentTypeLabels[
-                          payment.payment_method
-                            ?.payment_type as keyof typeof paymentTypeLabels
-                        ] || 'Otros'}
+                        {paymentType?.label || 'Otros'}
                       </p>
                       {payment.notes && (
                         <p className="text-xs text-muted-foreground mt-1 truncate">
