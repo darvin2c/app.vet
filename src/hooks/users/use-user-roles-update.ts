@@ -2,6 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { TablesUpdate } from '@/types/supabase.types'
 
 export function useUserRoleUpdate() {
   const queryClient = useQueryClient()
@@ -10,10 +11,10 @@ export function useUserRoleUpdate() {
   return useMutation({
     mutationFn: async ({
       userId,
-      roleId,
+      data,
     }: {
       userId: string
-      roleId: string | null
+      data: TablesUpdate<'tenant_users'>
     }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
@@ -21,7 +22,7 @@ export function useUserRoleUpdate() {
 
       const { error } = await supabase
         .from('tenant_users')
-        .update({ role_id: roleId })
+        .update(data)
         .eq('user_id', userId)
         .eq('tenant_id', currentTenant.id)
 
@@ -36,7 +37,9 @@ export function useUserRoleUpdate() {
       })
     },
     onError: (error: Error) => {
-      toast.error(error.message)
+      toast.error('Error al actualizar usuario', {
+        description: error.message,
+      })
     },
   })
 }

@@ -14,10 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { UserRolesForm } from './user-roles-form'
-import {
-  updateUserRolesSchema,
-  UpdateUserRolesSchema,
-} from '@/schemas/users.schema'
+import { assignUserToTenantSchema } from '@/schemas/users.schema'
 import { useUserRoleUpdate } from '@/hooks/users/use-user-roles-update'
 import { Settings } from 'lucide-react'
 import { UserWithRole } from '@/hooks/users/use-user-list'
@@ -38,31 +35,19 @@ export function UserRolesEdit({
   const updateUserRole = useUserRoleUpdate()
 
   const form = useForm({
-    resolver: zodResolver(updateUserRolesSchema),
+    resolver: zodResolver(assignUserToTenantSchema),
     defaultValues: {
-      role_ids: user?.role?.id ? [user.role.id] : ['no-role'],
+      role_id: user?.role?.id || 'no-role',
+      is_superuser: user.is_superuser || false,
     },
   })
 
-  const onSubmit = async (data: UpdateUserRolesSchema) => {
-    try {
-      // Actualizar rol del usuario
-      if (data.role_ids.length > 0) {
-        const roleId = data.role_ids[0]
-        // Si se selecciona "no-role", enviar null para remover el rol
-        await updateUserRole.mutateAsync({
-          userId: user.id,
-          roleId: roleId === 'no-role' ? null : roleId,
-        })
-      }
-
-      if (onOpenChange) {
-        onOpenChange(false)
-      }
-    } catch (error) {
-      console.error('Error updating user roles:', error)
-    }
-  }
+  const onSubmit = form.handleSubmit(async (data) => {
+    await updateUserRole.mutateAsync({
+      userId: user.id,
+      data,
+    })
+  })
 
   const getFullName = (user: UserWithRole) => {
     const firstName = user.first_name || ''
@@ -99,7 +84,7 @@ export function UserRolesEdit({
 
         <div className="px-4 overflow-y-auto">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={onSubmit} className="space-y-4">
               <UserRolesForm user={user} />
             </form>
           </Form>
@@ -108,7 +93,7 @@ export function UserRolesEdit({
         <DrawerFooter>
           <Button
             type="submit"
-            onClick={form.handleSubmit(onSubmit)}
+            onClick={onSubmit}
             disabled={updateUserRole.isPending}
           >
             {updateUserRole.isPending ? 'Actualizando...' : 'Actualizar Roles'}
