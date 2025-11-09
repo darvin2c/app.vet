@@ -47,7 +47,11 @@ import {
   Package,
 } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
-import { useFilters, FilterConfig } from '@/components/ui/filters'
+import {
+  useFilters,
+  FilterConfig,
+  AppliedFilter,
+} from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
@@ -78,8 +82,13 @@ export function ProductList({
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { appliedPagination, paginationProps } = usePagination()
+
+  const productFilters: AppliedFilter[] = [
+    ...appliedFilters,
+    { field: 'is_service', operator: 'eq', value: false },
+  ]
   const { data, isPending, error } = useProductList({
-    filters: appliedFilters,
+    filters: productFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
     pagination: appliedPagination,

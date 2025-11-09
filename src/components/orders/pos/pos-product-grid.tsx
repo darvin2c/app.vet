@@ -15,7 +15,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
-import { Plus, Package, Tag } from 'lucide-react'
+import { Plus, Package, Tag, Stethoscope } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Tables } from '@/types/supabase.types'
@@ -124,7 +124,11 @@ function ProductListItem({ product }: { product: Product }) {
     <Item variant="outline" className="hover:bg-accent/50 transition-colors">
       {/* Product Image/Icon */}
       <ItemMedia variant="icon">
-        <Package className="h-6 w-6 text-muted-foreground" />
+        {product.is_service ? (
+          <Package className="h-6 w-6 text-muted-foreground" />
+        ) : (
+          <Stethoscope className="h-6 w-6 text-muted-foreground" />
+        )}
       </ItemMedia>
 
       {/* Product Information */}
