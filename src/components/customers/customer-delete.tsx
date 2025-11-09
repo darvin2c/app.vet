@@ -34,7 +34,6 @@ export function CustomerDelete({
   }
 
   const fullName = `${customer.first_name} ${customer.last_name}`
-  const confirmationWord = fullName.toLowerCase()
 
   return (
     <AlertConfirmation
@@ -42,7 +41,7 @@ export function CustomerDelete({
       onClose={() => onOpenChange(false)}
       title="Eliminar Cliente"
       description={`Esta acción eliminará permanentemente al cliente ${fullName} y todos sus datos asociados.`}
-      confirmText={confirmationWord}
+      confirmText="ELIMINAR"
       onConfirm={handleDelete}
       isLoading={isDeleting}
     />

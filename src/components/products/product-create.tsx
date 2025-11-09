@@ -3,13 +3,15 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductForm } from './product-form'
@@ -18,6 +20,7 @@ import {
   createProductSchema,
 } from '@/schemas/products.schema'
 import useCreateProduct from '@/hooks/products/use-product-create'
+import { Field } from '../ui/field'
 
 interface ProductCreateProps {
   open: boolean
@@ -26,6 +29,7 @@ interface ProductCreateProps {
 
 export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
   const createProduct = useCreateProduct()
+  const isMobile = useIsMobile()
 
   const form = useForm({
     resolver: zodResolver(createProductSchema),
@@ -52,43 +56,49 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Producto</DrawerTitle>
-          <DrawerDescription>
-            Completa la información para agregar un nuevo producto.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className={`!w-full !max-w-4xl`} side="right">
+        <ScrollArea className="h-full">
+          <SheetHeader>
+            <SheetTitle>Crear Producto</SheetTitle>
+            <SheetDescription>
+              Completa la información para agregar un nuevo producto.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="px-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
-              <ProductForm mode="create" />
-            </form>
-          </Form>
-        </div>
+          <div className="flex-1 min-h-0">
+            <div className="px-4">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit as any)}
+                  className="space-y-4"
+                >
+                  <ProductForm mode="create" />
+                </form>
+              </Form>
+            </div>
+          </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createProduct.isPending}
-          >
-            {createProduct.isPending ? 'Creando...' : 'Crear Producto'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createProduct.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <Field orientation="horizontal">
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={createProduct.isPending}
+              >
+                {createProduct.isPending ? 'Creando...' : 'Crear Producto'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={createProduct.isPending}
+              >
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

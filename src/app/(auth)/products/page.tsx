@@ -72,8 +72,8 @@ export default function ProductsPage() {
                 config={orderByConfig}
                 triggerProps={{ variant: 'ghost' }}
               />
-              <ProductCreateButton variant={'ghost'} />
               <ProductImportButton variant={'ghost'} />
+              <ProductCreateButton variant={'ghost'} />
             </ButtonGroup>
           }
         />

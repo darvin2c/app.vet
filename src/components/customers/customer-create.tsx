@@ -3,13 +3,15 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { CustomerForm } from './customer-form'
@@ -19,6 +21,7 @@ import {
 } from '@/schemas/customers.schema'
 import useCustomerCreate from '@/hooks/customers/use-customer-create'
 import { Tables } from '@/types/supabase.types'
+import { Field } from '../ui/field'
 
 interface CustomerCreateProps {
   open: boolean
@@ -54,43 +57,49 @@ export function CustomerCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Cliente</DrawerTitle>
-          <DrawerDescription>
-            Completa la información para agregar un nuevo cliente.
-          </DrawerDescription>
-        </DrawerHeader>
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className={`!w-full !max-w-4xl`} side="right">
+        <ScrollArea className="h-full">
+          <SheetHeader>
+            <SheetTitle>Crear Cliente</SheetTitle>
+            <SheetDescription>
+              Ingresa la información del cliente.
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="px-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
-              <CustomerForm mode="create" />
-            </form>
-          </Form>
-        </div>
+          <div className="flex-1 min-h-0">
+            <div className="px-4">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit as any)}
+                  className="space-y-4"
+                >
+                  <CustomerForm mode="create" />
+                </form>
+              </Form>
+            </div>
+          </div>
 
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createCustomer.isPending}
-          >
-            {createCustomer.isPending ? 'Creando...' : 'Crear Cliente'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createCustomer.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
-      </DrawerContent>
-    </Drawer>
+          <SheetFooter>
+            <Field orientation="horizontal">
+              <Button
+                type="submit"
+                onClick={form.handleSubmit(onSubmit as any)}
+                disabled={createCustomer.isPending}
+              >
+                {createCustomer.isPending ? 'Creando...' : 'Crear Cliente'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={createCustomer.isPending}
+              >
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        </ScrollArea>
+      </SheetContent>
+    </Sheet>
   )
 }

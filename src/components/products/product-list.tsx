@@ -58,6 +58,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -282,11 +283,12 @@ export function ProductList({
 
   if (error) {
     return (
-      <div className="text-center py-8">
-        <p className="text-red-500">
+      <Alert>
+        <AlertTitle>Error</AlertTitle>
+        <AlertDescription>
           Error al cargar productos: {error.message}
-        </p>
-      </div>
+        </AlertDescription>
+      </Alert>
     )
   }
 
@@ -335,7 +337,7 @@ export function ProductList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
