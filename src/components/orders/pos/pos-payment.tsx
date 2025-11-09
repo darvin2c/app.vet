@@ -12,7 +12,7 @@ import {
   AlertCircle,
   CreditCard,
 } from 'lucide-react'
-import { PaymentTable } from '@/components/orders/pos/payment-table'
+import { PosPaymentTable } from '@/components/orders/pos/pos-payment-table'
 import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
@@ -139,7 +139,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
             </div>
             <div className="border rounded-lg overflow-hidden">
               <ScrollArea className="h-[400px]">
-                <PaymentTable />
+                <PosPaymentTable />
               </ScrollArea>
             </div>
           </div>

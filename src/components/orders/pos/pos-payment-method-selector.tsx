@@ -22,7 +22,7 @@ import {
   FieldTitle,
 } from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Plus, Calculator } from 'lucide-react'
+import { Plus, Calculator, ChevronDown } from 'lucide-react'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from '@/components/ui/separator'
 import { InputGroupButton } from '@/components/ui/input-group'
@@ -37,6 +37,11 @@ import {
 import { Form } from '@/components/ui/form'
 import { usePagination } from '@/components/ui/pagination'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible'
 
 interface PosPaymentSelectorContentProps {
   onPaymentAdded?: () => void
@@ -53,6 +58,7 @@ function PosPaymentSelectorContent({
   const paymentMethods = data?.data || []
   const { getPaymentType } = usePaymentType()
   const { order, addPayment } = usePOSStore()
+  const [isOpen, setIsOpen] = useState(false)
 
   // Calculate remaining amount from order balance
   const remainingAmount = order?.balance || 0
@@ -63,6 +69,13 @@ function PosPaymentSelectorContent({
       form.setValue('amount', amount)
     }
   }
+
+  const selectedMethodId = form.watch('payment_method_id') || ''
+  const selectedMethod = paymentMethods.find((m) => m.id === selectedMethodId)
+  const selectedPaymentType = selectedMethod
+    ? getPaymentType(selectedMethod.payment_type)
+    : undefined
+  const SelectedIcon = selectedPaymentType?.icon
 
   const handleSubmit = (data: POSPaymentSchema) => {
     const selectedMethod = paymentMethods.find(
@@ -96,39 +109,70 @@ function PosPaymentSelectorContent({
       <Field>
         <FieldLabel>Método de Pago</FieldLabel>
         <FieldContent>
-          <RadioGroup
-            value={form.watch('payment_method_id') || ''}
-            onValueChange={(value) => form.setValue('payment_method_id', value)}
-            className="grid grid-cols-2 gap-4"
+          <Collapsible
+            open={isOpen}
+            onOpenChange={setIsOpen}
+            className="w-full"
           >
-            {paymentMethods.map((method) => {
-              const paymentType = getPaymentType(method.payment_type)
-              const Icon = paymentType?.icon
+            <CollapsibleTrigger asChild>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full justify-between"
+              >
+                <div className="flex items-center gap-2">
+                  {SelectedIcon && <SelectedIcon className="h-4 w-4" />}
+                  <FieldTitle>
+                    {selectedMethod?.name || 'Seleccione método'}
+                  </FieldTitle>
+                  {selectedPaymentType?.label && (
+                    <Badge variant="secondary" className="ml-2">
+                      {selectedPaymentType.label}
+                    </Badge>
+                  )}
+                </div>
+                <ChevronDown className="h-4 w-4 transition-transform data-[state=open]:rotate-180" />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="mt-2">
+              <RadioGroup
+                value={form.watch('payment_method_id') || ''}
+                onValueChange={(value) => {
+                  form.setValue('payment_method_id', value)
+                  setIsOpen(false)
+                }}
+                className="grid grid-cols-2 gap-4"
+              >
+                {paymentMethods.map((method) => {
+                  const paymentType = getPaymentType(method.payment_type)
+                  const Icon = paymentType?.icon
 
-              return (
-                <FieldLabel
-                  key={method.id}
-                  htmlFor={`payment-method-${method.id}`}
-                >
-                  <Field orientation="horizontal">
-                    <FieldContent>
-                      <div className="flex items-center gap-2">
-                        {Icon && <Icon className="h-4 w-4" />}
-                        <FieldTitle>{method.name}</FieldTitle>
-                      </div>
-                      <FieldDescription>
-                        {paymentType?.label || 'Otros'}
-                      </FieldDescription>
-                    </FieldContent>
-                    <RadioGroupItem
-                      value={method.id}
-                      id={`payment-method-${method.id}`}
-                    />
-                  </Field>
-                </FieldLabel>
-              )
-            })}
-          </RadioGroup>
+                  return (
+                    <FieldLabel
+                      key={method.id}
+                      htmlFor={`payment-method-${method.id}`}
+                    >
+                      <Field orientation="horizontal">
+                        <FieldContent>
+                          <div className="flex items-center gap-2">
+                            {Icon && <Icon className="h-4 w-4" />}
+                            <FieldTitle>{method.name}</FieldTitle>
+                          </div>
+                          <FieldDescription>
+                            {paymentType?.label || 'Otros'}
+                          </FieldDescription>
+                        </FieldContent>
+                        <RadioGroupItem
+                          value={method.id}
+                          id={`payment-method-${method.id}`}
+                        />
+                      </Field>
+                    </FieldLabel>
+                  )
+                })}
+              </RadioGroup>
+            </CollapsibleContent>
+          </Collapsible>
           <FieldError errors={[form.formState.errors.payment_method_id]} />
         </FieldContent>
       </Field>
@@ -267,11 +311,9 @@ export function PosPaymentMethodSelector() {
         )}
       </div>
       <div className="border rounded-lg p-4">
-        <ScrollArea className="h-[400px]">
-          <Form {...form}>
-            <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
-          </Form>
-        </ScrollArea>
+        <Form {...form}>
+          <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+        </Form>
       </div>
     </div>
   )

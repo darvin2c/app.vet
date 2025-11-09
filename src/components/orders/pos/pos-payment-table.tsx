@@ -43,7 +43,7 @@ const paymentTypeLabels = {
   others: 'Otros',
 }
 
-export function PaymentTable() {
+export function PosPaymentTable() {
   const { payments, removePayment, order } = usePOSStore()
 
   const handleRemovePayment = (paymentId?: string) => {
