@@ -37,9 +37,11 @@ export function UserSelect({
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { data: users = [], isLoading } = useUserList({
+  const { data, isLoading } = useUserList({
     search: searchTerm,
   })
+
+  const users = data?.data || []
 
   const selectedUser = users.find((user: UserWithRole) => user.id === value)
 

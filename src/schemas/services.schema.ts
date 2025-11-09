@@ -1,42 +1,31 @@
 import { z } from 'zod'
 
-export const productBaseSchema = z.object({
+export const serviceBaseSchema = z.object({
   name: z.string().nonempty('El nombre es requerido'),
   price: z.number().min(0, 'El precio debe ser mayor o igual a 0').default(0),
-  stock: z.number().min(0, 'El stock debe ser mayor o igual a 0').default(0),
   cost: z.number().min(0, 'El costo debe ser mayor o igual a 0').optional(),
   is_active: z.boolean().default(true),
   barcode: z.string().optional(),
   sku: z.string().optional(),
   notes: z.string().optional(),
-  expiry_date: z.date().optional(),
-  batch_number: z.string().optional(),
   brand_id: z.uuid('ID de marca inválido').optional(),
   category_id: z.uuid('ID de categoría inválido').optional(),
   unit_id: z.uuid('ID de unidad inválido').optional(),
 })
 
-export const productCreateSchema = productBaseSchema
-
-export const productUpdateSchema = productBaseSchema.partial()
-
-export const productImportSchema = productBaseSchema.extend({
+export const serviceCreateSchema = serviceBaseSchema
+export const serviceUpdateSchema = serviceBaseSchema.partial()
+export const serviceImportSchema = serviceBaseSchema.extend({
   price: z.coerce
     .number()
     .min(0, 'El precio debe ser mayor o igual a 0')
-    .default(0),
-  stock: z.coerce
-    .number()
-    .min(0, 'El stock debe ser mayor o igual a 0')
     .default(0),
   cost: z.coerce
     .number()
     .min(0, 'El costo debe ser mayor o igual a 0')
     .optional(),
-  expiry_date: z.coerce.date().optional(),
-  batch_number: z.string().optional(),
   is_active: z.boolean().default(true),
 })
 
-export type CreateProductSchema = z.infer<typeof productCreateSchema>
-export type UpdateProductSchema = z.infer<typeof productUpdateSchema>
+export type ServiceCreateSchema = z.infer<typeof serviceCreateSchema>
+export type ServiceUpdateSchema = z.infer<typeof serviceUpdateSchema>
