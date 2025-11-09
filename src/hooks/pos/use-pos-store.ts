@@ -53,7 +53,7 @@ interface POSState {
   updateOrderItem: (productId: string, updates: Partial<OrderItem>) => void
   // payments
   addPayment: (payment: Payment) => void
-  removePayment: (paymentId: string) => void
+  removePayment: (index: number) => void
 
   // clearAll
   clearAll: () => void
@@ -217,7 +217,7 @@ const usePOSStore = create<POSState>()((set, get) => {
 
     removePayment: (paymentId) => {
       set({
-        payments: get().payments.filter((payment) => payment.id !== paymentId),
+        payments: get().payments.filter((_, index) => index !== paymentId),
       })
       updateOrderTotals()
     },

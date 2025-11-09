@@ -10,16 +10,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import {
-  // CreditCard,
-  // Banknote,
-  // Smartphone,
-  MoreHorizontal,
-  Trash2,
-  Receipt,
-} from 'lucide-react'
+import { MoreHorizontal, Trash2, Receipt } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import { toast } from 'sonner'
 import {
   Empty,
   EmptyDescription,
@@ -35,12 +27,11 @@ export function PosPaymentTable() {
   const { payments, removePayment, order } = usePOSStore()
   const { getPaymentType } = usePaymentType()
 
-  const handleRemovePayment = (paymentId?: string) => {
-    if (!paymentId) {
+  const handleRemovePayment = (index?: number) => {
+    if (index === undefined) {
       return
     }
-    removePayment(paymentId)
-    toast.success('Pago eliminado')
+    removePayment(index)
   }
 
   if (payments.length === 0) {
@@ -97,7 +88,7 @@ export function PosPaymentTable() {
                   const Icon = paymentType?.icon || MoreHorizontal
 
                   return (
-                    <TableRow key={payment.id}>
+                    <TableRow key={index}>
                       <TableCell>
                         <div className="flex items-center gap-3">
                           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
@@ -128,7 +119,7 @@ export function PosPaymentTable() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleRemovePayment(payment.id)}
+                          onClick={() => handleRemovePayment(index)}
                           className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -183,7 +174,7 @@ export function PosPaymentTable() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => handleRemovePayment(payment.id)}
+                      onClick={() => handleRemovePayment(index)}
                       className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="h-4 w-4" />

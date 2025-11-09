@@ -20,6 +20,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group'
+import { ButtonGroup } from '@/components/ui/button-group'
 
 interface POSHeaderProps {
   onClose?: () => void
@@ -70,7 +71,7 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           )}
           <h1 className="text-lg font-semibold">POS</h1>
         </div>
-        <div className="w-full !max-w-2xl hidden lg:block">
+        <div className="w-full !max-w-2xl ">
           <InputGroup className="h-12">
             <InputGroupAddon align={'inline-start'}>
               <SearchIcon className="h-8 w-8" />
@@ -90,29 +91,25 @@ export function POSHeader({ onClose }: POSHeaderProps) {
                 <X className="h-4 w-4" />
               </Button>
             )}
+            {/* Customer selector */}
+            <InputGroupAddon align={'inline-end'} className="p-0">
+              <ButtonGroup>
+                <POSCustomerSelector />
+                {/* Mobile cart button */}
+                <Button
+                  variant="outline"
+                  className="lg:hidden h-auto"
+                  onClick={() => setOpenCartMobile(true)}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-1" />
+                  <Badge variant="secondary" className="ml-1">
+                    {orderItemCount()}
+                  </Badge>
+                </Button>
+              </ButtonGroup>
+            </InputGroupAddon>
           </InputGroup>
         </div>
-
-        {/* Right: Customer selector and cart */}
-        <div className="flex items-center gap-3">
-          {/* Customer selector */}
-          <POSCustomerSelector />
-
-          {/* Mobile cart button */}
-          <Button
-            variant="outline"
-            className="lg:hidden"
-            onClick={() => setOpenCartMobile(true)}
-          >
-            <ShoppingCart className="h-4 w-4 mr-1" />
-            <Badge variant="secondary" className="ml-1">
-              {orderItemCount()}
-            </Badge>
-          </Button>
-        </div>
-      </div>
-      <div className="px-4 block lg:hidden">
-        <SearchInput placeholder="Buscar productos por nombre, SKU..." />
       </div>
       {/* Navigation tabs */}
       <div className="px-4 pb-4">
