@@ -28,7 +28,7 @@ type TreeGroup = Group & {
 }
 
 export default function usePerms() {
-  const { data: profile, isFetched } = useProfile()
+  const { data: profile } = useProfile()
   const { role, isSuperuser } = profile || {}
 
   const GROUPS = useMemo(
@@ -54,6 +54,18 @@ export default function usePerms() {
         value: 'customers',
         label: 'Clientes',
         description: 'Permisos para clientes',
+        group: 'vet',
+      },
+      {
+        value: 'pets',
+        label: 'Mascotas',
+        description: 'Permisos para mascotas',
+        group: 'vet',
+      },
+      {
+        value: 'orders',
+        label: 'Órdenes',
+        description: 'Permisos para órdenes',
         group: 'vet',
       },
     ],
@@ -110,6 +122,60 @@ export default function usePerms() {
         description: 'Permiso para eliminar clientes',
         can: true,
       },
+      {
+        value: 'pets:read',
+        label: 'Leer',
+        description: 'Permiso para leer mascotas',
+        can: true,
+      },
+      {
+        value: 'pets:create',
+        label: 'Crear',
+        description: 'Permiso para crear mascotas',
+        can: true,
+      },
+      {
+        value: 'pets:update',
+        label: 'Actualizar',
+        description: 'Permiso para actualizar mascotas',
+        can: true,
+      },
+      {
+        value: 'pets:delete',
+        label: 'Eliminar',
+        description: 'Permiso para eliminar mascotas',
+        can: true,
+      },
+      {
+        value: 'orders:read',
+        label: 'Leer',
+        description: 'Permiso para leer órdenes',
+        can: true,
+      },
+      {
+        value: 'orders:create',
+        label: 'Crear',
+        description: 'Permiso para crear órdenes',
+        can: true,
+      },
+      {
+        value: 'orders:update',
+        label: 'Actualizar',
+        description: 'Permiso para actualizar órdenes',
+        can: true,
+      },
+      {
+        value: 'orders:delete',
+        label: 'Eliminar',
+        description: 'Permiso para eliminar órdenes',
+        can: true,
+      },
+      {
+        value: 'orders:pay',
+        label: 'Pagar',
+        description: 'Permiso para pagar órdenes',
+        can: true,
+      },
     ],
     []
   )
@@ -123,7 +189,6 @@ export default function usePerms() {
 
   const canAccess = useCallback(
     (perm?: string) => {
-      if (!isFetched) return true
       if (isSuperuser) return true // Superusuario: todo permitido
       if (!perm) return false // Si el componente no definió permiso → no accede
 
