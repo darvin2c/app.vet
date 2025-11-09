@@ -2,8 +2,6 @@ import { useState, useCallback } from 'react'
 import { z } from 'zod'
 import * as XLSX from 'xlsx'
 import Papa from 'papaparse'
-import { faker } from '@faker-js/faker'
-import { fake, setFaker } from 'zod-schema-faker'
 import {
   DataImportState,
   DataImportStep,
