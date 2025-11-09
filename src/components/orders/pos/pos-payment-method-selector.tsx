@@ -36,14 +36,15 @@ import {
 } from '@/schemas/pos-payment.schema'
 import { Form } from '@/components/ui/form'
 import { usePagination } from '@/components/ui/pagination'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
-interface PaymentSelectorContentProps {
+interface PosPaymentSelectorContentProps {
   onPaymentAdded?: () => void
 }
 
-function PaymentSelectorContent({
+function PosPaymentSelectorContent({
   onPaymentAdded,
-}: PaymentSelectorContentProps) {
+}: PosPaymentSelectorContentProps) {
   const form = useFormContext<POSPaymentSchema>()
   const { appliedPagination } = usePagination()
   const { data, isPending: isLoadingMethods } = usePaymentMethodList({
@@ -209,7 +210,7 @@ function PaymentSelectorContent({
   )
 }
 
-export function PaymentMethodSelector() {
+export function PosPaymentMethodSelector() {
   const isMobile = useIsMobile()
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const { order } = usePOSStore()
@@ -245,7 +246,7 @@ export function PaymentMethodSelector() {
           </SheetHeader>
           <div className="overflow-y-auto">
             <FormProvider {...form}>
-              <PaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+              <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
             </FormProvider>
           </div>
         </SheetContent>
@@ -266,9 +267,11 @@ export function PaymentMethodSelector() {
         )}
       </div>
       <div className="border rounded-lg p-4">
-        <Form {...form}>
-          <PaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
-        </Form>
+        <ScrollArea className="h-[400px]">
+          <Form {...form}>
+            <PosPaymentSelectorContent onPaymentAdded={handlePaymentAdded} />
+          </Form>
+        </ScrollArea>
       </div>
     </div>
   )

@@ -12,12 +12,12 @@ import {
   AlertCircle,
   CreditCard,
 } from 'lucide-react'
-import { PaymentMethodSelector } from '@/components/orders/pos/payment-method-selector'
 import { PaymentTable } from '@/components/orders/pos/payment-table'
 import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import useOrderCreate from '@/hooks/orders/use-order-create'
 import { Separator } from '@/components/ui/separator'
+import { PosPaymentMethodSelector } from './pos-payment-method-selector'
 
 interface POSPaymentProps {
   onBack: () => void
@@ -146,7 +146,7 @@ export function POSPayment({ onBack }: POSPaymentProps) {
 
           {/* Right Column: Payment Method Selector (Desktop/Tablet only) */}
           <div className="hidden lg:block">
-            <PaymentMethodSelector />
+            <PosPaymentMethodSelector />
           </div>
         </div>
       </div>
