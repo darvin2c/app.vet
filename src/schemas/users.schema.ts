@@ -6,11 +6,24 @@ export const updateUserRolesSchema = z.object({
 })
 
 // Schema para asignar usuario a tenant con rol
-export const assignUserToTenantSchema = z.object({
-  role_id: z.string().nonempty('Rol es requerido'),
-  is_superuser: z.boolean().default(false),
-})
-
+export const assignUserToTenantSchema = z
+  .object({
+    role_id: z.uuid().optional(),
+    is_superuser: z.boolean().default(false),
+  })
+  .refine(
+    (data) => {
+      // If superuser is false, role_id is required
+      if (!data.is_superuser && !data.role_id) {
+        return false
+      }
+      return true
+    },
+    {
+      message: 'role es requerido cuando is_superuser es falso',
+      path: ['role_id'],
+    }
+  )
 // Tipos inferidos
 export type UpdateUserRolesSchema = z.infer<typeof updateUserRolesSchema>
 export type AssignUserToTenantSchema = z.infer<typeof assignUserToTenantSchema>
