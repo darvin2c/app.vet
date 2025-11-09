@@ -38,7 +38,7 @@ export function UserRolesEdit({
   const form = useForm({
     resolver: zodResolver(assignUserToTenantSchema),
     defaultValues: {
-      role_id: user?.role?.id || 'no-role',
+      role_id: user?.role?.id || null,
       is_superuser: user.is_superuser || false,
     },
   })

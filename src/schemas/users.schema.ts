@@ -8,7 +8,7 @@ export const updateUserRolesSchema = z.object({
 // Schema para asignar usuario a tenant con rol
 export const assignUserToTenantSchema = z
   .object({
-    role_id: z.uuid().optional(),
+    role_id: z.uuid().optional().nullable(),
     is_superuser: z.boolean().default(false),
   })
   .refine(

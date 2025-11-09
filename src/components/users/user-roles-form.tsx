@@ -12,7 +12,6 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Crown, User } from 'lucide-react'
-import { useRoleList } from '@/hooks/roles/use-role-list'
 import { UserWithRole } from '@/hooks/users/use-user-list'
 import { RoleSelect } from '@/components/roles/role-select'
 
@@ -22,9 +21,8 @@ interface UserRolesFormProps {
 
 export function UserRolesForm({ user }: UserRolesFormProps) {
   const form = useFormContext()
-  const { data: roles = [], isPending: rolesLoading } = useRoleList({})
 
-  // Watch the role_ids field and superuser status
+  // Watch the role_id field and superuser status
   const isSuperuser = form.watch('is_superuser')
   const errors = form.formState.errors
 
@@ -45,9 +43,9 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
   // Actualizar el valor del formulario cuando cambie el rol del usuario
   useEffect(() => {
     if (user?.role?.id) {
-      form.setValue('role_ids', [user.role.id])
+      form.setValue('role_id', user.role.id)
     } else {
-      form.setValue('role_ids', ['no-role'])
+      form.setValue('role_id', null)
     }
   }, [user.role?.id, form.setValue])
 
@@ -101,7 +99,7 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
                 form.setValue('is_superuser', checked)
                 // Si se activa super usuario, quitar otros roles
                 if (checked) {
-                  form.setValue('role_ids', null)
+                  form.setValue('role_id', null)
                 }
               }}
             />
@@ -111,20 +109,21 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
 
       {/* Selector de rol */}
       <Field>
-        <FieldLabel htmlFor="role_ids" className="flex items-center gap-2">
+        <FieldLabel htmlFor="role_id" className="flex items-center gap-2">
           <User className="h-4 w-4" />
           Rol Asignado
         </FieldLabel>
         <FieldContent>
           <RoleSelect
+            value={form.watch('role_id') ?? ''}
             onValueChange={(value) => {
               // Si no hay valor seleccionado, establecer null
-              form.setValue('role_ids', value || null)
+              form.setValue('role_id', value || null)
             }}
             disabled={isSuperuser}
             placeholder="Seleccionar rol..."
           />
-          <FieldError errors={[errors.role_ids]} />
+          <FieldError errors={[errors.role_id]} />
         </FieldContent>
       </Field>
 
