@@ -13,7 +13,10 @@ export default function CanAccess({
   children,
 }: CanAccessProps) {
   const { canAccess } = usePerms()
-  const hasAccess = canAccess(`${resource}:${action}`)
+  const perms = !!resource && !!action ? `${resource}:${action}` : undefined
+  const hasAccess = canAccess(perms)
+
   if (hasAccess) return children
+
   return <Forbidden variant={variant}>{children}</Forbidden>
 }
