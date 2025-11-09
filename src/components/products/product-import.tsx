@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,15 +7,13 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import useProductCreate, {
-  useProductCreateBulk,
-} from '@/hooks/products/use-product-create'
+import { useProductCreateBulk } from '@/hooks/products/use-product-create'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'
 import {
-  CreateProductSchema,
-  createProductSchema,
+  ProductCreateSchema,
+  productImportSchema,
 } from '@/schemas/products.schema'
 
 interface ProductImportProps {
@@ -27,7 +24,7 @@ interface ProductImportProps {
 export function ProductImport({ open, onOpenChange }: ProductImportProps) {
   const createProductBulk = useProductCreateBulk()
 
-  const handleImport = async (data: CreateProductSchema[]) => {
+  const handleImport = async (data: ProductCreateSchema[]) => {
     try {
       const formattedData = data.map((item) => ({
         ...item,
@@ -56,7 +53,7 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
 
         <ScrollArea className="mt-6">
           <DataImport
-            schema={createProductSchema}
+            schema={productImportSchema}
             onImport={handleImport}
             isLoading={createProductBulk.isPending}
             templateName="productos_template.csv"

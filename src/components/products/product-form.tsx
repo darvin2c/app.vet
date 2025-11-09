@@ -1,8 +1,6 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
-import { CreateProductSchema } from '@/schemas/products.schema'
-import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -18,6 +16,7 @@ import { ProductBrandSelect } from '@/components/product-brands/product-brand-se
 import { DatePicker } from '@/components/ui/date-picker'
 import { Tables } from '@/types/supabase.types'
 import { ProductStockInput } from './product-stock-input'
+import { Input } from '../ui/input'
 
 interface ProductFormProps {
   mode?: 'create' | 'edit'
@@ -30,7 +29,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
     formState: { errors },
     setValue,
     watch,
-  } = useFormContext<CreateProductSchema>()
+  } = useFormContext()
 
   return (
     <div className="space-y-6">

@@ -44,7 +44,7 @@ export function ProductSelect({
   const [createOpen, setCreateOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
 
-  const { data: products = [], isLoading } = useProductList({
+  const { data, isLoading } = useProductList({
     filters: [
       {
         field: 'is_active',
@@ -54,6 +54,8 @@ export function ProductSelect({
     ],
     search: searchTerm,
   })
+
+  const products = data?.data || []
 
   const selectedProduct = products.find(
     (product: Product) => product.id === value

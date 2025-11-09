@@ -85,6 +85,12 @@ const navigationGroups: NavGroup[] = [
         tooltip: 'Productos',
       },
       {
+        title: 'Servicios',
+        href: '/services',
+        icon: Handshake,
+        tooltip: 'Servicios',
+      },
+      {
         title: 'Kardex',
         href: '/kardex',
         icon: Boxes,

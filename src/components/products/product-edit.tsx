@@ -11,17 +11,13 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductForm } from './product-form'
-import {
-  UpdateProductSchema,
-  updateProductSchema,
-} from '@/schemas/products.schema'
 import useUpdateProduct from '@/hooks/products/use-product-update'
 import { Tables } from '@/types/supabase.types'
 import { Field } from '../ui/field'
+import { productUpdateSchema } from '@/schemas/products.schema'
 
 interface ProductEditProps {
   product: Tables<'products'>
@@ -33,7 +29,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
   const updateProduct = useUpdateProduct()
 
   const form = useForm({
-    resolver: zodResolver(updateProductSchema),
+    resolver: zodResolver(productUpdateSchema),
     defaultValues: {
       name: product.name,
       sku: product.sku ?? undefined,
@@ -43,7 +39,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
     },
   })
 
-  const onSubmit = async (data: UpdateProductSchema) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     const formattedData = {
       ...data,
       expiry_date: data.expiry_date
@@ -55,7 +51,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
       data: formattedData,
     })
     onOpenChange(false)
-  }
+  })
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -71,10 +67,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
           <div className="flex-1 min-h-0">
             <div className="px-4">
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit as any)}
-                  className="space-y-4"
-                >
+                <form onSubmit={onSubmit} className="space-y-4">
                   <ProductForm mode="edit" product={product} />
                 </form>
               </Form>
@@ -85,7 +78,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
             <Field orientation="horizontal">
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={updateProduct.isPending}
               >
                 {updateProduct.isPending

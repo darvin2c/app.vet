@@ -38,5 +38,5 @@ export const productImportSchema = productBaseSchema.extend({
   is_active: z.boolean().default(true),
 })
 
-export type CreateProductSchema = z.infer<typeof productCreateSchema>
-export type UpdateProductSchema = z.infer<typeof productUpdateSchema>
+export type ProductCreateSchema = z.infer<typeof productCreateSchema>
+export type ProductUpdateSchema = z.infer<typeof productUpdateSchema>

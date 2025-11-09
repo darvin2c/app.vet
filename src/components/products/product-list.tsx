@@ -59,6 +59,7 @@ import {
   ItemGroup,
 } from '@/components/ui/item'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
+import { Pagination, usePagination } from '../ui/pagination'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -76,16 +77,14 @@ export function ProductList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
-
-  const {
-    data: products = [],
-    isPending,
-    error,
-  } = useProductList({
+  const { appliedPagination, paginationProps } = usePagination()
+  const { data, isPending, error } = useProductList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+  const products = data?.data || []
 
   const columns: ColumnDef<Product>[] = [
     {
@@ -400,6 +399,9 @@ export function ProductList({
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data.total} />
+      </div>
     </div>
   )
 }

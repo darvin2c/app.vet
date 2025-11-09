@@ -27,15 +27,10 @@ export function POSProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const { appliedPagination } = usePagination()
   // Fetch products using existing hook
-  const { data: products = [], isLoading: isLoadingProducts } = useProductList({
+  const { data, isLoading: isLoadingProducts } = useProductList({
     search: '',
     filters: selectedCategory
       ? [
-          {
-            field: 'is_active',
-            operator: 'eq',
-            value: true,
-          },
           {
             field: 'category_id',
             operator: 'eq',
@@ -44,10 +39,12 @@ export function POSProductGrid() {
         ]
       : [],
   })
+  const products = data?.data || []
 
   // Fetch categories using existing hook
-  const { data, isLoading: isLoadingCategories } = useProductCategoryList({})
-  const categories = data?.data || []
+  const { data: categoryData, isLoading: isLoadingCategories } =
+    useProductCategoryList({})
+  const categories = categoryData?.data || []
 
   const filteredProducts = useMemo(() => {
     return products

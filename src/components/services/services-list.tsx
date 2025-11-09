@@ -97,7 +97,7 @@ export function ServicesList({
     orders: orderByHook.appliedSorts,
     pagination: appliedPagination,
   })
-  const services = data || []
+  const services = data?.data || []
 
   const columns: ColumnDef<Service>[] = [
     {
@@ -400,7 +400,7 @@ export function ServicesList({
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
       <div>
-        <Pagination {...paginationProps} totalItems={data.total} />
+        <Pagination {...paginationProps} totalItems={data?.total} />
       </div>
     </div>
   )

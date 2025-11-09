@@ -15,12 +15,9 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ProductForm } from './product-form'
-import {
-  CreateProductSchema,
-  createProductSchema,
-} from '@/schemas/products.schema'
 import useCreateProduct from '@/hooks/products/use-product-create'
 import { Field } from '../ui/field'
+import { productCreateSchema } from '@/schemas/products.schema'
 
 interface ProductCreateProps {
   open: boolean
@@ -32,7 +29,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
   const isMobile = useIsMobile()
 
   const form = useForm({
-    resolver: zodResolver(createProductSchema),
+    resolver: zodResolver(productCreateSchema),
     defaultValues: {
       name: '',
       sku: undefined,
@@ -43,7 +40,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
     },
   })
 
-  const onSubmit = async (data: CreateProductSchema) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     const formattedData = {
       ...data,
       expiry_date: data.expiry_date
@@ -53,7 +50,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
     await createProduct.mutateAsync(formattedData)
     form.reset()
     onOpenChange(false)
-  }
+  })
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
@@ -69,10 +66,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
           <div className="flex-1 min-h-0">
             <div className="px-4">
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit as any)}
-                  className="space-y-4"
-                >
+                <form onSubmit={onSubmit} className="space-y-4">
                   <ProductForm mode="create" />
                 </form>
               </Form>
@@ -83,7 +77,7 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
             <Field orientation="horizontal">
               <Button
                 type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
+                onClick={onSubmit}
                 disabled={createProduct.isPending}
               >
                 {createProduct.isPending ? 'Creando...' : 'Crear Producto'}
