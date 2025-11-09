@@ -51,7 +51,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side={isMobile ? 'bottom' : 'right'} className="!max-w-4xl">
+      <SheetContent side="right" className="!max-w-4xl !w-full">
         <ScrollArea className="h-full">
           <SheetHeader>
             <SheetTitle>Crear Mascota</SheetTitle>

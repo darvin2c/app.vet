@@ -19,7 +19,6 @@ import { Form } from '../ui/form'
 import { Button } from '../ui/button'
 import { Field } from '../ui/field'
 import { ScrollArea } from '../ui/scroll-area'
-import { useIsMobile } from '@/hooks/use-mobile'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -29,7 +28,6 @@ interface PetEditProps {
 
 export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
   const updatePet = useUpdatePet()
-  const isMobile = useIsMobile()
   const form = useForm({
     resolver: zodResolver(petUpdateSchema),
     defaultValues: {
@@ -73,10 +71,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        side={isMobile ? 'bottom' : 'right'}
-        className="!w-full !max-w-4xl"
-      >
+      <SheetContent side="right" className="!w-full !max-w-4xl">
         <ScrollArea className="max-h-screen">
           <SheetHeader>
             <SheetTitle>Editar Mascota</SheetTitle>
