@@ -4,12 +4,8 @@ import { useState, useCallback } from 'react'
 import {
   useReactTable,
   getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  getPaginationRowModel,
   ColumnDef,
   flexRender,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -17,7 +13,6 @@ import {
 } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Button } from '@/components/ui/button'
 import {
   Table,
   TableBody,
@@ -31,14 +26,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { CustomerActions } from './customer-actions'
 import { CustomerCreateButton } from './customer-create-button'
 import { Tables } from '@/types/supabase.types'
-import {
-  Phone,
-  Mail,
-  MapPin,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-} from 'lucide-react'
+import { Phone, Mail, MapPin, Users } from 'lucide-react'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
