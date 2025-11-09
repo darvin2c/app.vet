@@ -92,7 +92,7 @@ export default function OrdersPage() {
             <ButtonGroup>
               <Filters filters={filters} />
               <OrderBy config={orderByConfig} />
-              <OrderCreateButton />
+              <OrderCreateButton variant={'ghost'} />
             </ButtonGroup>
           }
         />

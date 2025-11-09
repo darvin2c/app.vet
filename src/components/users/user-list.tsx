@@ -62,6 +62,7 @@ import { UserActions } from './user-actions'
 import { PermissionsDisplay } from '../roles/permissions-display'
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover'
 import { IsActiveDisplay } from '../ui/is-active-field'
+import { Pagination, usePagination } from '../ui/pagination'
 
 export function UserList({
   filterConfig,
@@ -77,16 +78,15 @@ export function UserList({
   const { appliedFilters } = useFilters(filterConfig)
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
-
-  const {
-    data: users = [],
-    isPending,
-    error,
-  } = useUserList({
+  const { appliedPagination, paginationProps } = usePagination()
+  const { data, isPending, error } = useUserList({
     filters: appliedFilters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
+    pagination: appliedPagination,
   })
+
+  const users = data?.data || []
 
   // Función para obtener las iniciales del usuario
   const getUserInitials = (user: UserWithRole) => {
@@ -416,7 +416,7 @@ export function UserList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
@@ -437,48 +437,14 @@ export function UserList({
               </TableBody>
             </Table>
           </div>
-
-          {/* Paginación */}
-          <div className="flex items-center justify-between space-x-2 py-4">
-            <div className="text-sm text-muted-foreground">
-              Mostrando{' '}
-              {table.getState().pagination.pageIndex *
-                table.getState().pagination.pageSize +
-                1}{' '}
-              a{' '}
-              {Math.min(
-                (table.getState().pagination.pageIndex + 1) *
-                  table.getState().pagination.pageSize,
-                users.length
-              )}{' '}
-              de {users.length} usuarios
-            </div>
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                <ChevronLeft className="h-4 w-4" />
-                Anterior
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Siguiente
-                <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
         </>
       )}
 
       {viewMode === 'cards' && renderCardsView()}
       {viewMode === 'list' && renderListView()}
+      <div>
+        <Pagination {...paginationProps} totalItems={data.total} />
+      </div>
     </div>
   )
 }

@@ -86,7 +86,7 @@ export function Filters({
 
   const triggerButton = (
     <ResponsiveButton
-      variant="outline"
+      variant="ghost"
       icon={Filter}
       className={cn(
         'relative',

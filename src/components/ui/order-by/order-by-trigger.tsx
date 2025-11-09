@@ -23,7 +23,7 @@ export const OrderByTrigger = React.forwardRef<
   return (
     <ResponsiveButton
       ref={ref}
-      variant="outline"
+      variant="ghost"
       className={cn('border-dashed relative', className)}
       icon={ArrowUpDown}
       {...props}

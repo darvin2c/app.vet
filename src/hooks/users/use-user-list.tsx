@@ -1,9 +1,14 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
-import { AppliedFilter } from '@/components/ui/filters'
-import { AppliedSort } from '@/components/ui/order-by'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
+import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
 import { Tables } from '@/types/supabase.types'
+import {
+  AppliedPagination,
+  applySupabasePagination,
+} from '@/components/ui/pagination'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 export type UserWithRole = Tables<'profiles'> & {
   role: Tables<'roles'> | null
@@ -20,18 +25,20 @@ export function useUserList({
       direction: 'desc',
     },
   ],
+  pagination,
 }: {
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
+  pagination?: AppliedPagination
 } = {}) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: [currentTenant?.id, 'users', filters, search, orders],
-    queryFn: async (): Promise<UserWithRole[]> => {
+    queryKey: [currentTenant?.id, 'users', filters, search, orders, pagination],
+    queryFn: async () => {
       if (!currentTenant?.id) {
-        return []
+        throw new Error('No se ha seleccionado un tenant')
       }
 
       let query = supabase
@@ -41,21 +48,30 @@ export function useUserList({
           *,
           role:role_id(*),
           profile:user_id(*)
-        `
+        `,
+          {
+            count: 'exact',
+          }
         )
         .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
-      filters.forEach((filter) => {})
+      query = applySupabaseFilters(query, filters)
+      query = applySupabaseSort(query, orders)
+      query = applySupabasePagination(query, pagination)
+      query = applySupabaseSearch(
+        query,
+        search,
+        [],
+        [
+          {
+            referencedTable: 'profile',
+            fields: ['first_name', 'last_name', 'email'],
+          },
+        ]
+      )
 
-      // Aplicar ordenamiento
-      orders.forEach((order) => {
-        query = query.order(order.field, {
-          ascending: order.direction === 'asc',
-        })
-      })
-
-      const { data, error } = await query
+      const { data, count, error } = await query
       if (error) {
         throw new Error(`Error al obtener usuarios: ${error.message}`)
       }
@@ -67,7 +83,11 @@ export function useUserList({
         is_active: item.is_active,
       }))
 
-      return users
+      return {
+        data: users || [],
+        total: count || 0,
+        ...pagination,
+      }
     },
     enabled: !!currentTenant?.id,
   })
