@@ -47,7 +47,9 @@ export default function useOrderDelete() {
       toast.success('Orden eliminada exitosamente')
     },
     onError: (error) => {
-      toast.error(error.message || 'Error al eliminar orden')
+      toast.error('Error al eliminar orden', {
+        description: error.message,
+      })
     },
   })
 }

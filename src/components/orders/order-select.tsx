@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -20,6 +21,14 @@ import {
 import { Badge } from '@/components/ui/badge'
 import { Tables } from '@/types/supabase.types'
 import useOrderList from '@/hooks/orders/use-order-list'
+import { usePagination } from '../ui/pagination'
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '../ui/empty'
 
 type Order = Tables<'orders'>
 
@@ -56,13 +65,13 @@ export function OrderSelect({
 }: OrderSelectProps) {
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-
-  const { data: orders = [], isLoading } = useOrderList({
+  const { appliedPagination } = usePagination()
+  const { data, isLoading } = useOrderList({
     search: searchTerm,
     filters: [],
-    orders: [{ field: 'created_at', direction: 'desc' }],
+    pagination: appliedPagination,
   })
-
+  const orders = data?.data || []
   const selectedOrder = orders.find((order: Order) => order.id === value)
 
   const handleSelect = (orderId: string) => {
@@ -119,41 +128,55 @@ export function OrderSelect({
               value={searchTerm}
               onValueChange={setSearchTerm}
             />
-            <CommandEmpty>No se encontraron órdenes.</CommandEmpty>
-            <CommandGroup>
-              {orders.map((order: Order) => (
-                <CommandItem
-                  key={order.id}
-                  value={order.id}
-                  onSelect={() => handleSelect(order.id)}
-                >
-                  <div className="flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4" />
-                    <span>
-                      {order.order_number || `Orden #${order.id.slice(0, 8)}`}
-                    </span>
-                    <Badge
-                      className={
-                        orderStatusColors[
-                          order.status as keyof typeof orderStatusColors
-                        ]
-                      }
-                    >
-                      {
-                        orderStatusLabels[
-                          order.status as keyof typeof orderStatusLabels
-                        ]
-                      }
-                    </Badge>
-                  </div>
-                  {value === order.id ? (
-                    <Check className="ml-auto h-4 w-4" />
-                  ) : (
-                    <X className="ml-auto h-4 w-4" />
-                  )}
-                </CommandItem>
-              ))}
-            </CommandGroup>
+            <CommandList>
+              <CommandEmpty>
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyMedia>
+                      <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+                    </EmptyMedia>
+                    <EmptyTitle>No se encontraron órdenes</EmptyTitle>
+                    <EmptyDescription>
+                      Intenta buscar con otra palabra clave.
+                    </EmptyDescription>
+                  </EmptyHeader>
+                </Empty>
+              </CommandEmpty>
+              <CommandGroup>
+                {orders.map((order: Order) => (
+                  <CommandItem
+                    key={order.id}
+                    value={order.id}
+                    onSelect={() => handleSelect(order.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ShoppingCart className="h-4 w-4" />
+                      <span>
+                        {order.order_number || `Orden #${order.id.slice(0, 8)}`}
+                      </span>
+                      <Badge
+                        className={
+                          orderStatusColors[
+                            order.status as keyof typeof orderStatusColors
+                          ]
+                        }
+                      >
+                        {
+                          orderStatusLabels[
+                            order.status as keyof typeof orderStatusLabels
+                          ]
+                        }
+                      </Badge>
+                    </div>
+                    {value === order.id ? (
+                      <Check className="ml-auto h-4 w-4" />
+                    ) : (
+                      <X className="ml-auto h-4 w-4" />
+                    )}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
