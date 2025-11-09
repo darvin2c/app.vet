@@ -4,6 +4,9 @@ import timezone from 'dayjs/plugin/timezone'
 import calendar from 'dayjs/plugin/calendar'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import updateLocale from 'dayjs/plugin/updateLocale'
+import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import isBetween from 'dayjs/plugin/isBetween'
 import 'dayjs/locale/es'
 
 // Extender dayjs con los plugins necesarios
@@ -12,6 +15,9 @@ dayjs.extend(timezone)
 dayjs.extend(calendar)
 dayjs.extend(relativeTime)
 dayjs.extend(updateLocale)
+dayjs.extend(isSameOrAfter)
+dayjs.extend(isSameOrBefore)
+dayjs.extend(isBetween)
 
 // Configurar locale en español
 dayjs.locale('es')
