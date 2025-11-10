@@ -179,7 +179,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
           <Field>
             <FieldLabel htmlFor="stock">Inventario</FieldLabel>
             <FieldContent>
-              <ProductStockInput mode={mode} />
+              <ProductStockInput mode={mode} product={product} />
             </FieldContent>
           </Field>
 

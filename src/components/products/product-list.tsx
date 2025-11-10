@@ -147,6 +147,34 @@ export function ProductList({
       ),
     },
     {
+      accessorKey: 'price',
+      header: ({ header }) => (
+        <OrderByTableHeader field="price" orderByHook={orderByHook}>
+          Precio
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Product> }) => {
+        const price = row.getValue('price') as number
+        const formatted = new Intl.NumberFormat('es-PE', {
+          style: 'currency',
+          currency: 'PEN',
+          minimumFractionDigits: 2,
+        }).format(price)
+        return <div className="text-sm">{formatted}</div>
+      },
+    },
+    {
+      accessorKey: 'stock',
+      header: ({ header }) => (
+        <OrderByTableHeader field="stock" orderByHook={orderByHook}>
+          Stock
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Product> }) => (
+        <div className="text-sm">{row.getValue('stock')}</div>
+      ),
+    },
+    {
       accessorKey: 'is_active',
       header: ({ header }) => (
         <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
@@ -245,6 +273,18 @@ export function ProductList({
                   {product.unit_id}
                 </div>
               )}
+              <div className="text-sm">
+                <span className="text-muted-foreground">Precio:</span>{' '}
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: 'PEN',
+                  minimumFractionDigits: 2,
+                }).format(product.price)}
+              </div>
+              <div className="text-sm">
+                <span className="text-muted-foreground">Stock:</span>{' '}
+                {product.stock}
+              </div>
             </div>
 
             <div className="flex justify-between items-center">
@@ -271,6 +311,15 @@ export function ProductList({
                 <span>Categoría: {product.category_id}</span>
               )}
               {product.unit_id && <span>Unidad: {product.unit_id}</span>}
+              <span>
+                Precio:{' '}
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: 'PEN',
+                  minimumFractionDigits: 2,
+                }).format(product.price)}
+              </span>
+              <span>Stock: {product.stock}</span>
               <IsActiveDisplay value={product.is_active} />
             </div>
           </ItemContent>

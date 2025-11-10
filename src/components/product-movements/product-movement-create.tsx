@@ -23,18 +23,20 @@ import { ScrollArea } from '../ui/scroll-area'
 interface ProductMovementCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  productId?: string
 }
 
 export function ProductMovementCreate({
   open,
   onOpenChange,
+  productId,
 }: ProductMovementCreateProps) {
   const createProductMovement = useProductMovementCreate()
 
   const form = useForm({
     resolver: zodResolver(CreateProductMovementSchema),
     defaultValues: {
-      product_id: '',
+      product_id: productId,
       quantity: 0,
       unit_cost: null,
       note: null,
@@ -62,7 +64,7 @@ export function ProductMovementCreate({
         <ScrollArea className="px-6">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <ProductMovementForm mode="create" />
+              <ProductMovementForm mode="create" productId={productId} />
             </form>
           </Form>
         </ScrollArea>

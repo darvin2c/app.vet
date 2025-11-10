@@ -1,7 +1,7 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useFormContext } from 'react-hook-form'
-import { ProductMovementFormData } from '@/schemas/product-movements.schema'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -18,12 +18,14 @@ type ProductMovement = Tables<'product_movements'>
 
 export function ProductMovementForm({
   mode,
+  productId,
   productMovement,
 }: {
   mode: 'create' | 'update'
+  productId?: string
   productMovement?: ProductMovement
 }) {
-  const form = useFormContext<ProductMovementFormData>()
+  const form = useFormContext()
   const {
     formState: { errors },
     watch,
@@ -37,6 +39,18 @@ export function ProductMovementForm({
       : watch('quantity')
   const isEntry = quantity >= 0
 
+  // Sincronizar el valor del formulario cuando se pasa productId (modo create)
+  useEffect(() => {
+    if (productId) {
+      setValue('product_id', productId)
+    }
+  }, [productId, setValue])
+
+  const selectValue =
+    mode === 'update' && productMovement
+      ? productMovement.product_id
+      : (productId ?? watch('product_id') ?? '')
+
   return (
     <div className="space-y-4 p-2">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -44,14 +58,10 @@ export function ProductMovementForm({
           <FieldLabel htmlFor="product_id">Producto *</FieldLabel>
           <FieldContent>
             <ProductSelect
-              value={
-                mode === 'update' && productMovement
-                  ? productMovement.product_id
-                  : form.watch('product_id') || ''
-              }
+              value={selectValue}
               onValueChange={(value) => setValue('product_id', value)}
               placeholder="Seleccionar producto..."
-              disabled={mode === 'update'}
+              disabled={mode === 'update' || !!productId}
             />
             <FieldError errors={[errors.product_id]} />
           </FieldContent>

@@ -75,6 +75,7 @@ export function ProductStockInput({
       <ProductMovementCreate
         open={showMovementModal}
         onOpenChange={setShowMovementModal}
+        productId={product?.id}
       />
     </>
   )
