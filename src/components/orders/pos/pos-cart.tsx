@@ -181,8 +181,9 @@ function CartItemCard({
   onEdit: (item: OrderItem) => void
 }) {
   // Calcular subtotal del item
+  const discountAmount = Number(item.discount ?? 0)
   const subtotal =
-    (item.unit_price || 0) * (item.quantity || 0) - (item.discount || 0)
+    (item.unit_price || 0) * (item.quantity || 0) - discountAmount
 
   return (
     <Item size="sm" className="py-1 px-2">
@@ -211,11 +212,11 @@ function CartItemCard({
           </span>
           <Separator orientation="vertical" />
           <span>Unid {item.quantity}</span>
-          {item.discount && item.discount > 0 && (
+          {discountAmount > 0 && (
             <>
               <Separator orientation="vertical" />
               <span>
-                Desc: <CurrencyDisplay value={item.discount} />
+                Desc: <CurrencyDisplay value={discountAmount} />
               </span>
             </>
           )}
