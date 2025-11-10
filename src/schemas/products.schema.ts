@@ -35,7 +35,7 @@ export const productImportSchema = productBaseSchema.extend({
     .optional(),
   expiry_date: z.coerce.date().optional(),
   batch_number: z.string().optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.coerce.boolean().default(true),
 })
 
 export type ProductCreateSchema = z.infer<typeof productCreateSchema>

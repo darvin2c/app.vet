@@ -38,6 +38,21 @@ export default function usePerms() {
         label: 'Veterinaria',
         description: 'Permisos para la veterinaria',
       },
+      {
+        value: 'sales',
+        label: 'Ventas',
+        description: 'Permisos para ventas',
+      },
+      {
+        value: 'settings',
+        label: 'Configuraciones',
+        description: 'Permisos para configuraciones',
+      },
+      {
+        value: 'security',
+        label: 'Seguridad',
+        description: 'Permisos para seguridad',
+      },
     ],
     []
   )
@@ -66,7 +81,15 @@ export default function usePerms() {
         value: 'orders',
         label: 'Órdenes',
         description: 'Permisos para órdenes',
-        group: 'vet',
+        group: 'sales',
+      },
+      // Settings
+      // Security
+      {
+        value: 'roles',
+        label: 'Roles',
+        description: 'Permisos para roles',
+        group: 'security',
       },
     ],
     []
@@ -174,6 +197,31 @@ export default function usePerms() {
         value: 'orders:pay',
         label: 'Pagar',
         description: 'Permiso para pagar órdenes',
+        can: true,
+      },
+      // Security
+      {
+        value: 'roles:read',
+        label: 'Leer',
+        description: 'Permiso para leer roles',
+        can: true,
+      },
+      {
+        value: 'roles:create',
+        label: 'Crear',
+        description: 'Permiso para crear roles',
+        can: true,
+      },
+      {
+        value: 'roles:update',
+        label: 'Actualizar',
+        description: 'Permiso para actualizar roles',
+        can: true,
+      },
+      {
+        value: 'roles:delete',
+        label: 'Eliminar',
+        description: 'Permiso para eliminar roles',
         can: true,
       },
     ],
