@@ -6,13 +6,13 @@ import { POSProductGrid } from './pos-product-grid'
 
 export function POSProductSection() {
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Product Grid */}
-      <ScrollArea className="flex-1">
+    <ScrollArea className="overflow-auto">
+      <div className="flex-1 flex flex-col">
+        {/* Product Grid */}
         <div className="p-3 sm:p-4">
           <POSProductGrid />
         </div>
-      </ScrollArea>
-    </div>
+      </div>
+    </ScrollArea>
   )
 }

@@ -89,29 +89,29 @@ export function POSProductGrid() {
       </div>
 
       {/* Products Grid/List */}
-      <ScrollArea className="h-[calc(100vh-400px)]">
-        <div className="space-y-2">
-          <ItemGroup className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
-            {filteredProducts.map((product) => (
-              <ProductListItem key={product.id} product={product} />
-            ))}
-          </ItemGroup>
-        </div>
+      {/*<ScrollArea className="h-[calc(100vh-300px)]">*/}
+      <div className="space-y-2">
+        <ItemGroup className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-3">
+          {filteredProducts.map((product) => (
+            <ProductListItem key={product.id} product={product} />
+          ))}
+        </ItemGroup>
+      </div>
 
-        {filteredProducts.length === 0 && !isLoadingProducts && (
-          <div>
-            <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No se encontraron productos
-            </h3>
-            <p className="text-gray-600">
-              {selectedCategory
-                ? 'Intenta ajustar los filtros de búsqueda'
-                : 'No hay productos disponibles en este momento'}
-            </p>
-          </div>
-        )}
-      </ScrollArea>
+      {filteredProducts.length === 0 && !isLoadingProducts && (
+        <div>
+          <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">
+            No se encontraron productos
+          </h3>
+          <p className="text-gray-600">
+            {selectedCategory
+              ? 'Intenta ajustar los filtros de búsqueda'
+              : 'No hay productos disponibles en este momento'}
+          </p>
+        </div>
+      )}
+      {/*</ScrollArea>*/}
     </div>
   )
 }
