@@ -24,7 +24,7 @@ export const serviceImportSchema = serviceBaseSchema.extend({
     .number()
     .min(0, 'El costo debe ser mayor o igual a 0')
     .optional(),
-  is_active: z.boolean().default(true),
+  is_active: z.coerce.boolean().default(true),
 })
 
 export type ServiceCreateSchema = z.infer<typeof serviceCreateSchema>

@@ -8,7 +8,7 @@ import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
-import { ProductImportButton } from '@/components/products/product-import-button'
+import { ServiceImportButton } from '@/components/services/service-import-button'
 import { ServicesList } from '@/components/services/services-list'
 
 export default function ProductsPage() {
@@ -73,7 +73,7 @@ export default function ProductsPage() {
                 config={orderByConfig}
                 triggerProps={{ variant: 'ghost' }}
               />
-              <ProductImportButton variant={'ghost'} />
+              <ServiceImportButton variant={'ghost'} />
               <ProductCreateButton variant={'ghost'} />
             </ButtonGroup>
           }

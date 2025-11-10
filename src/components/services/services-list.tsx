@@ -27,6 +27,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { ServiceActions } from './service-actions'
 import { Database } from '@/types/supabase.types'
 import { ServiceCreateButton } from './service-create-button'
+import { ServiceImportButton } from './service-import-button'
 import {
   useOrderBy,
   OrderByConfig,
@@ -308,7 +309,9 @@ export function ServicesList({
           <EmptyContent>
             <div className="flex gap-2">
               <ServiceCreateButton>Crear Servicio</ServiceCreateButton>
-              <Button variant="outline">Importar Servicio</Button>
+              <ServiceImportButton variant="outline">
+                Importar Servicio
+              </ServiceImportButton>
             </div>
           </EmptyContent>
           <Button
