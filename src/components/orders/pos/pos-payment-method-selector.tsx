@@ -184,10 +184,10 @@ export function PosPaymentSelectorContent({
         <FieldContent>
           <CurrencyInput
             id="amount"
-            value={form.watch('amount')?.toString() || ''}
-            onChange={(e) => {
-              const value = parseFloat(e.target.value.replace(/,/g, '')) || 0
-              form.setValue('amount', value)
+            value={form.watch('amount') ?? 0}
+            onChange={(val) => {
+              const value = typeof val === 'number' ? val : 0
+              form.setValue('amount', value, { shouldValidate: true })
             }}
             className="w-full"
           >

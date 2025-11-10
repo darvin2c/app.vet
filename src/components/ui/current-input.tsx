@@ -1,43 +1,50 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useEffect, useState } from 'react'
 import { useMaskito } from '@maskito/react'
-import { maskitoNumberOptionsGenerator } from '@maskito/kit'
+import {
+  maskitoNumberOptionsGenerator,
+  maskitoStringifyNumber,
+  maskitoParseNumber,
+  MaskitoNumberParams,
+} from '@maskito/kit'
 import { InputGroup, InputGroupAddon, InputGroupInput } from './input-group'
 import { useCurrency } from './currency-select'
-
-function parseFormat(format: string) {
-  const hasThousandsSeparator = format.includes(',')
-  const decimalIndex = format.indexOf('.')
-  const decimals = decimalIndex >= 0 ? format.length - decimalIndex - 1 : 0
-  return { hasThousandsSeparator, decimals }
-}
 
 type CurrencyInputProps = React.ComponentProps<'input'> & {
   children?: React.ReactNode
   format?: string
+  value?: number | null
+  onChange?: (value?: number | null) => void
 }
+
+const maskParams: MaskitoNumberParams = {
+  thousandSeparator: ' ',
+  decimalSeparator: '.',
+  maximumFractionDigits: 2,
+  min: 0,
+}
+
+const maskOptions = maskitoNumberOptionsGenerator(maskParams)
 
 export function CurrencyInput({
   children,
-  format = '#,##0.00',
   placeholder = '0.00',
   ...props
 }: CurrencyInputProps) {
   const { currency } = useCurrency()
 
-  const maskOptions = useMemo(() => {
-    const { hasThousandsSeparator, decimals } = parseFormat(format)
-
-    return maskitoNumberOptionsGenerator({
-      thousandSeparator: hasThousandsSeparator ? ',' : '',
-      decimalSeparator: '.',
-      maximumFractionDigits: decimals,
-      min: 0,
-    })
-  }, [format])
-
   const maskedInputRef = useMaskito({ options: maskOptions })
+
+  // Estado de visualización para permitir escribir valores parciales (p.ej. ".")
+  const [displayValue, setDisplayValue] = useState<string>('')
+
+  // Sincronizar cuando el valor controlado cambie externamente
+  useEffect(() => {
+    const next =
+      props.value != null ? maskitoStringifyNumber(props.value, maskParams) : ''
+    setDisplayValue(next)
+  }, [props.value])
 
   return (
     <InputGroup>
@@ -45,6 +52,22 @@ export function CurrencyInput({
       <InputGroupInput
         ref={maskedInputRef}
         placeholder={placeholder}
+        value={displayValue}
+        onChange={(e) => {
+          const raw = e.target.value
+          // Mantener lo que el usuario escribe (incluye casos como '.')
+          setDisplayValue(raw)
+          const parsed = maskitoParseNumber(raw, maskParams)
+          // Emitir solo si es un número válido; permitir escritura parcial sin resetear el campo
+          if (parsed != null) {
+            props.onChange?.(parsed)
+          }
+        }}
+        onBlur={(e) => {
+          const parsed = maskitoParseNumber(e.target.value, maskParams)
+          // Al salir, confirmar el valor (incluye null para vacío/inválido)
+          props.onChange?.(parsed ?? null)
+        }}
         {...props}
       />
       {children}
