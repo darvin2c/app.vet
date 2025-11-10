@@ -210,7 +210,7 @@ function CartItemCard({
             <CurrencyDisplay value={item.unit_price || 0} />
           </span>
           <Separator orientation="vertical" />
-          <span>Unid {item.quantity || 0}</span>
+          <span>Unid {item.quantity}</span>
           {item.discount && item.discount > 0 && (
             <>
               <Separator orientation="vertical" />
