@@ -29,6 +29,7 @@ export function ProductImport({ open, onOpenChange }: ProductImportProps) {
       expiry_date: item.expiry_date
         ? item.expiry_date.toISOString()
         : undefined,
+      is_service: false,
     }))
     await createProductBulk.mutateAsync(formattedData)
     onOpenChange(false)
