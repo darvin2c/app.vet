@@ -62,16 +62,8 @@ export function POSHeader({ onClose }: POSHeaderProps) {
   return (
     <div className="flex flex-col gap-2 border-b pt-4">
       <div className="flex items-center  px-4 gap-6">
-        {/* Left: Close button */}
-        <div className="flex items-center gap-3">
-          {onClose && (
-            <Button variant="ghost" size="sm" onClick={onClose}>
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-          <h1 className="text-lg font-semibold">POS</h1>
-        </div>
-        <div className="w-full !max-w-2xl ">
+        <h1 className="text-lg font-semibold hidden lg:inline-block">POS</h1>
+        <div className="w-full !max-w-2xl pr-8">
           <InputGroup className="h-12">
             <InputGroupAddon align={'inline-start'}>
               <SearchIcon className="h-8 w-8" />

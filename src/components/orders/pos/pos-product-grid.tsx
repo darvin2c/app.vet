@@ -20,6 +20,7 @@ import useProductList from '@/hooks/products/use-products-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Tables } from '@/types/supabase.types'
 import { usePagination } from '@/components/ui/pagination'
+import { CurrencyDisplay } from '@/components/ui/current-input'
 
 type Product = Tables<'products'>
 
@@ -121,7 +122,11 @@ function ProductListItem({ product }: { product: Product }) {
   const { addProductToOrder } = usePOSStore()
 
   return (
-    <Item variant="outline" className="hover:bg-accent/50 transition-colors">
+    <Item
+      size="sm"
+      variant="outline"
+      className="hover:bg-accent/50 transition-colors"
+    >
       {/* Product Image/Icon */}
       <ItemMedia variant="icon">
         {product.is_service ? (
@@ -133,7 +138,12 @@ function ProductListItem({ product }: { product: Product }) {
 
       {/* Product Information */}
       <ItemContent>
-        <ItemTitle className="text-base font-medium">{product.name}</ItemTitle>
+        <ItemTitle className="w-full flex justify-between items-center">
+          <div className="text-base font-medium">{product.name}</div>
+          <div>
+            <CurrencyDisplay value={product.price} />
+          </div>
+        </ItemTitle>
         <ItemDescription>
           {product.sku && (
             <span className="text-muted-foreground">SKU: {product.sku}</span>
@@ -150,12 +160,7 @@ function ProductListItem({ product }: { product: Product }) {
 
       {/* Price and Add Button */}
       <ItemActions className="flex-col sm:flex-row gap-2">
-        <div className="text-right">
-          <p className="font-semibold text-lg">
-            S/ {product.price?.toFixed(2) || '0.00'}
-          </p>
-        </div>
-        <Button size="sm" onClick={() => addProductToOrder(product)}>
+        <Button onClick={() => addProductToOrder(product)}>
           <Plus className="h-4 w-4 mr-1" />
         </Button>
       </ItemActions>
