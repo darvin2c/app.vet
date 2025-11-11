@@ -1,7 +1,12 @@
 'use client'
 
 import { useEffect, useMemo } from 'react'
-import { useForm, useFormContext, FormProvider } from 'react-hook-form'
+import {
+  useForm,
+  useFormContext,
+  FormProvider,
+  Controller,
+} from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   Dialog,
@@ -55,8 +60,6 @@ function CartItemEditForm({ item }: { item: OrderItem }) {
   const unit_price = watch('unit_price')
   const discount = watch('discount')
 
-  console.log({ quantity, unit_price, discount })
-
   // Calculate totals in real-time
   const calculations = useMemo(() => {
     return calculateCartItemTotal({
@@ -105,7 +108,13 @@ function CartItemEditForm({ item }: { item: OrderItem }) {
         <Field>
           <FieldLabel htmlFor="unit_price">Precio Unitario</FieldLabel>
           <FieldContent>
-            <CurrencyInput id="unit_price" {...form.register('unit_price')} />
+            <Controller
+              name="unit_price"
+              control={form.control}
+              render={({ field }) => (
+                <CurrencyInput id="unit_price" {...field} />
+              )}
+            />
             <FieldError errors={[errors.unit_price]} />
           </FieldContent>
         </Field>
