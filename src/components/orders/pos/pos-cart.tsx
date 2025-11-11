@@ -150,8 +150,7 @@ export function POSCart({ className }: POSCartProps) {
           <div className="p-4">
             <Button
               onClick={handleProceedToPayment}
-              className="w-full h-12 text-base font-semibold"
-              size="lg"
+              className="w-full "
               disabled={orderItemCount() === 0}
             >
               <CreditCard className="h-5 w-5 mr-2" />

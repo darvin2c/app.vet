@@ -27,9 +27,11 @@ type Product = Tables<'products'>
 export function POSProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState<string>('')
   const { appliedPagination } = usePagination()
+  const { searchQuery } = usePOSStore()
+
   // Fetch products using existing hook
   const { data, isLoading: isLoadingProducts } = useProductList({
-    search: '',
+    search: searchQuery,
     filters: selectedCategory
       ? [
           {
@@ -39,6 +41,7 @@ export function POSProductGrid() {
           },
         ]
       : [],
+    pagination: appliedPagination,
   })
   const products = data?.data || []
 

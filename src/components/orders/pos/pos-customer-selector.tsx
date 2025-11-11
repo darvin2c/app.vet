@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import {
   Sheet,
@@ -19,6 +19,7 @@ import {
   ItemTitle,
   ItemDescription,
   ItemActions,
+  ItemSeparator,
 } from '@/components/ui/item'
 import { Tables } from '@/types/supabase.types'
 import {
@@ -54,7 +55,7 @@ export function POSCustomerSelector() {
           <User className="h-4 w-4" />
         </InputGroupAddon>
         <SheetTrigger asChild>
-          <InputGroupButton className="h-full">
+          <InputGroupButton variant="ghost" className="h-full">
             {selectedCustomer
               ? `${selectedCustomer.first_name} ${selectedCustomer.last_name}`
               : 'Seleccionar Cliente'}
@@ -108,27 +109,30 @@ export function POSCustomerSelector() {
               </div>
             ) : (
               <ItemGroup>
-                {customers.map((customer) => (
-                  <Item
-                    variant={'outline'}
-                    key={customer.id}
-                    className="cursor-pointer hover:bg-muted/50"
-                    onClick={() => handleSelectCustomer(customer)}
-                  >
-                    <ItemContent>
-                      <ItemTitle>
-                        {customer.first_name} {customer.last_name}
-                      </ItemTitle>
-                      <ItemDescription>
-                        {customer.email || customer.phone || 'Sin contacto'}
-                      </ItemDescription>
-                    </ItemContent>
-                    <ItemActions>
-                      {customer?.id === customer.id && (
-                        <div className="w-2 h-2 bg-primary rounded-full" />
-                      )}
-                    </ItemActions>
-                  </Item>
+                {customers.map((customer, index) => (
+                  <React.Fragment key={customer.id}>
+                    <Item
+                      size="sm"
+                      key={customer.id}
+                      className="cursor-pointer hover:bg-muted/50"
+                      onClick={() => handleSelectCustomer(customer)}
+                    >
+                      <ItemContent>
+                        <ItemTitle>
+                          {customer.first_name} {customer.last_name}
+                        </ItemTitle>
+                        <ItemDescription>
+                          {customer.email || customer.phone || 'Sin contacto'}
+                        </ItemDescription>
+                      </ItemContent>
+                      <ItemActions>
+                        {customer?.id === selectedCustomer?.id && (
+                          <div className="w-2 h-2 bg-primary rounded-full" />
+                        )}
+                      </ItemActions>
+                    </Item>
+                    {index < customers.length - 1 && <ItemSeparator />}
+                  </React.Fragment>
                 ))}
               </ItemGroup>
             )}

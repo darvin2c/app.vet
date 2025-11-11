@@ -9,6 +9,9 @@ const queryClient = new QueryClient({
       staleTime: 1000 * 60,
       // Automatically retry failed requests up to 3 times
       retry: 3,
+      // Garbage collect data after 5 minutes of inactivity
+      gcTime: 1000 * 60 * 5,
+      placeholderData: <TData,>(prev: TData | undefined) => prev,
     },
   },
 })

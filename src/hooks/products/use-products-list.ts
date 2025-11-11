@@ -1,14 +1,15 @@
-import { supabase } from '@/lib/supabase/client'
-import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
-import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+'use client'
+
 import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 import { AppliedSort, applySupabaseSort } from '@/components/ui/order-by'
+import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { applySupabaseSearch } from '@/components/ui/search-input'
+import { supabase } from '@/lib/supabase/client'
+import { useQuery } from '@tanstack/react-query'
 import {
   AppliedPagination,
   applySupabasePagination,
 } from '@/components/ui/pagination'
-import { applySupabaseSearch } from '@/components/ui/search-input'
 
 export default function useProductList({
   filters = [],
@@ -80,6 +81,7 @@ export default function useProductList({
         ...pagination,
       }
     },
+    placeholderData: (prev) => prev,
     enabled: !!currentTenant?.id,
   })
 }
