@@ -36,6 +36,7 @@ import {
 } from '@/schemas/cart-item-edit.schema'
 import { TablesInsert, Tables } from '@/types/supabase.types'
 import { CurrencyInput } from '@/components/ui/current-input'
+import { maskitoParseNumber } from '@maskito/kit'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
