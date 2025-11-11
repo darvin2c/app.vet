@@ -1,7 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useForm, FormProvider, useFormContext } from 'react-hook-form'
+import {
+  useForm,
+  FormProvider,
+  useFormContext,
+  Controller,
+} from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
@@ -181,44 +186,46 @@ export function PosPaymentSelectorContent({
       <Field>
         <FieldLabel htmlFor="amount">Monto</FieldLabel>
         <FieldContent>
-          <CurrencyInput
-            id="amount"
-            className="w-full"
-            {...form.register('amount')}
-          >
-            {/* Quick Amount Buttons */}
-            {remainingAmount > 0 && (
-              <>
-                <Separator className="h-full" orientation="vertical" />
-                <InputGroupButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => handleQuickAmount(0.25)}
-                  className="h-full"
-                >
-                  25%
-                </InputGroupButton>
-                <Separator className="h-full" orientation="vertical" />
-                <InputGroupButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => handleQuickAmount(0.5)}
-                  className="h-full"
-                >
-                  50%
-                </InputGroupButton>
-                <Separator className="h-full" orientation="vertical" />
-                <InputGroupButton
-                  type="button"
-                  variant="ghost"
-                  onClick={() => handleQuickAmount(1)}
-                  className="h-full"
-                >
-                  Total
-                </InputGroupButton>
-              </>
+          <Controller
+            name="amount"
+            control={form.control}
+            render={({ field }) => (
+              <CurrencyInput id="amount" className="w-full" {...field}>
+                {/* Quick Amount Buttons */}
+                {remainingAmount > 0 && (
+                  <>
+                    <Separator className="h-full" orientation="vertical" />
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleQuickAmount(0.25)}
+                      className="h-full"
+                    >
+                      25%
+                    </InputGroupButton>
+                    <Separator className="h-full" orientation="vertical" />
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleQuickAmount(0.5)}
+                      className="h-full"
+                    >
+                      50%
+                    </InputGroupButton>
+                    <Separator className="h-full" orientation="vertical" />
+                    <InputGroupButton
+                      type="button"
+                      variant="ghost"
+                      onClick={() => handleQuickAmount(1)}
+                      className="h-full"
+                    >
+                      Total
+                    </InputGroupButton>
+                  </>
+                )}
+              </CurrencyInput>
             )}
-          </CurrencyInput>
+          />
           <FieldError errors={[form.formState.errors.amount]} />
         </FieldContent>
       </Field>
@@ -259,7 +266,7 @@ export function PosPaymentMethodSelector({
     resolver: zodResolver(posPaymentSchema),
     defaultValues: {
       payment_method_id: '',
-      amount: '',
+      amount: 0,
       notes: '',
     },
   })

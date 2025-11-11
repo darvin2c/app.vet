@@ -276,6 +276,11 @@ const usePOSStore = create<POSState>()((set, get) => {
         delete item.product // product object
       })
 
+      // remove payments
+      paymentsCopy.forEach((payment) => {
+        delete payment.payment_method
+      })
+
       return {
         order: orderCopy,
         orderItems: orderItemsCopy,
