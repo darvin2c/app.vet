@@ -14,7 +14,6 @@ import {
 } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { POSCustomerSelector } from './pos-customer-selector'
-import { SearchInput } from '@/components/ui/search-input'
 import {
   InputGroup,
   InputGroupAddon,
@@ -28,36 +27,15 @@ interface POSHeaderProps {
 
 export function POSHeader({ onClose }: POSHeaderProps) {
   const {
-    orderItems,
     orderItemCount,
     currentView,
     setCurrentView,
     searchQuery,
     setSearchQuery,
+    setOpenCartMobile,
     enableReceiptTab,
     enablePaymentTab,
-    setOpenCartMobile,
   } = usePOSStore()
-
-  const tabs = [
-    {
-      value: 'catalog',
-      label: 'Catálogo',
-      icon: Grid3X3,
-    },
-    {
-      value: 'payment',
-      label: 'Pago',
-      icon: CreditCard,
-      disabled: !enablePaymentTab,
-    },
-    {
-      value: 'receipt',
-      label: 'Recibo',
-      icon: Receipt,
-      disabled: !enableReceiptTab, // Se habilita después del pago
-    },
-  ]
 
   return (
     <div className="flex flex-col gap-2 border-b pt-4">
@@ -110,20 +88,26 @@ export function POSHeader({ onClose }: POSHeaderProps) {
           onValueChange={(value) => setCurrentView(value as any)}
         >
           <TabsList className="grid w-full grid-cols-3">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              return (
-                <TabsTrigger
-                  key={tab.value}
-                  value={tab.value}
-                  disabled={tab.disabled}
-                  className="flex items-center gap-2"
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="hidden sm:inline">{tab.label}</span>
-                </TabsTrigger>
-              )
-            })}
+            <TabsTrigger value="catalog" className="flex items-center gap-2">
+              <Grid3X3 className="h-4 w-4" />
+              <span className="hidden sm:inline">Catálogo</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="payment"
+              className="flex items-center gap-2"
+              disabled={!enablePaymentTab()}
+            >
+              <CreditCard className="h-4 w-4" />
+              <span className="hidden sm:inline">Pago</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="receipt"
+              className="flex items-center gap-2"
+              disabled={!enableReceiptTab()}
+            >
+              <Receipt className="h-4 w-4" />
+              <span className="hidden sm:inline">Recibo</span>
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>

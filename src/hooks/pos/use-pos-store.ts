@@ -297,7 +297,10 @@ const usePOSStore = create<POSState>()((set, get) => {
     // sum quantity
     orderItemCount: () =>
       get().orderItems.reduce((acc, item) => acc + item.quantity, 0),
-    enableReceiptTab: () => !!get().order?.id,
+    enableReceiptTab: () => {
+      console.log('enableReceiptTab', !!get().order?.id)
+      return !!get().order?.id
+    },
     enablePaymentTab: () => get().orderItems.length > 0,
   }
 })
