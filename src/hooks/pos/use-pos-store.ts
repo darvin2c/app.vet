@@ -273,12 +273,17 @@ const usePOSStore = create<POSState>()((set, get) => {
       orderItemsCopy.forEach((item) => {
         delete item.unit_price // price_base - discount
         delete item.total // unit_price * quantity
+        delete item.product // product object
       })
 
       return {
         order: orderCopy,
         orderItems: orderItemsCopy,
         payments: paymentsCopy,
+      } as {
+        order: TablesInsert<'orders'>
+        orderItems: TablesInsert<'order_items'>[]
+        payments: TablesInsert<'payments'>[]
       }
     },
     setOrderData: (orderData: OrderQueryType) => {

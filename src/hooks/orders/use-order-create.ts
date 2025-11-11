@@ -42,6 +42,7 @@ export default function useOrderCreate() {
         order_id: createdOrder.id,
         tenant_id: currentTenant?.id,
       }))
+      console.log(orderItems)
       const { error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems)
