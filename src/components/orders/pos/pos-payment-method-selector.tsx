@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/field'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Plus, Calculator, ChevronDown } from 'lucide-react'
-import { useIsMobile } from '@/hooks/use-mobile'
 import { Separator } from '@/components/ui/separator'
 import { InputGroupButton } from '@/components/ui/input-group'
 import { CurrencyDisplay, CurrencyInput } from '@/components/ui/current-input'
@@ -49,7 +48,7 @@ interface PosPaymentSelectorContentProps {
 export function PosPaymentSelectorContent({
   onPaymentAdded,
 }: PosPaymentSelectorContentProps) {
-  const form = useFormContext<POSPaymentSchema>()
+  const form = useFormContext()
   const { appliedPagination } = usePagination()
   const { data, isPending: isLoadingMethods } = usePaymentMethodList({
     pagination: appliedPagination,
@@ -76,7 +75,7 @@ export function PosPaymentSelectorContent({
     : undefined
   const SelectedIcon = selectedPaymentType?.icon
 
-  const handleSubmit = (data: POSPaymentSchema) => {
+  const onSubmit = form.handleSubmit((data) => {
     const selectedMethod = paymentMethods.find(
       (m) => m.id === data.payment_method_id
     )
@@ -96,14 +95,14 @@ export function PosPaymentSelectorContent({
     addPayment(payment)
     form.reset()
     onPaymentAdded?.()
-  }
+  })
 
   if (isLoadingMethods) {
     return <div className="p-4 text-center">Cargando métodos de pago...</div>
   }
 
   return (
-    <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
+    <form onSubmit={onSubmit} className="space-y-6">
       {/* Payment Methods */}
       <Field>
         <FieldLabel>Método de Pago</FieldLabel>
@@ -184,12 +183,8 @@ export function PosPaymentSelectorContent({
         <FieldContent>
           <CurrencyInput
             id="amount"
-            value={form.watch('amount') ?? 0}
-            onChange={(val) => {
-              const value = typeof val === 'number' ? val : 0
-              form.setValue('amount', value, { shouldValidate: true })
-            }}
             className="w-full"
+            {...form.register('amount')}
           >
             {/* Quick Amount Buttons */}
             {remainingAmount > 0 && (
@@ -260,11 +255,11 @@ export function PosPaymentMethodSelector({
 }) {
   const { order } = usePOSStore()
 
-  const form = useForm<POSPaymentSchema>({
+  const form = useForm({
     resolver: zodResolver(posPaymentSchema),
     defaultValues: {
       payment_method_id: '',
-      amount: 0,
+      amount: '',
       notes: '',
     },
   })
