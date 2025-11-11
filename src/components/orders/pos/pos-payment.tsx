@@ -1,42 +1,17 @@
 'use client'
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import {
-  ShoppingCart,
-  CheckCircle,
-  Loader2,
-  Save,
-  AlertCircle,
-  CreditCard,
-} from 'lucide-react'
+import { ShoppingCart, CheckCircle, Save, CreditCard } from 'lucide-react'
 import { PosPaymentTable } from '@/components/orders/pos/pos-payment-table'
 import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import useOrderCreate from '@/hooks/orders/use-order-create'
 import { Separator } from '@/components/ui/separator'
 import { PosPaymentMethodSelector } from './pos-payment-method-selector'
 import { PosPaymentMethodSelectorButton } from './pos-payment-method-selector-button'
-interface POSPaymentProps {
-  onBack: () => void
-}
 
-export function POSPayment({ onBack }: POSPaymentProps) {
-  const [isSheetOpen, setIsSheetOpen] = useState(false)
-
-  const {
-    orderItems,
-    order,
-    payments,
-    customer,
-    getOrderData,
-    setOrder,
-    setCurrentView,
-  } = usePOSStore()
-
-  const { mutate: createOrder, isPending } = useOrderCreate()
+export function POSPayment({}: {}) {
+  const { order, payments } = usePOSStore()
 
   // Calcular valores desde el store
   const cartSubtotal = order?.total || 0
@@ -44,34 +19,6 @@ export function POSPayment({ onBack }: POSPaymentProps) {
   const cartTotal = cartSubtotal + cartTax
   const totalPaid = order?.paid_amount || 0
   const remainingAmount = order?.balance || 0
-  const paymentStatus =
-    remainingAmount <= 0
-      ? 'completed'
-      : remainingAmount < cartTotal
-        ? 'partial'
-        : 'pending'
-
-  // Función unificada para guardar orden
-  const handleSaveOrder = () => {
-    // Crear datos de la orden
-    const orderData = getOrderData()
-
-    const createOrderData = {
-      order: orderData.order,
-      items: orderData.orderItems,
-      payments: orderData.payments,
-    }
-
-    // Ejecutar la creación de la orden
-    createOrder(createOrderData, {
-      onSuccess: (savedOrder) => {
-        // Guardar la orden en el store para mostrar en el recibo
-        setOrder(savedOrder)
-        setCurrentView('receipt')
-        // NO llamar onBack() ni clearCart() aquí - se hará desde el recibo
-      },
-    })
-  }
 
   // Determinar el estado del botón según el pago
   const getButtonConfig = () => {
@@ -108,7 +55,6 @@ export function POSPayment({ onBack }: POSPaymentProps) {
   }
 
   const buttonConfig = getButtonConfig()
-  const ButtonIcon = buttonConfig.icon
 
   return (
     <div className="flex flex-col h-full">
@@ -152,67 +98,6 @@ export function POSPayment({ onBack }: POSPaymentProps) {
           {/* Right Column: Payment Method Selector (Desktop/Tablet only) */}
           <div className="hidden lg:block">
             <PosPaymentMethodSelector />
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile: Bottom Action Bar */}
-      <div className="lg:hidden border-t bg-background p-4">
-        <div className="flex gap-2">
-          <Button
-            variant={buttonConfig.variant}
-            onClick={() => handleSaveOrder()}
-            disabled={isPending}
-            className={`flex-1 h-12 ${buttonConfig.className}`}
-            size="lg"
-          >
-            {isPending ? (
-              <Loader2 className="h-4 w-4 animate-spin mr-2" />
-            ) : (
-              <ButtonIcon className="h-4 w-4 mr-2" />
-            )}
-            {buttonConfig.text}
-          </Button>
-        </div>
-      </div>
-
-      {/* Desktop: Action Buttons */}
-      <div className="hidden lg:block border-t p-4">
-        <div className="flex justify-between items-center">
-          {/* Información de balance */}
-          <div className="flex items-center gap-4">
-            {remainingAmount > 0 && (
-              <div className="flex items-center gap-2 text-amber-600">
-                <AlertCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">
-                  Balance pendiente: S/ {remainingAmount.toFixed(2)}
-                </span>
-              </div>
-            )}
-            {paymentStatus === 'completed' && (
-              <div className="flex items-center gap-2 text-green-600">
-                <CheckCircle className="h-4 w-4" />
-                <span className="text-sm font-medium">Pago completo</span>
-              </div>
-            )}
-          </div>
-
-          {/* Botón de acción único */}
-          <div className="flex gap-3">
-            <Button
-              variant={buttonConfig.variant}
-              onClick={() => handleSaveOrder()}
-              disabled={isPending}
-              size="lg"
-              className={`min-w-[200px] ${buttonConfig.className}`}
-            >
-              {isPending ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : (
-                <ButtonIcon className="h-4 w-4 mr-2" />
-              )}
-              {buttonConfig.text}
-            </Button>
           </div>
         </div>
       </div>

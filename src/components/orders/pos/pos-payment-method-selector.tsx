@@ -81,19 +81,13 @@ export function PosPaymentSelectorContent({
   const SelectedIcon = selectedPaymentType?.icon
 
   const onSubmit = form.handleSubmit((data) => {
-    const selectedMethod = paymentMethods.find(
-      (m) => m.id === data.payment_method_id
-    )
-    if (!selectedMethod) return
-
     // Create payment object for POS store
     const payment = {
       amount: data.amount,
       payment_method_id: data.payment_method_id,
       payment_method: selectedMethod,
       notes: data.notes || null,
-      payment_date: new Date().toISOString(),
-      reference: null,
+      reference: data.reference || null,
       created_by: null,
     }
 
@@ -180,8 +174,6 @@ export function PosPaymentSelectorContent({
         </FieldContent>
       </Field>
 
-      <Separator />
-
       {/* Amount Input */}
       <Field>
         <FieldLabel htmlFor="amount">Monto</FieldLabel>
@@ -246,7 +238,12 @@ export function PosPaymentSelectorContent({
 
       {/* Add Payment Button */}
       <div className="flex justify-end">
-        <Button type="submit" size="sm" disabled={form.formState.isSubmitting}>
+        <Button
+          variant="outline"
+          type="submit"
+          size="sm"
+          disabled={form.formState.isSubmitting}
+        >
           <Plus className="h-4 w-4 mr-2" />
           Agregar Pago
         </Button>

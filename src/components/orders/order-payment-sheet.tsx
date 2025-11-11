@@ -4,12 +4,16 @@ import { useEffect } from 'react'
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import useOrderDetail from '@/hooks/orders/use-order-detail'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Tables } from '@/types/supabase.types'
 import { POSPayment } from './pos/pos-payment'
-import { usePOSStore } from '@/hooks/pos/use-pos-store'
+import { Button } from '../ui/button'
+import { Field } from '../ui/field'
 
 interface OrderPaymentSheetProps {
   order: Tables<'orders'>
@@ -22,30 +26,41 @@ export function OrderPaymentSheet({
   open,
   onOpenChange,
 }: OrderPaymentSheetProps) {
-  const { clearAll } = usePOSStore()
+  const { clearAll, setOrderData } = usePOSStore()
 
-  useEffect(() => {
-    if (open && order) {
+  const { data, error } = useOrderDetail(order.id)
+  const paymentsCreate = useEffect(() => {
+    if (open && data) {
       // Limpiar el carrito actual
       clearAll()
+      if (data) {
+        setOrderData(data)
+      }
     }
-  }, [open, order, clearAll])
+  }, [open, data, clearAll, setOrderData])
 
-  const handleClose = () => {
-    // Limpiar el carrito al cerrar
-    clearAll()
+  const handleCancel = () => {
     onOpenChange(false)
+    clearAll()
   }
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-full p-0" side="right">
+      <SheetContent className="!w-full !max-w-full" side="right">
         <SheetHeader className="sr-only">
           <SheetTitle>Pagar Orden {order.order_number}</SheetTitle>
         </SheetHeader>
-        <div className="h-full">
-          <POSPayment onBack={handleClose} />
-        </div>
+        <POSPayment />
+        <SheetFooter>
+          <Field orientation="horizontal">
+            <Button type="submit" size="lg">
+              Guardar pagos
+            </Button>
+            <Button variant="outline" onClick={handleCancel}>
+              Cancelar
+            </Button>
+          </Field>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )

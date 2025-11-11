@@ -45,8 +45,6 @@ interface POSState {
   //setCustomer
   setCustomer: (customer: Customer | null) => void
   setTenant: (tenant: Tables<'tenants'> | null) => void
-
-  setOrder: (order: Order | null) => void
   // items
   addProductToOrder: (product: Product) => void
   removeOrderItem: (productId: string) => void
@@ -157,8 +155,6 @@ const usePOSStore = create<POSState>()((set, get) => {
 
     //setCustomer
     setCustomer: (customer) => set({ customer }),
-
-    setOrder: (order) => set({ order }),
 
     // items
     addProductToOrder: (product) => {
