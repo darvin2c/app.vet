@@ -30,7 +30,7 @@ export function CurrencyInput({
   const { currency } = useCurrency()
 
   const maskedInputRef = useMaskito({ options: maskOptions })
-
+  console.log(props)
   return (
     <InputGroup>
       <InputGroupAddon align="inline-start">{currency?.symbol}</InputGroupAddon>

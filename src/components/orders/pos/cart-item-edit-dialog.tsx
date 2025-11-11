@@ -30,6 +30,7 @@ import {
   calculateCartItemTotal,
 } from '@/schemas/cart-item-edit.schema'
 import { TablesInsert, Tables } from '@/types/supabase.types'
+import { CurrencyInput } from '@/components/ui/current-input'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
@@ -42,8 +43,7 @@ interface CartItemEditDialogProps {
 }
 
 function CartItemEditForm({ item }: { item: OrderItem }) {
-  const form = useFormContext<CartItemEditSchema>()
-  const { updateOrderItem } = usePOSStore()
+  const form = useFormContext()
 
   const {
     formState: { errors },
@@ -51,9 +51,11 @@ function CartItemEditForm({ item }: { item: OrderItem }) {
   } = form
 
   // Watch form values for real-time calculations
-  const quantity = watch('quantity') || 0
-  const unit_price = watch('unit_price') || 0
-  const discount = watch('discount') || 0
+  const quantity = watch('quantity')
+  const unit_price = watch('unit_price')
+  const discount = watch('discount')
+
+  console.log({ quantity, unit_price, discount })
 
   // Calculate totals in real-time
   const calculations = useMemo(() => {
@@ -103,13 +105,7 @@ function CartItemEditForm({ item }: { item: OrderItem }) {
         <Field>
           <FieldLabel htmlFor="unit_price">Precio Unitario</FieldLabel>
           <FieldContent>
-            <Input
-              id="unit_price"
-              type="number"
-              min="0"
-              step="0.01"
-              {...form.register('unit_price', { valueAsNumber: true })}
-            />
+            <CurrencyInput id="unit_price" {...form.register('unit_price')} />
             <FieldError errors={[errors.unit_price]} />
           </FieldContent>
         </Field>
@@ -181,7 +177,7 @@ export function CartItemEditDialog({
 }: CartItemEditDialogProps) {
   const { updateOrderItem } = usePOSStore()
 
-  const form = useForm<CartItemEditSchema>({
+  const form = useForm({
     resolver: zodResolver(cartItemEditSchema),
     defaultValues: {
       quantity: 1,

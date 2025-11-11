@@ -1,10 +1,17 @@
+import { maskitoParseNumber } from '@maskito/kit'
 import { z } from 'zod'
 
 export const cartItemEditSchema = z.object({
   quantity: z.number().min(1, 'La cantidad debe ser mayor a 0'),
-  unit_price: z
-    .number()
-    .min(0, 'El precio unitario debe ser mayor o igual a 0'),
+  unit_price: z.preprocess(
+    (val) => {
+      if (typeof val === 'string') {
+        return maskitoParseNumber(val)
+      }
+      return val
+    },
+    z.number().min(0, 'El precio unitario debe ser mayor o igual a 0')
+  ),
   discount: z
     .number()
     .min(0, 'El descuento debe ser mayor o igual a 0')
