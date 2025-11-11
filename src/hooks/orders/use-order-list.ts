@@ -12,12 +12,7 @@ import { applySupabaseSearch } from '@/components/ui/search-input'
 export default function useOrderList({
   filters = [],
   search,
-  orders = [
-    {
-      field: 'created_at',
-      direction: 'desc',
-    },
-  ],
+  orders,
   pagination,
 }: {
   filters?: AppliedFilter[]

@@ -3,9 +3,12 @@ import { AppliedSort } from './types'
 /**
  * Aplica ordenamientos de Supabase a la consulta usando AppliedSort
  */
-export function applySupabaseSort(query: any, sorts: AppliedSort[]) {
-  if (!Array.isArray(sorts) || sorts.length === 0) return query
-
+export function applySupabaseSort(query: any, sorts?: AppliedSort[]) {
+  if (!Array.isArray(sorts) || sorts.length === 0) {
+    return query.order('created_at', {
+      ascending: false,
+    })
+  }
   sorts.forEach((order) => {
     if (order.foreignTable) {
       // Para tablas foráneas, Supabase soporta order con table
