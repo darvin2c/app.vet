@@ -40,15 +40,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ChevronLeft,
-  ChevronRight,
-  ShoppingCart,
-  Clock,
-  XCircle,
-  Package,
-  DollarSign,
-} from 'lucide-react'
+import { Clock, Package, DollarSign } from 'lucide-react'
 import useOrderList from '@/hooks/orders/use-order-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'
@@ -120,6 +112,7 @@ export function OrderList({
   })
   const orders = data?.data || []
   const { getOrderStatus } = useOrderStatus()
+  console.log(orders)
 
   const columns: ColumnDef<Order>[] = [
     {
@@ -200,7 +193,7 @@ export function OrderList({
       },
     },
     {
-      id: 'balance',
+      accessorKey: 'balance',
       header: () => <div>Balance</div>,
       cell: ({ row }: { row: Row<Order> }) => {
         return <CurrencyDisplay value={row.getValue('balance')} />
