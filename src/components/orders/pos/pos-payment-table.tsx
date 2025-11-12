@@ -88,6 +88,7 @@ export function PosPaymentTable() {
                         Monto
                       </TableHead>
                       <TableHead className="w-[200px]">Notas</TableHead>
+                      <TableHead className="w-[200px]">Referencia</TableHead>
                       <TableHead className="w-[80px]"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -120,13 +121,16 @@ export function PosPaymentTable() {
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <span className="font-semibold">
-                              S/ {payment.amount.toFixed(2)}
+                            <CurrencyDisplay value={payment.amount} />
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-muted-foreground">
+                              {payment.notes || ''}
                             </span>
                           </TableCell>
                           <TableCell>
                             <span className="text-sm text-muted-foreground">
-                              {payment.notes || 'Sin notas'}
+                              {payment.reference ? payment.reference : ''}
                             </span>
                           </TableCell>
                           <TableCell>
@@ -164,6 +168,7 @@ export function PosPaymentTable() {
                         Monto
                       </TableHead>
                       <TableHead className="w-[200px]">Notas</TableHead>
+                      <TableHead className="w-[200px]">Referencia</TableHead>
                       <TableHead className="w-[80px]"></TableHead>
                     </TableRow>
                   </TableHeader>
@@ -185,9 +190,8 @@ export function PosPaymentTable() {
                                 <Icon className="h-4 w-4" />
                               </div>
                               <div>
-                                <p className="font-medium text-sm">
-                                  {payment.payment_method?.name ||
-                                    'Método desconocido'}
+                                <p className="text-sm">
+                                  {payment.payment_method?.name || ''}
                                 </p>
                                 <p className="text-xs text-muted-foreground">
                                   {paymentType?.label || 'Otros'}
@@ -196,13 +200,16 @@ export function PosPaymentTable() {
                             </div>
                           </TableCell>
                           <TableCell className="text-right">
-                            <span className="font-semibold">
-                              S/ {payment.amount.toFixed(2)}
+                            <CurrencyDisplay value={payment.amount} />
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-muted-foreground">
+                              {payment.notes || ''}
                             </span>
                           </TableCell>
                           <TableCell>
                             <span className="text-sm text-muted-foreground">
-                              {payment.notes || 'Sin notas'}
+                              {payment.reference ? payment.reference : ''}
                             </span>
                           </TableCell>
                           <TableCell>
@@ -259,6 +266,11 @@ export function PosPaymentTable() {
                               {payment.notes}
                             </p>
                           )}
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {payment.reference
+                              ? `Referencia: ${payment.reference}`
+                              : ''}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
@@ -322,6 +334,11 @@ export function PosPaymentTable() {
                               {payment.notes}
                             </p>
                           )}
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {payment.reference
+                              ? `Referencia: ${payment.reference}`
+                              : ''}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">

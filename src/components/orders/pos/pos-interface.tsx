@@ -10,11 +10,10 @@ import { POSCartMobile } from './pos-cart-mobile'
 import { OrderPrint } from '../order-print'
 
 interface POSInterfaceProps {
-  onOrderCreated?: () => void
   onClose?: () => void
 }
 
-export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
+export function POSInterface({ onClose }: POSInterfaceProps) {
   const { currentView, order } = usePOSStore()
 
   return (
@@ -42,14 +41,7 @@ export function POSInterface({ onOrderCreated, onClose }: POSInterfaceProps) {
       </div>
 
       {/* Payment Modal */}
-      {currentView === 'payment' && (
-        <POSPayment
-          onBack={() => {
-            const { setCurrentView } = usePOSStore.getState()
-            setCurrentView('catalog')
-          }}
-        />
-      )}
+      {currentView === 'payment' && <POSPayment />}
     </div>
   )
 }

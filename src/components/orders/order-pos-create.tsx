@@ -7,9 +7,13 @@ import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import {
   Sheet,
   SheetContent,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import { Footer } from 'react-day-picker'
+import { Field } from '../ui/field'
+import { Button } from '../ui/button'
 
 interface OrderPosCreateProps {
   open: boolean
@@ -47,10 +51,12 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
         <SheetHeader className="sr-only">
           <SheetTitle>Punto de Venta</SheetTitle>
         </SheetHeader>
-        <POSInterface
-          onOrderCreated={handleOrderCreated}
-          onClose={handleClose}
-        />
+        <POSInterface onClose={handleClose} />
+        <SheetFooter>
+          <Field>
+            <Button onClick={handleOrderCreated}>Guardar Orden</Button>
+          </Field>
+        </SheetFooter>
       </SheetContent>
     </Sheet>
   )
