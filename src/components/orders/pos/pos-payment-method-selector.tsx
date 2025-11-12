@@ -30,6 +30,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Plus, Calculator, ChevronDown } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
 import { InputGroupButton } from '@/components/ui/input-group'
+import { Input } from '@/components/ui/input'
 import { CurrencyDisplay, CurrencyInput } from '@/components/ui/current-input'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
@@ -81,6 +82,14 @@ export function PosPaymentSelectorContent({
   const SelectedIcon = selectedPaymentType?.icon
 
   const onSubmit = form.handleSubmit((data) => {
+    // Validación condicional de referencia según método seleccionado
+    if (selectedMethod?.ref_required && !String(data.reference || '').trim()) {
+      form.setError('reference', {
+        type: 'manual',
+        message: 'La referencia es requerida para este método de pago',
+      })
+      return
+    }
     // Create payment object for POS store
     const payment = {
       amount: data.amount,
@@ -228,6 +237,24 @@ export function PosPaymentSelectorContent({
         </FieldContent>
       </Field>
 
+      {/* Reference (conditional) */}
+      {selectedMethod?.ref_required && (
+        <Field>
+          <FieldLabel htmlFor="reference">Referencia</FieldLabel>
+          <FieldContent>
+            <Input
+              id="reference"
+              placeholder="Ingresa la referencia del pago"
+              {...form.register('reference')}
+            />
+            <FieldDescription>
+              Este método requiere una referencia para registrar el pago.
+            </FieldDescription>
+            <FieldError errors={[form.formState.errors.reference]} />
+          </FieldContent>
+        </Field>
+      )}
+
       {/* Notes */}
       <Field>
         <FieldLabel htmlFor="notes">Notas (opcional)</FieldLabel>
@@ -270,6 +297,7 @@ export function PosPaymentMethodSelector({
     defaultValues: {
       payment_method_id: '',
       amount: 0,
+      reference: '',
       notes: '',
     },
   })

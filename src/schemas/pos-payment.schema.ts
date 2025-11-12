@@ -7,6 +7,8 @@ export const posPaymentSchema = z.object({
     .number()
     .min(0.01, 'El monto debe ser mayor a 0')
     .max(999999.99, 'El monto es demasiado alto'),
+  // La referencia será validada condicionalmente en el componente dependiendo del método seleccionado
+  reference: z.string().optional(),
   notes: z.string().optional(),
 })
 
