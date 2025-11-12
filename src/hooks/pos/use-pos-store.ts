@@ -4,7 +4,9 @@ import { Enums, Tables, TablesInsert } from '@/types/supabase.types'
 import { create } from 'zustand'
 
 type Customer = Tables<'customers'>
-type Order = Omit<TablesInsert<'orders'>, 'tenant_id'>
+type Order = Omit<TablesInsert<'orders'>, 'tenant_id'> & {
+  payments?: Payment[]
+}
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Product
 }
@@ -97,9 +99,10 @@ const usePOSStore = create<POSState>()((set, get) => {
       ) / 100
 
     // Calculate paid amount from payments and round to 2 decimals
+    const paymentAll = [...state.payments, ...(state.order?.payments || [])]
     const paid_amount =
       Math.round(
-        state.payments.reduce((acc, payment) => acc + payment.amount, 0) * 100
+        paymentAll.reduce((acc, payment) => acc + payment.amount, 0) * 100
       ) / 100
 
     // Calculate balance and round to 2 decimals
@@ -295,7 +298,6 @@ const usePOSStore = create<POSState>()((set, get) => {
       set({
         order: orderData,
         orderItems: orderData.order_items,
-        payments: orderData.payments || [],
         customer: orderData.customer,
       })
     },

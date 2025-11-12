@@ -28,8 +28,9 @@ export function PosPaymentTable() {
   const { payments, removePayment, order } = usePOSStore()
   const { getPaymentType } = usePaymentType()
 
-  const savedPayments = payments.filter((p) => !!p.id)
-  const newPayments = payments.filter((p) => !p.id)
+  const savedPayments = order?.payments || []
+  const newPayments = payments || []
+  console.log('newPayments', newPayments, savedPayments)
 
   const handleRemovePayment = (index?: number) => {
     if (index === undefined) {
@@ -38,24 +39,22 @@ export function PosPaymentTable() {
     removePayment(index)
   }
 
-  if (payments.length === 0) {
-    return (
-      <div className="flex items-center justify-center text-muted-foreground pt-20">
-        <Empty>
-          <EmptyHeader>
-            <EmptyMedia variant="icon">
-              <Receipt className="h-28 w-28" />
-            </EmptyMedia>
-            <EmptyTitle>No hay pagos agregados</EmptyTitle>
-            <EmptyDescription>
-              Selecciona un método de pago y monto para comenzar a procesar la
-              orden
-            </EmptyDescription>
-          </EmptyHeader>
-        </Empty>
-      </div>
-    )
-  }
+  const renderEmptyPayment = () => (
+    <div className="flex items-center justify-center text-muted-foreground pt-20">
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <Receipt className="h-28 w-28" />
+          </EmptyMedia>
+          <EmptyTitle>No hay pagos agregados</EmptyTitle>
+          <EmptyDescription>
+            Selecciona un método de pago y monto para comenzar a procesar la
+            orden
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    </div>
+  )
 
   return (
     <div>
@@ -66,84 +65,15 @@ export function PosPaymentTable() {
             Pagos Agregados
           </span>
           <Badge variant="secondary" className="text-xs">
-            {payments.length} {payments.length === 1 ? 'pago' : 'pagos'}
+            {newPayments.length} {newPayments.length === 1 ? 'pago' : 'pagos'}
           </Badge>
         </div>
         <div className="p-0">
           {/* Desktop Table View */}
           <div className="hidden md:block">
-            {/* Saved Payments */}
-            {savedPayments.length > 0 && (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between px-4 py-2">
-                  <span className="text-sm font-medium">Pagos Guardados</span>
-                  <Badge variant="outline" className="text-xs">
-                    {savedPayments.length}
-                  </Badge>
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead className="w-[200px]">Método</TableHead>
-                      <TableHead className="text-right w-[120px]">
-                        Monto
-                      </TableHead>
-                      <TableHead className="w-[200px]">Notas</TableHead>
-                      <TableHead className="w-[80px]"></TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {savedPayments.map((payment, index) => {
-                      const paymentType = payment.payment_method?.payment_type
-                        ? getPaymentType(
-                            payment.payment_method
-                              .payment_type as Enums<'payment_type'>
-                          )
-                        : undefined
-                      const Icon = paymentType?.icon || MoreHorizontal
-
-                      return (
-                        <TableRow key={`saved-${index}`} className="bg-muted">
-                          <TableCell>
-                            <div className="flex items-center gap-3">
-                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                                <Icon className="h-4 w-4" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm">
-                                  {payment.payment_method?.name ||
-                                    'Método desconocido'}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  {paymentType?.label || 'Otros'}
-                                </p>
-                              </div>
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-right">
-                            <span className="font-semibold">
-                              S/ {payment.amount.toFixed(2)}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            <span className="text-sm text-muted-foreground">
-                              {payment.notes || 'Sin notas'}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            {/* no delete for saved payments */}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-
             {/* New Payments */}
             {newPayments.length > 0 && (
-              <div className="space-y-2 mt-4">
+              <div className="space-y-2">
                 <div className="flex items-center justify-between px-4 py-2">
                   <span className="text-sm font-medium">Pagos por Guardar</span>
                   <Badge variant="outline" className="text-xs">
@@ -216,66 +146,79 @@ export function PosPaymentTable() {
                 </Table>
               </div>
             )}
-          </div>
 
-          {/* Mobile Card View */}
-          <div className="md:hidden space-y-3 p-4">
             {/* Saved Payments */}
             {savedPayments.length > 0 && (
-              <div>
-                <div className="flex items-center justify-between px-2 py-1">
+              <div className="space-y-2 mt-4">
+                <div className="flex items-center justify-between px-4 py-2">
                   <span className="text-sm font-medium">Pagos Guardados</span>
                   <Badge variant="outline" className="text-xs">
                     {savedPayments.length}
                   </Badge>
                 </div>
-                {savedPayments.map((payment, index) => {
-                  const paymentType = payment.payment_method?.payment_type
-                    ? getPaymentType(
-                        payment.payment_method
-                          .payment_type as Enums<'payment_type'>
-                      )
-                    : undefined
-                  const Icon = paymentType?.icon || MoreHorizontal
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[200px]">Método</TableHead>
+                      <TableHead className="text-right w-[120px]">
+                        Monto
+                      </TableHead>
+                      <TableHead className="w-[200px]">Notas</TableHead>
+                      <TableHead className="w-[80px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {savedPayments.map((payment, index) => {
+                      const paymentType = payment.payment_method?.payment_type
+                        ? getPaymentType(
+                            payment.payment_method
+                              .payment_type as Enums<'payment_type'>
+                          )
+                        : undefined
+                      const Icon = paymentType?.icon || MoreHorizontal
 
-                  return (
-                    <div
-                      key={`saved-${index}`}
-                      className="flex items-center justify-between p-3 bg-muted rounded-lg border"
-                    >
-                      <div className="flex items-center gap-3 flex-1">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border">
-                          <Icon className="h-5 w-5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">
-                            {payment.payment_method?.name ||
-                              'Método desconocido'}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {paymentType?.label || 'Otros'}
-                          </p>
-                          {payment.notes && (
-                            <p className="text-xs text-muted-foreground mt-1 truncate">
-                              {payment.notes}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <div className="text-right">
-                          <p className="font-semibold text-sm">
-                            S/ {payment.amount.toFixed(2)}
-                          </p>
-                        </div>
-                        {/* no delete for saved payments */}
-                      </div>
-                    </div>
-                  )
-                })}
+                      return (
+                        <TableRow key={`saved-${index}`} className="bg-muted">
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">
+                                  {payment.payment_method?.name ||
+                                    'Método desconocido'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {paymentType?.label || 'Otros'}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="font-semibold">
+                              S/ {payment.amount.toFixed(2)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-muted-foreground">
+                              {payment.notes || 'Sin notas'}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {/* no delete for saved payments */}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
               </div>
             )}
+          </div>
 
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
             {/* New Payments */}
             {newPayments.length > 0 && (
               <div>
@@ -332,6 +275,62 @@ export function PosPaymentTable() {
                         >
                           <RemoveIcon className="h-4 w-4" />
                         </Button>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Saved Payments */}
+            {savedPayments.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between px-2 py-1">
+                  <span className="text-sm font-medium">Pagos Guardados</span>
+                  <Badge variant="outline" className="text-xs">
+                    {savedPayments.length}
+                  </Badge>
+                </div>
+                {savedPayments.map((payment, index) => {
+                  const paymentType = payment.payment_method?.payment_type
+                    ? getPaymentType(
+                        payment.payment_method
+                          .payment_type as Enums<'payment_type'>
+                      )
+                    : undefined
+                  const Icon = paymentType?.icon || MoreHorizontal
+
+                  return (
+                    <div
+                      key={`saved-${index}`}
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg border"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {payment.payment_method?.name ||
+                              'Método desconocido'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {paymentType?.label || 'Otros'}
+                          </p>
+                          {payment.notes && (
+                            <p className="text-xs text-muted-foreground mt-1 truncate">
+                              {payment.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="font-semibold text-sm">
+                            S/ {payment.amount.toFixed(2)}
+                          </p>
+                        </div>
+                        {/* no delete for saved payments */}
                       </div>
                     </div>
                   )

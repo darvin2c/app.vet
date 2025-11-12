@@ -89,7 +89,7 @@ export function POSPayment({}: {}) {
               </div>
             </div>
             <div className="border rounded-lg overflow-hidden">
-              <ScrollArea className="h-[400px]">
+              <ScrollArea className="h-full overflow-auto">
                 <PosPaymentTable />
               </ScrollArea>
             </div>

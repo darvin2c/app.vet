@@ -37,6 +37,14 @@ export default function usePaymentCreateBulk() {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'payments'],
       })
+      payments.forEach((payment) => {
+        queryClient.invalidateQueries({
+          queryKey: [currentTenant?.id, 'orders', payment.order_id],
+        })
+        queryClient.invalidateQueries({
+          queryKey: [currentTenant?.id, 'orders', payment.order_id],
+        })
+      })
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'orders'],
       })
