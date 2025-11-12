@@ -11,9 +11,9 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import { Footer } from 'react-day-picker'
 import { Field } from '../ui/field'
 import { Button } from '../ui/button'
+import useOrderCreate from '@/hooks/orders/use-order-create'
 
 interface OrderPosCreateProps {
   open: boolean
@@ -23,7 +23,8 @@ interface OrderPosCreateProps {
 export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
   const isMobile = useIsMobile()
 
-  const { clearAll } = usePOSStore()
+  const { clearAll, currentView, getOrderData } = usePOSStore()
+  const orderCreate = useOrderCreate()
 
   // Limpiar el POS store cuando se abre el sheet de crear orden
   useEffect(() => {
@@ -35,11 +36,22 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
   const handleOrderCreated = () => {
     // Cerrar el modal POS cuando se crea la orden
     onOpenChange(false)
+    clearAll()
   }
 
-  const handleClose = () => {
+  const handleClose = async () => {
     // Cerrar el modal POS
-    onOpenChange(false)
+    const data = getOrderData()
+    try {
+      await orderCreate.mutateAsync({
+        order: data.order,
+        items: data.orderItems,
+        payments: data.payments,
+      })
+    } catch (error) {
+      console.error('Error creating order:', error)
+      handleClose()
+    }
   }
 
   return (
@@ -52,11 +64,18 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
           <SheetTitle>Punto de Venta</SheetTitle>
         </SheetHeader>
         <POSInterface onClose={handleClose} />
-        <SheetFooter>
-          <Field>
-            <Button onClick={handleOrderCreated}>Guardar Orden</Button>
-          </Field>
-        </SheetFooter>
+        {currentView === 'payment' && (
+          <SheetFooter className="fixed bottom-0 left-0  p-4 bg-background">
+            <Field orientation="horizontal">
+              <Button size="lg" onClick={handleOrderCreated}>
+                Guardar Orden
+              </Button>
+              <Button variant="outline" size="lg" onClick={handleClose}>
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        )}
       </SheetContent>
     </Sheet>
   )

@@ -29,6 +29,7 @@ import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialo
 import { cn } from '@/lib/utils'
 import { CurrencyDisplay } from '@/components/ui/current-input'
 import { ProductIcon, RemoveIcon, ServiceIcon } from '@/components/icons'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
@@ -42,7 +43,6 @@ export function POSCart({ className }: POSCartProps) {
   const {
     orderItems,
     order,
-    customer,
     removeOrderItem,
     setCurrentView,
     orderItemCount,
@@ -51,6 +51,7 @@ export function POSCart({ className }: POSCartProps) {
 
   const [editingItem, setEditingItem] = useState<OrderItem | null>(null)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const { currentTenant } = useCurrentTenantStore()
 
   const handleEditItem = (item: OrderItem) => {
     setEditingItem(item)
@@ -78,7 +79,7 @@ export function POSCart({ className }: POSCartProps) {
     >
       {/* Cart Header */}
       <div className="p-4 border-b bg-background">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-between gap-4 pr-14">
           <div className="flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
             <h2 className="font-semibold">Carrito</h2>
@@ -129,16 +130,6 @@ export function POSCart({ className }: POSCartProps) {
           {/* Cart Summary */}
           <div className="p-4 border-t bg-gray-50">
             <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal:</span>
-                <CurrencyDisplay value={order?.subtotal || 0} />
-              </div>
-
-              <div className="flex justify-between text-sm">
-                <span>IGV (18%):</span>
-                <CurrencyDisplay value={order?.tax || 0} />
-              </div>
-
               <div className="flex justify-between items-center text-lg font-semibold">
                 <span>Total:</span>
                 <CurrencyDisplay value={order?.total || 0} />
