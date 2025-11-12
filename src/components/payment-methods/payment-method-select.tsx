@@ -1,10 +1,14 @@
 'use client'
 
-import { useState } from 'react'
-import { CreditCard, Check, ChevronsUpDown, Plus, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
+import { usePagination } from '@/components/ui/pagination/use-pagination'
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
+import { CreditCard, Check, ChevronsUpDown, X } from 'lucide-react'
+import { Tables } from '@/types/supabase.types'
+import { Badge } from '@/components/ui/badge'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
 import {
   Command,
   CommandEmpty,
@@ -17,11 +21,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
-import { Badge } from '@/components/ui/badge'
-import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
-import { Tables } from '@/types/supabase.types'
-import { usePagination } from '@/components/ui/pagination/use-pagination'
-import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 
 type PaymentMethod = Tables<'payment_methods'>
 
