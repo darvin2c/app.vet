@@ -65,23 +65,25 @@ function drawImageToCanvas(
   ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
   ctx.imageSmoothingQuality = 'high'
   ctx.filter = `brightness(${brightness}) contrast(${contrast})`
-  const centerX = crop.x * scaleX + (crop.width * scaleX) / 2
-  const centerY = crop.y * scaleY + (crop.height * scaleY) / 2
+  const sx = crop.x * scaleX
+  const sy = crop.y * scaleY
+  const sWidth = crop.width * scaleX
+  const sHeight = crop.height * scaleY
+  ctx.save()
   ctx.translate(canvas.width / pixelRatio / 2, canvas.height / pixelRatio / 2)
   ctx.rotate((rotation * Math.PI) / 180)
-  const drawWidth = crop.width * scaleX
-  const drawHeight = crop.height * scaleY
   ctx.drawImage(
     image,
-    crop.x * scaleX,
-    crop.y * scaleY,
-    drawWidth,
-    drawHeight,
-    -drawWidth / 2,
-    -drawHeight / 2,
-    drawWidth,
-    drawHeight
+    sx,
+    sy,
+    sWidth,
+    sHeight,
+    -targetSize / 2,
+    -targetSize / 2,
+    targetSize,
+    targetSize
   )
+  ctx.restore()
 }
 
 function exportCanvas(
@@ -281,7 +283,6 @@ export const AvatarUploader = React.memo(function AvatarUploader({
                 onLoad={onImageLoad}
                 style={{
                   filter: filterPreview,
-                  transform: `rotate(${rotation}deg)`,
                 }}
               />
             </ReactCrop>
