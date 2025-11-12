@@ -7,6 +7,7 @@ import { DateDisplay } from '../ui/date-picker'
 import { Button } from '@/components/ui/button'
 import { FileText, Receipt, Printer } from 'lucide-react'
 import { ScrollArea } from '../ui/scroll-area'
+import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 
 type OrderPrintProps = {
   orderId: string
@@ -18,6 +19,7 @@ export function OrderPrint({
   view: initialView = 'full',
 }: OrderPrintProps) {
   const { data: order } = useOrderDetail(orderId)
+  const { data: tenant } = useTenantDetail()
   const [currentView, setCurrentView] = useState<'full' | 'ticket'>(initialView)
   const printRef = useRef<HTMLDivElement>(null)
 
@@ -59,11 +61,41 @@ export function OrderPrint({
 
   if (!order) return null
 
+  const tenantName = tenant?.legal_name ?? tenant?.name ?? null
+  const tenantEmail = tenant?.email ?? null
+  const tenantPhone = tenant?.phone ?? null
+  const tenantAddress = (() => {
+    const a = tenant?.address as any
+    if (!a) return null
+    const parts = [a.street, a.city, a.state, a.postal_code].filter(Boolean)
+    return parts.length ? parts.join(', ') : null
+  })()
+
+  const customer = (order as any).customer
+  const customerName =
+    [customer?.first_name, customer?.last_name].filter(Boolean).join(' ') ||
+    null
+  const customerDoc = customer?.doc_id ?? null
+  const customerEmail = customer?.email ?? null
+  const customerPhone = customer?.phone ?? null
+  const customerAddress = customer?.address ?? null
+
   const subtotal = order.subtotal ?? 0
   const tax = order.tax ?? 0
   const total = order.total ?? subtotal + tax
   const paid = order.paid_amount ?? 0
   const balance = order.balance ?? Math.max(total - paid, 0)
+
+  const computedSubtotal = Array.isArray(order.order_items)
+    ? order.order_items.reduce((sum: number, it: any) => {
+        const qty = it.quantity ?? 0
+        const unit = it.unit_price ?? 0
+        const line = it.total ?? qty * unit
+        return sum + line
+      }, 0)
+    : subtotal
+  const displaySubtotal = order.subtotal ?? computedSubtotal
+  const displayTaxAmount = order.tax_amount ?? 0
 
   // Clases base comunes
   const baseClasses = 'font-sans text-black bg-white w-full'
@@ -112,12 +144,19 @@ export function OrderPrint({
         <div ref={printRef}>
           {currentView === 'ticket' ? (
             <div className={`${baseClasses} ${viewClasses.ticket}`}>
-              {/* Header - Ticket */}
               <div className="text-center mb-4 border-b border-gray-300 pb-3">
-                <h1 className="text-sm font-semibold mb-1 tracking-wide">
-                  ORDEN DE SERVICIO
-                </h1>
-                <p className="text-xs text-gray-600">#{order.order_number}</p>
+                {tenantName && (
+                  <h1 className="text-sm font-semibold mb-1 tracking-wide">
+                    {tenantName}
+                  </h1>
+                )}
+                {tenantAddress && (
+                  <p className="text-[11px] text-gray-600">{tenantAddress}</p>
+                )}
+                <p className="text-xs text-gray-600">Nº {order.order_number}</p>
+                <p className="text-[11px] text-gray-600">
+                  <DateDisplay value={order.created_at} />
+                </p>
               </div>
 
               {/* Info básica - Ticket */}
@@ -132,10 +171,12 @@ export function OrderPrint({
                   <span className="font-medium">Estado:</span>
                   <span>{order.status}</span>
                 </div>
-                {!!order.customer_id && (
+                {(customerName || customerDoc) && (
                   <div className="flex justify-between">
                     <span className="font-medium">Cliente:</span>
-                    <span className="truncate ml-2">{order.customer_id}</span>
+                    <span className="truncate ml-2">
+                      {customerName || customerDoc}
+                    </span>
                   </div>
                 )}
               </div>
@@ -178,11 +219,11 @@ export function OrderPrint({
               <div className="border-t border-gray-300 pt-3 space-y-1 text-xs">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>{PEN.format(subtotal)}</span>
+                  <span>{PEN.format(displaySubtotal)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Impuestos:</span>
-                  <span>{PEN.format(tax)}</span>
+                  <span>Impuestos{tax ? ` (${tax}%)` : ''}:</span>
+                  <span>{PEN.format(displayTaxAmount)}</span>
                 </div>
                 <div className="flex justify-between font-semibold text-sm border-t border-gray-300 pt-1 mt-2">
                   <span>TOTAL:</span>
@@ -198,82 +239,79 @@ export function OrderPrint({
                 </div>
               </div>
 
-              {/* Notas - Ticket */}
               {!!order.notes && (
                 <div className="border-t border-gray-300 pt-3 mt-4">
-                  <h3 className="text-xs font-semibold mb-1">NOTAS:</h3>
+                  <h3 className="text-xs font-semibold mb-1">Notas</h3>
                   <p className="text-xs text-gray-700 leading-tight">
                     {order.notes}
                   </p>
                 </div>
               )}
+              <div className="mt-4 pt-3 border-t border-gray-300">
+                <div className="flex items-end justify-between">
+                  <p className="text-[10px] text-gray-600">
+                    Gracias por su compra
+                  </p>
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(
+                      JSON.stringify({
+                        id: order.id,
+                        number: order.order_number,
+                      })
+                    )}`}
+                    alt="QR"
+                    className="w-16 h-16 rounded"
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             // Vista completa (full)
             <div className={`${baseClasses} ${viewClasses.full}`}>
-              {/* Header - Full */}
-              <div className="text-center mb-12 print:mb-8">
-                <h1 className="text-2xl sm:text-3xl font-light mb-2 tracking-wide print:text-xl">
-                  ORDEN DE SERVICIO
-                </h1>
-                <p className="text-lg text-gray-600 font-light print:text-base">
-                  #{order.order_number}
-                </p>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-gray-300 mb-12 print:mb-8" />
-
-              {/* Info Grid - Full */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 lg:gap-12 mb-12 print:grid-cols-2 print:gap-8 print:mb-8">
-                <div>
-                  <h3 className="text-base font-medium mb-4 text-black print:text-sm">
-                    Información de la Orden
-                  </h3>
-                  <div className="space-y-2 text-sm text-gray-700 print:text-xs">
-                    <p>
-                      <span className="font-medium text-black">Fecha:</span>{' '}
-                      <DateDisplay value={order.created_at} />
-                    </p>
-                    <p>
-                      <span className="font-medium text-black">Estado:</span>{' '}
-                      {order.status}
-                    </p>
-                    {!!order.customer_id && (
-                      <p>
-                        <span className="font-medium text-black">Cliente:</span>{' '}
-                        {order.customer_id}
-                      </p>
+              <div className="mb-8 print:mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    {tenantName && (
+                      <h2 className="text-lg font-semibold">{tenantName}</h2>
+                    )}
+                    {tenantAddress && (
+                      <p className="text-sm text-gray-600">{tenantAddress}</p>
+                    )}
+                    {tenantEmail && (
+                      <p className="text-sm text-gray-600">{tenantEmail}</p>
+                    )}
+                    {tenantPhone && (
+                      <p className="text-sm text-gray-600">{tenantPhone}</p>
                     )}
                   </div>
-                </div>
-
-                <div>
-                  <h3 className="text-base font-medium mb-4 text-black print:text-sm">
-                    Detalles Financieros
-                  </h3>
-                  <div className="space-y-2 text-sm text-gray-700 print:text-xs">
-                    <p>
-                      <span className="font-medium text-black">Subtotal:</span>{' '}
-                      {PEN.format(subtotal)}
-                    </p>
-                    <p>
-                      <span className="font-medium text-black">Impuestos:</span>{' '}
-                      {PEN.format(tax)}
-                    </p>
-                    <p>
-                      <span className="font-medium text-black">Total:</span>{' '}
-                      {PEN.format(total)}
-                    </p>
-                    <p>
-                      <span className="font-medium text-black">Pagado:</span>{' '}
-                      {PEN.format(paid)}
-                    </p>
-                    <p>
-                      <span className="font-medium text-black">Balance:</span>{' '}
-                      {PEN.format(balance)}
+                  <div className="text-right">
+                    <h2 className="text-lg font-semibold">
+                      Factura Nº: {order.order_number}
+                    </h2>
+                    <p className="text-sm text-gray-600">
+                      <DateDisplay value={order.created_at} />
                     </p>
                   </div>
+                </div>
+              </div>
+
+              <div className="mb-8 print:mb-6">
+                <h3 className="text-base font-medium mb-2 text-black">
+                  Datos del cliente
+                </h3>
+                <div className="text-sm text-gray-700">
+                  {(customerName || customerDoc) && (
+                    <p>{customerName || customerDoc}</p>
+                  )}
+                  {customerEmail && (
+                    <p className="text-gray-600">{customerEmail}</p>
+                  )}
+                  {customerPhone && (
+                    <p className="text-gray-600">{customerPhone}</p>
+                  )}
+                  {customerAddress && (
+                    <p className="text-gray-600">{customerAddress}</p>
+                  )}
                 </div>
               </div>
 
@@ -342,11 +380,17 @@ export function OrderPrint({
                 <div className="space-y-3 text-sm print:text-xs">
                   <div className="flex justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-700">Subtotal:</span>
-                    <span className="text-black">{PEN.format(subtotal)}</span>
+                    <span className="text-black">
+                      {PEN.format(displaySubtotal)}
+                    </span>
                   </div>
                   <div className="flex justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-700">Impuestos:</span>
-                    <span className="text-black">{PEN.format(tax)}</span>
+                    <span className="text-gray-700">
+                      Impuestos{tax ? ` (${tax}%)` : ''}:
+                    </span>
+                    <span className="text-black">
+                      {PEN.format(displayTaxAmount)}
+                    </span>
                   </div>
                   <div className="flex justify-between py-3 border-t border-gray-300 font-medium text-base print:text-sm">
                     <span className="text-black">Total:</span>
@@ -374,6 +418,23 @@ export function OrderPrint({
                   </p>
                 </div>
               )}
+              <div className="mt-10 print:mt-8 pt-6 border-t border-gray-300">
+                <div className="flex items-end justify-between">
+                  <p className="text-sm text-gray-600 print:text-xs">
+                    Gracias por su compra
+                  </p>
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(
+                      JSON.stringify({
+                        id: order.id,
+                        number: order.order_number,
+                      })
+                    )}`}
+                    alt="QR"
+                    className="w-24 h-24 rounded"
+                  />
+                </div>
+              </div>
             </div>
           )}
         </div>

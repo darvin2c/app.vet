@@ -11,6 +11,7 @@ import { OrderPrint } from '../order-print'
 
 interface POSInterfaceProps {
   onClose?: () => void
+  onOrderCreated?: () => void
 }
 
 export function POSInterface({ onClose }: POSInterfaceProps) {
