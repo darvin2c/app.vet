@@ -247,8 +247,12 @@ const usePOSStore = create<POSState>()((set, get) => {
       const { order, orderItems, payments } = get()
 
       // Create deep copies to avoid mutating state
-      const orderItemsCopy = orderItems.map((item) => ({ ...item }))
-      const paymentsCopy = payments.map((payment) => ({ ...payment }))
+      const orderItemsCopy = orderItems
+        .map((item) => ({ ...item }))
+        .filter((item) => !item.id)
+      const paymentsCopy = payments
+        .map((payment) => ({ ...payment }))
+        .filter((payment) => !payment.id)
 
       // Create order copy or default order if null
       const orderCopy: Order = order

@@ -22,10 +22,14 @@ import {
 import { CurrencyDisplay } from '@/components/ui/current-input'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { Enums } from '@/types/supabase.types'
+import { RemoveIcon } from '@/components/icons'
 
 export function PosPaymentTable() {
   const { payments, removePayment, order } = usePOSStore()
   const { getPaymentType } = usePaymentType()
+
+  const savedPayments = payments.filter((p) => !!p.id)
+  const newPayments = payments.filter((p) => !p.id)
 
   const handleRemovePayment = (index?: number) => {
     if (index === undefined) {
@@ -68,17 +72,164 @@ export function PosPaymentTable() {
         <div className="p-0">
           {/* Desktop Table View */}
           <div className="hidden md:block">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-[200px]">Método</TableHead>
-                  <TableHead className="text-right w-[120px]">Monto</TableHead>
-                  <TableHead className="w-[200px]">Notas</TableHead>
-                  <TableHead className="w-[80px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {payments.map((payment, index) => {
+            {/* Saved Payments */}
+            {savedPayments.length > 0 && (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-sm font-medium">Pagos Guardados</span>
+                  <Badge variant="outline" className="text-xs">
+                    {savedPayments.length}
+                  </Badge>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[200px]">Método</TableHead>
+                      <TableHead className="text-right w-[120px]">
+                        Monto
+                      </TableHead>
+                      <TableHead className="w-[200px]">Notas</TableHead>
+                      <TableHead className="w-[80px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {savedPayments.map((payment, index) => {
+                      const paymentType = payment.payment_method?.payment_type
+                        ? getPaymentType(
+                            payment.payment_method
+                              .payment_type as Enums<'payment_type'>
+                          )
+                        : undefined
+                      const Icon = paymentType?.icon || MoreHorizontal
+
+                      return (
+                        <TableRow key={`saved-${index}`} className="bg-muted">
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">
+                                  {payment.payment_method?.name ||
+                                    'Método desconocido'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {paymentType?.label || 'Otros'}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="font-semibold">
+                              S/ {payment.amount.toFixed(2)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-muted-foreground">
+                              {payment.notes || 'Sin notas'}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            {/* no delete for saved payments */}
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+
+            {/* New Payments */}
+            {newPayments.length > 0 && (
+              <div className="space-y-2 mt-4">
+                <div className="flex items-center justify-between px-4 py-2">
+                  <span className="text-sm font-medium">Pagos por Guardar</span>
+                  <Badge variant="outline" className="text-xs">
+                    {newPayments.length}
+                  </Badge>
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-[200px]">Método</TableHead>
+                      <TableHead className="text-right w-[120px]">
+                        Monto
+                      </TableHead>
+                      <TableHead className="w-[200px]">Notas</TableHead>
+                      <TableHead className="w-[80px]"></TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {newPayments.map((payment, index) => {
+                      const paymentType = payment.payment_method?.payment_type
+                        ? getPaymentType(
+                            payment.payment_method
+                              .payment_type as Enums<'payment_type'>
+                          )
+                        : undefined
+                      const Icon = paymentType?.icon || MoreHorizontal
+
+                      return (
+                        <TableRow key={`new-${index}`}>
+                          <TableCell>
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                <Icon className="h-4 w-4" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">
+                                  {payment.payment_method?.name ||
+                                    'Método desconocido'}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {paymentType?.label || 'Otros'}
+                                </p>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <span className="font-semibold">
+                              S/ {payment.amount.toFixed(2)}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <span className="text-sm text-muted-foreground">
+                              {payment.notes || 'Sin notas'}
+                            </span>
+                          </TableCell>
+                          <TableCell>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleRemovePayment(index)}
+                              className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="md:hidden space-y-3 p-4">
+            {/* Saved Payments */}
+            {savedPayments.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between px-2 py-1">
+                  <span className="text-sm font-medium">Pagos Guardados</span>
+                  <Badge variant="outline" className="text-xs">
+                    {savedPayments.length}
+                  </Badge>
+                </div>
+                {savedPayments.map((payment, index) => {
                   const paymentType = payment.payment_method?.payment_type
                     ? getPaymentType(
                         payment.payment_method
@@ -88,101 +239,105 @@ export function PosPaymentTable() {
                   const Icon = paymentType?.icon || MoreHorizontal
 
                   return (
-                    <TableRow key={index}>
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-                            <Icon className="h-4 w-4" />
-                          </div>
-                          <div>
-                            <p className="font-medium text-sm">
-                              {payment.payment_method?.name ||
-                                'Método desconocido'}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {paymentType?.label || 'Otros'}
-                            </p>
-                          </div>
+                    <div
+                      key={`saved-${index}`}
+                      className="flex items-center justify-between p-3 bg-muted rounded-lg border"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border">
+                          <Icon className="h-5 w-5" />
                         </div>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <span className="font-semibold">
-                          S/ {payment.amount.toFixed(2)}
-                        </span>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm text-muted-foreground">
-                          {payment.notes || 'Sin notas'}
-                        </span>
-                      </TableCell>
-                      <TableCell>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {payment.payment_method?.name ||
+                              'Método desconocido'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {paymentType?.label || 'Otros'}
+                          </p>
+                          {payment.notes && (
+                            <p className="text-xs text-muted-foreground mt-1 truncate">
+                              {payment.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="font-semibold text-sm">
+                            S/ {payment.amount.toFixed(2)}
+                          </p>
+                        </div>
+                        {/* no delete for saved payments */}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* New Payments */}
+            {newPayments.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between px-2 py-1">
+                  <span className="text-sm font-medium">Pagos por Guardar</span>
+                  <Badge variant="outline" className="text-xs">
+                    {newPayments.length}
+                  </Badge>
+                </div>
+                {newPayments.map((payment, index) => {
+                  const paymentType = payment.payment_method?.payment_type
+                    ? getPaymentType(
+                        payment.payment_method
+                          .payment_type as Enums<'payment_type'>
+                      )
+                    : undefined
+                  const Icon = paymentType?.icon || MoreHorizontal
+
+                  return (
+                    <div
+                      key={`new-${index}`}
+                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
+                    >
+                      <div className="flex items-center gap-3 flex-1">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border">
+                          <Icon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {payment.payment_method?.name ||
+                              'Método desconocido'}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {paymentType?.label || 'Otros'}
+                          </p>
+                          {payment.notes && (
+                            <p className="text-xs text-muted-foreground mt-1 truncate">
+                              {payment.notes}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <div className="text-right">
+                          <p className="font-semibold text-sm">
+                            S/ {payment.amount.toFixed(2)}
+                          </p>
+                        </div>
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => handleRemovePayment(index)}
-                          className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
                         >
-                          <Trash2 className="h-4 w-4" />
+                          <RemoveIcon className="h-4 w-4" />
                         </Button>
-                      </TableCell>
-                    </TableRow>
+                      </div>
+                    </div>
                   )
                 })}
-              </TableBody>
-            </Table>
-          </div>
-
-          {/* Mobile Card View */}
-          <div className="md:hidden space-y-3 p-4">
-            {payments.map((payment, index) => {
-              const paymentType = payment.payment_method?.payment_type
-                ? getPaymentType(
-                    payment.payment_method.payment_type as Enums<'payment_type'>
-                  )
-                : undefined
-              const Icon = paymentType?.icon || MoreHorizontal
-
-              return (
-                <div
-                  key={index}
-                  className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border"
-                >
-                  <div className="flex items-center gap-3 flex-1">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border">
-                      <Icon className="h-5 w-5" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">
-                        {payment.payment_method?.name || 'Método desconocido'}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        {paymentType?.label || 'Otros'}
-                      </p>
-                      {payment.notes && (
-                        <p className="text-xs text-muted-foreground mt-1 truncate">
-                          {payment.notes}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <p className="font-semibold text-sm">
-                        S/ {payment.amount.toFixed(2)}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleRemovePayment(index)}
-                      className="h-9 w-9 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </div>
-              )
-            })}
+              </div>
+            )}
           </div>
 
           {/* Summary Footer */}

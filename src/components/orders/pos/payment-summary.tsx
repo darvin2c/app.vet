@@ -9,6 +9,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import {
   AlertCircle,
   CheckCircle,
@@ -39,6 +40,7 @@ export function PaymentSummary({
   const isPaymentComplete = remainingAmount === 0 && totalPaid > 0
   const isOverpaid = changeAmount > 0
   const isUnderpaid = remainingAmount > 0
+  const { order } = usePOSStore()
 
   const getPaymentStatus = () => {
     if (isPaymentComplete && !isOverpaid) {
@@ -102,9 +104,16 @@ export function PaymentSummary({
                 <div className="text-xs text-muted-foreground">Total</div>
               </div>
             </div>
-            <Badge variant="secondary" className={status.color}>
-              {status.label}
-            </Badge>
+            <div className="flex flex-col gap-2 justify-end items-center pr-10">
+              {order?.order_number && (
+                <div className="text-xl text-muted-foreground">
+                  N° {order.order_number}
+                </div>
+              )}
+              <Badge variant="secondary" className={status.color}>
+                {status.label}
+              </Badge>
+            </div>
           </div>
 
           {/* Segunda fila: Progreso */}
@@ -122,7 +131,7 @@ export function PaymentSummary({
           </div>
 
           {/* Tercera fila: Montos adicionales */}
-          <div className="flex justify-between text-sm">
+          <div className="flex flex-col justify-between text-sm">
             {remainingAmount > 0 && (
               <div className="text-yellow-600 font-medium">
                 Pendiente: S/ {remainingAmount.toFixed(2)}
@@ -145,11 +154,18 @@ export function PaymentSummary({
         <div className="hidden md:flex items-center justify-between gap-6">
           {/* Izquierda: Estado y Total */}
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <StatusIcon className={`h-6 w-6 ${status.iconColor}`} />
-              <Badge variant="secondary" className={status.color}>
-                {status.label}
-              </Badge>
+            <div className="flex flex-col items-center gap-2">
+              {order?.order_number && (
+                <div className="text-lg font-bold text-muted-foreground">
+                  N° {order.order_number}
+                </div>
+              )}
+              <div className="flex flex-row items-center gap-2">
+                <StatusIcon className={`h-6 w-6 ${status.iconColor}`} />
+                <Badge variant="secondary" className={status.color}>
+                  {status.label}
+                </Badge>
+              </div>
             </div>
             <Separator orientation="vertical" className="h-8" />
             <div>
