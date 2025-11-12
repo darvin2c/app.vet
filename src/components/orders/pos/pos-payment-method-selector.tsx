@@ -61,7 +61,7 @@ export function PosPaymentSelectorContent({
   const paymentMethods = data?.data || []
   const { getPaymentType } = usePaymentType()
   const { order, addPayment } = usePOSStore()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
 
   // Calculate remaining amount from order balance
   const remainingAmount = order?.balance || 0
@@ -108,8 +108,14 @@ export function PosPaymentSelectorContent({
         <FieldContent>
           <Collapsible
             open={isOpen}
-            onOpenChange={setIsOpen}
             className="w-full"
+            onOpenChange={(open) => {
+              if (open) {
+                setIsOpen(true) // Siempre permitir abrir
+              } else if (selectedMethod) {
+                setIsOpen(false) // Solo cerrar si hay método seleccionado
+              }
+            }}
           >
             <CollapsibleTrigger asChild>
               <Button
@@ -138,7 +144,7 @@ export function PosPaymentSelectorContent({
                   form.setValue('payment_method_id', value)
                   setIsOpen(false)
                 }}
-                className="grid grid-cols-2 gap-4"
+                className="grid grid-cols-2 gap-2"
               >
                 {paymentMethods.map((method) => {
                   const paymentType = getPaymentType(method.payment_type)
