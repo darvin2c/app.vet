@@ -144,9 +144,7 @@ export function OrderList({
         const customer = row.original.customer
         return (
           <div className="text-sm">
-            {customer
-              ? `${customer.first_name} ${customer.last_name}`
-              : 'Sin cliente'}
+            {customer ? `${customer.first_name} ${customer.last_name}` : ''}
           </div>
         )
       },
@@ -188,6 +186,24 @@ export function OrderList({
             }).format(total)}
           </div>
         )
+      },
+    },
+    {
+      accessorKey: 'paid_amount',
+      header: ({ header }) => (
+        <OrderByTableHeader field="paid_amount" orderByHook={orderByHook}>
+          Pagado
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Order> }) => {
+        return <CurrencyDisplay value={row.getValue('paid_amount')} />
+      },
+    },
+    {
+      id: 'balance',
+      header: () => <div>Balance</div>,
+      cell: ({ row }: { row: Row<Order> }) => {
+        return <CurrencyDisplay value={row.getValue('balance')} />
       },
     },
     {
@@ -257,6 +273,10 @@ export function OrderList({
         const customer = order.customer
         const status = getOrderStatus(order.status)
         const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
+        const paid = order.paid_amount || 0
+        const balance = (order.total || 0) - paid
+        const balanceClass =
+          balance < 0 ? 'text-destructive' : balance > 0 ? 'text-green-600' : ''
 
         return (
           <Card key={order.id} className="hover:shadow-md transition-shadow">
@@ -292,6 +312,23 @@ export function OrderList({
                 </div>
               </div>
 
+              <div className="text-xs">
+                <span className="text-muted-foreground">Pagado: </span>
+                <span className="font-medium">
+                  {new Intl.NumberFormat('es-PE', {
+                    style: 'currency',
+                    currency: 'PEN',
+                  }).format(paid)}
+                </span>
+                <span className="text-muted-foreground"> • Balance: </span>
+                <span className={`font-medium ${balanceClass}`}>
+                  {new Intl.NumberFormat('es-PE', {
+                    style: 'currency',
+                    currency: 'PEN',
+                  }).format(balance)}
+                </span>
+              </div>
+
               <div className="text-xs text-muted-foreground">
                 <DateDisplay value={order.created_at} />
               </div>
@@ -311,6 +348,10 @@ export function OrderList({
         const customer = order.customer
         const status = getOrderStatus(order.status)
         const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
+        const paid = order.paid_amount || 0
+        const balance = (order.total || 0) - paid
+        const balanceClass =
+          balance < 0 ? 'text-destructive' : balance > 0 ? 'text-green-600' : ''
 
         return (
           <Item key={order.id}>
@@ -338,6 +379,25 @@ export function OrderList({
                         className="text-lg font-bold"
                         value={order.total}
                       />
+                    </div>
+                    <div className="text-xs">
+                      <span className="text-muted-foreground">Pagado: </span>
+                      <span className="font-medium">
+                        {new Intl.NumberFormat('es-PE', {
+                          style: 'currency',
+                          currency: 'PEN',
+                        }).format(paid)}
+                      </span>
+                      <span className="text-muted-foreground">
+                        {' '}
+                        • Balance:{' '}
+                      </span>
+                      <span className={`font-medium ${balanceClass}`}>
+                        {new Intl.NumberFormat('es-PE', {
+                          style: 'currency',
+                          currency: 'PEN',
+                        }).format(balance)}
+                      </span>
                     </div>
                     <div className="text-xs text-muted-foreground">
                       <DateDisplay value={order.created_at} />
