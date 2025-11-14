@@ -352,3 +352,6 @@ if (patients.length === 0) {
 
 - antes de finalizar siempre ejecuta `pnpm typecheck`
 - Los componentes debe de quedar siempre limpios, eliminar codigo que no se use.
+
+**ui.shadcn**
+https://ui.shadcn.com/llms.txt
