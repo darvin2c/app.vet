@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/pagination'
 import { applySupabaseSearch } from '@/components/ui/search-input'
 
-
 export function useRoleList({
   filters = [],
   search,
