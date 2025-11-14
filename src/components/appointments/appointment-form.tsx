@@ -117,7 +117,6 @@ export function AppointmentForm({
                 setValue('scheduled_end', date?.toISOString() || '')
               }
               minDate={new Date()}
-              availableTimeSlots={availableTimeSlots}
             />
             <FieldError errors={[errors.scheduled_start]} />
           </FieldContent>

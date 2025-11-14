@@ -52,9 +52,9 @@ export function OrderByTableHeader({
   className,
   children,
 }: OrderByTableHeaderProps) {
-  const { setSort, getSortDirection, isSorted } = orderByHook
+  const { setSort, getSortDirection } = orderByHook
   const direction = getSortDirection(field, foreignTable)
-  const isActive = isSorted(field, foreignTable)
+  // const isActive = isSorted(field, foreignTable)
 
   const handleSort = () => {
     setSort(field, foreignTable)

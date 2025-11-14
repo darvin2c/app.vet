@@ -132,17 +132,6 @@ function DrawerDescription({
   )
 }
 
-// DrawerForm component for form-specific drawer usage
-interface DrawerFormProps {
-  title: string
-  description?: string
-  children: React.ReactNode
-  trigger?: React.ReactNode
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
-  footer?: React.ReactNode
-}
-
 export {
   Drawer,
   DrawerPortal,

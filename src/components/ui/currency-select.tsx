@@ -182,13 +182,6 @@ export const CurrencySelector = React.forwardRef<
       {} as Record<string, typeof CURRENCIES>
     )
 
-    const formatCurrencyLabel = (currency: (typeof CURRENCIES)[0]) => {
-      if (showSymbol) {
-        return `${currency.symbol} ${currency.label} (${currency.value})`
-      }
-      return `${currency.label} (${currency.value})`
-    }
-
     const formatSelectedLabel = (currency: (typeof CURRENCIES)[0]) => {
       if (showSymbol) {
         return `${currency.symbol} ${currency.value}`

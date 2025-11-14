@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/tooltip'
 import { Alert } from '../alert'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { ScrollArea } from '../scroll-area'
 
 interface ValidateStepProps {
   validationResult: ValidationResult

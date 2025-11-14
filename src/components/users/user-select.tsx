@@ -17,7 +17,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
-import { Tables } from '@/types/supabase.types'
 
 interface UserSelectProps {
   value?: string

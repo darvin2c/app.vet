@@ -7,8 +7,6 @@ import { Label } from '@/components/ui/label'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { cn } from '@/lib/utils'
 
-import type { BooleanFilterConfig } from './types'
-
 interface BooleanFilterProps {
   config: any // Temporal para evitar errores de tipado
   value: string

@@ -1,11 +1,9 @@
-import { z } from 'zod'
 import { useDataImport } from '@/hooks/data-import/use-data-import'
 import { DataImportProps } from '@/types/data-import.types'
 import { StepIndicator } from './step-indicator'
 import { UploadStep } from './upload-step'
 import { ValidateStep } from './validate-step'
 import { ConfirmStep } from './confirm-step'
-import { ScrollArea } from '../scroll-area'
 
 const steps = [
   { key: 'upload' as const, label: 'Subir Archivo', number: 1 },

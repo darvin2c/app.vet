@@ -47,7 +47,7 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
     } else {
       form.setValue('role_id', null)
     }
-  }, [user.role?.id, form.setValue])
+  }, [user.role?.id, form])
 
   return (
     <div className="space-y-6">
@@ -129,7 +129,9 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
 
       {/* Información adicional */}
       <div className="text-xs text-muted-foreground space-y-1">
-        <p>• Los cambios se aplicarán al presionar "Actualizar Roles"</p>
+        <p>
+          • Los cambios se aplicarán al presionar &quot;Actualizar Roles&quot;
+        </p>
         <p>• Los super administradores tienen acceso completo al sistema</p>
         <p>• Al activar super usuario se quitan los roles asignados</p>
       </div>

@@ -14,8 +14,6 @@ import {
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
 
-import type { DateRangeFilterConfig } from './types'
-
 interface DateRangeFilterProps {
   config: any // Temporal para evitar errores de tipado
   fromValue: string

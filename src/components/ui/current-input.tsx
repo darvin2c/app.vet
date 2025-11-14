@@ -65,11 +65,7 @@ type CurrencyDisplayProps = React.ComponentProps<'span'> & {
   value?: number
 }
 
-export function CurrencyDisplay({
-  children,
-  value,
-  ...props
-}: CurrencyDisplayProps) {
+export function CurrencyDisplay({ value, ...props }: CurrencyDisplayProps) {
   const { currency } = useCurrency()
   if (!value || isNaN(value)) {
     return null

@@ -1,9 +1,9 @@
 'use client'
 
 import * as React from 'react'
-import { constructNow, format } from 'date-fns'
+import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Calendar as CalendarIcon, Trash, X } from 'lucide-react'
+import { Calendar as CalendarIcon, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -13,14 +13,8 @@ import { Label } from '@/components/ui/label'
 import {
   InputGroup,
   InputGroupAddon,
-  InputGroupButton,
   InputGroupInput,
 } from '@/components/ui/input-group'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 import {
   Drawer,
   DrawerContent,
@@ -28,8 +22,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { cn } from '@/lib/utils'
 
 interface DateTimeRangePickerProps {
   startValue?: Date
@@ -40,7 +32,6 @@ interface DateTimeRangePickerProps {
   disabled?: boolean
   minDate?: Date
   disabledDates?: Date[]
-  availableTimeSlots?: string[]
   className?: string
 }
 
@@ -53,17 +44,13 @@ export default function Calendar20({
   disabled = false,
   minDate,
   disabledDates = [],
-  availableTimeSlots = [],
   className,
 }: DateTimeRangePickerProps) {
   const [date, setDate] = React.useState<Date | undefined>(startValue)
   const [startTime, setStartTime] = React.useState<string | null>(null)
   const [endTime, setEndTime] = React.useState<string | null>(null)
   const [open, setOpen] = React.useState(false)
-  const isMobile = useIsMobile()
-  const [selectionMode, setSelectionMode] = React.useState<'start' | 'end'>(
-    'start'
-  )
+  // selection mode state removed
 
   // Referencias para rastrear si el cambio proviene del usuario
   const isUserActionRef = React.useRef(false)
@@ -205,7 +192,7 @@ export default function Calendar20({
       console.log('❌ No se encontró el botón para la hora:', targetTime)
 
       // Intentar buscar horas cercanas como fallback
-      const [targetHour, targetMinute] = targetTime.split(':').map(Number)
+      const [targetHour] = targetTime.split(':').map(Number)
       const fallbackTimes = [
         `${targetHour.toString().padStart(2, '0')}:00`,
         `${targetHour.toString().padStart(2, '0')}:30`,
@@ -246,7 +233,7 @@ export default function Calendar20({
 
   const handleDateSelect = (newDate: Date | undefined) => {
     setDate(newDate)
-    setSelectionMode('start')
+    // selection mode update removed
 
     // Mantener los tiempos seleccionados pero actualizar la fecha
     if (newDate) {
@@ -298,11 +285,11 @@ export default function Calendar20({
         setEndTime(null)
         onStartChange?.(endDateTime)
         onEndChange?.(undefined)
-        setSelectionMode('end')
+        // selection mode update removed
       } else {
         setStartTime(null)
         onStartChange?.(undefined)
-        setSelectionMode('start')
+        // selection mode update removed
       }
       return
     }
@@ -313,7 +300,7 @@ export default function Calendar20({
       isUserActionRef.current = true
       setEndTime(null)
       onEndChange?.(undefined)
-      setSelectionMode('end') // Consistencia en modo de selección
+      // selection mode update removed
       return
     }
 
@@ -321,7 +308,7 @@ export default function Calendar20({
     if (!startTime && !endTime) {
       setStartTime(time)
       onStartChange?.(newDateTime)
-      setSelectionMode('end')
+      // selection mode update removed
       return
     }
 
@@ -352,7 +339,7 @@ export default function Calendar20({
         // Selected time is before end time, set as start time
         setStartTime(time)
         onStartChange?.(newDateTime)
-        setSelectionMode('end')
+        // selection mode update removed
       } else {
         // Selected time is after end time, reorder automatically
         setStartTime(endTime)
@@ -445,7 +432,7 @@ export default function Calendar20({
   const handleClearSelection = () => {
     setStartTime(null)
     setEndTime(null)
-    setSelectionMode('start')
+    // selection mode update removed
     onStartChange?.(undefined)
     onEndChange?.(undefined)
   }

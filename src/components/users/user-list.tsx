@@ -38,14 +38,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
-  Users,
-  Crown,
-  Shield,
-} from 'lucide-react'
+import { ArrowUpRightIcon, Users, Crown, Shield } from 'lucide-react'
 import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'
@@ -104,7 +97,7 @@ export function UserList({
   const columns: ColumnDef<UserWithRole>[] = [
     {
       accessorKey: 'user',
-      header: ({ header }) => (
+      header: () => (
         <OrderByTableHeader
           field="profiles.first_name"
           orderByHook={orderByHook}

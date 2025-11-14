@@ -22,7 +22,7 @@ export function StepIndicator({ currentStep, steps }: StepIndicatorProps) {
       {steps.map((step, index) => {
         const isCompleted = index < currentIndex
         const isCurrent = index === currentIndex
-        const isUpcoming = index > currentIndex
+        // const isUpcoming = index > currentIndex
 
         return (
           <div key={step.key} className="flex items-center">

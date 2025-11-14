@@ -169,7 +169,7 @@ function usePhoneValidation(value: string, country: CountryCode) {
         formatted: value,
         international: value,
       }
-    } catch (error) {
+    } catch {
       return {
         isValid: false,
         formatted: value,

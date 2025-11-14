@@ -9,6 +9,7 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { OrderByTrigger } from './order-by-trigger'
+import { cn } from '@/lib/utils'
 import { SortDirectionIcon } from './order-by-table-header'
 import type { SortDirection, SortColumn } from './types'
 import { ResponsiveButtonProps } from '../responsive-button'
@@ -48,7 +49,7 @@ export function OrderByPopover({
       <PopoverTrigger asChild>
         <OrderByTrigger activeSortsCount={activeSortsCount} {...triggerProps} />
       </PopoverTrigger>
-      <PopoverContent className="w-64 p-0" align="start">
+      <PopoverContent className={cn('w-64 p-0', className)} align="start">
         <div className="p-4">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-medium text-sm">Ordenar por</h4>

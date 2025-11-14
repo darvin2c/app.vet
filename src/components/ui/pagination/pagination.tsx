@@ -174,7 +174,16 @@ export function Pagination({
 
       {/* Optional: page size selector placeholder (no UI change for now) */}
       {showPageSizeSelector && (
-        <div className="sr-only">Selector de tamaño de página pendiente</div>
+        <select
+          aria-label="Tamaño de página"
+          className="sr-only"
+          value={pageSize}
+          onChange={(e) => setPageSize(Number(e.target.value))}
+        >
+          <option value={10}>10</option>
+          <option value={20}>20</option>
+          <option value={50}>50</option>
+        </select>
       )}
     </div>
   )
