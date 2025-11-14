@@ -23,12 +23,14 @@ import { Avatar, AvatarFallback } from '../ui/avatar'
 import { useGoTenant } from '@/hooks/tenants/use-go-tenant'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import cookies from 'js-cookie'
+import { useProfile } from '@/hooks/auth/use-user'
 
 export function TenantSwitcher() {
   const { isMobile, state } = useSidebar()
   const { urlTenant } = useGoTenant()
   const { data: tenants } = useTenants()
   const { currentTenant, setCurrentTenant } = useCurrentTenantStore()
+  useProfile()
   const tenantSlug = cookies.get('tenant')
   React.useEffect(() => {
     if (tenantSlug) {

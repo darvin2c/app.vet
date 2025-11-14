@@ -8,18 +8,17 @@ type FieldWithReferencedTable = {
 }
 
 export function applySupabaseSearch(
-  query: any,
+  query: unknown,
   search?: string,
   fields?: string[],
   fieldWithReferencedTable?: FieldWithReferencedTable[]
 ) {
+  let q: any = query as any
   if (!search || !fields) return query
 
   // Aplicar búsqueda en múltiples campos
   if (fields?.length) {
-    query = query.or(
-      fields?.map((field) => `${field}.ilike.*${search}*`).join(',')
-    )
+    q = q.or(fields?.map((field) => `${field}.ilike.*${search}*`).join(','))
   }
 
   // Aplicar búsqueda en múltiples campos con tabla referenciada
@@ -30,10 +29,10 @@ export function applySupabaseSearch(
         .join(',')
 
       if (orExpr && orExpr.length) {
-        query = query.or(orExpr, { referencedTable: item.referencedTable })
+        q = q.or(orExpr, { referencedTable: item.referencedTable })
       }
     }
   }
 
-  return query
+  return q
 }

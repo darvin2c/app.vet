@@ -11,7 +11,7 @@ const steps = [
   { key: 'confirm' as const, label: 'Confirmar Importación', number: 3 },
 ]
 
-export function DataImport<T = any>({
+export function DataImport<T extends Record<string, unknown>>({
   schema,
   onImport,
   isLoading = false,

@@ -4,9 +4,10 @@ import { AppliedPagination } from './types'
  * Aplica paginación de Supabase a la consulta usando AppliedPagination
  */
 export function applySupabasePagination(
-  query: any,
+  query: unknown,
   pagination?: AppliedPagination
 ) {
+  let q: any = query as any
   if (!pagination) return query
 
   const { page, pageSize } = pagination
@@ -21,7 +22,7 @@ export function applySupabasePagination(
   const offset = (page - 1) * pageSize
 
   // Aplicar límites para paginación
-  query = query.range(offset, offset + pageSize - 1)
+  q = q.range(offset, offset + pageSize - 1)
 
-  return query
+  return q
 }

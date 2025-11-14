@@ -3,7 +3,7 @@ import { z } from 'zod'
 export type DataImportStep = 'upload' | 'validate' | 'confirm'
 
 export interface ParsedRow {
-  data: Record<string, any>
+  data: Record<string, unknown>
   index: number
   errors: ValidationError[]
 }

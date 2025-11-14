@@ -18,7 +18,7 @@ const initialState: DataImportState = {
   validationResult: null,
 }
 
-export function useDataImport<T = any>(
+export function useDataImport<T extends Record<string, unknown>>(
   schema: z.ZodSchema<T>,
   onImport: (data: T[]) => void,
   templateName: string = 'template.csv',
@@ -67,7 +67,7 @@ export function useDataImport<T = any>(
 
   const parseFile = useCallback(async (file: File): Promise<ParsedRow[]> => {
     // Función helper para normalizar valores vacíos a undefined
-    const normalizeValue = (value: any): any => {
+    const normalizeValue = (value: unknown): unknown => {
       if (
         value === null ||
         value === undefined ||
@@ -97,12 +97,14 @@ export function useDataImport<T = any>(
               return
             }
 
-            const parsedRows: ParsedRow[] = results.data.map((row, index) => {
+            const parsedRows: ParsedRow[] = (
+              results.data as Record<string, unknown>[]
+            ).map((row, index) => {
               // Normalizar todos los valores del row
-              const normalizedData: Record<string, any> = {}
-              Object.keys(row as Record<string, any>).forEach((key) => {
+              const normalizedData: Record<string, unknown> = {}
+              Object.keys(row as Record<string, unknown>).forEach((key) => {
                 normalizedData[key] = normalizeValue(
-                  (row as Record<string, any>)[key]
+                  (row as Record<string, unknown>)[key]
                 )
               })
 
@@ -133,7 +135,7 @@ export function useDataImport<T = any>(
             }
 
             const headers = jsonData[0] as string[]
-            const rows = jsonData.slice(1) as any[][]
+            const rows = jsonData.slice(1) as unknown[][]
 
             // Verificar si hay datos además de los headers
             if (rows.length === 0) {
@@ -146,7 +148,7 @@ export function useDataImport<T = any>(
             }
 
             const parsedRows: ParsedRow[] = rows.map((row, index) => {
-              const rowData: Record<string, any> = {}
+              const rowData: Record<string, unknown> = {}
               headers.forEach((header, colIndex) => {
                 // Usar normalizeValue en lugar de || ''
                 rowData[header] = normalizeValue(row[colIndex])
