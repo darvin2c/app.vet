@@ -2,15 +2,13 @@
 
 import PageBase from '@/components/page-base'
 import { ProductMovementList } from '@/components/product-movements/product-movement-list'
-import useProductMovementList from '@/hooks/product-movements/use-product-movement-list'
 import { SearchInput } from '@/components/ui/search-input'
 import { Filters } from '@/components/ui/filters'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { OrderBy } from '@/components/ui/order-by'
-import { FilterConfig, useFilters } from '@/components/ui/filters'
+import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { ProductSelect } from '@/components/products/product-select'
-import { useMemo } from 'react'
 import { ProductMovementCreateButton } from '@/components/product-movements/product-movement-create-button'
 
 export default function KardexPage() {
@@ -24,8 +22,8 @@ export default function KardexPage() {
     },
     {
       field: 'created_at',
-      label: 'Rango de Fechas',
-      placeholder: 'Seleccionar rango de fechas',
+      label: 'Fecha desde',
+      placeholder: 'Seleccionar fecha inicial',
       operator: 'gte',
     },
   ]

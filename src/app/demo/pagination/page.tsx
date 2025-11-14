@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
 import { usePagination } from '@/components/ui/pagination/use-pagination'
 
 // Mock data generator
@@ -31,13 +31,21 @@ const getStatusBadgeClasses = (status: string) => {
 }
 
 export default function PaginationDemoPage() {
+  return (
+    <Suspense fallback={<div />}>
+      <PaginationDemoContent />
+    </Suspense>
+  )
+}
+
+function PaginationDemoContent() {
   const { appliedPagination, paginationProps } = usePagination()
   const { page, pageSize } = appliedPagination
 
   const [currentData, setCurrentData] = useState(() =>
     generateMockData(page, pageSize)
   )
-  const totalItems = 125 // Total de elementos de ejemplo
+  const totalItems = 125
 
   const handlePageChange = (nextPage: number, nextPageSize: number) => {
     setCurrentData(generateMockData(nextPage, nextPageSize))
@@ -50,7 +58,6 @@ export default function PaginationDemoPage() {
       subtitle="Componente de paginación reutilizable con estado en URL"
     >
       <div className="space-y-6">
-        {/* Descripción */}
         <Card>
           <CardHeader>
             <CardTitle>Componente de Paginación</CardTitle>
@@ -78,7 +85,6 @@ export default function PaginationDemoPage() {
           </CardContent>
         </Card>
 
-        {/* Lista de datos */}
         <Card>
           <CardHeader>
             <CardTitle>Datos Paginados</CardTitle>
@@ -108,7 +114,6 @@ export default function PaginationDemoPage() {
           </CardContent>
         </Card>
 
-        {/* Componente de paginación */}
         <div className="border rounded-lg p-4">
           <h3 className="text-lg font-medium mb-4">Paginación</h3>
           <Pagination
@@ -123,12 +128,13 @@ export default function PaginationDemoPage() {
           />
         </div>
 
-        {/* Ejemplo con configuración personalizada */}
         <div className="border rounded-lg p-4">
           <h3 className="text-lg font-medium mb-4">
             Paginación con Configuración Personalizada
           </h3>
-          <CustomPaginationExample />
+          <Suspense fallback={<div />}>
+            <CustomPaginationExample />
+          </Suspense>
         </div>
       </div>
     </PageBase>
