@@ -42,12 +42,12 @@ export function UserRolesForm({ user }: UserRolesFormProps) {
 
   // Actualizar el valor del formulario cuando cambie el rol del usuario
   useEffect(() => {
-    if (user?.role?.id) {
-      form.setValue('role_id', user.role.id)
-    } else {
-      form.setValue('role_id', null)
+    const current = form.getValues('role_id')
+    const next = user?.role?.id ?? null
+    if (current !== next) {
+      form.setValue('role_id', next)
     }
-  }, [user.role?.id, form])
+  }, [user.role?.id])
 
   return (
     <div className="space-y-6">

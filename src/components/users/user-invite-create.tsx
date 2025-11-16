@@ -23,6 +23,7 @@ import {
 import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
+import { toast } from 'sonner'
 
 interface UserInviteCreateProps {
   open?: boolean
@@ -54,7 +55,8 @@ export function UserInviteCreate({
       // now + 7 days
       expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     })
-
+    form.reset()
+    setOpen(false)
     const domain = process.env.NEXT_PUBLIC_DOMAIN
     const baseUrl = domain ? `https://${domain}` : ''
     await sendInvitationsAction({
@@ -74,9 +76,6 @@ export function UserInviteCreate({
       ],
       subject: `Invitación a la plataforma - ${currentTenant?.name || 'Mi Empresa'}`,
     })
-
-    form.reset()
-    setOpen(false)
   })
 
   return (

@@ -45,19 +45,23 @@ export default function useInvitationCreate() {
         .single()
 
       if (error) {
-        throw new Error(`Error al crear invitación: ${error.message}`)
+        throw new Error(`Error en la invitación: ${error.message}`)
       }
 
       return data
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'invitations'],
       })
-      toast.success('Invitación creada')
+      toast.success('Invitación enviada', {
+        description: `Se ha enviado una invitación a ${variables.email}`,
+      })
     },
     onError: (error) => {
-      toast.error(error.message || 'Error al crear invitación')
+      toast.error('Error en la invitación', {
+        description: error.message,
+      })
     },
   })
 }
