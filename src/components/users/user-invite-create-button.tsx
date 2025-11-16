@@ -17,14 +17,14 @@ type SendAction = (params: {
   subject?: string
 }) => Promise<any>
 
-export function UserInviteCreateButton({ onSend }: { onSend: SendAction }) {
+export function UserInviteCreateButton() {
   const [open, setOpen] = useState(false)
   return (
     <>
       <ResponsiveButton onClick={() => setOpen(true)} variant="default">
         Invitar Usuarios
       </ResponsiveButton>
-      {open && <UserInviteCreate onSend={onSend} />}
+      {open && <UserInviteCreate />}
     </>
   )
 }

@@ -34,11 +34,7 @@ type SendAction = (params: {
   subject?: string
 }) => Promise<any>
 
-interface UserInviteCreateProps {
-  onSend: SendAction
-}
-
-export function UserInviteCreate({ onSend }: UserInviteCreateProps) {
+export function UserInviteCreate() {
   const [open, setOpen] = useState(false)
   const createBulk = useInvitationCreateBulk()
   const { currentTenant } = useCurrentTenantStore()
@@ -69,21 +65,6 @@ export function UserInviteCreate({ onSend }: UserInviteCreateProps) {
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN
     const baseUrl = domain ? `https://${domain}` : ''
-    await onSend({
-      invites: invites.map((i) => ({
-        id: i.id,
-        email: i.email,
-        roleName: i.role_id,
-        expiresAt: i.expires_at,
-        acceptUrl: `${baseUrl}/accept-invitation?token=${i.token}`,
-        message:
-          typeof i.metadata === 'object' && i.metadata
-            ? (i.metadata as any).message
-            : undefined,
-        company: currentTenant?.name || 'Mi Empresa',
-      })),
-      subject: 'Invitación a la plataforma',
-    })
 
     toast.success('Invitaciones enviadas')
     form.reset()
@@ -101,7 +82,7 @@ export function UserInviteCreate({ onSend }: UserInviteCreateProps) {
             </SheetDescription>
           </SheetHeader>
 
-          <Form {...form as any}>
+          <Form {...(form as any)}>
             <form onSubmit={onSubmit} className="px-4">
               <UserInviteForm />
             </form>
@@ -117,7 +98,10 @@ export function UserInviteCreate({ onSend }: UserInviteCreateProps) {
               >
                 Enviar Invitaciones
               </ResponsiveButton>
-              <ResponsiveButton onClick={() => setOpen(false)} variant="outline">
+              <ResponsiveButton
+                onClick={() => setOpen(false)}
+                variant="outline"
+              >
                 Cancelar
               </ResponsiveButton>
             </Field>
