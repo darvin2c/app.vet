@@ -16,7 +16,10 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Form } from '@/components/ui/form'
 import { Field } from '@/components/ui/field'
 import { UserInviteForm } from './user-invite-form'
-import { invitationSendFormSchema } from '@/schemas/invitations.schema'
+import {
+  invitationSendFormSchema,
+  invitationSendFormSchemaType,
+} from '@/schemas/invitations.schema'
 import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { toast } from 'sonner'
@@ -52,22 +55,20 @@ export function UserInviteCreate({
   const createOne = useInvitationCreate()
   const { currentTenant } = useCurrentTenantStore()
 
-  const form = useForm({
+  const form = useForm<invitationSendFormSchemaType>({
     resolver: zodResolver(invitationSendFormSchema),
     defaultValues: {
       email: '',
       role_id: '',
-      expires_at: new Date().toISOString(),
-      message: '',
-    } as any,
+    },
   })
 
-  const onSubmit = form.handleSubmit(async (values: any) => {
+  const onSubmit = form.handleSubmit(async (data) => {
     const invite = await createOne.mutateAsync({
-      email: values.email,
-      role_id: values.role_id,
-      expires_at: values.expires_at,
-      message: values.message,
+      email: data.email,
+      role_id: data.role_id,
+      // now + 7 days
+      expires_at: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
     })
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN
@@ -107,7 +108,7 @@ export function UserInviteCreate({
           </SheetHeader>
 
           <Form {...(form as any)}>
-            <form onSubmit={onSubmit} className="px-4">
+            <form onSubmit={onSubmit} className="p-6">
               <UserInviteForm />
             </form>
           </Form>
@@ -125,6 +126,7 @@ export function UserInviteCreate({
               <ResponsiveButton
                 onClick={() => setOpen(false)}
                 variant="outline"
+                isLoading={createOne.isPending}
               >
                 Cancelar
               </ResponsiveButton>
