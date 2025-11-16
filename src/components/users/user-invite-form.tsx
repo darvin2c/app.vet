@@ -14,7 +14,11 @@ export function UserInviteForm() {
     <div className="space-y-4">
       <Field>
         <label htmlFor="emails">Correos electrónicos</label>
-        <Textarea id="emails" placeholder="uno por línea" {...form.register('emailsText')} />
+        <Textarea
+          id="emails"
+          placeholder="uno por línea"
+          {...form.register('emailsText')}
+        />
       </Field>
 
       <Field>

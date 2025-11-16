@@ -34,8 +34,18 @@ type SendAction = (params: {
   subject?: string
 }) => Promise<any>
 
-export function UserInviteCreate() {
-  const [open, setOpen] = useState(false)
+interface UserInviteCreateProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+}
+
+export function UserInviteCreate({
+  open,
+  onOpenChange,
+}: UserInviteCreateProps) {
+  const [internalOpen, setInternalOpen] = useState(false)
+  const isOpen = open !== undefined ? open : internalOpen
+  const setOpen = onOpenChange || setInternalOpen
   const createBulk = useInvitationCreateBulk()
   const { currentTenant } = useCurrentTenantStore()
 
@@ -72,7 +82,7 @@ export function UserInviteCreate() {
   })
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetContent className="!max-w-2xl">
         <ScrollArea>
           <SheetHeader>

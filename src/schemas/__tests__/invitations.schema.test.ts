@@ -22,4 +22,3 @@ describe('invitationCreateSchema', () => {
     expect(parsed.success).toBe(false)
   })
 })
-
