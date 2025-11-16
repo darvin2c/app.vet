@@ -3,6 +3,7 @@ import {
   Field,
   FieldContent,
   FieldDescription,
+  FieldError,
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -16,7 +17,10 @@ export function UserInviteForm() {
 
   return (
     <div className="space-y-4">
-      <Field orientation="responsive">
+      <Field
+        orientation="responsive"
+        data-invalid={!!form.formState.errors.email}
+      >
         <FieldContent>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <FieldDescription>
@@ -29,9 +33,13 @@ export function UserInviteForm() {
           placeholder="usuario@correo.com"
           {...form.register('email')}
         />
+        <FieldError errors={[form.formState.errors.email]} />
       </Field>
 
-      <Field orientation="responsive">
+      <Field
+        orientation="responsive"
+        data-invalid={!!form.formState.errors.role_id}
+      >
         <FieldContent>
           <FieldLabel htmlFor="role_id">Rol</FieldLabel>
           <FieldDescription>
@@ -42,6 +50,7 @@ export function UserInviteForm() {
           value={form.watch('role_id')}
           onValueChange={(v) => form.setValue('role_id', v)}
         />
+        <FieldError errors={[form.formState.errors.role_id]} />
       </Field>
     </div>
   )
