@@ -25,18 +25,19 @@ export function removeUndefined<T extends Record<string, any>>(
   return result
 }
 
-/**
- * Formatea un número como moneda
- * @param amount - El monto a formatear
- * @param currency - La moneda (por defecto 'PEN')
- * @returns El monto formateado como string
- */
-export function formatCurrency(
-  amount: number,
-  currency: string = 'PEN'
-): string {
-  return new Intl.NumberFormat('es-PE', {
-    style: 'currency',
-    currency: currency,
-  }).format(amount)
+export function uuidV4() {
+  const g: any = globalThis as any
+  if (g?.crypto?.randomUUID) {
+    return g.crypto.randomUUID()
+  }
+  const bytes = new Uint8Array(16)
+  if (g?.crypto?.getRandomValues) {
+    g.crypto.getRandomValues(bytes)
+  } else {
+    for (let i = 0; i < 16; i++) bytes[i] = Math.floor(Math.random() * 256)
+  }
+  bytes[6] = (bytes[6] & 0x0f) | 0x40
+  bytes[8] = (bytes[8] & 0x3f) | 0x80
+  const hex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
+  return `${hex[0]}${hex[1]}${hex[2]}${hex[3]}-${hex[4]}${hex[5]}-${hex[6]}${hex[7]}-${hex[8]}${hex[9]}-${hex[10]}${hex[11]}${hex[12]}${hex[13]}${hex[14]}${hex[15]}`
 }

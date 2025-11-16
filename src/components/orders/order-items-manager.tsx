@@ -17,8 +17,8 @@ import { ProductSelect } from '@/components/products/product-select'
 import { Input } from '@/components/ui/input'
 import { Tables } from '@/types/supabase.types'
 import { calculateOrderItemTotal } from '@/schemas/order-items.schema'
-import { formatCurrency } from '@/lib/utils'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
+import { CurrencyDisplay } from '../ui/current-input'
 
 type OrderItem = Tables<'order_items'> & {
   products: Tables<'products'> | null
@@ -268,15 +268,16 @@ export function OrderItemsManager({
                     {(tenantTaxRate * 100).toFixed(0)}%
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(
-                      calculateOrderItemTotal({
-                        quantity: newItem.quantity,
-                        unit_price: newItem.unit_price,
-                        discount: newItem.discount,
-                        tax_rate: tenantTaxRate,
-                      }).total,
-                      currency
-                    )}
+                    <CurrencyDisplay
+                      value={
+                        calculateOrderItemTotal({
+                          quantity: newItem.quantity,
+                          unit_price: newItem.unit_price,
+                          discount: newItem.discount,
+                          tax_rate: tenantTaxRate,
+                        }).total
+                      }
+                    />
                   </TableCell>
                   <TableCell>
                     <div className="flex gap-1">
@@ -323,14 +324,14 @@ export function OrderItemsManager({
                   </TableCell>
                   <TableCell className="text-right">{item.quantity}</TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(item.unit_price || 0, currency)}
+                    <CurrencyDisplay value={item.unit_price || 0} />
                   </TableCell>
                   <TableCell className="text-right">{item.discount}%</TableCell>
                   <TableCell className="text-right">
                     {(tenantTaxRate * 100).toFixed(0)}%
                   </TableCell>
                   <TableCell className="text-right">
-                    {formatCurrency(item.total || 0, currency)}
+                    <CurrencyDisplay value={item.total || 0} />
                   </TableCell>
                   {!disabled && (
                     <TableCell>
@@ -375,15 +376,21 @@ export function OrderItemsManager({
         <div className="mt-6 space-y-2">
           <div className="flex justify-between text-sm">
             <span>Subtotal:</span>
-            <span>{formatCurrency(totals.subtotal, currency)}</span>
+            <span>
+              <CurrencyDisplay value={totals.subtotal} />
+            </span>
           </div>
           <div className="flex justify-between text-sm">
             <span>Impuestos ({(tenantTaxRate * 100).toFixed(0)}%):</span>
-            <span>{formatCurrency(totals.tax, currency)}</span>
+            <span>
+              <CurrencyDisplay value={totals.tax} />
+            </span>
           </div>
           <div className="flex justify-between font-medium text-lg border-t pt-2">
             <span>Total:</span>
-            <span>{formatCurrency(totals.total, currency)}</span>
+            <span>
+              <CurrencyDisplay value={totals.total} />
+            </span>
           </div>
         </div>
       </CardContent>

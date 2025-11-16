@@ -3,6 +3,7 @@ import { supabase } from '@/lib/supabase/client'
 import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import useUser from '../auth/use-user'
+import { uuidV4 } from '@/lib/utils'
 import { toast } from 'sonner'
 
 type CreateInvitationItem = {
@@ -31,7 +32,7 @@ export default function useInvitationCreate() {
         role_id: i.role_id,
         expires_at: i.expires_at,
         tenant_id: currentTenant.id,
-        token: crypto.randomUUID(),
+        token: uuidV4(),
         created_by: user.id,
         status: 'pending',
         metadata: i.message ? { message: i.message } : null,
