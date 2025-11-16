@@ -86,6 +86,12 @@ export default function usePerms() {
       // Settings
       // Security
       {
+        value: 'users',
+        label: 'Usuarios',
+        description: 'Permisos para usuarios',
+        group: 'security',
+      },
+      {
         value: 'roles',
         label: 'Roles',
         description: 'Permisos para roles',
@@ -201,21 +207,21 @@ export default function usePerms() {
       },
       // Security
       {
-        value: 'roles:read',
+        value: 'users:read',
         label: 'Leer',
-        description: 'Permiso para leer roles',
+        description: 'Permiso para leer usuarios',
         can: true,
       },
       {
-        value: 'roles:create',
-        label: 'Crear',
-        description: 'Permiso para crear roles',
+        value: 'users:invite',
+        label: 'Invitar',
+        description: 'Permiso para invitar usuarios',
         can: true,
       },
       {
-        value: 'roles:update',
+        value: 'users:update',
         label: 'Actualizar',
-        description: 'Permiso para actualizar roles',
+        description: 'Permiso para actualizar usuarios',
         can: true,
       },
       {

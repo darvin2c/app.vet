@@ -20,7 +20,7 @@ export function useProfile() {
   const { data: user } = useUser()
   const { currentTenant } = useCurrentTenantStore()
   const profileQuery = useQuery({
-    queryKey: ['profile'],
+    queryKey: [currentTenant?.id, 'profile'],
     queryFn: async () => {
       const { data } = await supabase
         .from('profiles')
