@@ -8,6 +8,7 @@ import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
 import CanAccess from '@/components/ui/can-access'
 import { UserInviteCreateButton } from '@/components/users/user-invite-create-button'
+import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
 
 export default function UsersPage() {
   // Configuración de filtros
@@ -64,7 +65,7 @@ export default function UsersPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'ghost' }}
                 />
-                <UserInviteCreateButton />
+                <UserInviteCreateButton onSend={sendInvitationsAction} />
               </ButtonGroup>
             }
           />

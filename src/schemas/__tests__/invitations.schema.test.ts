@@ -1,23 +1,22 @@
 import { describe, it, expect } from 'vitest'
-import { invitationCreateSchema } from '@/schemas/invitations.schema'
+import { invitationSendFormSchema } from '@/schemas/invitations.schema'
 
-describe('invitationCreateSchema', () => {
-  it('validates multiple emails and required fields', () => {
+describe('invitationSendFormSchema', () => {
+  it('valida un email y campos requeridos', () => {
     const data = {
-      emails: ['a@example.com', 'b@example.com'],
+      email: 'a@example.com',
       role_id: 'role-1',
       expires_at: new Date().toISOString(),
       message: 'Hola',
     }
-    const parsed = invitationCreateSchema.safeParse(data)
+    const parsed = invitationSendFormSchema.safeParse(data)
     expect(parsed.success).toBe(true)
   })
 
-  it('fails when emails is empty', () => {
-    const parsed = invitationCreateSchema.safeParse({
-      emails: [],
+  it('falla cuando el email es inválido', () => {
+    const parsed = invitationSendFormSchema.safeParse({
+      email: 'no-email',
       role_id: 'x',
-      expires_at: new Date().toISOString(),
     })
     expect(parsed.success).toBe(false)
   })

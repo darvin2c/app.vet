@@ -17,9 +17,10 @@ import { Form } from '@/components/ui/form'
 import { Field } from '@/components/ui/field'
 import { UserInviteForm } from './user-invite-form'
 import { invitationSendFormSchema } from '@/schemas/invitations.schema'
-import useInvitationCreateBulk from '@/hooks/invitations/use-invitation-create-bulk'
+import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { toast } from 'sonner'
+// onSend se recibe por props desde un componente/servidor
 
 type SendAction = (params: {
   invites: Array<{
@@ -37,22 +38,24 @@ type SendAction = (params: {
 interface UserInviteCreateProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  onSend: SendAction
 }
 
 export function UserInviteCreate({
   open,
   onOpenChange,
+  onSend,
 }: UserInviteCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const isOpen = open !== undefined ? open : internalOpen
   const setOpen = onOpenChange || setInternalOpen
-  const createBulk = useInvitationCreateBulk()
+  const createOne = useInvitationCreate()
   const { currentTenant } = useCurrentTenantStore()
 
   const form = useForm({
     resolver: zodResolver(invitationSendFormSchema),
     defaultValues: {
-      emailsText: '',
+      email: '',
       role_id: '',
       expires_at: new Date().toISOString(),
       message: '',
@@ -60,23 +63,34 @@ export function UserInviteCreate({
   })
 
   const onSubmit = form.handleSubmit(async (values: any) => {
-    const emails = (values.emailsText as string)
-      .split('\n')
-      .map((e) => e.trim())
-      .filter(Boolean)
-    const payload = emails.map((email: string) => ({
-      email,
+    const invite = await createOne.mutateAsync({
+      email: values.email,
       role_id: values.role_id,
       expires_at: values.expires_at,
       message: values.message,
-    }))
-
-    const invites = await createBulk.mutateAsync(payload)
+    })
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN
     const baseUrl = domain ? `https://${domain}` : ''
+    await onSend({
+      invites: [
+        {
+          id: invite.id,
+          email: invite.email,
+          roleName: invite.role_id,
+          expiresAt: invite.expires_at,
+          acceptUrl: `${baseUrl}/accept-invitation?token=${invite.token}`,
+          message:
+            typeof invite.metadata === 'object' && invite.metadata
+              ? (invite.metadata as any).message
+              : undefined,
+          company: currentTenant?.name || 'Mi Empresa',
+        },
+      ],
+      subject: 'Invitación a la plataforma',
+    })
 
-    toast.success('Invitaciones enviadas')
+    toast.success('Invitación enviada')
     form.reset()
     setOpen(false)
   })
@@ -102,7 +116,7 @@ export function UserInviteCreate({
             <Field orientation="horizontal">
               <ResponsiveButton
                 onClick={onSubmit}
-                isLoading={createBulk.isPending}
+                isLoading={createOne.isPending}
                 type="submit"
                 variant="default"
               >

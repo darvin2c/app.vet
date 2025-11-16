@@ -1,47 +1,47 @@
 import { useFormContext } from 'react-hook-form'
-import { Field } from '@/components/ui/field'
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+} from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { RoleSelect } from '@/components/roles/role-select'
-import { DatePicker } from '@/components/ui/date-picker'
 import { useRoleList } from '@/hooks/roles/use-role-list'
+import { invitationSendFormSchemaType } from '@/schemas/invitations.schema'
 
 export function UserInviteForm() {
-  const form = useFormContext()
+  const form = useFormContext<invitationSendFormSchemaType>()
   const { data: rolesData } = useRoleList({})
 
   return (
     <div className="space-y-4">
-      <Field>
-        <label htmlFor="emails">Correos electrónicos</label>
-        <Textarea
-          id="emails"
-          placeholder="uno por línea"
-          {...form.register('emailsText')}
+      <Field orientation="responsive">
+        <FieldContent>
+          <FieldLabel htmlFor="email">Email</FieldLabel>
+          <FieldDescription>
+            El email del usuario al que se le enviará la invitación.
+          </FieldDescription>
+        </FieldContent>
+        <Input
+          id="email"
+          type="email"
+          placeholder="usuario@correo.com"
+          {...form.register('email')}
         />
       </Field>
 
-      <Field>
-        <label>Rol</label>
+      <Field orientation="responsive">
+        <FieldContent>
+          <FieldLabel htmlFor="role_id">Rol</FieldLabel>
+          <FieldDescription>
+            El rol que tendrá el usuario cuando acepte la invitación.
+          </FieldDescription>
+        </FieldContent>
         <RoleSelect
           value={form.watch('role_id')}
           onValueChange={(v) => form.setValue('role_id', v)}
         />
-      </Field>
-
-      <Field>
-        <label htmlFor="expires_at">Expira el</label>
-        <DatePicker
-          value={form.watch('expires_at')}
-          onChange={(v) =>
-            form.setValue('expires_at', v ? v.toISOString() : '')
-          }
-        />
-      </Field>
-
-      <Field>
-        <label htmlFor="message">Mensaje</label>
-        <Textarea id="message" {...form.register('message')} />
       </Field>
     </div>
   )
