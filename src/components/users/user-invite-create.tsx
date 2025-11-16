@@ -23,31 +23,16 @@ import {
 import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { toast } from 'sonner'
-// onSend se recibe por props desde un componente/servidor
-
-type SendAction = (params: {
-  invites: Array<{
-    id: string
-    email: string
-    roleName: string
-    expiresAt: string
-    acceptUrl: string
-    message?: string
-    company: string
-  }>
-  subject?: string
-}) => Promise<any>
+import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
 
 interface UserInviteCreateProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
-  onSend: SendAction
 }
 
 export function UserInviteCreate({
   open,
   onOpenChange,
-  onSend,
 }: UserInviteCreateProps) {
   const [internalOpen, setInternalOpen] = useState(false)
   const isOpen = open !== undefined ? open : internalOpen
@@ -73,7 +58,7 @@ export function UserInviteCreate({
 
     const domain = process.env.NEXT_PUBLIC_DOMAIN
     const baseUrl = domain ? `https://${domain}` : ''
-    await onSend({
+    await sendInvitationsAction({
       invites: [
         {
           id: invite.id,
