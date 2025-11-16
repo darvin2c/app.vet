@@ -22,7 +22,6 @@ import {
 } from '@/schemas/invitations.schema'
 import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
-import { toast } from 'sonner'
 import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
 
 interface UserInviteCreateProps {
@@ -73,10 +72,9 @@ export function UserInviteCreate({
           company: currentTenant?.name || 'Mi Empresa',
         },
       ],
-      subject: 'Invitación a la plataforma',
+      subject: `Invitación a la plataforma - ${currentTenant?.name || 'Mi Empresa'}`,
     })
 
-    toast.success('Invitación enviada')
     form.reset()
     setOpen(false)
   })

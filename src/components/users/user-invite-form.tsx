@@ -4,6 +4,7 @@ import {
   FieldContent,
   FieldDescription,
   FieldError,
+  FieldGroup,
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
@@ -16,9 +17,9 @@ export function UserInviteForm() {
   const { data: rolesData } = useRoleList({})
 
   return (
-    <div className="space-y-4">
+    <FieldGroup className="space-y-4">
       <Field
-        orientation="responsive"
+        orientation="vertical"
         data-invalid={!!form.formState.errors.email}
       >
         <FieldContent>
@@ -37,7 +38,7 @@ export function UserInviteForm() {
       </Field>
 
       <Field
-        orientation="responsive"
+        orientation="vertical"
         data-invalid={!!form.formState.errors.role_id}
       >
         <FieldContent>
@@ -52,6 +53,6 @@ export function UserInviteForm() {
         />
         <FieldError errors={[form.formState.errors.role_id]} />
       </Field>
-    </div>
+    </FieldGroup>
   )
 }
