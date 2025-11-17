@@ -57,8 +57,8 @@ export function UserInviteCreate({
     })
     form.reset()
     setOpen(false)
-    const domain = process.env.NEXT_PUBLIC_DOMAIN
-    const baseUrl = domain ? `https://${domain}` : ''
+    const authUrl = process.env.NEXT_AUTH_URL
+    const baseUrl = authUrl ? `${authUrl}` : ''
     await sendInvitationsAction({
       invites: [
         {
