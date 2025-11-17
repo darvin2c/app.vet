@@ -60,12 +60,6 @@ export default function usePerms() {
   const RESOURCES = useMemo(
     () => [
       {
-        value: 'products',
-        label: 'Productos',
-        description: 'Permisos para productos',
-        group: 'vet',
-      },
-      {
         value: 'customers',
         label: 'Clientes',
         description: 'Permisos para clientes',
@@ -77,10 +71,29 @@ export default function usePerms() {
         description: 'Permisos para mascotas',
         group: 'vet',
       },
+      // sales
       {
         value: 'orders',
         label: 'Órdenes',
         description: 'Permisos para órdenes',
+        group: 'sales',
+      },
+      {
+        value: 'payments',
+        label: 'Pagos',
+        description: 'Permisos para pagos',
+        group: 'sales',
+      },
+      {
+        value: 'products',
+        label: 'Productos',
+        description: 'Permisos para productos',
+        group: 'sales',
+      },
+      {
+        value: 'services',
+        label: 'Servicios',
+        description: 'Permisos para servicios',
         group: 'sales',
       },
       // Settings
@@ -103,36 +116,6 @@ export default function usePerms() {
 
   const PERMS = useMemo(
     () => [
-      {
-        value: 'products:read',
-        label: 'Leer',
-        description: 'Permiso para leer productos',
-        can: true,
-      },
-      {
-        value: 'products:create',
-        label: 'Crear',
-        description: 'Permiso para crear productos',
-        can: true,
-      },
-      {
-        value: 'products:update',
-        label: 'Actualizar',
-        description: 'Permiso para actualizar productos',
-        can: true,
-      },
-      {
-        value: 'products:delete',
-        label: 'Eliminar',
-        description: 'Permiso para eliminar productos',
-        can: true,
-      },
-      {
-        value: 'customers:read',
-        label: 'Leer',
-        description: 'Permiso para leer clientes',
-        can: true,
-      },
       {
         value: 'customers:create',
         label: 'Crear',
@@ -173,6 +156,61 @@ export default function usePerms() {
         value: 'pets:delete',
         label: 'Eliminar',
         description: 'Permiso para eliminar mascotas',
+        can: true,
+      },
+      // sales
+      {
+        value: 'products:update',
+        label: 'Actualizar',
+        description: 'Permiso para actualizar productos',
+        can: true,
+      },
+      {
+        value: 'products:delete',
+        label: 'Eliminar',
+        description: 'Permiso para eliminar productos',
+        can: true,
+      },
+      {
+        value: 'products:read',
+        label: 'Leer',
+        description: 'Permiso para leer productos',
+        can: true,
+      },
+      {
+        value: 'products:create',
+        label: 'Crear',
+        description: 'Permiso para crear productos',
+        can: true,
+      },
+      {
+        value: 'services:read',
+        label: 'Leer',
+        description: 'Permiso para leer servicios',
+        can: true,
+      },
+      {
+        value: 'services:create',
+        label: 'Crear',
+        description: 'Permiso para crear servicios',
+        can: true,
+      },
+      {
+        value: 'services:update',
+        label: 'Actualizar',
+        description: 'Permiso para actualizar servicios',
+        can: true,
+      },
+      {
+        value: 'services:delete',
+        label: 'Eliminar',
+        description: 'Permiso para eliminar servicios',
+        can: true,
+      },
+      {
+        value: 'customers:read',
+        label: 'Leer',
+        description: 'Permiso para leer clientes',
         can: true,
       },
       {
