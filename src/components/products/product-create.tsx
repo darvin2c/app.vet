@@ -18,6 +18,7 @@ import { ProductForm } from './product-form'
 import useCreateProduct from '@/hooks/products/use-product-create'
 import { Field } from '../ui/field'
 import { productCreateSchema } from '@/schemas/products.schema'
+import CanAccess from '../ui/can-access'
 
 interface ProductCreateProps {
   open: boolean
@@ -56,41 +57,42 @@ export function ProductCreate({ open, onOpenChange }: ProductCreateProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={`!w-full !max-w-4xl`} side="right">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Crear Producto</SheetTitle>
-            <SheetDescription>
-              Completa la información para agregar un nuevo producto.
-            </SheetDescription>
-          </SheetHeader>
-
-          <div className="flex-1 min-h-0">
-            <div className="px-4">
-              <Form {...form}>
-                <form onSubmit={onSubmit} className="space-y-4">
-                  <ProductForm mode="create" />
-                </form>
-              </Form>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Producto</SheetTitle>
+              <SheetDescription>
+                Completa la información para agregar un nuevo producto.
+              </SheetDescription>
+            </SheetHeader>
+            <div className="flex-1 min-h-0">
+              <div className="px-4">
+                <Form {...form}>
+                  <form onSubmit={onSubmit} className="space-y-4">
+                    <ProductForm mode="create" />
+                  </form>
+                </Form>
+              </div>
             </div>
-          </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={createProduct.isPending}
-              >
-                {createProduct.isPending ? 'Creando...' : 'Crear Producto'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={createProduct.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={onSubmit}
+                  disabled={createProduct.isPending}
+                >
+                  {createProduct.isPending ? 'Creando...' : 'Crear Producto'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={createProduct.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>
