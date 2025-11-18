@@ -2,6 +2,12 @@ import type { Resource } from './types'
 
 export const RESOURCES: Resource[] = [
   {
+    value: 'appointments',
+    label: 'Citas',
+    description: 'Permisos para manejar citas, y la agenda',
+    group: 'vet',
+  },
+  {
     value: 'customers',
     label: 'Clientes',
     description: 'Permisos para clientes',
