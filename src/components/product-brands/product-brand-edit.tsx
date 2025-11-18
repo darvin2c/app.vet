@@ -20,6 +20,7 @@ import useProductBrandUpdate from '@/hooks/product-brands/use-product-brand-upda
 import { Tables } from '@/types/supabase.types'
 import { productBrandUpdateSchema } from '@/schemas/product-brands.schema'
 import { ScrollArea } from '../ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface ProductBrandEditProps {
   brand: Tables<'product_brands'>
@@ -65,36 +66,38 @@ export function ProductBrandEdit({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Editar Marca de Producto</SheetTitle>
-            <SheetDescription>
-              Modifica los datos de la marca de producto.
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4 overflow-y-auto">
-                <ProductBrandForm />
-              </div>
-              <SheetFooter className="flex-row">
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={mutation.isPending}
-                >
-                  Actualizar Marca
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Marca de Producto</SheetTitle>
+              <SheetDescription>
+                Modifica los datos de la marca de producto.
+              </SheetDescription>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="px-4 overflow-y-auto">
+                  <ProductBrandForm />
+                </div>
+                <SheetFooter className="flex-row">
+                  <Button
+                    type="submit"
+                    onClick={onSubmit}
+                    disabled={mutation.isPending}
+                  >
+                    Actualizar Marca
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    disabled={mutation.isPending}
+                  >
+                    Cancelar
+                  </Button>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

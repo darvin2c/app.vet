@@ -19,6 +19,7 @@ import { useUserRoleUpdate } from '@/hooks/users/use-user-roles-update'
 import { Settings } from 'lucide-react'
 import { UserWithRole } from '@/hooks/users/use-user-list'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface UserRolesEditProps {
   user: UserWithRole
@@ -79,41 +80,43 @@ export function UserRolesEdit({
       )}
 
       <SheetContent side="right" className="!w-full !max-w-xl">
-        <SheetHeader>
-          <SheetTitle>Editar Roles de Usuario</SheetTitle>
-          <SheetDescription>
-            Gestiona los roles y permisos de {getFullName(user)}
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="update">
+          <SheetHeader>
+            <SheetTitle>Editar Roles de Usuario</SheetTitle>
+            <SheetDescription>
+              Gestiona los roles y permisos de {getFullName(user)}
+            </SheetDescription>
+          </SheetHeader>
 
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <UserRolesForm user={user} />
-            </form>
-          </Form>
-        </div>
+          <div className="px-4 overflow-y-auto">
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <UserRolesForm user={user} />
+              </form>
+            </Form>
+          </div>
 
-        <SheetFooter>
-          <Field orientation="horizontal">
-            <Button
-              type="submit"
-              onClick={onSubmit}
-              disabled={updateUserRole.isPending}
-            >
-              {updateUserRole.isPending
-                ? 'Actualizando...'
-                : 'Actualizar Roles'}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
-              disabled={updateUserRole.isPending}
-            >
-              Cancelar
-            </Button>
-          </Field>
-        </SheetFooter>
+          <SheetFooter>
+            <Field orientation="horizontal">
+              <Button
+                type="submit"
+                onClick={onSubmit}
+                disabled={updateUserRole.isPending}
+              >
+                {updateUserRole.isPending
+                  ? 'Actualizando...'
+                  : 'Actualizar Roles'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
+                disabled={updateUserRole.isPending}
+              >
+                Cancelar
+              </Button>
+            </Field>
+          </SheetFooter>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

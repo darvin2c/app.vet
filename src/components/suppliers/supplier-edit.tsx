@@ -20,6 +20,7 @@ import useSupplierUpdate from '@/hooks/suppliers/use-supplier-update'
 import { Tables } from '@/types/supabase.types'
 import { Form } from '../ui/form'
 import { Button } from '../ui/button'
+import CanAccess from '@/components/ui/can-access'
 
 type Supplier = Tables<'suppliers'>
 
@@ -76,42 +77,44 @@ export function SupplierEdit({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!w-full !max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Proveedor</DrawerTitle>
-          <DrawerDescription>
-            Modifica la información del proveedor.
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="update">
+          <DrawerHeader>
+            <DrawerTitle>Editar Proveedor</DrawerTitle>
+            <DrawerDescription>
+              Modifica la información del proveedor.
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4 overflow-y-auto">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
+          <div className="px-4 overflow-y-auto">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit as any)}
+                className="space-y-4"
+              >
+                <SupplierForm mode="edit" supplier={supplier} />
+              </form>
+            </Form>
+          </div>
+
+          <DrawerFooter>
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit as any)}
+              disabled={updateSupplier.isPending}
             >
-              <SupplierForm mode="edit" supplier={supplier} />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateSupplier.isPending}
-          >
-            {updateSupplier.isPending
-              ? 'Actualizando...'
-              : 'Actualizar Proveedor'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateSupplier.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
+              {updateSupplier.isPending
+                ? 'Actualizando...'
+                : 'Actualizar Proveedor'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updateSupplier.isPending}
+            >
+              Cancelar
+            </Button>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

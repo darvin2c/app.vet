@@ -37,6 +37,7 @@ import {
 import { TablesInsert, Tables } from '@/types/supabase.types'
 import { CurrencyInput } from '@/components/ui/current-input'
 import { maskitoParseNumber } from '@maskito/kit'
+import CanAccess from '@/components/ui/can-access'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
   product?: Tables<'products'>
@@ -238,28 +239,30 @@ export function CartItemEditDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Package className="h-5 w-5" />
-            Editar Item
-          </DialogTitle>
-          <DialogDescription>
-            Modifica los detalles del producto en el carrito
-          </DialogDescription>
-        </DialogHeader>
+        <CanAccess resource="products" action="update">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Package className="h-5 w-5" />
+              Editar Item
+            </DialogTitle>
+            <DialogDescription>
+              Modifica los detalles del producto en el carrito
+            </DialogDescription>
+          </DialogHeader>
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(handleSave)}>
-            <CartItemEditForm item={item} />
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(handleSave)}>
+              <CartItemEditForm item={item} />
 
-            <DialogFooter className="mt-6">
-              <Button type="button" variant="outline" onClick={handleCancel}>
-                Cancelar
-              </Button>
-              <Button type="submit">Guardar cambios</Button>
-            </DialogFooter>
-          </form>
-        </FormProvider>
+              <DialogFooter className="mt-6">
+                <Button type="button" variant="outline" onClick={handleCancel}>
+                  Cancelar
+                </Button>
+                <Button type="submit">Guardar cambios</Button>
+              </DialogFooter>
+            </form>
+          </FormProvider>
+        </CanAccess>
       </DialogContent>
     </Dialog>
   )

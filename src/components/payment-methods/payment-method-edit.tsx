@@ -21,6 +21,7 @@ import {
 } from '@/schemas/payment-methods.schema'
 import { usePaymentMethodUpdate } from '@/hooks/payment-methods/use-payment-method-update'
 import { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 interface PaymentMethodEditProps {
   paymentMethod: Tables<'payment_methods'>
@@ -67,34 +68,36 @@ export function PaymentMethodEdit({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!w-full !max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Método de Pago</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos del método de pago.
-          </DrawerDescription>
-        </DrawerHeader>
-        <FormProvider {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4 overflow-y-auto">
-              <PaymentMethodForm />
-            </div>
-            <DrawerFooter>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending
-                  ? 'Actualizando...'
-                  : 'Actualizar Método de Pago'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </FormProvider>
+        <CanAccess resource="products" action="update">
+          <DrawerHeader>
+            <DrawerTitle>Editar Método de Pago</DrawerTitle>
+            <DrawerDescription>
+              Modifica los datos del método de pago.
+            </DrawerDescription>
+          </DrawerHeader>
+          <FormProvider {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="px-4 overflow-y-auto">
+                <PaymentMethodForm />
+              </div>
+              <DrawerFooter>
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending
+                    ? 'Actualizando...'
+                    : 'Actualizar Método de Pago'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </DrawerFooter>
+            </form>
+          </FormProvider>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

@@ -12,6 +12,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
+import CanAccess from '@/components/ui/can-access'
 
 interface OrderEditProps {
   order: Tables<'orders'>
@@ -52,13 +53,15 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
         side={isMobile ? 'bottom' : 'right'}
         className="!h-screen !max-w-full !w-full p-0 border-0"
       >
-        <SheetHeader className="sr-only">
-          <SheetTitle>Editar Orden</SheetTitle>
-        </SheetHeader>
-        <POSInterface
-          onOrderCreated={handleOrderUpdated}
-          onClose={handleClose}
-        />
+        <CanAccess resource="products" action="update">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Editar Orden</SheetTitle>
+          </SheetHeader>
+          <POSInterface
+            onOrderCreated={handleOrderUpdated}
+            onClose={handleClose}
+          />
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

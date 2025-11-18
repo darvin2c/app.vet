@@ -20,6 +20,7 @@ import useProductUnitUpdate from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
 import { productUnitUpdateSchema } from '@/schemas/product-units.schema'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface ProductUnitEditProps {
   unit: Tables<'product_units'>
@@ -65,36 +66,38 @@ export function ProductUnitEdit({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-4xl">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Editar Unidad de Producto</SheetTitle>
-            <SheetDescription>
-              Modifica los datos de la unidad de producto.
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4 overflow-y-auto">
-                <ProductUnitForm />
-              </div>
-              <SheetFooter className="flex-row">
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={mutation.isPending}
-                >
-                  Actualizar Unidad
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Unidad de Producto</SheetTitle>
+              <SheetDescription>
+                Modifica los datos de la unidad de producto.
+              </SheetDescription>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="px-4 overflow-y-auto">
+                  <ProductUnitForm />
+                </div>
+                <SheetFooter className="flex-row">
+                  <Button
+                    type="submit"
+                    onClick={onSubmit}
+                    disabled={mutation.isPending}
+                  >
+                    Actualizar Unidad
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    disabled={mutation.isPending}
+                  >
+                    Cancelar
+                  </Button>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

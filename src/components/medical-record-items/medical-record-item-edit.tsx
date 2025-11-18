@@ -21,6 +21,7 @@ import {
 } from '@/schemas/medical-record-items.schema'
 import { useMedicalRecordItemUpdate } from '@/hooks/medical-record-items/use-medical-record-item-update'
 import { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 interface MedicalRecordItemEditProps {
   medicalRecordItem: Tables<'record_items'>
@@ -96,39 +97,41 @@ export function MedicalRecordItemEdit({
 
       <Drawer open={isOpen} onOpenChange={handleOpenChange}>
         <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Editar Item de Registro Médico</DrawerTitle>
-            <DrawerDescription>
-              Modifica los detalles del item de registro médico
-            </DrawerDescription>
-          </DrawerHeader>
+          <CanAccess resource="products" action="update">
+            <DrawerHeader>
+              <DrawerTitle>Editar Item de Registro Médico</DrawerTitle>
+              <DrawerDescription>
+                Modifica los detalles del item de registro médico
+              </DrawerDescription>
+            </DrawerHeader>
 
-          <div className="px-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
+            <div className="px-4">
+              <FormProvider {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-4"
+                >
+                  <MedicalRecordItemForm />
+                </form>
+              </FormProvider>
+            </div>
+
+            <DrawerFooter>
+              <ResponsiveButton
+                type="button"
+                isLoading={updateMedicalRecordItem.isPending}
+                onClick={form.handleSubmit(onSubmit)}
               >
-                <MedicalRecordItemForm />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="button"
-              isLoading={updateMedicalRecordItem.isPending}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Actualizar Item
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => handleOpenChange(false)}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
+                Actualizar Item
+              </ResponsiveButton>
+              <ResponsiveButton
+                variant="outline"
+                onClick={() => handleOpenChange(false)}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </DrawerFooter>
+          </CanAccess>
         </DrawerContent>
       </Drawer>
     </>

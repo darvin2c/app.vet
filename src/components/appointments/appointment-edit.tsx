@@ -22,6 +22,7 @@ import {
 import type { Tables } from '@/types/supabase.types'
 import { toast } from 'sonner'
 import { X, Check } from 'lucide-react'
+import CanAccess from '@/components/ui/can-access'
 
 type Appointment = Tables<'appointments'>
 
@@ -80,37 +81,42 @@ export function AppointmentEdit({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!w-full !max-w-2xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Cita</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos de la cita médica
-          </DrawerDescription>
-        </DrawerHeader>
-        <div className="px-4 pb-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <AppointmentForm />
-            </form>
-          </Form>
-        </div>
-        <DrawerFooter>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateAppointment.isPending}
-            icon={X}
-          >
-            Cancelar
-          </ResponsiveButton>
-          <ResponsiveButton
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={updateAppointment.isPending}
-            icon={Check}
-          >
-            Actualizar Cita
-          </ResponsiveButton>
-        </DrawerFooter>
+        <CanAccess resource="products" action="update">
+          <DrawerHeader>
+            <DrawerTitle>Editar Cita</DrawerTitle>
+            <DrawerDescription>
+              Modifica los datos de la cita médica
+            </DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <AppointmentForm />
+              </form>
+            </Form>
+          </div>
+          <DrawerFooter>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updateAppointment.isPending}
+              icon={X}
+            >
+              Cancelar
+            </ResponsiveButton>
+            <ResponsiveButton
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+              isLoading={updateAppointment.isPending}
+              icon={Check}
+            >
+              Actualizar Cita
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

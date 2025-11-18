@@ -19,6 +19,7 @@ import { Form } from '../ui/form'
 import { Button } from '../ui/button'
 import { Field } from '../ui/field'
 import { ScrollArea } from '../ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface PetEditProps {
   pet: Tables<'pets'>
@@ -73,39 +74,43 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent side="right" className="!w-full !max-w-4xl">
         <ScrollArea className="max-h-screen">
-          <SheetHeader>
-            <SheetTitle>Editar Mascota</SheetTitle>
-            <SheetDescription>
-              Modifica la información de la mascota.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Mascota</SheetTitle>
+              <SheetDescription>
+                Modifica la información de la mascota.
+              </SheetDescription>
+            </SheetHeader>
 
-          <div className="px-4 overflow-y-auto">
-            <Form {...form}>
-              <form onSubmit={onSubmit} className="space-y-4">
-                <PetForm mode="edit" pet={pet} />
-              </form>
-            </Form>
-          </div>
+            <div className="px-4 overflow-y-auto">
+              <Form {...form}>
+                <form onSubmit={onSubmit} className="space-y-4">
+                  <PetForm mode="edit" pet={pet} />
+                </form>
+              </Form>
+            </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={updatePet.isPending}
-              >
-                {updatePet.isPending ? 'Actualizando...' : 'Actualizar Mascota'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={updatePet.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={onSubmit}
+                  disabled={updatePet.isPending}
+                >
+                  {updatePet.isPending
+                    ? 'Actualizando...'
+                    : 'Actualizar Mascota'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={updatePet.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

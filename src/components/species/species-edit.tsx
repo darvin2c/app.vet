@@ -22,6 +22,7 @@ import { Tables } from '@/types/supabase.types'
 import { ScrollArea } from '../ui/scroll-area'
 import { Form } from '../ui/form'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface SpeciesEditProps {
   species: Tables<'species'>
@@ -75,39 +76,42 @@ export function SpeciesEdit({
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent className="!max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Editar Especie</SheetTitle>
-            <SheetDescription>
-              Modifica la información de la especie &quot;{species.name}&quot;.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Especie</SheetTitle>
+              <SheetDescription>
+                Modifica la información de la especie &quot;{species.name}
+                &quot;.
+              </SheetDescription>
+            </SheetHeader>
 
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="px-4">
-              <SpeciesForm />
-            </form>
-          </Form>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="px-4">
+                <SpeciesForm />
+              </form>
+            </Form>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <ResponsiveButton
-                onClick={onSubmit}
-                isLoading={updateSpecies.isPending}
-                disabled={updateSpecies.isPending}
-                type="submit"
-                variant="default"
-              >
-                Guardar Cambios
-              </ResponsiveButton>
-              <ResponsiveButton
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={updateSpecies.isPending}
-              >
-                Cancelar
-              </ResponsiveButton>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <ResponsiveButton
+                  onClick={onSubmit}
+                  isLoading={updateSpecies.isPending}
+                  disabled={updateSpecies.isPending}
+                  type="submit"
+                  variant="default"
+                >
+                  Guardar Cambios
+                </ResponsiveButton>
+                <ResponsiveButton
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={updateSpecies.isPending}
+                >
+                  Cancelar
+                </ResponsiveButton>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

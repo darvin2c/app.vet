@@ -19,6 +19,7 @@ import {
   DrawerFooter,
 } from '@/components/ui/drawer'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
+import CanAccess from '@/components/ui/can-access'
 
 interface AttachmentEditProps {
   attachment: {
@@ -76,39 +77,44 @@ export function AttachmentEdit({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Editar archivo</DrawerTitle>
-          <DrawerDescription>
-            Modificar información de "{attachment.file_name}"
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="update">
+          <DrawerHeader>
+            <DrawerTitle>Editar archivo</DrawerTitle>
+            <DrawerDescription>
+              Modificar información de "{attachment.file_name}"
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <AttachmentForm hideFileInput />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="px-4">
+            <FormProvider {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <AttachmentForm hideFileInput />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            isLoading={updateMutation.isPending}
-            disabled={!form.formState.isDirty}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Guardar cambios
-          </ResponsiveButton>
-          <ResponsiveButton
-            type="button"
-            variant="outline"
-            onClick={handleCancel}
-            disabled={updateMutation.isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              isLoading={updateMutation.isPending}
+              disabled={!form.formState.isDirty}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Guardar cambios
+            </ResponsiveButton>
+            <ResponsiveButton
+              type="button"
+              variant="outline"
+              onClick={handleCancel}
+              disabled={updateMutation.isPending}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

@@ -21,6 +21,7 @@ import {
 } from '@/schemas/hospitalization.schema'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
+import CanAccess from '@/components/ui/can-access'
 
 // Tipo para hospitalization (sin pet_id por ahora, se agregará después)
 type Hospitalization = Tables<'hospitalizations'>
@@ -88,36 +89,41 @@ export function HospitalizationEdit({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-2xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Hospitalización</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos de la hospitalización
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="update">
+          <DrawerHeader>
+            <DrawerTitle>Editar Hospitalización</DrawerTitle>
+            <DrawerDescription>
+              Modifica los datos de la hospitalización
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <HospitalizationForm />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="px-4">
+            <FormProvider {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <HospitalizationForm />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            isLoading={updateHospitalization.isPending}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Actualizar Hospitalización
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              isLoading={updateHospitalization.isPending}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Actualizar Hospitalización
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

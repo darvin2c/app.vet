@@ -23,6 +23,7 @@ import {
 import useCustomerUpdate from '@/hooks/customers/use-customer-update'
 import useCustomerDetail from '@/hooks/customers/use-customer-detail'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface CustomerEditProps {
   customerId: string
@@ -78,46 +79,48 @@ export function CustomerEdit({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={`!w-full !max-w-4xl`} side="right">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Editar Cliente</SheetTitle>
-            <SheetDescription>
-              Modifica la información del cliente.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Cliente</SheetTitle>
+              <SheetDescription>
+                Modifica la información del cliente.
+              </SheetDescription>
+            </SheetHeader>
 
-          <div className="flex-1 min-h-0">
-            <div className="px-4">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit as any)}
-                  className="space-y-4"
-                >
-                  <CustomerForm mode="edit" />
-                </form>
-              </Form>
+            <div className="flex-1 min-h-0">
+              <div className="px-4">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit as any)}
+                    className="space-y-4"
+                  >
+                    <CustomerForm mode="edit" />
+                  </form>
+                </Form>
+              </div>
             </div>
-          </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
-                disabled={updateCustomer.isPending}
-              >
-                {updateCustomer.isPending
-                  ? 'Actualizando...'
-                  : 'Actualizar Cliente'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={updateCustomer.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit as any)}
+                  disabled={updateCustomer.isPending}
+                >
+                  {updateCustomer.isPending
+                    ? 'Actualizando...'
+                    : 'Actualizar Cliente'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={updateCustomer.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

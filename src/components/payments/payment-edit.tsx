@@ -21,6 +21,7 @@ import {
 import usePaymentUpdate from '@/hooks/payments/use-payment-update'
 import { Tables } from '@/types/supabase.types'
 import { Spinner } from '../ui/spinner'
+import CanAccess from '@/components/ui/can-access'
 
 interface PaymentEditProps {
   payment: Tables<'payments'>
@@ -54,48 +55,50 @@ export function PaymentEdit({ payment, open, onOpenChange }: PaymentEditProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>Editar Pago</SheetTitle>
-          <SheetDescription>
-            Modifica la información del pago. Solo se pueden editar la
-            referencia y las notas.
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="update">
+          <SheetHeader>
+            <SheetTitle>Editar Pago</SheetTitle>
+            <SheetDescription>
+              Modifica la información del pago. Solo se pueden editar la
+              referencia y las notas.
+            </SheetDescription>
+          </SheetHeader>
 
-        <ScrollArea className="px-6">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
+          <ScrollArea className="px-6">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit as any)}
+                className="space-y-4"
+              >
+                <PaymentForm mode="update" payment={payment} />
+              </form>
+            </Form>
+          </ScrollArea>
+
+          <SheetFooter className="gap-2 flex-row">
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={updatePayment.isPending}
             >
-              <PaymentForm mode="update" payment={payment} />
-            </form>
-          </Form>
-        </ScrollArea>
-
-        <SheetFooter className="gap-2 flex-row">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updatePayment.isPending}
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updatePayment.isPending}
-          >
-            {updatePayment.isPending ? (
-              <>
-                <Spinner />
-                Actualizando...
-              </>
-            ) : (
-              'Actualizar Pago'
-            )}
-          </Button>
-        </SheetFooter>
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit as any)}
+              disabled={updatePayment.isPending}
+            >
+              {updatePayment.isPending ? (
+                <>
+                  <Spinner />
+                  Actualizando...
+                </>
+              ) : (
+                'Actualizar Pago'
+              )}
+            </Button>
+          </SheetFooter>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

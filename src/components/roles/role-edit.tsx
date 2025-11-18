@@ -18,6 +18,7 @@ import { UpdateRoleSchema, updateRoleSchema } from '@/schemas/roles.schema'
 import { useRoleUpdate } from '@/hooks/roles/use-role-update'
 import { Tables } from '@/types/supabase.types'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface RoleEditProps {
   role: Tables<'roles'>
@@ -49,44 +50,46 @@ export function RoleEdit({ role, open, onOpenChange }: RoleEditProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={`!w-full !max-w-4xl`} side="right">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Editar Rol</SheetTitle>
-            <SheetDescription>
-              Modifica la información y permisos del rol.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="update">
+            <SheetHeader>
+              <SheetTitle>Editar Rol</SheetTitle>
+              <SheetDescription>
+                Modifica la información y permisos del rol.
+              </SheetDescription>
+            </SheetHeader>
 
-          <div className="flex-1 min-h-0">
-            <div className="px-4">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <RoleForm />
-                </form>
-              </Form>
+            <div className="flex-1 min-h-0">
+              <div className="px-4">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-4"
+                  >
+                    <RoleForm />
+                  </form>
+                </Form>
+              </div>
             </div>
-          </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit)}
-                disabled={updateRole.isPending}
-              >
-                {updateRole.isPending ? 'Actualizando...' : 'Actualizar Rol'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={updateRole.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit)}
+                  disabled={updateRole.isPending}
+                >
+                  {updateRole.isPending ? 'Actualizando...' : 'Actualizar Rol'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={updateRole.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

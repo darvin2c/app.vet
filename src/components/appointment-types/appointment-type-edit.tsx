@@ -18,6 +18,7 @@ import { toast } from 'sonner'
 import { Form } from '../ui/form'
 import { Separator } from '../ui/separator'
 import { appointmentTypeUpdateSchema } from '@/schemas/appointment-types.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface AppointmentTypeEditProps {
   appointmentType: Tables<'appointment_types'>
@@ -65,38 +66,40 @@ export function AppointmentTypeEdit({
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="!w-full !max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>Editar Tipo de Cita</SheetTitle>
-          <SheetDescription>
-            Modifica los campos para actualizar el tipo de cita.
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="update">
+          <SheetHeader>
+            <SheetTitle>Editar Tipo de Cita</SheetTitle>
+            <SheetDescription>
+              Modifica los campos para actualizar el tipo de cita.
+            </SheetDescription>
+          </SheetHeader>
 
-        <Form {...form}>
-          <form onSubmit={onSubmit}>
-            <AppointmentTypeForm />
-            <Separator className="mt-4" />
-            <SheetFooter className="flex-row">
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-                isLoading={updateMutation.isPending}
-                isResponsive={false}
-              >
-                Cancelar
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="submit"
-                isLoading={updateMutation.isPending}
-                disabled={updateMutation.isPending}
-                isResponsive={false}
-              >
-                Actualizar Tipo de Cita
-              </ResponsiveButton>
-            </SheetFooter>
-          </form>
-        </Form>
+          <Form {...form}>
+            <form onSubmit={onSubmit}>
+              <AppointmentTypeForm />
+              <Separator className="mt-4" />
+              <SheetFooter className="flex-row">
+                <ResponsiveButton
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  isLoading={updateMutation.isPending}
+                  isResponsive={false}
+                >
+                  Cancelar
+                </ResponsiveButton>
+                <ResponsiveButton
+                  type="submit"
+                  isLoading={updateMutation.isPending}
+                  disabled={updateMutation.isPending}
+                  isResponsive={false}
+                >
+                  Actualizar Tipo de Cita
+                </ResponsiveButton>
+              </SheetFooter>
+            </form>
+          </Form>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )
