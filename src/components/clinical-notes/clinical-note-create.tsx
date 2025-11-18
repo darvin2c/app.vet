@@ -18,6 +18,7 @@ import {
   type ClinicalNoteFormData,
 } from '@/schemas/clinical-notes.schema'
 import { useClinicalNoteCreate } from '@/hooks/clinical-notes/use-clinical-note-create'
+import CanAccess from '@/components/ui/can-access'
 
 interface ClinicalNoteCreateProps {
   open: boolean
@@ -67,38 +68,43 @@ export function ClinicalNoteCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-2xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Nota Clínica</DrawerTitle>
-          <DrawerDescription>
-            Agregue una nueva nota clínica para la mascota
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Crear Nota Clínica</DrawerTitle>
+            <DrawerDescription>
+              Agregue una nueva nota clínica para la mascota
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4 pb-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <ClinicalNoteForm petId={petId} />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="px-4 pb-4">
+            <FormProvider {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <ClinicalNoteForm petId={petId} />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            isLoading={createClinicalNote.isPending}
-            disabled={createClinicalNote.isPending}
-          >
-            Crear Nota Clínica
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createClinicalNote.isPending}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+              isLoading={createClinicalNote.isPending}
+              disabled={createClinicalNote.isPending}
+            >
+              Crear Nota Clínica
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createClinicalNote.isPending}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

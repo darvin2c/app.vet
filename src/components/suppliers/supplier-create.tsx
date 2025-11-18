@@ -18,6 +18,7 @@ import {
 import useSupplierCreate from '@/hooks/suppliers/use-supplier-create'
 import { Form } from '../ui/form'
 import { Button } from '../ui/button'
+import CanAccess from '@/components/ui/can-access'
 
 interface SupplierCreateProps {
   open: boolean
@@ -50,40 +51,42 @@ export function SupplierCreate({ open, onOpenChange }: SupplierCreateProps) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Proveedor</DrawerTitle>
-          <DrawerDescription>
-            Completa la información para agregar un nuevo proveedor.
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Crear Proveedor</DrawerTitle>
+            <DrawerDescription>
+              Completa la información para agregar un nuevo proveedor.
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
+          <div className="px-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit as any)}
+                className="space-y-4"
+              >
+                <SupplierForm mode="create" />
+              </form>
+            </Form>
+          </div>
+
+          <DrawerFooter>
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit as any)}
+              disabled={createSupplier.isPending}
             >
-              <SupplierForm mode="create" />
-            </form>
-          </Form>
-        </div>
-
-        <DrawerFooter>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={createSupplier.isPending}
-          >
-            {createSupplier.isPending ? 'Creando...' : 'Crear Proveedor'}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createSupplier.isPending}
-          >
-            Cancelar
-          </Button>
-        </DrawerFooter>
+              {createSupplier.isPending ? 'Creando...' : 'Crear Proveedor'}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createSupplier.isPending}
+            >
+              Cancelar
+            </Button>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

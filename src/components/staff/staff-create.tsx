@@ -21,6 +21,7 @@ import useCreateStaff from '@/hooks/staff/use-staff-create'
 import { Separator } from '../ui/separator'
 import { ScrollArea } from '../ui/scroll-area'
 import { staffCreateSchema } from '@/schemas/staff.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface StaffCreateProps {
   children?: React.ReactNode
@@ -63,33 +64,35 @@ export function StaffCreate({
       {children && <SheetTrigger asChild>{children}</SheetTrigger>}
       <SheetContent className="!w-full !max-w-2xl">
         <ScrollArea className="!h-full">
-          <SheetHeader>
-            <SheetTitle>Crear Personal</SheetTitle>
-            <SheetDescription>
-              Completa los datos para crear un nuevo miembro del personal.
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit}>
-              <div className="px-4">
-                <StaffForm />
-              </div>
-              <Separator className="mt-4" />
-              <SheetFooter>
-                <Button type="submit" disabled={mutation.isPending}>
-                  Crear Personal
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Personal</SheetTitle>
+              <SheetDescription>
+                Completa los datos para crear un nuevo miembro del personal.
+              </SheetDescription>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={onSubmit}>
+                <div className="px-4">
+                  <StaffForm />
+                </div>
+                <Separator className="mt-4" />
+                <SheetFooter>
+                  <Button type="submit" disabled={mutation.isPending}>
+                    Crear Personal
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={mutation.isPending}
+                  >
+                    Cancelar
+                  </Button>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

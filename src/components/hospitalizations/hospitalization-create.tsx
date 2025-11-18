@@ -18,6 +18,7 @@ import {
   hospitalizationCreateSchema,
   HospitalizationCreateSchema,
 } from '@/schemas/hospitalization.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface HospitalizationCreateProps {
   open: boolean
@@ -58,36 +59,41 @@ export function HospitalizationCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-2xl">
-        <DrawerHeader>
-          <DrawerTitle>Nueva Hospitalización</DrawerTitle>
-          <DrawerDescription>
-            Registra una nueva hospitalización para la mascota
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Nueva Hospitalización</DrawerTitle>
+            <DrawerDescription>
+              Registra una nueva hospitalización para la mascota
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <HospitalizationForm />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="px-4">
+            <FormProvider {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <HospitalizationForm />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            isLoading={createHospitalization.isPending}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Registrar Hospitalización
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              isLoading={createHospitalization.isPending}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Registrar Hospitalización
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

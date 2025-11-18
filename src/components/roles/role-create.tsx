@@ -18,6 +18,7 @@ import { RoleForm } from './role-form'
 import { CreateRoleSchema, createRoleSchema } from '@/schemas/roles.schema'
 import { useRoleCreate } from '@/hooks/roles/use-role-create'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface RoleCreateProps {
   open: boolean
@@ -46,44 +47,46 @@ export function RoleCreate({ open, onOpenChange }: RoleCreateProps) {
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={`!w-full !max-w-4xl`} side="right">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Crear Rol</SheetTitle>
-            <SheetDescription>
-              Define un nuevo rol y asigna los permisos correspondientes.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Rol</SheetTitle>
+              <SheetDescription>
+                Define un nuevo rol y asigna los permisos correspondientes.
+              </SheetDescription>
+            </SheetHeader>
 
-          <div className="flex-1 min-h-0">
-            <div className="px-4">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <RoleForm />
-                </form>
-              </Form>
+            <div className="flex-1 min-h-0">
+              <div className="px-4">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className="space-y-4"
+                  >
+                    <RoleForm />
+                  </form>
+                </Form>
+              </div>
             </div>
-          </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit)}
-                disabled={createRole.isPending}
-              >
-                {createRole.isPending ? 'Creando...' : 'Crear Rol'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={createRole.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit)}
+                  disabled={createRole.isPending}
+                >
+                  {createRole.isPending ? 'Creando...' : 'Crear Rol'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={createRole.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

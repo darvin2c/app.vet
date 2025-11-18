@@ -12,6 +12,7 @@ import {
   CreateSupplierBrandSchema,
 } from '@/schemas/supplier-brands.schema'
 import { Plus } from 'lucide-react'
+import CanAccess from '@/components/ui/can-access'
 
 interface SupplierBrandCreateProps {
   open: boolean
@@ -47,31 +48,33 @@ export function SupplierBrandCreate({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <FormProvider {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-          <SupplierBrandForm />
+      <CanAccess resource="products" action="create">
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <SupplierBrandForm />
 
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={isPending}
-              disabled={isPending}
-              icon={Plus}
-            >
-              Asignar Marca
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isPending}
-              icon={Plus}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </form>
-      </FormProvider>
+            <DrawerFooter>
+              <ResponsiveButton
+                type="submit"
+                isLoading={isPending}
+                disabled={isPending}
+                icon={Plus}
+              >
+                Asignar Marca
+              </ResponsiveButton>
+              <ResponsiveButton
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isPending}
+                icon={Plus}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </DrawerFooter>
+          </form>
+        </FormProvider>
+      </CanAccess>
     </Drawer>
   )
 }

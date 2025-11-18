@@ -19,6 +19,7 @@ import {
 } from '@/schemas/payments.schema'
 import usePaymentCreate from '@/hooks/payments/use-payment-create'
 import { ScrollArea } from '../ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface PaymentCreateProps {
   open: boolean
@@ -50,37 +51,42 @@ export function PaymentCreate({ open, onOpenChange }: PaymentCreateProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>Crear Pago</SheetTitle>
-          <SheetDescription>
-            Completa la información para registrar un nuevo pago.
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="create">
+          <SheetHeader>
+            <SheetTitle>Crear Pago</SheetTitle>
+            <SheetDescription>
+              Completa la información para registrar un nuevo pago.
+            </SheetDescription>
+          </SheetHeader>
 
-        <ScrollArea className="px-6">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <PaymentForm mode="create" />
-            </form>
-          </Form>
-        </ScrollArea>
+          <ScrollArea className="px-6">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <PaymentForm mode="create" />
+              </form>
+            </Form>
+          </ScrollArea>
 
-        <SheetFooter className="gap-2 flex-row">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={createPayment.isPending}
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit)}
-            disabled={createPayment.isPending}
-          >
-            {createPayment.isPending ? 'Creando...' : 'Crear Pago'}
-          </Button>
-        </SheetFooter>
+          <SheetFooter className="gap-2 flex-row">
+            <Button
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createPayment.isPending}
+            >
+              Cancelar
+            </Button>
+            <Button
+              type="submit"
+              onClick={form.handleSubmit(onSubmit)}
+              disabled={createPayment.isPending}
+            >
+              {createPayment.isPending ? 'Creando...' : 'Crear Pago'}
+            </Button>
+          </SheetFooter>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

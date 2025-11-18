@@ -18,6 +18,7 @@ import {
 } from '@/schemas/clinical-parameters.schema'
 import { useClinicalParameterCreate } from '@/hooks/clinical-parameters/use-clinical-parameter-create'
 import { Json } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 interface ClinicalParameterCreateProps {
   open: boolean
@@ -58,39 +59,41 @@ export function ClinicalParameterCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-2xl">
-        <DrawerHeader>
-          <DrawerTitle>Nuevos Parámetros Clínicos</DrawerTitle>
-          <DrawerDescription>
-            Registra los parámetros clínicos del registro médico
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Nuevos Parámetros Clínicos</DrawerTitle>
+            <DrawerDescription>
+              Registra los parámetros clínicos del registro médico
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-            <ClinicalParameterForm petId={petId} />
-          </form>
-        </FormProvider>
+          <FormProvider {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
+              <ClinicalParameterForm petId={petId} />
+            </form>
+          </FormProvider>
 
-        <DrawerFooter>
-          <div className="flex gap-2">
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-            >
-              Cancelar
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              onClick={form.handleSubmit(onSubmit)}
-              isLoading={createClinicalParameter.isPending}
-              className="flex-1"
-            >
-              Crear Parámetros
-            </ResponsiveButton>
-          </div>
-        </DrawerFooter>
+          <DrawerFooter>
+            <div className="flex gap-2">
+              <ResponsiveButton
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </ResponsiveButton>
+              <ResponsiveButton
+                type="button"
+                onClick={form.handleSubmit(onSubmit)}
+                isLoading={createClinicalParameter.isPending}
+                className="flex-1"
+              >
+                Crear Parámetros
+              </ResponsiveButton>
+            </div>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

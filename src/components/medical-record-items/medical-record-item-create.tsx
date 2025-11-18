@@ -18,6 +18,7 @@ import {
   MedicalRecordItemFormData,
 } from '@/schemas/medical-record-items.schema'
 import { useMedicalRecordItemCreate } from '@/hooks/medical-record-items/use-medical-record-item-create'
+import CanAccess from '@/components/ui/can-access'
 
 interface MedicalRecordItemCreateProps {
   open: boolean
@@ -59,36 +60,41 @@ export function MedicalRecordItemCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>Agregar Item de Registro Médico</DrawerTitle>
-          <DrawerDescription>
-            Agrega un nuevo item al registro médico
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Agregar Item de Registro Médico</DrawerTitle>
+            <DrawerDescription>
+              Agrega un nuevo item al registro médico
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <MedicalRecordItemForm />
-            </form>
-          </FormProvider>
-        </div>
+          <div className="px-4">
+            <FormProvider {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <MedicalRecordItemForm />
+              </form>
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="button"
-            isLoading={createMedicalRecordItem.isPending}
-            onClick={form.handleSubmit(onSubmit)}
-          >
-            Agregar Item
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="button"
+              isLoading={createMedicalRecordItem.isPending}
+              onClick={form.handleSubmit(onSubmit)}
+            >
+              Agregar Item
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

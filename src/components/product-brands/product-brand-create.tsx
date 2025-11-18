@@ -20,6 +20,7 @@ import { ProductBrandForm } from './product-brand-form'
 import useProductBrandCreate from '@/hooks/product-brands/use-product-brand-create'
 import { productBrandCreateSchema } from '@/schemas/product-brands.schema'
 import { ScrollArea } from '../ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface ProductBrandCreateProps {
   children?: React.ReactNode
@@ -57,36 +58,38 @@ export function ProductBrandCreate({
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="!max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Crear Marca de Producto</SheetTitle>
-            <SheetDescription>
-              Completa los datos para crear una nueva marca de producto.
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4">
-                <ProductBrandForm />
-              </div>
-              <SheetFooter className="flex-row">
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={mutation.isPending}
-                >
-                  Crear Marca
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Marca de Producto</SheetTitle>
+              <SheetDescription>
+                Completa los datos para crear una nueva marca de producto.
+              </SheetDescription>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="px-4">
+                  <ProductBrandForm />
+                </div>
+                <SheetFooter className="flex-row">
+                  <Button
+                    type="submit"
+                    onClick={onSubmit}
+                    disabled={mutation.isPending}
+                  >
+                    Crear Marca
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setOpen(false)}
+                    disabled={mutation.isPending}
+                  >
+                    Cancelar
+                  </Button>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

@@ -22,6 +22,7 @@ import {
 import useCustomerCreate from '@/hooks/customers/use-customer-create'
 import { Tables } from '@/types/supabase.types'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface CustomerCreateProps {
   open: boolean
@@ -60,44 +61,46 @@ export function CustomerCreate({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className={`!w-full !max-w-4xl`} side="right">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Crear Cliente</SheetTitle>
-            <SheetDescription>
-              Ingresa la información del cliente.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Cliente</SheetTitle>
+              <SheetDescription>
+                Ingresa la información del cliente.
+              </SheetDescription>
+            </SheetHeader>
 
-          <div className="flex-1 min-h-0">
-            <div className="px-4">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit as any)}
-                  className="space-y-4"
-                >
-                  <CustomerForm mode="create" />
-                </form>
-              </Form>
+            <div className="flex-1 min-h-0">
+              <div className="px-4">
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit as any)}
+                    className="space-y-4"
+                  >
+                    <CustomerForm mode="create" />
+                  </form>
+                </Form>
+              </div>
             </div>
-          </div>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
-                disabled={createCustomer.isPending}
-              >
-                {createCustomer.isPending ? 'Creando...' : 'Crear Cliente'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={createCustomer.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <Button
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit as any)}
+                  disabled={createCustomer.isPending}
+                >
+                  {createCustomer.isPending ? 'Creando...' : 'Crear Cliente'}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={createCustomer.isPending}
+                >
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

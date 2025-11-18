@@ -18,6 +18,7 @@ import {
   AppointmentTypeCreateSchema,
   appointmentTypeCreateSchema,
 } from '@/schemas/appointment-types.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface AppointmentTypeCreateProps {
   open?: boolean
@@ -58,40 +59,42 @@ export function AppointmentTypeCreate({
   return (
     <Sheet open={open} onOpenChange={handleOpenChange}>
       <SheetContent className="!w-full !max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>Crear Tipo de Cita</SheetTitle>
-          <SheetDescription>
-            Completa los campos para crear un nuevo tipo de cita.
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="create">
+          <SheetHeader>
+            <SheetTitle>Crear Tipo de Cita</SheetTitle>
+            <SheetDescription>
+              Completa los campos para crear un nuevo tipo de cita.
+            </SheetDescription>
+          </SheetHeader>
 
-        <Form {...form}>
-          <form onSubmit={onSubmit}>
-            <div className="px-6">
-              <AppointmentTypeForm />
-            </div>
+          <Form {...form}>
+            <form onSubmit={onSubmit}>
+              <div className="px-6">
+                <AppointmentTypeForm />
+              </div>
 
-            <SheetFooter className="flex-row">
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-                isLoading={createMutation.isPending}
-                isResponsive={false}
-              >
-                Cancelar
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="submit"
-                isLoading={createMutation.isPending}
-                disabled={createMutation.isPending}
-                isResponsive={false}
-              >
-                Crear Tipo de Cita
-              </ResponsiveButton>
-            </SheetFooter>
-          </form>
-        </Form>
+              <SheetFooter className="flex-row">
+                <ResponsiveButton
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  isLoading={createMutation.isPending}
+                  isResponsive={false}
+                >
+                  Cancelar
+                </ResponsiveButton>
+                <ResponsiveButton
+                  type="submit"
+                  isLoading={createMutation.isPending}
+                  disabled={createMutation.isPending}
+                  isResponsive={false}
+                >
+                  Crear Tipo de Cita
+                </ResponsiveButton>
+              </SheetFooter>
+            </form>
+          </Form>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

@@ -18,6 +18,7 @@ import { useBreedCreate } from '@/hooks/breeds/use-breed-create'
 import { breedCreateSchema, type BreedCreate } from '@/schemas/breeds.schema'
 import { ScrollArea } from '../ui/scroll-area'
 import { Form } from '../ui/form'
+import CanAccess from '@/components/ui/can-access'
 
 interface BreedCreateProps {
   open: boolean
@@ -52,39 +53,41 @@ export function BreedCreate({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Nueva Raza</SheetTitle>
-            <SheetDescription>
-              Crea una nueva raza en el sistema
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Nueva Raza</SheetTitle>
+              <SheetDescription>
+                Crea una nueva raza en el sistema
+              </SheetDescription>
+            </SheetHeader>
 
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-6">
-              <div className="flex-1 overflow-y-auto px-4">
-                <BreedForm selectedSpeciesId={selectedSpeciesId} />
-              </div>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-6">
+                <div className="flex-1 overflow-y-auto px-4">
+                  <BreedForm selectedSpeciesId={selectedSpeciesId} />
+                </div>
 
-              <SheetFooter className="flex-row">
-                <ResponsiveButton
-                  type="submit"
-                  icon={Plus}
-                  isLoading={createBreed.isPending}
-                  disabled={createBreed.isPending}
-                  onClick={onSubmit}
-                >
-                  {createBreed.isPending ? 'Creando...' : 'Crear Raza'}
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={createBreed.isPending}
-                >
-                  Cancelar
-                </ResponsiveButton>
-              </SheetFooter>
-            </form>
-          </Form>
+                <SheetFooter className="flex-row">
+                  <ResponsiveButton
+                    type="submit"
+                    icon={Plus}
+                    isLoading={createBreed.isPending}
+                    disabled={createBreed.isPending}
+                    onClick={onSubmit}
+                  >
+                    {createBreed.isPending ? 'Creando...' : 'Crear Raza'}
+                  </ResponsiveButton>
+                  <ResponsiveButton
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    disabled={createBreed.isPending}
+                  >
+                    Cancelar
+                  </ResponsiveButton>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

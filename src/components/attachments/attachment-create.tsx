@@ -19,6 +19,7 @@ import {
   attachmentUploadSchema,
   type AttachmentUploadSchema,
 } from '@/schemas/attachments.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface AttachmentCreateProps {
   medicalRecordId: string
@@ -90,40 +91,42 @@ export function AttachmentCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[90vh]">
-        <DrawerHeader>
-          <DrawerTitle>
-            {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
-          </DrawerTitle>
-          <DrawerDescription>
-            {allowMultiple
-              ? 'Selecciona múltiples archivos para subir al registro médico'
-              : 'Selecciona un archivo para subir al registro médico'}
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>
+              {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
+            </DrawerTitle>
+            <DrawerDescription>
+              {allowMultiple
+                ? 'Selecciona múltiples archivos para subir al registro médico'
+                : 'Selecciona un archivo para subir al registro médico'}
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4 overflow-y-auto">
-          <FormProvider {...form}>
-            <AttachmentForm allowMultiple={allowMultiple} />
-          </FormProvider>
-        </div>
+          <div className="px-4 overflow-y-auto">
+            <FormProvider {...form}>
+              <AttachmentForm allowMultiple={allowMultiple} />
+            </FormProvider>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="button"
-            onClick={handleSubmit}
-            isLoading={isLoading}
-            disabled={isLoading}
-          >
-            {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={handleCancel}
-            disabled={isLoading}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+          <DrawerFooter>
+            <ResponsiveButton
+              type="button"
+              onClick={handleSubmit}
+              isLoading={isLoading}
+              disabled={isLoading}
+            >
+              {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={handleCancel}
+              disabled={isLoading}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

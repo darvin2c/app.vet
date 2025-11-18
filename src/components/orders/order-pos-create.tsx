@@ -14,6 +14,7 @@ import {
 import { Field } from '../ui/field'
 import { Button } from '../ui/button'
 import useOrderCreate from '@/hooks/orders/use-order-create'
+import CanAccess from '@/components/ui/can-access'
 
 interface OrderPosCreateProps {
   open: boolean
@@ -60,22 +61,24 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
         side={isMobile ? 'bottom' : 'right'}
         className="!h-screen !max-w-full !w-full p-0 border-0"
       >
-        <SheetHeader className="sr-only">
-          <SheetTitle>Punto de Venta</SheetTitle>
-        </SheetHeader>
-        <POSInterface onClose={handleClose} />
-        {currentView === 'payment' && (
-          <SheetFooter className="fixed bottom-0 left-0  p-4 bg-background">
-            <Field orientation="horizontal">
-              <Button size="lg" onClick={handleOrderCreated}>
-                Guardar Orden
-              </Button>
-              <Button variant="outline" size="lg" onClick={handleClose}>
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
-        )}
+        <CanAccess resource="products" action="create">
+          <SheetHeader className="sr-only">
+            <SheetTitle>Punto de Venta</SheetTitle>
+          </SheetHeader>
+          <POSInterface onClose={handleClose} />
+          {currentView === 'payment' && (
+            <SheetFooter className="fixed bottom-0 left-0  p-4 bg-background">
+              <Field orientation="horizontal">
+                <Button size="lg" onClick={handleOrderCreated}>
+                  Guardar Orden
+                </Button>
+                <Button variant="outline" size="lg" onClick={handleClose}>
+                  Cancelar
+                </Button>
+              </Field>
+            </SheetFooter>
+          )}
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

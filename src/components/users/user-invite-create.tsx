@@ -24,6 +24,7 @@ import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
 import { toast } from 'sonner'
+import CanAccess from '@/components/ui/can-access'
 
 interface UserInviteCreateProps {
   open?: boolean
@@ -82,38 +83,40 @@ export function UserInviteCreate({
     <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetContent className="!max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Invitar Usuarios</SheetTitle>
-            <SheetDescription>
-              Envía invitaciones por correo a usuarios para unirse al tenant.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Invitar Usuarios</SheetTitle>
+              <SheetDescription>
+                Envía invitaciones por correo a usuarios para unirse al tenant.
+              </SheetDescription>
+            </SheetHeader>
 
-          <Form {...(form as any)}>
-            <form onSubmit={onSubmit} className="p-6">
-              <UserInviteForm />
-            </form>
-          </Form>
+            <Form {...(form as any)}>
+              <form onSubmit={onSubmit} className="p-6">
+                <UserInviteForm />
+              </form>
+            </Form>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <ResponsiveButton
-                onClick={onSubmit}
-                isLoading={createOne.isPending}
-                type="submit"
-                variant="default"
-              >
-                Enviar Invitaciones
-              </ResponsiveButton>
-              <ResponsiveButton
-                onClick={() => setOpen(false)}
-                variant="outline"
-                isLoading={createOne.isPending}
-              >
-                Cancelar
-              </ResponsiveButton>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <ResponsiveButton
+                  onClick={onSubmit}
+                  isLoading={createOne.isPending}
+                  type="submit"
+                  variant="default"
+                >
+                  Enviar Invitaciones
+                </ResponsiveButton>
+                <ResponsiveButton
+                  onClick={() => setOpen(false)}
+                  variant="outline"
+                  isLoading={createOne.isPending}
+                >
+                  Cancelar
+                </ResponsiveButton>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

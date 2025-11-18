@@ -19,6 +19,7 @@ import { PaymentMethodForm } from './payment-method-form'
 import { usePaymentMethodCreate } from '@/hooks/payment-methods/use-payment-method-create'
 import { Form } from '../ui/form'
 import { paymentMethodCreateSchema } from '@/schemas/payment-methods.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface PaymentMethodCreateProps {
   children?: React.ReactNode
@@ -56,32 +57,34 @@ export function PaymentMethodCreate({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent className="!max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Método de Pago</DrawerTitle>
-          <DrawerDescription>
-            Completa los datos para crear un nuevo método de pago.
-          </DrawerDescription>
-        </DrawerHeader>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4">
-              <PaymentMethodForm />
-            </div>
-            <DrawerFooter>
-              <Button type="submit" disabled={mutation.isPending}>
-                {mutation.isPending ? 'Creando...' : 'Crear Método de Pago'}
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </Form>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Crear Método de Pago</DrawerTitle>
+            <DrawerDescription>
+              Completa los datos para crear un nuevo método de pago.
+            </DrawerDescription>
+          </DrawerHeader>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="px-4">
+                <PaymentMethodForm />
+              </div>
+              <DrawerFooter>
+                <Button type="submit" disabled={mutation.isPending}>
+                  {mutation.isPending ? 'Creando...' : 'Crear Método de Pago'}
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </DrawerFooter>
+            </form>
+          </Form>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

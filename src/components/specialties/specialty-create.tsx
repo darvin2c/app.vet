@@ -18,6 +18,7 @@ import {
 } from '@/schemas/specialties.schema'
 import useSpecialtyCreate from '@/hooks/specialties/use-specialty-create'
 import { Form } from '../ui/form'
+import CanAccess from '@/components/ui/can-access'
 
 interface SpecialtyCreateProps {
   open: boolean
@@ -44,24 +45,26 @@ export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Crear Especialidad</SheetTitle>
-          <SheetDescription>
-            Agrega una nueva especialidad para tu centro veterinario.
-          </SheetDescription>
-        </SheetHeader>
+        <CanAccess resource="products" action="create">
+          <SheetHeader>
+            <SheetTitle>Crear Especialidad</SheetTitle>
+            <SheetDescription>
+              Agrega una nueva especialidad para tu centro veterinario.
+            </SheetDescription>
+          </SheetHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <SpecialtyForm />
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <SpecialtyForm />
 
-            <SheetFooter>
-              <ResponsiveButton type="submit" isLoading={isPending}>
-                Crear Especialidad
-              </ResponsiveButton>
-            </SheetFooter>
-          </form>
-        </Form>
+              <SheetFooter>
+                <ResponsiveButton type="submit" isLoading={isPending}>
+                  Crear Especialidad
+                </ResponsiveButton>
+              </SheetFooter>
+            </form>
+          </Form>
+        </CanAccess>
       </SheetContent>
     </Sheet>
   )

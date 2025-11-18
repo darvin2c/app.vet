@@ -15,6 +15,7 @@ import {
   DrawerTrigger,
 } from '@/components/ui/drawer-form'
 import { Form } from '@/components/ui/form'
+import CanAccess from '@/components/ui/can-access'
 
 import { ProductCategoryForm } from './product-category-form'
 import useProductCategoryCreate from '@/hooks/product-categories/use-product-category-create'
@@ -53,36 +54,38 @@ export function ProductCategoryCreate({
     <Drawer open={open} onOpenChange={setOpen}>
       <DrawerTrigger asChild>{children}</DrawerTrigger>
       <DrawerContent className="!max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
-          <DrawerDescription>
-            Completa los datos para crear una nueva categoría de producto.
-          </DrawerDescription>
-        </DrawerHeader>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4">
-              <ProductCategoryForm />
-            </div>
-            <DrawerFooter>
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={mutation.isPending}
-              >
-                Crear Categoría
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </Form>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
+            <DrawerDescription>
+              Completa los datos para crear una nueva categoría de producto.
+            </DrawerDescription>
+          </DrawerHeader>
+          <Form {...form}>
+            <form onSubmit={onSubmit} className="space-y-4">
+              <div className="px-4">
+                <ProductCategoryForm />
+              </div>
+              <DrawerFooter>
+                <Button
+                  type="submit"
+                  onClick={onSubmit}
+                  disabled={mutation.isPending}
+                >
+                  Crear Categoría
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  disabled={mutation.isPending}
+                >
+                  Cancelar
+                </Button>
+              </DrawerFooter>
+            </form>
+          </Form>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

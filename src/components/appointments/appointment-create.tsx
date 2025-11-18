@@ -21,6 +21,7 @@ import {
   createAppointmentSchema,
 } from '@/schemas/appointments.schema'
 import { X, Check } from 'lucide-react'
+import CanAccess from '@/components/ui/can-access'
 
 interface AppointmentCreateProps {
   open: boolean
@@ -96,41 +97,45 @@ export function AppointmentCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!w-full !max-w-3xl">
-        <DrawerHeader>
-          <DrawerTitle>Nueva Cita</DrawerTitle>
-          <DrawerDescription>Programa una nueva cita médica</DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Nueva Cita</DrawerTitle>
+            <DrawerDescription>
+              Programa una nueva cita médica
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-6"
-            >
-              <AppointmentForm disablePetSelection={!!defaultPetId} />
-            </form>
-          </Form>
-        </div>
+          <div className="px-4">
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit as any)}
+                className="space-y-6"
+              >
+                <AppointmentForm disablePetSelection={!!defaultPetId} />
+              </form>
+            </Form>
+          </div>
 
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            isLoading={createAppointment.isPending}
-            icon={Check}
-          >
-            {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
-          </ResponsiveButton>
-          <DrawerClose asChild>
+          <DrawerFooter>
             <ResponsiveButton
-              variant="outline"
-              disabled={createAppointment.isPending}
-              icon={X}
+              type="submit"
+              onClick={form.handleSubmit(onSubmit as any)}
+              isLoading={createAppointment.isPending}
+              icon={Check}
             >
-              Cancelar
+              {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
             </ResponsiveButton>
-          </DrawerClose>
-        </DrawerFooter>
+            <DrawerClose asChild>
+              <ResponsiveButton
+                variant="outline"
+                disabled={createAppointment.isPending}
+                icon={X}
+              >
+                Cancelar
+              </ResponsiveButton>
+            </DrawerClose>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

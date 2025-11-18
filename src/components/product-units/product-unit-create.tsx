@@ -20,6 +20,7 @@ import { ProductUnitForm } from './product-unit-form'
 import useProductUnitCreate from '@/hooks/product-units/use-product-unit-create'
 import { productUnitCreateSchema } from '@/schemas/product-units.schema'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import CanAccess from '@/components/ui/can-access'
 
 interface ProductUnitCreateProps {
   children?: React.ReactNode
@@ -58,36 +59,38 @@ export function ProductUnitCreate({
       {!controlled && <SheetTrigger asChild>{children}</SheetTrigger>}
       <SheetContent className="!max-w-4xl">
         <ScrollArea className="h-full">
-          <SheetHeader>
-            <SheetTitle>Crear Unidad de Producto</SheetTitle>
-            <SheetDescription>
-              Completa los datos para crear una nueva unidad de producto.
-            </SheetDescription>
-          </SheetHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4">
-                <ProductUnitForm />
-              </div>
-              <SheetFooter className="flex-row">
-                <Button
-                  type="submit"
-                  onClick={form.handleSubmit(onSubmit as any)}
-                  disabled={mutation.isPending}
-                >
-                  Crear Unidad
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange?.(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </SheetFooter>
-            </form>
-          </Form>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Unidad de Producto</SheetTitle>
+              <SheetDescription>
+                Completa los datos para crear una nueva unidad de producto.
+              </SheetDescription>
+            </SheetHeader>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="space-y-4">
+                <div className="px-4">
+                  <ProductUnitForm />
+                </div>
+                <SheetFooter className="flex-row">
+                  <Button
+                    type="submit"
+                    onClick={form.handleSubmit(onSubmit as any)}
+                    disabled={mutation.isPending}
+                  >
+                    Crear Unidad
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange?.(false)}
+                    disabled={mutation.isPending}
+                  >
+                    Cancelar
+                  </Button>
+                </SheetFooter>
+              </form>
+            </Form>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>

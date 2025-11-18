@@ -17,6 +17,7 @@ import {
   MedicalRecordSchema,
   MedicalRecordFormData,
 } from '@/schemas/medical-record.schema'
+import CanAccess from '@/components/ui/can-access'
 
 interface MedicalRecordCreateProps {
   petId: string
@@ -55,40 +56,42 @@ export function MedicalRecordCreate({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!max-w-4xl">
-        <DrawerHeader>
-          <DrawerTitle>Nuevo Registro Médico</DrawerTitle>
-          <DrawerDescription>
-            Registra un nuevo registro médico para la mascota
-          </DrawerDescription>
-        </DrawerHeader>
+        <CanAccess resource="products" action="create">
+          <DrawerHeader>
+            <DrawerTitle>Nuevo Registro Médico</DrawerTitle>
+            <DrawerDescription>
+              Registra un nuevo registro médico para la mascota
+            </DrawerDescription>
+          </DrawerHeader>
 
-        <div className="px-4">
-          <FormProvider {...form}>
-            <form
-              id="medical-record-create-form"
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="space-y-4"
+          <div className="px-4">
+            <FormProvider {...form}>
+              <form
+                id="medical-record-create-form"
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <MedicalRecordForm />
+              </form>
+            </FormProvider>
+          </div>
+
+          <DrawerFooter>
+            <ResponsiveButton
+              type="submit"
+              form="medical-record-create-form"
+              isLoading={createMedicalRecord.isPending}
             >
-              <MedicalRecordForm />
-            </form>
-          </FormProvider>
-        </div>
-
-        <DrawerFooter>
-          <ResponsiveButton
-            type="submit"
-            form="medical-record-create-form"
-            isLoading={createMedicalRecord.isPending}
-          >
-            Crear Registro Médico
-          </ResponsiveButton>
-          <ResponsiveButton
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
-            Cancelar
-          </ResponsiveButton>
-        </DrawerFooter>
+              Crear Registro Médico
+            </ResponsiveButton>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </DrawerFooter>
+        </CanAccess>
       </DrawerContent>
     </Drawer>
   )

@@ -18,6 +18,7 @@ import { useSpeciesCreate } from '@/hooks/species/use-species-create'
 import { ScrollArea } from '../ui/scroll-area'
 import { Form } from '../ui/form'
 import { Field } from '../ui/field'
+import CanAccess from '@/components/ui/can-access'
 
 interface SpeciesCreateProps {
   onSuccess?: () => void
@@ -55,38 +56,40 @@ export function SpeciesCreate({
     <Sheet open={isOpen} onOpenChange={setOpen}>
       <SheetContent className="!max-w-2xl">
         <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Crear Nueva Especie</SheetTitle>
-            <SheetDescription>
-              Agrega una nueva especie al sistema. Las especies pueden tener
-              múltiples razas asociadas.
-            </SheetDescription>
-          </SheetHeader>
+          <CanAccess resource="products" action="create">
+            <SheetHeader>
+              <SheetTitle>Crear Nueva Especie</SheetTitle>
+              <SheetDescription>
+                Agrega una nueva especie al sistema. Las especies pueden tener
+                múltiples razas asociadas.
+              </SheetDescription>
+            </SheetHeader>
 
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="px-4">
-              <SpeciesForm />
-            </form>
-          </Form>
+            <Form {...form}>
+              <form onSubmit={onSubmit} className="px-4">
+                <SpeciesForm />
+              </form>
+            </Form>
 
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <ResponsiveButton
-                onClick={onSubmit}
-                isLoading={createSpecies.isPending}
-                type="submit"
-                variant="default"
-              >
-                Crear Especie
-              </ResponsiveButton>
-              <ResponsiveButton
-                onClick={() => setOpen(false)}
-                variant="outline"
-              >
-                Cancelar
-              </ResponsiveButton>
-            </Field>
-          </SheetFooter>
+            <SheetFooter>
+              <Field orientation="horizontal">
+                <ResponsiveButton
+                  onClick={onSubmit}
+                  isLoading={createSpecies.isPending}
+                  type="submit"
+                  variant="default"
+                >
+                  Crear Especie
+                </ResponsiveButton>
+                <ResponsiveButton
+                  onClick={() => setOpen(false)}
+                  variant="outline"
+                >
+                  Cancelar
+                </ResponsiveButton>
+              </Field>
+            </SheetFooter>
+          </CanAccess>
         </ScrollArea>
       </SheetContent>
     </Sheet>
