@@ -19,4 +19,10 @@ export const usersPerms: Perm[] = [
     description: 'Permiso para actualizar usuarios',
     can: true,
   },
+  {
+    value: 'users:delete',
+    label: 'Eliminar',
+    description: 'Permiso para eliminar usuarios',
+    can: true,
+  },
 ]

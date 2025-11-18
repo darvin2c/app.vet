@@ -6,12 +6,14 @@ import { servicesPerms } from './services'
 import { ordersPerms } from './orders'
 import { usersPerms } from './users'
 import { rolesPerms } from './roles'
+import { paymentsPerms } from './payments'
 
 export const PERMS: Perm[] = [
   ...customersPerms,
   ...petsPerms,
   ...productsPerms,
   ...servicesPerms,
+  ...paymentsPerms,
   ...ordersPerms,
   ...usersPerms,
   ...rolesPerms,
@@ -22,6 +24,7 @@ export {
   petsPerms,
   productsPerms,
   servicesPerms,
+  paymentsPerms,
   ordersPerms,
   usersPerms,
   rolesPerms,
