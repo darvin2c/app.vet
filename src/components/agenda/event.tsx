@@ -8,29 +8,13 @@ import { es } from 'date-fns/locale'
 import { cn } from '@/lib/utils'
 import { EventCard } from './event-card'
 import { AppointmentWithRelations } from '@/types/appointment.types'
+import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
+import { Enums } from '@/types/supabase.types'
 
 // Tipo para el appointment con relaciones
 type Appointment = AppointmentWithRelations
 
-// Mapeo de estados a variantes de Badge
-const STATUS_VARIANTS = {
-  scheduled: 'outline',
-  confirmed: 'default',
-  in_progress: 'secondary',
-  completed: 'default',
-  cancelled: 'destructive',
-  no_show: 'destructive',
-} as const
-
-// Etiquetas de estado en español
-const STATUS_LABELS = {
-  scheduled: 'Programada',
-  confirmed: 'Confirmada',
-  in_progress: 'En Progreso',
-  completed: 'Completada',
-  cancelled: 'Cancelada',
-  no_show: 'No Asistió',
-} as const
+type StatusValue = Enums<'appointment_status'>
 
 export default function Event({ event }: { event: CalendarEvent }) {
   const { view } = useIlamyCalendarContext()
@@ -41,7 +25,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const client = pet?.customers
   const staff = appointment?.staff
   const appointmentType = appointment?.appointment_types
-  const status = appointment?.status as keyof typeof STATUS_LABELS
+  const status: StatusValue = (appointment?.status ||
+    'scheduled') as StatusValue
 
   const petName = pet?.name || 'Sin mascota'
   const clientName = client
@@ -50,6 +35,11 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
   const typeName = appointmentType?.name || 'Sin tipo'
   const typeColor = appointmentType?.color || '#3b82f6'
+
+  const { statusList, getStatus } = useAppointmentStatus()
+  const statusColor =
+    statusList.find((s) => s.value === status)?.color || '#64748b'
+  const statusLabel = getStatus(status)
 
   // Formatear horas
   const startTime = format(event.start.toDate(), 'HH:mm', { locale: es })
@@ -76,12 +66,20 @@ export default function Event({ event }: { event: CalendarEvent }) {
           className={cn(
             'text-[11px] px-2 py-1 rounded-md',
             'transition-colors cursor-pointer',
-            'min-h-[20px] flex items-center gap-1',
-            'shadow-sm'
+            'min-h-[20px] flex items-center gap-2',
+            'shadow-sm border-l-4'
           )}
-          style={{ backgroundColor: `${typeColor}22`, color: '#1f2937' }}
+          style={{
+            backgroundColor: `${typeColor}22`,
+            color: '#1f2937',
+            borderLeftColor: statusColor,
+          }}
           title={`${petName} (${clientName}) - ${typeName} (${timeRange})`}
         >
+          <span
+            className="inline-block w-2 h-2 rounded-full"
+            style={{ backgroundColor: statusColor }}
+          />
           <span className="font-medium truncate max-w-[120px]">{petName}</span>
           <span className="text-[10px] text-gray-700">{startTime}</span>
         </div>
@@ -98,7 +96,11 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'min-h-[32px] h-full flex flex-col justify-between',
             'relative overflow-hidden'
           )}
-          style={{ borderLeftColor: typeColor }}
+          style={{
+            borderLeftColor: statusColor,
+            borderLeftWidth: 4,
+            borderLeftStyle: 'solid',
+          }}
         >
           {/* Contenido principal - siempre visible */}
           <div className="flex items-start justify-between gap-1 min-h-0">
@@ -106,10 +108,10 @@ export default function Event({ event }: { event: CalendarEvent }) {
               {petName}
             </div>
             <Badge
-              variant={STATUS_VARIANTS[status] as any}
               className="text-[10px] px-1 py-0 h-4 flex-shrink-0"
+              style={{ backgroundColor: statusColor, color: '#fff' }}
             >
-              {STATUS_LABELS[status]}
+              {statusLabel}
             </Badge>
           </div>
 
@@ -145,8 +147,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'flex flex-col justify-between'
           )}
           style={{
-            borderColor: typeColor,
-            backgroundColor: `${typeColor}30`, // Fondo con opacidad muy baja
+            borderColor: statusColor,
+            backgroundColor: `${typeColor}30`,
           }}
         >
           {/* Título del evento (tipo de cita) */}
@@ -154,8 +156,11 @@ export default function Event({ event }: { event: CalendarEvent }) {
             <h3 className="text-sm font-semibold text-gray-900 leading-tight">
               {typeName}
             </h3>
-            <Badge variant={STATUS_VARIANTS[status] as any} className="text-xs">
-              {STATUS_LABELS[status]}
+            <Badge
+              className="text-xs"
+              style={{ backgroundColor: statusColor, color: '#fff' }}
+            >
+              {statusLabel}
             </Badge>
           </div>
 
@@ -211,7 +216,11 @@ export default function Event({ event }: { event: CalendarEvent }) {
           'hover:shadow-md transition-shadow cursor-pointer',
           'min-h-[60px] space-y-1'
         )}
-        style={{ borderLeftColor: typeColor }}
+        style={{
+          borderLeftColor: statusColor,
+          borderLeftWidth: 3,
+          borderLeftStyle: 'solid',
+        }}
       >
         <div className="font-medium text-sm text-gray-900 truncate">
           {petName}
