@@ -44,6 +44,12 @@ export const RESOURCES: Resource[] = [
     group: 'sales',
   },
   {
+    value: 'appointments',
+    label: 'Citas',
+    description: 'Permisos para agenda de citas',
+    group: 'vet',
+  },
+  {
     value: 'users',
     label: 'Usuarios',
     description: 'Permisos para usuarios',

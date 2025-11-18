@@ -45,16 +45,18 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
 
   // Convertir appointments a eventos para @ilamy/calendar
   const events = useMemo(() => {
-    return appointments.map(
-      (appointment: Appointment): CalendarEvent => ({
-        id: appointment.id,
-        title: `${appointment.pets?.name || 'Sin mascota'}`,
-        start: dayjs(appointment.scheduled_start),
-        end: dayjs(appointment.scheduled_end),
-        color: appointment.appointment_types?.color || '#3b82f6',
-        data: appointment, // Datos completos para usar en eventos
-      })
-    )
+    return appointments
+      .map(
+        (appointment: Appointment): CalendarEvent => ({
+          id: appointment.id,
+          title: `${appointment.pets?.name || 'Sin mascota'}`,
+          start: dayjs(appointment.scheduled_start),
+          end: dayjs(appointment.scheduled_end),
+          color: appointment.appointment_types?.color || '#3b82f6',
+          data: appointment,
+        })
+      )
+      .sort((a, b) => a.start.valueOf() - b.start.valueOf())
   }, [appointments])
 
   const handleViewChange = (newView: 'month' | 'week' | 'day' | 'year') => {

@@ -74,15 +74,16 @@ export default function Event({ event }: { event: CalendarEvent }) {
       return (
         <div
           className={cn(
-            'text-xs p-1 rounded-sm border-l-2 bg-white/90 backdrop-blur-sm',
-            'hover:bg-white/95 transition-colors cursor-pointer',
-            'min-h-[20px] flex flex-col justify-center'
+            'text-[11px] px-2 py-1 rounded-md',
+            'transition-colors cursor-pointer',
+            'min-h-[20px] flex items-center gap-1',
+            'shadow-sm'
           )}
-          style={{ borderLeftColor: typeColor }}
+          style={{ backgroundColor: `${typeColor}22`, color: '#1f2937' }}
           title={`${petName} (${clientName}) - ${typeName} (${timeRange})`}
         >
-          <div className="font-medium text-gray-900 truncate">{petName}</div>
-          <div className="text-gray-600 truncate">{startTime}</div>
+          <span className="font-medium truncate max-w-[120px]">{petName}</span>
+          <span className="text-[10px] text-gray-700">{startTime}</span>
         </div>
       )
     }
