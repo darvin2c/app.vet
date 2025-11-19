@@ -1,6 +1,12 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import {
+  useState,
+  useMemo,
+  useEffect,
+  useCallback,
+  startTransition,
+} from 'react'
 import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
 import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
 import { Tables } from '@/types/supabase.types'
@@ -76,6 +82,12 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setCreateModalOpen(true)
   }
 
+  const handleDateChange = useCallback((date: dayjs.Dayjs) => {
+    startTransition(() => {
+      setCurrentDate(date)
+    })
+  }, [])
+
   const handleCreateSuccess = () => {
     console.log('Create success - closing modal and clearing state')
     setCreateModalOpen(false)
@@ -112,9 +124,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         onCellClick={handleCellClick}
         headerComponent={<AgendaHeader />}
         onEventClick={(event) => console.log('Event clicked:', event)}
-        onDateChange={(date) => {
-          setCurrentDate(date)
-        }}
+        onDateChange={handleDateChange}
       />
 
       {/* Modal de crear cita */}

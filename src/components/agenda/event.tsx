@@ -10,6 +10,7 @@ import { EventCard } from './event-card'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import { Enums } from '@/types/supabase.types'
+import dayjs from '@/lib/dayjs'
 
 // Tipo para el appointment con relaciones
 type Appointment = AppointmentWithRelations
@@ -28,18 +29,19 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const status: StatusValue = (appointment?.status ||
     'scheduled') as StatusValue
 
-  const petName = pet?.name || 'Sin mascota'
+  const petName = pet?.name || '-'
   const clientName = client
     ? `${client.first_name} ${client.last_name}`
     : 'Sin cliente'
   const staffName = staff ? `${staff.first_name} ${staff.last_name}` : null
-  const typeName = appointmentType?.name || 'Sin tipo'
+  const typeName = appointmentType?.name || '-'
   const typeColor = appointmentType?.color || '#3b82f6'
 
   const { statusList, getStatus } = useAppointmentStatus()
   const statusColor =
     statusList.find((s) => s.value === status)?.color || '#64748b'
   const statusLabel = getStatus(status)
+  const isPast = event.end.isBefore(dayjs())
 
   // Formatear horas
   const startTime = format(event.start.toDate(), 'HH:mm', { locale: es })
@@ -73,6 +75,12 @@ export default function Event({ event }: { event: CalendarEvent }) {
             backgroundColor: `${typeColor}22`,
             color: '#1f2937',
             borderLeftColor: statusColor,
+            ...(isPast
+              ? {
+                  backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
+                  backgroundSize: '6px 6px',
+                }
+              : {}),
           }}
           title={`${petName} (${clientName}) - ${typeName} (${timeRange})`}
         >
@@ -127,11 +135,20 @@ export default function Event({ event }: { event: CalendarEvent }) {
             </div>
           </div>
 
-          {/* Indicador visual para eventos muy cortos */}
-          <div
-            className="absolute inset-0 opacity-10 pointer-events-none"
-            style={{ backgroundColor: typeColor }}
-          />
+          {isPast ? (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
+                backgroundSize: '6px 6px',
+              }}
+            />
+          ) : (
+            <div
+              className="absolute inset-0 opacity-10 pointer-events-none"
+              style={{ backgroundColor: typeColor }}
+            />
+          )}
         </div>
       )
     }
@@ -144,7 +161,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'px-4 py-1 rounded-lg border-1 shadow-sm',
             'hover:shadow-md transition-all duration-200 cursor-pointer',
             'min-h-[120px] bg-opacity-10',
-            'flex flex-col justify-between'
+            'flex flex-col justify-between',
+            'relative overflow-hidden'
           )}
           style={{
             borderColor: statusColor,
@@ -204,6 +222,15 @@ export default function Event({ event }: { event: CalendarEvent }) {
               </p>
             </div>
           )}
+          {isPast && (
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
+                backgroundSize: '6px 6px',
+              }}
+            />
+          )}
         </div>
       )
     }
@@ -214,7 +241,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
         className={cn(
           'p-2 rounded-md border-l-3 bg-white shadow-sm',
           'hover:shadow-md transition-shadow cursor-pointer',
-          'min-h-[60px] space-y-1'
+          'min-h-[60px] space-y-1',
+          'relative overflow-hidden'
         )}
         style={{
           borderLeftColor: statusColor,
@@ -230,6 +258,15 @@ export default function Event({ event }: { event: CalendarEvent }) {
           <Clock className="w-3 h-3" />
           {timeRange}
         </div>
+        {isPast && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
+              backgroundSize: '6px 6px',
+            }}
+          />
+        )}
       </div>
     )
   }
