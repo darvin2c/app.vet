@@ -18,6 +18,8 @@ import { toast } from 'sonner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Mail, Phone } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
+import PhoneInput, { phoneUtils } from '@/components/ui/phone-input'
 
 type Appointment = AppointmentWithRelations
 
@@ -35,6 +37,7 @@ export function AppointmentShare({
   const [mode, setMode] = useState<'email' | 'whatsapp'>('email')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
+  const [waText, setWaText] = useState('')
 
   const pet = appointment.pets
   const client = pet?.customers
@@ -70,12 +73,15 @@ export function AppointmentShare({
       const body = encodeURIComponent(shareText)
       window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank')
     } else {
-      if (!phone || !/^\d{8,15}$/.test(phone)) {
+      if (!phone || !phoneUtils.validate(phone)) {
         toast.error('Ingresa un número de WhatsApp válido')
         return
       }
       const base = 'https://wa.me/'
-      const text = encodeURIComponent(shareText)
+      const parser = document.createElement('div')
+      parser.innerHTML = waText || shareText
+      const plain = parser.textContent || parser.innerText || ''
+      const text = encodeURIComponent(plain)
       const url = `${base}${phone}?text=${text}`
       window.open(url, '_blank')
     }
@@ -84,7 +90,12 @@ export function AppointmentShare({
   const handleModeChange = (next: 'email' | 'whatsapp') => {
     setMode(next)
     if (next === 'email') setPhone('')
-    else setEmail('')
+    else {
+      setEmail('')
+      setWaText(
+        `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
+      )
+    }
   }
 
   return (
@@ -138,16 +149,21 @@ export function AppointmentShare({
                 />
               </Field>
             ) : (
-              <Field orientation="vertical">
-                <label className="text-sm font-medium">WhatsApp</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="51999999999"
-                  className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                />
-              </Field>
+              <>
+                <Field orientation="vertical">
+                  <label className="text-sm font-medium">WhatsApp</label>
+                  <PhoneInput
+                    value={phone}
+                    onChange={(val) => setPhone(val)}
+                    defaultCountry="PE"
+                    showCountrySelect
+                  />
+                </Field>
+                <Field orientation="vertical">
+                  <label className="text-sm font-medium">Mensaje</label>
+                  <RichMinimalEditor value={waText} onChange={setWaText} />
+                </Field>
+              </>
             )}
           </div>
         </ScrollArea>
@@ -156,16 +172,7 @@ export function AppointmentShare({
             <Button variant="outline" onClick={handleCopyShare}>
               Copiar
             </Button>
-            <Button
-              onClick={handleSend}
-              disabled={
-                mode === 'email'
-                  ? !/^\S+@\S+\.\S+$/.test(email)
-                  : !/^\d{8,15}$/.test(phone)
-              }
-            >
-              Enviar
-            </Button>
+            <Button onClick={handleSend}>Enviar</Button>
           </Field>
         </SheetFooter>
       </SheetContent>
