@@ -14,6 +14,7 @@ import dayjs from '@/lib/dayjs'
 import { AppointmentCreate } from '../appointments/appointment-create'
 import Event from './event'
 import AgendaHeader from './agenda-header'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -31,6 +32,7 @@ interface AgendaCalendarProps {
 
 export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
+  const { currentTenant } = useCurrentTenantStore()
   const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month')
 
   // Estados para el modal de crear cita
@@ -122,6 +124,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         locale="es"
         firstDayOfWeek="monday"
         onCellClick={handleCellClick}
+        timezone={currentTenant?.timezone || undefined}
         headerComponent={<AgendaHeader />}
         onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
