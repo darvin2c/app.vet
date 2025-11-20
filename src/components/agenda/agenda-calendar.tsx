@@ -143,6 +143,30 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
           }
         }
       }
+    } else if (view === 'day') {
+      const key = dayKey(currentDate)
+      const cfg = bh?.[key]
+      const enabled = !!cfg?.enabled
+      const sMin = toMinutes(cfg?.start)
+      const eMin = toMinutes(cfg?.end)
+      for (let h = 0; h < 24; h++) {
+        for (const mm of [0, 15, 30, 45]) {
+          const cellMinStart = h * 60 + mm
+          const cellMinEnd = cellMinStart + 15
+          const mark =
+            !enabled ||
+            eMin <= sMin ||
+            cellMinEnd <= sMin ||
+            cellMinStart >= eMin
+          if (mark) {
+            const hh = String(h).padStart(2, '0')
+            const mms = String(mm).padStart(2, '0')
+            rules.push(
+              `[data-testid="day-time-cell-${hh}-${mms}"]{background-image:repeating-linear-gradient(135deg, rgba(107,114,128,0.25) 0px, rgba(107,114,128,0.25) 2px, transparent 2px, transparent 6px);opacity:.5;}`
+            )
+          }
+        }
+      }
     }
     return rules.join('\n')
   }, [view, currentDate, currentTenant])
