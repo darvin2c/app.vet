@@ -32,6 +32,7 @@ import { toast } from 'sonner'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import dayjs from '@/lib/dayjs'
+import { AppointmentShare } from '@/components/appointments/appointment-share'
 
 type Appointment = AppointmentWithRelations
 
@@ -44,6 +45,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [open, setOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
 
   const pet = appointment.pets
   const client = pet?.customers
@@ -68,30 +70,6 @@ export function EventCard({ appointment, children }: EventCardProps) {
     statusList.find((s) => s.value === appointment.status)?.color || '#64748b'
   const statusLabel = getStatus(appointment.status)
 
-  const handleShare = async () => {
-    try {
-      const shareText = `Cita médica:
-Mascota: ${petName}
-Cliente: ${clientName}
-Fecha: ${format(startDate, 'dd/MM/yyyy', { locale: es })}
-Hora: ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}
-Tipo: ${appointmentTypeName}
-Personal: ${staffName}`
-
-      if (navigator.share) {
-        await navigator.share({
-          title: 'Cita Médica',
-          text: shareText,
-        })
-      } else {
-        await navigator.clipboard.writeText(shareText)
-        toast.success('Información de la cita copiada al portapapeles')
-      }
-    } catch (error) {
-      console.error('Error sharing appointment:', error)
-      toast.error('Error al compartir la cita')
-    }
-  }
 
   const handleEditSuccess = () => {
     setEditOpen(false)
@@ -289,7 +267,7 @@ Personal: ${staffName}`
                 </ResponsiveButton>
                 <ResponsiveButton
                   variant="outline"
-                  onClick={handleShare}
+                  onClick={() => setShareOpen(true)}
                   icon={Share2}
                   className="flex-1"
                 >
@@ -322,6 +300,12 @@ Personal: ${staffName}`
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onSuccess={handleDeleteSuccess}
+      />
+
+      <AppointmentShare
+        appointment={appointment}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
       />
     </>
   )
