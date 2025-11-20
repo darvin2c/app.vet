@@ -124,7 +124,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       weekHeader?.removeEventListener('click', handleWeekHeaderClick)
     }
   }, [view])
-
+  console.log(currentTenant)
   return (
     <div className={className}>
       <IlamyCalendar
