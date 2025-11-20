@@ -30,6 +30,8 @@ import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import { toast } from 'sonner'
 import { AppointmentWithRelations } from '@/types/appointment.types'
+import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
+import dayjs from '@/lib/dayjs'
 
 type Appointment = AppointmentWithRelations
 
@@ -38,27 +40,10 @@ interface EventCardProps {
   children: React.ReactNode
 }
 
-const STATUS_LABELS = {
-  scheduled: 'Programada',
-  confirmed: 'Confirmada',
-  in_progress: 'En Progreso',
-  completed: 'Completada',
-  cancelled: 'Cancelada',
-  no_show: 'No Asistió',
-} as const
-
-const STATUS_VARIANTS = {
-  scheduled: 'secondary',
-  confirmed: 'default',
-  in_progress: 'default',
-  completed: 'default',
-  cancelled: 'destructive',
-  no_show: 'destructive',
-} as const
-
 export function EventCard({ appointment, children }: EventCardProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const pet = appointment.pets
   const client = pet?.customers
@@ -77,6 +62,11 @@ export function EventCard({ appointment, children }: EventCardProps) {
 
   const startDate = new Date(appointment.scheduled_start)
   const endDate = new Date(appointment.scheduled_end)
+  const isPast = dayjs(endDate).isBefore(dayjs())
+  const { statusList, getStatus } = useAppointmentStatus()
+  const statusColor =
+    statusList.find((s) => s.value === appointment.status)?.color || '#64748b'
+  const statusLabel = getStatus(appointment.status)
 
   const handleShare = async () => {
     try {
@@ -113,8 +103,26 @@ Personal: ${staffName}`
 
   return (
     <>
-      <HoverCard openDelay={300} closeDelay={100}>
-        <HoverCardTrigger asChild>{children}</HoverCardTrigger>
+      <HoverCard
+        openDelay={400}
+        closeDelay={150}
+        open={open}
+        onOpenChange={setOpen}
+      >
+        <HoverCardTrigger asChild>
+          <span
+            role="button"
+            tabIndex={0}
+            onClick={() => setOpen(true)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+            }}
+            aria-haspopup="dialog"
+            aria-expanded={open}
+          >
+            {children}
+          </span>
+        </HoverCardTrigger>
         <HoverCardContent className="w-96 p-0" side="top" align="start">
           <Card className="border-0 shadow-none">
             <CardHeader className="pb-4">
@@ -123,20 +131,28 @@ Personal: ${staffName}`
                   <CardTitle className="text-xl font-semibold">
                     Detalles de la Cita
                   </CardTitle>
-                  <Badge
-                    variant={
-                      STATUS_VARIANTS[
-                        appointment.status as keyof typeof STATUS_VARIANTS
-                      ]
-                    }
-                    className="w-fit"
-                  >
-                    {
-                      STATUS_LABELS[
-                        appointment.status as keyof typeof STATUS_LABELS
-                      ]
-                    }
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      className="w-fit"
+                      style={{ backgroundColor: statusColor, color: '#fff' }}
+                    >
+                      {statusLabel}
+                    </Badge>
+                    {isPast && (
+                      <Badge
+                        variant="outline"
+                        className="flex items-center gap-1"
+                        style={{
+                          borderColor: statusColor,
+                          color: statusColor,
+                          backgroundColor: `${statusColor}22`,
+                        }}
+                      >
+                        <Clock className="h-3 w-3" />
+                        Pasada
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 <div
                   className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
@@ -187,6 +203,17 @@ Personal: ${staffName}`
                         <Clock className="h-3 w-3" />
                         {format(startDate, 'HH:mm', { locale: es })} -{' '}
                         {format(endDate, 'HH:mm', { locale: es })}
+                        {isPast && (
+                          <span
+                            className="ml-2 text-xs px-2 py-0.5 rounded"
+                            style={{
+                              backgroundColor: `${statusColor}22`,
+                              color: statusColor,
+                            }}
+                          >
+                            Pasada
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
