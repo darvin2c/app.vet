@@ -11,9 +11,24 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { AppointmentCreateButton } from '../appointments/appointment-create-button'
+import { Dayjs } from 'dayjs'
+import { useEffect } from 'react'
 
-export default function AgendaHeader() {
-  const { view, setView, nextPeriod, prevPeriod, currentDate } =
+export default function AgendaHeader({
+  initialDate,
+  initialView,
+}: {
+  initialDate: Dayjs
+  initialView: 'month' | 'week' | 'day' | 'year'
+}) {
+  useEffect(() => {
+    if (currentDate.format('YYYY-MM-DD') !== initialDate.format('YYYY-MM-DD')) {
+      setCurrentDate(initialDate)
+    }
+  }, [initialDate])
+
+  useEffect(() => {}, [initialView])
+  const { view, setView, nextPeriod, prevPeriod, currentDate, setCurrentDate } =
     useIlamyCalendarContext()
   return (
     <div className="flex items-center justify-between p-4 bg-background border-b border-border">

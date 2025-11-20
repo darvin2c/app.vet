@@ -107,12 +107,23 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
    * requerir una solución personalizada o actualización de la librería.
    */
 
-  // Remover el event listener al desmontar el componente
+  const handleWeekHeaderClick = (e: MouseEvent) => {
+    e.stopPropagation()
+  }
+
   useEffect(() => {
+    const selector = '[data-testid="week-header"]'
+
+    setTimeout(() => {
+      const weekHeader = document.querySelector<HTMLElement>(selector)
+      weekHeader?.addEventListener('click', handleWeekHeaderClick)
+    }, 500)
+
     return () => {
-      // Cleanup si es necesario
+      const weekHeader = document.querySelector<HTMLElement>(selector)
+      weekHeader?.removeEventListener('click', handleWeekHeaderClick)
     }
-  }, [])
+  }, [view])
 
   return (
     <div className={className}>
@@ -125,7 +136,9 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         firstDayOfWeek="monday"
         onCellClick={handleCellClick}
         timezone={currentTenant?.timezone || undefined}
-        headerComponent={<AgendaHeader />}
+        headerComponent={
+          <AgendaHeader initialDate={currentDate} initialView={view} />
+        }
         onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
       />
