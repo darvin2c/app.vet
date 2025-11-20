@@ -105,6 +105,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
    *
    * Esto es un problema conocido de la librería @ilamy/calendar y puede
    * requerir una solución personalizada o actualización de la librería.
+   * Esto no debe de ELIMINARSE
    */
 
   const handleWeekHeaderClick = (e: MouseEvent) => {
@@ -128,6 +129,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   return (
     <div className={className}>
       <IlamyCalendar
+        stickyViewHeader={true}
         events={events}
         initialView={view}
         onViewChange={handleViewChange}
