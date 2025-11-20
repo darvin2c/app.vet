@@ -15,6 +15,7 @@ import { AppointmentCreate } from '../appointments/appointment-create'
 import Event from './event'
 import AgendaHeader from './agenda-header'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -47,9 +48,20 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const endOfMonth = currentDate.endOf('month')
 
   const { data: appointments = [], isLoading } = useAppointments({
-    start_date: startOfMonth.toISOString(),
-    end_date: endOfMonth.toISOString(),
+    filters: [
+      {
+        field: 'scheduled_start',
+        operator: 'gte',
+        value: startOfMonth.toISOString(),
+      },
+      {
+        field: 'scheduled_end',
+        operator: 'lte',
+        value: endOfMonth.toISOString(),
+      },
+    ],
   })
+  const appointmentUpdate = useAppointmentUpdate()
 
   // Convertir appointments a eventos para @ilamy/calendar
   const events = useMemo(() => {
@@ -208,6 +220,15 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         events={events}
         initialView={view}
         onViewChange={handleViewChange}
+        onEventUpdate={(event) => {
+          appointmentUpdate.mutate({
+            id: event.id as string,
+            data: {
+              scheduled_start: event.start.toISOString(),
+              scheduled_end: event.end.toISOString(),
+            },
+          })
+        }}
         renderEvent={(event) => <Event event={event} />}
         locale="es"
         firstDayOfWeek="monday"

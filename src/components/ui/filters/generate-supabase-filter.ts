@@ -3,7 +3,10 @@ import type { AppliedFilter } from './types'
 /**
  * Construye una consulta de Supabase con filtros aplicados
  */
-export function applySupabaseFilters(query: unknown, filters: AppliedFilter[]) {
+export function applySupabaseFilters(
+  query: unknown,
+  filters?: AppliedFilter[]
+) {
   let q: any = query as any
   if (!filters || filters.length === 0) return query
 

@@ -10,18 +10,20 @@ export function useAppointmentUpdate() {
   const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
-    mutationFn: async (data: TablesUpdate<'appointments'> & { id: string }) => {
+    mutationFn: async ({
+      id,
+      data,
+    }: {
+      id: string
+      data: Omit<TablesUpdate<'appointments'>, 'tenant_id'>
+    }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      const { id, ...updateFields } = data
-      const updateData: TablesUpdate<'appointments'> =
-        removeUndefined(updateFields)
-
       const { data: appointment, error } = await supabase
         .from('appointments')
-        .update(updateData)
+        .update(data)
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)
         .select()
@@ -34,7 +36,9 @@ export function useAppointmentUpdate() {
       return appointment
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'appointments'],
+      })
       toast.success('Cita actualizada exitosamente')
     },
     onError: (error) => {

@@ -1,10 +1,10 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import { Database } from '@/types/supabase.types'
-import { AppointmentFiltersSchema } from '@/schemas/appointments.schema'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
+import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 
-type AppointmentWithRelations =
+export type AppointmentWithRelations =
   Database['public']['Tables']['appointments']['Row'] & {
     pets:
       | (Database['public']['Tables']['pets']['Row'] & {
@@ -17,11 +17,11 @@ type AppointmentWithRelations =
       | null
   }
 
-export function useAppointmentList(filters?: AppointmentFiltersSchema) {
+export function useAppointmentList({ filters }: { filters?: AppliedFilter[] }) {
   const { currentTenant } = useCurrentTenantStore()
 
   return useQuery({
-    queryKey: ['appointments', currentTenant?.id, filters],
+    queryKey: [currentTenant?.id, 'appointments', filters],
     queryFn: async () => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
@@ -43,37 +43,7 @@ export function useAppointmentList(filters?: AppointmentFiltersSchema) {
         .eq('tenant_id', currentTenant.id)
         .order('scheduled_start', { ascending: true })
 
-      // Aplicar filtros
-      if (filters?.pet_id) {
-        query = query.eq('pet_id', filters.pet_id)
-      }
-
-      if (filters?.veterinarian_id) {
-        query = query.eq('veterinarian_id', filters.veterinarian_id)
-      }
-
-      if (filters?.appointment_type_id) {
-        query = query.eq('appointment_type_id', filters.appointment_type_id)
-      }
-
-      if (filters?.status) {
-        query = query.eq('status', filters.status)
-      }
-
-      if (filters?.start_date) {
-        query = query.gte('scheduled_start', filters.start_date)
-      }
-
-      if (filters?.end_date) {
-        query = query.lte('scheduled_start', filters.end_date)
-      }
-
-      if (filters?.search) {
-        // Buscar en notas de la cita o nombre de la mascota
-        query = query.or(
-          `notes.ilike.%${filters.search}%,pets.name.ilike.%${filters.search}%`
-        )
-      }
+      applySupabaseFilters(query, filters)
 
       const { data, error } = await query
 
@@ -81,7 +51,7 @@ export function useAppointmentList(filters?: AppointmentFiltersSchema) {
         throw new Error(`Error al obtener citas: ${error.message}`)
       }
 
-      return data as AppointmentWithRelations[]
+      return data
     },
     enabled: !!currentTenant?.id,
   })
