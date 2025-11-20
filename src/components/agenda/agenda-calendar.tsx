@@ -96,6 +96,57 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setSelectedDateTime(null)
   }
 
+  const businessHoursCss = useMemo(() => {
+    const bh = (currentTenant as any)?.business_hours
+    if (!bh?.enabled) return ''
+    const toMinutes = (t?: string) => {
+      if (!t) return 0
+      const [h, m] = t.split(':').map(Number)
+      return h * 60 + (m || 0)
+    }
+    const dayKey = (d: dayjs.Dayjs) => {
+      const i = d.day()
+      return [
+        'sunday',
+        'monday',
+        'tuesday',
+        'wednesday',
+        'thursday',
+        'friday',
+        'saturday',
+      ][i]
+    }
+    const startOf = currentDate.startOf('week')
+    const rules: string[] = []
+    if (view === 'week') {
+      for (let i = 0; i < 7; i++) {
+        const d = startOf.add(i, 'day')
+        const key = dayKey(d)
+        const cfg = bh?.[key]
+        const enabled = !!cfg?.enabled
+        const sMin = toMinutes(cfg?.start)
+        const eMin = toMinutes(cfg?.end)
+        for (let h = 0; h < 24; h++) {
+          const cellMinStart = h * 60
+          const cellMinEnd = (h + 1) * 60
+          const mark =
+            !enabled ||
+            eMin <= sMin ||
+            cellMinEnd <= sMin ||
+            cellMinStart >= eMin
+          if (mark) {
+            const ds = d.format('YYYY-MM-DD')
+            const hh = String(h).padStart(2, '0')
+            rules.push(
+              `[data-testid="week-time-cell-${ds}-${hh}"]{background-image:repeating-linear-gradient(135deg, rgba(107,114,128,0.25) 0px, rgba(107,114,128,0.25) 2px, transparent 2px, transparent 6px);opacity:.5;}`
+            )
+          }
+        }
+      }
+    }
+    return rules.join('\n')
+  }, [view, currentDate, currentTenant])
+
   /**
    * ⚠️ WARNING: Bloqueo de clics en los encabezados de la vista semanal
    *
@@ -144,6 +195,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
       />
+
+      {businessHoursCss && <style>{businessHoursCss}</style>}
 
       {/* Modal de crear cita */}
       <AppointmentCreate
