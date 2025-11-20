@@ -72,13 +72,13 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'shadow-sm border-l-4'
           )}
           style={{
-            backgroundColor: `${typeColor}22`,
+            backgroundColor: `${typeColor}${isPast ? '15' : '22'}`,
             color: '#1f2937',
             borderLeftColor: statusColor,
             ...(isPast
               ? {
-                  backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
-                  backgroundSize: '6px 6px',
+                  backgroundImage: `linear-gradient(${typeColor}15, ${typeColor}15), repeating-linear-gradient(135deg, ${statusColor}33 0px, ${statusColor}33 2px, transparent 2px, transparent 6px)`,
+                  backgroundSize: 'auto, 6px 6px',
                 }
               : {}),
           }}
@@ -139,8 +139,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
-                backgroundSize: '6px 6px',
+                backgroundImage: `repeating-linear-gradient(135deg, ${statusColor}33 0px, ${statusColor}33 2px, transparent 2px, transparent 6px)`,
+                opacity: 0.6,
               }}
             />
           ) : (
@@ -226,8 +226,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
             <div
               className="absolute inset-0 pointer-events-none"
               style={{
-                backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
-                backgroundSize: '6px 6px',
+                backgroundImage: `repeating-linear-gradient(135deg, ${statusColor}33 0px, ${statusColor}33 2px, transparent 2px, transparent 6px)`,
+                opacity: 0.6,
               }}
             />
           )}
@@ -262,8 +262,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              backgroundImage: `radial-gradient(${statusColor}33 1px, transparent 1px)`,
-              backgroundSize: '6px 6px',
+              backgroundImage: `repeating-linear-gradient(135deg, ${statusColor}33 0px, ${statusColor}33 2px, transparent 2px, transparent 6px)`,
+              opacity: 0.6,
             }}
           />
         )}

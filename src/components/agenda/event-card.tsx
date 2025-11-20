@@ -134,24 +134,20 @@ Personal: ${staffName}`
                   <div className="flex items-center gap-2">
                     <Badge
                       className="w-fit"
-                      style={{ backgroundColor: statusColor, color: '#fff' }}
+                      style={{
+                        backgroundColor: statusColor,
+                        color: '#fff',
+                        ...(isPast
+                          ? {
+                              backgroundImage:
+                                'repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 2px, transparent 2px, transparent 6px)',
+                              opacity: 0.9,
+                            }
+                          : {}),
+                      }}
                     >
                       {statusLabel}
                     </Badge>
-                    {isPast && (
-                      <Badge
-                        variant="outline"
-                        className="flex items-center gap-1"
-                        style={{
-                          borderColor: statusColor,
-                          color: statusColor,
-                          backgroundColor: `${statusColor}22`,
-                        }}
-                      >
-                        <Clock className="h-3 w-3" />
-                        Pasada
-                      </Badge>
-                    )}
                   </div>
                 </div>
                 <div
