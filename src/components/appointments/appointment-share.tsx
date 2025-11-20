@@ -73,6 +73,7 @@ export function AppointmentShare({
       const body = encodeURIComponent(shareText)
       window.open(`mailto:${email}?subject=${subject}&body=${body}`, '_blank')
     } else {
+      console.log(phone)
       if (!phone || !phoneUtils.validate(phone)) {
         toast.error('Ingresa un número de WhatsApp válido')
         return
