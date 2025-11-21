@@ -1,5 +1,7 @@
 'use client'
 
+import React from 'react'
+
 import { useEditor, EditorContent } from '@tiptap/react'
 import { BubbleMenu } from '@tiptap/react/menus'
 import StarterKit from '@tiptap/starter-kit'
@@ -18,7 +20,7 @@ import {
   Redo,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
-import { toWhatsAppText, toHtmlEmail } from './rich-minimal-editor/parsers'
+import { toWhatsAppText, toHtmlEmail } from './parsers'
 
 interface RichMinimalEditorProps {
   value?: string
@@ -44,12 +46,10 @@ export function RichMinimalEditor({
 }: RichMinimalEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
 
-  // Usar useRef para rastrear si el cambio viene del usuario o de props externas
   const isInternalUpdate = useRef(false)
   const onChangeRef = useRef(onChange)
   const onParsedChangeRef = useRef(onParsedChange)
 
-  // Mantener la referencia actualizada sin causar re-renders
   useEffect(() => {
     onChangeRef.current = onChange
   }, [onChange])
@@ -58,7 +58,6 @@ export function RichMinimalEditor({
     onParsedChangeRef.current = onParsedChange
   }, [onParsedChange])
 
-  // Estabilizar la configuración de extensiones con useMemo
   const extensions = useMemo(
     () => [
       StarterKit.configure({
@@ -97,26 +96,22 @@ export function RichMinimalEditor({
     []
   )
 
-  // Estabilizar handleUpdate para evitar recreaciones innecesarias
-  const handleUpdate = useCallback(
-    ({ editor }: { editor: any }) => {
-      isInternalUpdate.current = true
-      const html = editor.getHTML()
-      onChangeRef.current?.(html)
-      const formats = {
-        whatsappText: toWhatsAppText(html),
-        html,
-        htmlEmail: toHtmlEmail(html),
-        raw: editor.getJSON?.(),
-      }
-      onParsedChangeRef.current?.(formats)
-      // Reset flag after a short delay to allow for external updates
-      setTimeout(() => {
-        isInternalUpdate.current = false
-      }, 0)
-    },
-    [] // Sin dependencias para mantener la función estable
-  )
+  const handleUpdate = useCallback(() => {
+    if (!editor) return
+    isInternalUpdate.current = true
+    const html = editor.getHTML()
+    onChangeRef.current?.(html)
+    const formats = {
+      whatsappText: toWhatsAppText(html),
+      html,
+      htmlEmail: toHtmlEmail(html),
+      raw: editor.getJSON?.(),
+    }
+    onParsedChangeRef.current?.(formats)
+    setTimeout(() => {
+      isInternalUpdate.current = false
+    }, 0)
+  }, [])
 
   const editor = useEditor(
     {
@@ -124,29 +119,29 @@ export function RichMinimalEditor({
       content: value,
       immediatelyRender: false,
       editable: !disabled,
-      onUpdate: handleUpdate,
+      onUpdate: ({ editor }) => {
+        // bind current editor instance
+        (handleUpdate as any).editor = editor
+        handleUpdate()
+      },
     },
-    [extensions, disabled] // Removido handleUpdate de las dependencias
+    [extensions, disabled]
   )
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
 
-  // Mejorar la sincronización del contenido para evitar pérdida de foco
   useEffect(() => {
     if (
       editor &&
       value !== undefined &&
       value !== editor.getHTML() &&
-      !isInternalUpdate.current && // Solo actualizar si no es un cambio interno
-      !editor.isFocused // Solo actualizar si el editor no tiene foco
+      !isInternalUpdate.current &&
+      !editor.isFocused
     ) {
-      // Preservar la posición del cursor si es posible
       const { from, to } = editor.state.selection
-      editor.commands.setContent(value) // Usar sin el parámetro false
-
-      // Intentar restaurar la selección si es válida
+      editor.commands.setContent(value)
       try {
         if (
           from <= editor.state.doc.content.size &&
@@ -154,10 +149,15 @@ export function RichMinimalEditor({
         ) {
           editor.commands.setTextSelection({ from, to })
         }
-      } catch (error) {
-        // Si no se puede restaurar la selección, continuar sin error
-        console.debug('Could not restore cursor position:', error)
+      } catch {}
+      const html = editor.getHTML()
+      const formats = {
+        whatsappText: toWhatsAppText(html),
+        html,
+        htmlEmail: toHtmlEmail(html),
+        raw: editor.getJSON?.(),
       }
+      onParsedChangeRef.current?.(formats)
     }
   }, [editor, value])
 
@@ -176,19 +176,13 @@ export function RichMinimalEditor({
 
   const setLink = useCallback(() => {
     if (!editor) return
-
     const previousUrl = editor.getAttributes('link').href
     const url = window.prompt('URL', previousUrl)
-
-    if (url === null) {
-      return
-    }
-
+    if (url === null) return
     if (url === '') {
       editor.chain().focus().extendMarkRange('link').unsetLink().run()
       return
     }
-
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }, [editor])
 
@@ -207,88 +201,59 @@ export function RichMinimalEditor({
       {editor && (
         <BubbleMenu
           editor={editor}
-          options={{
-            placement: 'top',
-            offset: 10,
-          }}
+          options={{ placement: 'top', offset: 10 }}
           className="flex items-center gap-1 p-2 bg-white border border-gray-200 rounded-lg shadow-lg"
         >
           <Button
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('bold') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('bold') && 'bg-gray-100')}
           >
             <Bold className="h-4 w-4" />
           </Button>
-
           <Button
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('italic') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('italic') && 'bg-gray-100')}
           >
             <Italic className="h-4 w-4" />
           </Button>
-
           <Button
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('strike') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('strike') && 'bg-gray-100')}
           >
             <Underline className="h-4 w-4" />
           </Button>
-
           <div className="w-px h-6 bg-gray-200 mx-1" />
-
           <Button
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('bulletList') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('bulletList') && 'bg-gray-100')}
           >
             <List className="h-4 w-4" />
           </Button>
-
           <Button
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('orderedList') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('orderedList') && 'bg-gray-100')}
           >
             <ListOrdered className="h-4 w-4" />
           </Button>
-
           <Button
             variant="ghost"
             size="sm"
             onClick={setLink}
-            className={cn(
-              'h-8 w-8 p-0',
-              editor.isActive('link') && 'bg-gray-100'
-            )}
+            className={cn('h-8 w-8 p-0', editor.isActive('link') && 'bg-gray-100')}
           >
             <LinkIcon className="h-4 w-4" />
           </Button>
-
           <div className="w-px h-6 bg-gray-200 mx-1" />
-
           <Button
             variant="ghost"
             size="sm"
@@ -298,7 +263,6 @@ export function RichMinimalEditor({
           >
             <Undo className="h-4 w-4" />
           </Button>
-
           <Button
             variant="ghost"
             size="sm"
@@ -310,7 +274,6 @@ export function RichMinimalEditor({
           </Button>
         </BubbleMenu>
       )}
-
       <EditorContent
         editor={editor}
         key="editor-content"

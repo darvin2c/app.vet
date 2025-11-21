@@ -162,7 +162,13 @@ export function AppointmentShare({
                 </Field>
                 <Field orientation="vertical">
                   <label className="text-sm font-medium">Mensaje</label>
-                  <RichMinimalEditor value={waText} onChange={setWaText} />
+                  <RichMinimalEditor
+                    value={waText}
+                    onChange={(html) => setWaText(html)}
+                    onParsedChange={({ whatsappText }) =>
+                      setWaText(whatsappText || '')
+                    }
+                  />
                 </Field>
               </>
             )}

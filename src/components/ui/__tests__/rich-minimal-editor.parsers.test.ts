@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import {
-  toWhatsAppText,
-  toHtmlEmail,
-} from '../../ui/rich-minimal-editor.parsers'
+import { toWhatsAppText, toHtmlEmail } from '../../ui/rich-minimal-editor/parsers'
 
 describe('rich-minimal-editor parsers', () => {
   it('toWhatsAppText converts paragraphs, breaks, lists and links', () => {
