@@ -245,6 +245,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         }
         onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
+        disableDragAndDrop={dragBlocked}
       />
 
       {businessHoursCss && <style>{businessHoursCss}</style>}

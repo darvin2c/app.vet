@@ -12,23 +12,19 @@ import {
   Edit,
   Trash2,
   Share2,
-  Phone,
-  Mail,
-  MapPin,
 } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { ButtonGroup } from '@/components/ui/button-group'
 import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from '@/components/ui/hover-card'
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
-import { toast } from 'sonner'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import dayjs from '@/lib/dayjs'
@@ -86,13 +82,8 @@ export function EventCard({ appointment, children }: EventCardProps) {
 
   return (
     <>
-      <HoverCard
-        openDelay={400}
-        closeDelay={150}
-        open={open}
-        onOpenChange={setOpen}
-      >
-        <HoverCardTrigger asChild>
+      <Popover open={open} onOpenChange={setOpen}>
+        <PopoverTrigger asChild>
           <span
             role="button"
             tabIndex={0}
@@ -105,8 +96,8 @@ export function EventCard({ appointment, children }: EventCardProps) {
           >
             {children}
           </span>
-        </HoverCardTrigger>
-        <HoverCardContent className="w-96 p-0" side="top" align="start">
+        </PopoverTrigger>
+        <PopoverContent className="w-96 p-0" side="top" align="start">
           <Card className="border-0 shadow-none">
             <CardHeader className="pb-4">
               <div className="flex items-start justify-between">
@@ -133,11 +124,35 @@ export function EventCard({ appointment, children }: EventCardProps) {
                     </Badge>
                   </div>
                 </div>
-                <div
-                  className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: appointmentTypeColor }}
-                  title={appointmentTypeName}
-                />
+                <div className="flex items-center gap-2">
+                  <ButtonGroup>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setEditOpen(true)}
+                      aria-label="Editar"
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setShareOpen(true)}
+                      aria-label="Compartir"
+                    >
+                      <Share2 className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setDeleteOpen(true)}
+                      aria-label="Eliminar"
+                      className="text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </ButtonGroup>
+                </div>
               </div>
             </CardHeader>
 
@@ -203,7 +218,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
                       </div>
                       <div className="font-medium flex items-center gap-2">
                         <div
-                          className="w-2 h-2 rounded-full"
+                          className="w-3 h-3 rounded-full"
                           style={{ backgroundColor: appointmentTypeColor }}
                         />
                         {appointmentTypeName}
@@ -257,40 +272,10 @@ export function EventCard({ appointment, children }: EventCardProps) {
                   </div>
                 </>
               )}
-
-              <Separator />
-
-              {/* Botones de Acción */}
-              <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => setEditOpen(true)}
-                  icon={Edit}
-                  className="flex-1"
-                >
-                  Editar Cita
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => setShareOpen(true)}
-                  icon={Share2}
-                  className="flex-1"
-                >
-                  Compartir
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => setDeleteOpen(true)}
-                  icon={Trash2}
-                  className="flex-1 text-destructive hover:text-destructive"
-                >
-                  Eliminar
-                </ResponsiveButton>
-              </div>
             </CardContent>
           </Card>
-        </HoverCardContent>
-      </HoverCard>
+        </PopoverContent>
+      </Popover>
 
       {/* Modales de Edición y Eliminación */}
       <AppointmentEdit
