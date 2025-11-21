@@ -200,16 +200,36 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     const [selectedCountry, setSelectedCountry] =
       useState<CountryCode>(defaultCountry)
 
+    const buildE164 = (nationalValue: string, country: CountryCode) => {
+      try {
+        const phoneNumber = parsePhoneNumber(nationalValue, country)
+        return phoneNumber?.number || `+${getCountryCallingCode(country)}${nationalValue.replace(/\D/g, '')}`
+      } catch {
+        return `+${getCountryCallingCode(country)}${nationalValue.replace(/\D/g, '')}`
+      }
+    }
+
     const validation = usePhoneValidation(inputValue, selectedCountry)
 
     // Sincronizar con el valor externo solo si viene de fuera (no de nuestro onChange)
     const prevValueRef = useRef(value)
     useEffect(() => {
-      if (value !== prevValueRef.current && value !== inputValue) {
-        setInputValue(value)
+      if (value !== prevValueRef.current) {
+        try {
+          const parsed = parsePhoneNumber(value)
+          if (parsed) {
+            if (parsed.country) setSelectedCountry(parsed.country)
+            const national = (parsed as any).nationalNumber || parsed.formatNational()
+            setInputValue(national)
+          } else {
+            setInputValue(value)
+          }
+        } catch {
+          setInputValue(value)
+        }
         prevValueRef.current = value
       }
-    }, [value, inputValue])
+    }, [value])
 
     // Detectar país automáticamente si el número es válido
     useEffect(() => {
@@ -222,25 +242,24 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     }, [validation.detectedCountry, selectedCountry])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = e.target.value
-      setInputValue(newValue)
+      const rawValue = e.target.value
+      setInputValue(rawValue)
 
-      // Llamar onChange inmediatamente con validación básica
       if (onChange) {
-        // Validación básica sin hooks
-        let isValid = false
-        try {
-          const phoneNumber = parsePhoneNumber(newValue, selectedCountry)
-          isValid = phoneNumber?.isValid() || false
-        } catch {
-          isValid = false
-        }
-        onChange(newValue, isValid)
+        const output = buildE164(rawValue, selectedCountry)
+        const valid = isValidPhoneNumber(output)
+        onChange(output, valid)
       }
     }
 
     const handleCountryChange = (newCountry: string) => {
-      setSelectedCountry(newCountry as CountryCode)
+      const country = newCountry as CountryCode
+      setSelectedCountry(country)
+      if (onChange) {
+        const output = buildE164(inputValue, country)
+        const valid = isValidPhoneNumber(output)
+        onChange(output, valid)
+      }
     }
 
     const getCountryPrefix = (countryCode: CountryCode) => {
