@@ -207,7 +207,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 `+${getCountryCallingCode(parsed.country as CountryCode)}`,
                 ''
               )
-          return String(national).replace(/\D/g, '')
+          const onlyDigits = String(national).replace(/\D/g, '')
+          return onlyDigits.length > 0 ? onlyDigits : ''
         }
         return val
       } catch {
@@ -222,14 +223,13 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       useState<CountryCode>(defaultCountry)
 
     const buildE164 = (nationalValue: string, country: CountryCode) => {
+      const digits = nationalValue.replace(/\D/g, '')
+      if (!digits) return `+${getCountryCallingCode(country)}`
       try {
-        const phoneNumber = parsePhoneNumber(nationalValue, country)
-        return (
-          phoneNumber?.number ||
-          `+${getCountryCallingCode(country)}${nationalValue.replace(/\D/g, '')}`
-        )
+        const phoneNumber = parsePhoneNumber(digits, country)
+        return phoneNumber?.number || `+${getCountryCallingCode(country)}${digits}`
       } catch {
-        return `+${getCountryCallingCode(country)}${nationalValue.replace(/\D/g, '')}`
+        return `+${getCountryCallingCode(country)}${digits}`
       }
     }
 
@@ -251,24 +251,19 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                   `+${getCountryCallingCode(parsed.country as CountryCode)}`,
                   ''
                 )
-            setInputValue(String(national).replace(/\D/g, ''))
+            const onlyDigits = String(national).replace(/\D/g, '')
+            setInputValue(onlyDigits.length > 0 ? onlyDigits : '')
           } else {
-            setInputValue(value)
+            setInputValue(normalizeToNational(value))
           }
         } catch {
-          setInputValue(value)
+          setInputValue(normalizeToNational(value))
         }
         prevValueRef.current = value
       }
     }, [value])
 
-    useEffect(() => {
-      if (onChange) {
-        const output = buildE164(inputValue, selectedCountry)
-        const valid = isValidPhoneNumber(output)
-        onChange(output, valid)
-      }
-    }, [inputValue, selectedCountry])
+    // No emitir onChange automáticamente para evitar enviar solo prefijo
 
     // Detectar país automáticamente si el número es válido
     useEffect(() => {
@@ -282,7 +277,8 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value
-      setInputValue(rawValue)
+      const onlyDigits = rawValue.replace(/\D/g, '')
+      setInputValue(onlyDigits)
 
       if (onChange) {
         const output = buildE164(rawValue, selectedCountry)
@@ -371,7 +367,10 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
         {showCountrySelect && (
           <InputGroupAddon>
             <Select value={selectedCountry} onValueChange={handleCountryChange}>
-              <SelectTrigger className="w-[120px] border-0 shadow-none focus:ring-0 bg-transparent">
+              <SelectTrigger
+                aria-label="country-select"
+                className="w-[120px] border-0 shadow-none focus:ring-0 bg-transparent"
+              >
                 <SelectValue>
                   <div className="flex items-center space-x-1">
                     <span className="text-base">
@@ -408,6 +407,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
           value={inputValue}
           onChange={handleInputChange}
           placeholder={placeholder}
+          aria-label="phone-input"
           className={cn(
             error && 'border-destructive focus-visible:ring-destructive',
             validation.isValid &&

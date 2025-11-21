@@ -18,6 +18,7 @@ import {
   Redo,
 } from 'lucide-react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { toWhatsAppText, toHtmlEmail } from './rich-minimal-editor.parsers'
 
 interface RichMinimalEditorProps {
   value?: string
@@ -25,6 +26,12 @@ interface RichMinimalEditorProps {
   placeholder?: string
   disabled?: boolean
   className?: string
+  onParsedChange?: (formats: {
+    whatsappText?: string
+    html?: string
+    htmlEmail?: string
+    raw?: Record<string, unknown>
+  }) => void
 }
 
 export function RichMinimalEditor({
@@ -33,17 +40,23 @@ export function RichMinimalEditor({
   placeholder = 'Escribe algo...',
   disabled = false,
   className,
+  onParsedChange,
 }: RichMinimalEditorProps) {
   const [isMounted, setIsMounted] = useState(false)
 
   // Usar useRef para rastrear si el cambio viene del usuario o de props externas
   const isInternalUpdate = useRef(false)
   const onChangeRef = useRef(onChange)
+  const onParsedChangeRef = useRef(onParsedChange)
 
   // Mantener la referencia actualizada sin causar re-renders
   useEffect(() => {
     onChangeRef.current = onChange
   }, [onChange])
+
+  useEffect(() => {
+    onParsedChangeRef.current = onParsedChange
+  }, [onParsedChange])
 
   // Estabilizar la configuración de extensiones con useMemo
   const extensions = useMemo(
@@ -90,6 +103,13 @@ export function RichMinimalEditor({
       isInternalUpdate.current = true
       const html = editor.getHTML()
       onChangeRef.current?.(html)
+      const formats = {
+        whatsappText: toWhatsAppText(html),
+        html,
+        htmlEmail: toHtmlEmail(html),
+        raw: editor.getJSON?.(),
+      }
+      onParsedChangeRef.current?.(formats)
       // Reset flag after a short delay to allow for external updates
       setTimeout(() => {
         isInternalUpdate.current = false
@@ -140,6 +160,19 @@ export function RichMinimalEditor({
       }
     }
   }, [editor, value])
+
+  useEffect(() => {
+    if (editor && isMounted) {
+      const html = editor.getHTML()
+      const formats = {
+        whatsappText: toWhatsAppText(html),
+        html,
+        htmlEmail: toHtmlEmail(html),
+        raw: editor.getJSON?.(),
+      }
+      onParsedChangeRef.current?.(formats)
+    }
+  }, [editor, isMounted])
 
   const setLink = useCallback(() => {
     if (!editor) return
