@@ -264,6 +264,24 @@ export function FeatureForm() {
 }
 ```
 
+### PhoneInput — Reglas de uso
+
+- Dónde usar
+  - Formularios: usar `PhoneField` con `react-hook-form`.
+  - Entrada directa: `PhoneInput` `variant="form"`.
+  - Layouts compactos: `PhoneInput` `variant="compact"` o `PhoneCompactField`.
+  - Sólo lectura: `PhoneDisplay`.
+- Cuándo usar
+  - Cuando necesitas emitir E.164 para WhatsApp/SMS/llamadas.
+  - Cuando requieres selector de país: habilita `showCountrySelect` y define `defaultCountry`.
+  - Evita usarlo en inputs que no requieren formato internacional.
+- Regla clave
+  - El `input` muestra sólo dígitos nacionales; el prefijo se muestra aparte.
+  - `onChange(value, isValid)` emite E.164 (`+<código-país><nacional>`).
+  - `value` en E.164 se visualiza como número nacional y sincroniza país.
+  - Paste con `+<código-país>` se limpia a dígitos nacionales.
+  - Cambiar país no altera los dígitos del `input`; sólo el E.164 emitido.
+
 ## Componentes
 
 - Cuando se crea un componente reutilizable, se debe de agregar la forma de uso en `/app/demo`, solo y unicamente de los componentes reutilizables que esten dentro de `../ui`

@@ -161,9 +161,7 @@ describe('PhoneInput', () => {
     })
 
     it('controlado: value parcial +515 no aparece con prefijo en input', () => {
-      const { rerender } = render(
-        <PhoneInput defaultCountry="PE" value="" />
-      )
+      const { rerender } = render(<PhoneInput defaultCountry="PE" value="" />)
       const input = screen.getByLabelText('phone-input') as HTMLInputElement
       expect(input.value).toBe('')
       rerender(<PhoneInput defaultCountry="PE" value="+515" />)
@@ -288,5 +286,4 @@ describe('PhoneInput', () => {
       expect(v).toBe('+51888777')
     })
   })
-
 })

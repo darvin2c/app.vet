@@ -241,7 +241,9 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
       if (!digits) return `+${getCountryCallingCode(country)}`
       try {
         const phoneNumber = parsePhoneNumber(digits, country)
-        return phoneNumber?.number || `+${getCountryCallingCode(country)}${digits}`
+        return (
+          phoneNumber?.number || `+${getCountryCallingCode(country)}${digits}`
+        )
       } catch {
         return `+${getCountryCallingCode(country)}${digits}`
       }

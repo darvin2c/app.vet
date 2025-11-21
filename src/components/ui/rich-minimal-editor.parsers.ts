@@ -28,7 +28,9 @@ export function toWhatsAppText(html: string): string {
     if (tag === 'BR') return '\n'
     if (tag === 'A') {
       const href = el.getAttribute('href') || ''
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       if (!href) return inner
       if (!inner) return href
       if (inner === href) return href
@@ -37,7 +39,9 @@ export function toWhatsAppText(html: string): string {
     if (tag === 'LI') {
       const parent = el.parentElement?.tagName
       const bullet = parent === 'OL' ? '' : '• '
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `${bullet}${inner}\n`
     }
     if (tag === 'P' || tag === 'DIV' || tag === 'PRE') {
@@ -67,7 +71,11 @@ export function toHtmlEmail(html: string): string {
     const attrs = Array.from(el.attributes)
     for (const a of attrs) {
       const name = a.name.toLowerCase()
-      if (name === 'class' || name.startsWith('on') || name.startsWith('data-')) {
+      if (
+        name === 'class' ||
+        name.startsWith('on') ||
+        name.startsWith('data-')
+      ) {
         el.removeAttribute(a.name)
       }
     }

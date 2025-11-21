@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { toWhatsAppText, toHtmlEmail } from '../../ui/rich-minimal-editor.parsers'
+import {
+  toWhatsAppText,
+  toHtmlEmail,
+} from '../../ui/rich-minimal-editor.parsers'
 
 describe('rich-minimal-editor parsers', () => {
   it('toWhatsAppText converts paragraphs, breaks, lists and links', () => {
@@ -31,7 +34,9 @@ describe('rich-minimal-editor parsers', () => {
     expect(email).not.toMatch(/ProseMirror/)
     expect(email).not.toMatch(/onclick=/)
     expect(email).not.toMatch(/<script>/)
-    expect(email).toMatch(/style="margin:0 0 8px;line-height:1.6;font-size:14px"/)
+    expect(email).toMatch(
+      /style="margin:0 0 8px;line-height:1.6;font-size:14px"/
+    )
     expect(email).toMatch(/style="margin:0 0 8px;padding-left:20px"/)
     expect(email).toMatch(/style="color:#2563eb;text-decoration:underline"/)
   })
