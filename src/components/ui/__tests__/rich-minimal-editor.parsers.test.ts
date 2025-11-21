@@ -17,8 +17,8 @@ describe('rich-minimal-editor parsers', () => {
     const text = toWhatsAppText(html)
     expect(text).toContain('Hola Sitio (https://example.com)')
     expect(text).toContain('Linea 2')
-    expect(text).toContain('• Item A')
-    expect(text).toContain('• Item B')
+    expect(text).toContain('- Item A')
+    expect(text).toContain('- Item B')
     expect(text).toContain('URL directa: https://example.com')
     expect(text).not.toMatch(/<[^>]+>/)
   })
@@ -39,5 +39,44 @@ describe('rich-minimal-editor parsers', () => {
     )
     expect(email).toMatch(/style="margin:0 0 8px;padding-left:20px"/)
     expect(email).toMatch(/style="color:#2563eb;text-decoration:underline"/)
+  })
+
+  it('toWhatsAppText maps strong/em/strike/code to WhatsApp formatting', () => {
+    const html = `
+      <p><strong>N</strong> <em>I</em> <s>T</s> <code>C</code></p>
+    `
+    const text = toWhatsAppText(html)
+    expect(text).toContain('*N*')
+    expect(text).toContain('_I_')
+    expect(text).toContain('~T~')
+    expect(text).toContain('`C`')
+  })
+
+  it('toWhatsAppText renders pre as fenced code block', () => {
+    const html = `
+      <pre>line 1\nline 2</pre>
+    `
+    const text = toWhatsAppText(html)
+    expect(text).toMatch(/```\nline 1\nline 2\n```/)
+  })
+
+  it('toWhatsAppText renders blockquote with > prefix', () => {
+    const html = `
+      <blockquote><p>Quote line</p></blockquote>
+    `
+    const text = toWhatsAppText(html)
+    expect(text).toContain('> Quote line')
+  })
+
+  it('toWhatsAppText renders ordered list with numbering', () => {
+    const html = `
+      <ol>
+        <li>Primero</li>
+        <li>Segundo</li>
+      </ol>
+    `
+    const text = toWhatsAppText(html)
+    expect(text).toContain('1. Primero')
+    expect(text).toContain('2. Segundo')
   })
 })
