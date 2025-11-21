@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
@@ -33,6 +33,7 @@ import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import dayjs from '@/lib/dayjs'
 import { AppointmentShare } from '@/components/appointments/appointment-share'
+import useAgendaInteractionStore from '@/hooks/agenda/use-agenda-interaction-store'
 
 type Appointment = AppointmentWithRelations
 
@@ -46,6 +47,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [open, setOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
+  const { setDragBlocked } = useAgendaInteractionStore()
 
   const pet = appointment.pets
   const client = pet?.customers
@@ -77,6 +79,10 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const handleDeleteSuccess = () => {
     setDeleteOpen(false)
   }
+
+  useEffect(() => {
+    setDragBlocked(editOpen || shareOpen)
+  }, [editOpen, shareOpen, setDragBlocked])
 
   return (
     <>
