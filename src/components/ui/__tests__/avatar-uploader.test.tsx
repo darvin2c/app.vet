@@ -1,3 +1,6 @@
+vi.mock('react-image-crop/dist/ReactCrop.css', () => ({}))
+import React from 'react'
+import '@testing-library/jest-dom/vitest'
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import AvatarUploader, { validateAvatarFile } from '../avatar-uploader'

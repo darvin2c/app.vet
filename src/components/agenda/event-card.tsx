@@ -70,7 +70,6 @@ export function EventCard({ appointment, children }: EventCardProps) {
     statusList.find((s) => s.value === appointment.status)?.color || '#64748b'
   const statusLabel = getStatus(appointment.status)
 
-
   const handleEditSuccess = () => {
     setEditOpen(false)
   }

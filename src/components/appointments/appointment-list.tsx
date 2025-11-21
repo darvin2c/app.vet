@@ -41,6 +41,7 @@ import {
   ItemActions,
   ItemGroup,
 } from '@/components/ui/item'
+import type { AppliedFilter } from '@/components/ui/filters'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppointmentActions } from './appointment-actions'
 import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
@@ -60,7 +61,7 @@ type Appointment = Tables<'appointments'> & {
 
 interface AppointmentListProps {
   searchTerm?: string
-  filters?: Record<string, string | number | boolean>
+  filters?: AppliedFilter[]
 }
 
 const STATUS_LABELS = {
@@ -85,8 +86,7 @@ export function AppointmentList({ searchTerm, filters }: AppointmentListProps) {
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   const { data: appointments = [], isLoading } = useAppointments({
-    search: searchTerm,
-    ...filters,
+    filters,
   })
 
   const handleEdit = useCallback((appointment: Appointment) => {

@@ -65,14 +65,16 @@ export function AppointmentEdit({
   const onSubmit: SubmitHandler<UpdateAppointmentSchema> = async (data) => {
     await updateAppointment.mutateAsync({
       id: data.id,
-      pet_id: data.pet_id,
-      veterinarian_id: data.veterinarian_id,
-      appointment_type_id: data.appointment_type_id,
-      scheduled_start: data.scheduled_start,
-      scheduled_end: data.scheduled_end,
-      status: data.status,
-      reason: data.reason,
-      notes: data.notes,
+      data: {
+        pet_id: data.pet_id,
+        veterinarian_id: data.veterinarian_id,
+        appointment_type_id: data.appointment_type_id,
+        scheduled_start: data.scheduled_start,
+        scheduled_end: data.scheduled_end,
+        status: data.status,
+        reason: data.reason,
+        notes: data.notes,
+      },
     })
     onOpenChange(false)
     onSuccess?.()

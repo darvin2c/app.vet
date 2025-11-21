@@ -1,5 +1,5 @@
 import React from 'react'
-// @vitest-environment jsdom
+// @vitest-environment happy-dom
 import '@testing-library/jest-dom'
 import { describe, it, expect, vi } from 'vitest'
 import { render, fireEvent, screen } from '@testing-library/react'
@@ -25,7 +25,13 @@ describe('PhoneInput', () => {
 
   it('detecta país desde E.164 y emite E.164 al cambiar el input', () => {
     const onChange = vi.fn()
-    render(<PhoneInput value="+51987654321" defaultCountry="PE" onChange={onChange} />)
+    render(
+      <PhoneInput
+        value="+51987654321"
+        defaultCountry="PE"
+        onChange={onChange}
+      />
+    )
     const input = screen.getByRole('textbox') as HTMLInputElement
     expect(input.value).toBe('987654321')
     // Simular cambio de país: escribir de nuevo para forzar onChange con país actual

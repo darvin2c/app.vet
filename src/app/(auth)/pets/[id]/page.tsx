@@ -155,7 +155,9 @@ export default function PetProfilePage() {
                 </div>
                 <AppointmentCreateButton petId={petId} />
               </div>
-              <AppointmentList filters={{ pet_id: petId }} />
+              <AppointmentList
+                filters={[{ field: 'pet_id', operator: 'eq', value: petId }]}
+              />
             </TabsContent>
 
             {/* All Medical Records - Now the main medical records view */}
