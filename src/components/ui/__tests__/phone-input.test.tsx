@@ -141,6 +141,77 @@ describe('PhoneInput', () => {
   })
 
   describe('Entrada de datos: todas las formas', () => {
+    it('controlado: 1 dígito no inserta prefijo en input tras re-render', () => {
+      function Wrapper() {
+        const [val, setVal] = React.useState('')
+        return (
+          <PhoneInput
+            defaultCountry="PE"
+            value={val}
+            onChange={(v) => setVal(v)}
+          />
+        )
+      }
+      render(<Wrapper />)
+      const input = screen.getByLabelText('phone-input') as HTMLInputElement
+      fireEvent.change(input, { target: { value: '9' } })
+      expect(input.value).toBe('9')
+      expect(input.value).not.toContain('+')
+      expect(input.value).not.toMatch(/^51/)
+    })
+
+    it('controlado: value parcial +515 no aparece con prefijo en input', () => {
+      const { rerender } = render(
+        <PhoneInput defaultCountry="PE" value="" />
+      )
+      const input = screen.getByLabelText('phone-input') as HTMLInputElement
+      expect(input.value).toBe('')
+      rerender(<PhoneInput defaultCountry="PE" value="+515" />)
+      expect(input.value).toBe('5')
+      expect(input.value).not.toContain('+')
+      expect(input.value).not.toMatch(/^51/)
+    })
+
+    it('paste con prefijo: "+51 9" queda sólo "9" en input', () => {
+      render(<PhoneInput defaultCountry="PE" />)
+      const input = screen.getByLabelText('phone-input') as HTMLInputElement
+      fireEvent.paste(input, {
+        clipboardData: { getData: () => '+51 9' },
+      } as any)
+      fireEvent.change(input, { target: { value: '+51 9' } })
+      expect(input.value).toBe('9')
+      expect(input.value).not.toContain('+')
+      expect(input.value).not.toMatch(/^51/)
+    })
+    it('typing: un dígito NO inserta prefijo en input y emite E.164', () => {
+      const onChange = vi.fn()
+      render(<PhoneInput defaultCountry="PE" onChange={onChange} />)
+      const input = screen.getByLabelText('phone-input') as HTMLInputElement
+      expect(screen.getByText('+51')).toBeInTheDocument()
+
+      fireEvent.change(input, { target: { value: '9' } })
+      const [v] = onChange.mock.calls.at(-1)!
+      expect(input.value).toBe('9')
+      expect(input.value).toMatch(/^\d+$/)
+      expect(input.value).not.toContain('+')
+      expect(input.value).not.toMatch(/^\s*\+?51/)
+      expect(v).toBe('+519')
+    })
+
+    it('typing: dos dígitos NO inserta prefijo en input y emite E.164', () => {
+      const onChange = vi.fn()
+      render(<PhoneInput defaultCountry="PE" onChange={onChange} />)
+      const input = screen.getByLabelText('phone-input') as HTMLInputElement
+      expect(screen.getByText('+51')).toBeInTheDocument()
+
+      fireEvent.change(input, { target: { value: '98' } })
+      const [v] = onChange.mock.calls.at(-1)!
+      expect(input.value).toBe('98')
+      expect(input.value).toMatch(/^\d+$/)
+      expect(input.value).not.toContain('+')
+      expect(input.value).not.toMatch(/^\s*\+?51/)
+      expect(v).toBe('+5198')
+    })
     it('typing incremental (cambios sucesivos en input)', () => {
       const onChange = vi.fn()
       render(<PhoneInput defaultCountry="PE" onChange={onChange} />)

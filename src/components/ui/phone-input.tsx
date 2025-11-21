@@ -196,9 +196,14 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
     },
     ref
   ) => {
-    const normalizeToNational = (val: string): string => {
+    const stripCountryCallingCode = (
+      e164: string,
+      country?: CountryCode
+    ): string => {
+      const digits = String(e164).replace(/\D/g, '')
+      if (!digits) return ''
       try {
-        const parsed = parsePhoneNumber(val)
+        const parsed = parsePhoneNumber(e164)
         if (parsed) {
           const nationalRaw = (parsed as any).nationalNumber
           const national = nationalRaw
@@ -207,17 +212,26 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
                 `+${getCountryCallingCode(parsed.country as CountryCode)}`,
                 ''
               )
-          const onlyDigits = String(national).replace(/\D/g, '')
-          return onlyDigits.length > 0 ? onlyDigits : ''
+          return String(national).replace(/\D/g, '')
         }
-        return val
-      } catch {
-        return val
+      } catch {}
+      if (country) {
+        try {
+          const cc = String(getCountryCallingCode(country))
+          return digits.replace(new RegExp(`^${cc}`), '')
+        } catch {}
       }
+      return digits
+    }
+
+    const normalizeToNational = (val: string, country: CountryCode): string => {
+      if (!val) return ''
+      if (val.startsWith('+')) return stripCountryCallingCode(val, country)
+      return String(val).replace(/\D/g, '')
     }
 
     const [inputValue, setInputValue] = useState(() =>
-      normalizeToNational(value)
+      normalizeToNational(value, defaultCountry)
     )
     const [selectedCountry, setSelectedCountry] =
       useState<CountryCode>(defaultCountry)
@@ -254,10 +268,10 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             const onlyDigits = String(national).replace(/\D/g, '')
             setInputValue(onlyDigits.length > 0 ? onlyDigits : '')
           } else {
-            setInputValue(normalizeToNational(value))
+            setInputValue(stripCountryCallingCode(value, selectedCountry))
           }
         } catch {
-          setInputValue(normalizeToNational(value))
+          setInputValue(stripCountryCallingCode(value, selectedCountry))
         }
         prevValueRef.current = value
       }
@@ -277,11 +291,18 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const rawValue = e.target.value
-      const onlyDigits = rawValue.replace(/\D/g, '')
-      setInputValue(onlyDigits)
+      const digits = rawValue.replace(/\D/g, '')
+      let nationalDigits = digits
+      try {
+        const cc = String(getCountryCallingCode(selectedCountry))
+        if (rawValue.trim().startsWith('+')) {
+          nationalDigits = nationalDigits.replace(new RegExp(`^${cc}`), '')
+        }
+      } catch {}
+      setInputValue(nationalDigits)
 
       if (onChange) {
-        const output = buildE164(rawValue, selectedCountry)
+        const output = buildE164(nationalDigits, selectedCountry)
         const valid = isValidPhoneNumber(output)
         onChange(output, valid)
       }
