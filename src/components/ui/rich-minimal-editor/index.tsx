@@ -121,7 +121,7 @@ export function RichMinimalEditor({
       editable: !disabled,
       onUpdate: ({ editor }) => {
         // bind current editor instance
-        (handleUpdate as any).editor = editor
+        ;(handleUpdate as any).editor = editor
         handleUpdate()
       },
     },
@@ -208,7 +208,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBold().run()}
-            className={cn('h-8 w-8 p-0', editor.isActive('bold') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('bold') && 'bg-gray-100'
+            )}
           >
             <Bold className="h-4 w-4" />
           </Button>
@@ -216,7 +219,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleItalic().run()}
-            className={cn('h-8 w-8 p-0', editor.isActive('italic') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('italic') && 'bg-gray-100'
+            )}
           >
             <Italic className="h-4 w-4" />
           </Button>
@@ -224,7 +230,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleStrike().run()}
-            className={cn('h-8 w-8 p-0', editor.isActive('strike') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('strike') && 'bg-gray-100'
+            )}
           >
             <Underline className="h-4 w-4" />
           </Button>
@@ -233,7 +242,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleBulletList().run()}
-            className={cn('h-8 w-8 p-0', editor.isActive('bulletList') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('bulletList') && 'bg-gray-100'
+            )}
           >
             <List className="h-4 w-4" />
           </Button>
@@ -241,7 +253,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={cn('h-8 w-8 p-0', editor.isActive('orderedList') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('orderedList') && 'bg-gray-100'
+            )}
           >
             <ListOrdered className="h-4 w-4" />
           </Button>
@@ -249,7 +264,10 @@ export function RichMinimalEditor({
             variant="ghost"
             size="sm"
             onClick={setLink}
-            className={cn('h-8 w-8 p-0', editor.isActive('link') && 'bg-gray-100')}
+            className={cn(
+              'h-8 w-8 p-0',
+              editor.isActive('link') && 'bg-gray-100'
+            )}
           >
             <LinkIcon className="h-4 w-4" />
           </Button>

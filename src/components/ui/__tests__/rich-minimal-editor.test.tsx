@@ -41,7 +41,9 @@ describe('RichMinimalEditor component', () => {
     const { rerender } = render(
       <RichMinimalEditor value="<p>Uno</p>" onParsedChange={onParsedChange} />
     )
-    rerender(<RichMinimalEditor value="<p>Dos</p>" onParsedChange={onParsedChange} />)
+    rerender(
+      <RichMinimalEditor value="<p>Dos</p>" onParsedChange={onParsedChange} />
+    )
     expect(onParsedChange).toHaveBeenCalled()
     const last = onParsedChange.mock.calls.at(-1)![0]
     expect(last.html).toContain('Dos')

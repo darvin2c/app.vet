@@ -16,19 +16,27 @@ export function toWhatsAppText(html: string): string {
 
     if (tag === 'BR') return '\n'
     if (tag === 'STRONG' || tag === 'B') {
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `*${inner}*`
     }
     if (tag === 'EM' || tag === 'I') {
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `_${inner}_`
     }
     if (tag === 'S' || tag === 'DEL' || tag === 'STRIKE') {
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `~${inner}~`
     }
     if (tag === 'CODE') {
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `\`${inner}\``
     }
     if (tag === 'A') {
@@ -44,7 +52,9 @@ export function toWhatsAppText(html: string): string {
     if (tag === 'LI') {
       const parent = el.parentElement?.tagName
       const bullet = parent === 'OL' ? '' : '- '
-      const inner = sanitizeText(Array.from(el.childNodes).map(renderNode).join(''))
+      const inner = sanitizeText(
+        Array.from(el.childNodes).map(renderNode).join('')
+      )
       return `${bullet}${inner}\n`
     }
     if (tag === 'P' || tag === 'DIV' || tag === 'PRE') {
@@ -56,22 +66,30 @@ export function toWhatsAppText(html: string): string {
       return `${sanitizeText(inner)}\n`
     }
     if (tag === 'UL') {
-      const items = Array.from(el.children).filter((c) => c.tagName === 'LI') as HTMLElement[]
+      const items = Array.from(el.children).filter(
+        (c) => c.tagName === 'LI'
+      ) as HTMLElement[]
       return (
         items
           .map((li) => {
-            const inner = sanitizeText(Array.from(li.childNodes).map(renderNode).join(''))
+            const inner = sanitizeText(
+              Array.from(li.childNodes).map(renderNode).join('')
+            )
             return `- ${inner}`
           })
           .join('\n') + '\n\n'
       )
     }
     if (tag === 'OL') {
-      const items = Array.from(el.children).filter((c) => c.tagName === 'LI') as HTMLElement[]
+      const items = Array.from(el.children).filter(
+        (c) => c.tagName === 'LI'
+      ) as HTMLElement[]
       return (
         items
           .map((li, i) => {
-            const inner = sanitizeText(Array.from(li.childNodes).map(renderNode).join(''))
+            const inner = sanitizeText(
+              Array.from(li.childNodes).map(renderNode).join('')
+            )
             return `${i + 1}. ${inner}`
           })
           .join('\n') + '\n\n'
