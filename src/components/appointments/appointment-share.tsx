@@ -65,6 +65,7 @@ export function AppointmentShare({
       mode: z.union([z.literal('email'), z.literal('whatsapp')]),
       email: z.string().optional().or(z.literal('')),
       subject: z.string().optional().or(z.literal('')),
+      email_body: z.string().optional().or(z.literal('')),
       phone: z.string().optional().or(z.literal('')),
       message: z.string().optional().or(z.literal('')),
     })
@@ -91,6 +92,19 @@ export function AppointmentShare({
             path: ['subject'],
           })
         }
+        if (
+          !val.email_body ||
+          !z
+            .string()
+            .nonempty('El cuerpo no debe estar vacío')
+            .safeParse(val.email_body).success
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'El cuerpo no debe estar vacío',
+            path: ['email_body'],
+          })
+        }
       }
       if (val.mode === 'whatsapp') {
         if (!val.phone || !phoneUtils.validate(val.phone)) {
@@ -109,6 +123,7 @@ export function AppointmentShare({
       mode: 'email',
       email: client?.email || '',
       subject: `Detalles de Cita Médica`,
+      email_body: shareText,
       phone: '',
       message: '',
     },
@@ -135,7 +150,7 @@ export function AppointmentShare({
       const subject = encodeURIComponent(
         values.subject || 'Detalles de Cita Médica'
       )
-      const body = encodeURIComponent(shareText)
+      const body = encodeURIComponent(values.email_body || shareText)
       window.open(
         `mailto:${values.email}?subject=${subject}&body=${body}`,
         '_blank'
@@ -155,8 +170,12 @@ export function AppointmentShare({
     form.setValue('mode', next, { shouldValidate: true })
     if (next === 'email') {
       form.setValue('phone', '')
+      form.setValue('message', '')
+      form.setValue('email_body', shareText)
     } else {
       form.setValue('email', '')
+      form.setValue('subject', 'Detalles de Cita Médica')
+      form.setValue('email_body', '')
       const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
       form.setValue('message', preset, { shouldValidate: true })
     }
@@ -240,6 +259,25 @@ export function AppointmentShare({
                               placeholder="Detalles de Cita Médica"
                               className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
                               {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email_body"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Cuerpo</FormLabel>
+                          <FormControl>
+                            <textarea
+                              rows={6}
+                              placeholder={shareText}
+                              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                              value={(field.value as string) || ''}
+                              onChange={(e) => field.onChange(e.target.value)}
                             />
                           </FormControl>
                           <FormMessage />
