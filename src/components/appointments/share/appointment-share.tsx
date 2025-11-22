@@ -25,6 +25,8 @@ import { phoneUtils } from '@/components/ui/phone-input'
 import { Form } from '@/components/ui/form'
 import { EmailShareSection, WhatsAppShareSection } from './'
 import { toHtmlEmail } from '@/components/ui/rich-minimal-editor/parsers'
+import SummaryCard from './summary-card'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 type Appointment = AppointmentWithRelations
 
@@ -49,6 +51,8 @@ export function AppointmentShare({
     ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
     : 'Personal no asignado'
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'
+  const appointmentTypeColor =
+    (appointment.appointment_types as any)?.color || '#3B82F6'
   const startDate = new Date(appointment.scheduled_start)
   const endDate = new Date(appointment.scheduled_end)
 
@@ -175,6 +179,7 @@ export function AppointmentShare({
     }
   }
 
+  const isMobile = useIsMobile()
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl" side="right">
@@ -186,32 +191,16 @@ export function AppointmentShare({
         </SheetHeader>
         <ScrollArea className="h-full">
           <div className="space-y-6 px-6">
-            <div className="rounded-lg border bg-muted/30 p-4">
-              <div className="text-sm font-medium mb-2">Resumen de la Cita</div>
-              <div className="grid grid-cols-2 gap-3 text-sm">
-                <div>
-                  <div className="text-muted-foreground">Mascota</div>
-                  <div className="font-semibold">{petName}</div>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Cliente</div>
-                  <div className="font-semibold">{clientName}</div>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Fecha</div>
-                  <div className="font-semibold">
-                    {format(startDate, 'dd/MM/yyyy', { locale: es })}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-muted-foreground">Horario</div>
-                  <div className="font-semibold">
-                    {format(startDate, 'HH:mm', { locale: es })} -{' '}
-                    {format(endDate, 'HH:mm', { locale: es })}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <SummaryCard
+              petName={petName}
+              clientName={clientName}
+              startDate={startDate}
+              endDate={endDate}
+              appointmentTypeName={appointmentTypeName}
+              staffName={staffName}
+              typeColor={appointmentTypeColor}
+              defaultOpen={!isMobile}
+            />
             <Form {...form}>
               <form className="space-y-6">
                 <Field orientation="vertical">
