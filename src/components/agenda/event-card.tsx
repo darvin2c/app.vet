@@ -33,7 +33,7 @@ import { useIsMobile } from '@/hooks/use-mobile'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import dayjs from '@/lib/dayjs'
-import { AppointmentShare } from '@/components/appointments/appointment-share'
+import { AppointmentShare } from '@/components/appointments/share/appointment-share'
 import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 // removed agenda interaction store (not needed)
