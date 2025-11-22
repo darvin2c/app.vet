@@ -23,6 +23,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover'
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
+import { useIsMobile } from '@/hooks/use-mobile'
 import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import { AppointmentWithRelations } from '@/types/appointment.types'
@@ -44,6 +51,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const [open, setOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
   const { setDragBlocked } = useAgendaInteractionStore()
+  const isMobile = useIsMobile()
 
   const pet = appointment.pets
   const client = pet?.customers
@@ -80,10 +88,194 @@ export function EventCard({ appointment, children }: EventCardProps) {
     setDragBlocked(editOpen || shareOpen)
   }, [editOpen, shareOpen, setDragBlocked])
 
+  const headerLeft = (
+    <div className="space-y-2">
+      <div className="text-xl font-semibold">
+        <div
+          className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
+          style={{ backgroundColor: appointmentTypeColor }}
+          title={appointmentTypeName}
+        />{' '}
+        Detalles de la Cita{' '}
+      </div>
+      <div className="flex items-center gap-2">
+        <Badge
+          className="w-fit"
+          style={{
+            backgroundColor: statusColor,
+            color: '#fff',
+            ...(isPast
+              ? {
+                  backgroundImage:
+                    'repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 2px, transparent 2px, transparent 6px)',
+                  opacity: 0.9,
+                }
+              : {}),
+          }}
+        >
+          {statusLabel}
+        </Badge>
+      </div>
+    </div>
+  )
+
+  const headerActions = (
+    <div className="flex items-center gap-2">
+      <ButtonGroup>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setOpen(false)
+            setEditOpen(true)
+          }}
+          aria-label="Editar"
+        >
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setOpen(false)
+            setShareOpen(true)
+          }}
+          aria-label="Compartir"
+        >
+          <Share2 className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => {
+            setOpen(false)
+            setDeleteOpen(true)
+          }}
+          aria-label="Eliminar"
+          className="text-destructive"
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </ButtonGroup>
+    </div>
+  )
+
+  const body = (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <User className="h-4 w-4" />
+          Información de la Mascota
+        </div>
+        <div className="pl-6 space-y-2">
+          <div className="font-medium text-base">{petName}</div>
+          <div className="text-sm text-muted-foreground">
+            Cliente: {clientName}
+          </div>
+        </div>
+      </div>
+
+      <Separator />
+
+      <div className="space-y-3">
+        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+          <Calendar className="h-4 w-4" />
+          Información de la Cita
+        </div>
+        <div className="pl-6 space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <div className="text-sm text-muted-foreground">Fecha</div>
+              <div className="font-medium">
+                {format(startDate, "EEEE, dd 'de' MMMM 'de' yyyy", {
+                  locale: es,
+                })}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-muted-foreground">Horario</div>
+              <div className="font-medium flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {format(startDate, 'HH:mm', { locale: es })} -{' '}
+                {format(endDate, 'HH:mm', { locale: es })}
+                {isPast && (
+                  <span
+                    className="ml-2 text-xs px-2 py-0.5 rounded"
+                    style={{
+                      backgroundColor: `${statusColor}22`,
+                      color: statusColor,
+                    }}
+                  >
+                    Pasada
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <div className="text-sm text-muted-foreground">Tipo de Cita</div>
+              <div className="font-medium flex items-center gap-2">
+                <div
+                  className="w-3 h-3 rounded-full"
+                  style={{ backgroundColor: appointmentTypeColor }}
+                />
+                {appointmentTypeName}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-muted-foreground">
+                Personal Médico
+              </div>
+              <div className="font-medium flex items-center gap-1">
+                <UserCheck className="h-3 w-3" />
+                {staffName}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {appointment.reason && (
+        <>
+          <Separator />
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="h-4 w-4" />
+              Motivo de la Cita
+            </div>
+            <div className="pl-6">
+              <div className="text-sm bg-muted/50 rounded-lg p-3">
+                {appointment.reason}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {appointment.notes && (
+        <>
+          <Separator />
+          <div className="space-y-3">
+            <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
+              <FileText className="h-4 w-4" />
+              Notas
+            </div>
+            <div className="pl-6">
+              <div className="text-sm bg-muted/50 rounded-lg p-3">
+                {appointment.notes}
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  )
+
   return (
     <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
+      {isMobile ? (
+        <>
           <span
             role="button"
             tabIndex={0}
@@ -96,186 +288,49 @@ export function EventCard({ appointment, children }: EventCardProps) {
           >
             {children}
           </span>
-        </PopoverTrigger>
-        <PopoverContent className="w-96 p-0" side="top" align="start">
-          <Card className="border-0 shadow-none">
-            <CardHeader className="pb-4">
-              <div className="flex items-start justify-between">
-                <div className="space-y-2">
-                  <CardTitle className="text-xl font-semibold">
-                    Detalles de la Cita
-                  </CardTitle>
-                  <div className="flex items-center gap-2">
-                    <Badge
-                      className="w-fit"
-                      style={{
-                        backgroundColor: statusColor,
-                        color: '#fff',
-                        ...(isPast
-                          ? {
-                              backgroundImage:
-                                'repeating-linear-gradient(135deg, rgba(255,255,255,0.35) 0px, rgba(255,255,255,0.35) 2px, transparent 2px, transparent 6px)',
-                              opacity: 0.9,
-                            }
-                          : {}),
-                      }}
-                    >
-                      {statusLabel}
-                    </Badge>
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetContent side="bottom" className="!w-full !max-w-3xl ">
+              <SheetHeader>
+                <SheetTitle>
+                  <div className="flex items-start justify-between ">
+                    {headerLeft}
+                    {headerActions}
                   </div>
+                </SheetTitle>
+              </SheetHeader>
+              <div className="space-y-6 pb-4 px-6">{body}</div>
+            </SheetContent>
+          </Sheet>
+        </>
+      ) : (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <span
+              role="button"
+              tabIndex={0}
+              onClick={() => setOpen(true)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+              }}
+              aria-haspopup="dialog"
+              aria-expanded={open}
+            >
+              {children}
+            </span>
+          </PopoverTrigger>
+          <PopoverContent className="w-96 p-0" side="top" align="start">
+            <Card className="border-0 shadow-none">
+              <CardHeader className="pb-4">
+                <div className="flex items-start justify-between">
+                  {headerLeft}
+                  {headerActions}
                 </div>
-                <div className="flex items-center gap-2">
-                  <ButtonGroup>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setEditOpen(true)}
-                      aria-label="Editar"
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setShareOpen(true)}
-                      aria-label="Compartir"
-                    >
-                      <Share2 className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setDeleteOpen(true)}
-                      aria-label="Eliminar"
-                      className="text-destructive"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </ButtonGroup>
-                </div>
-              </div>
-            </CardHeader>
-
-            <CardContent className="space-y-6">
-              {/* Información de la Mascota y Cliente */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <User className="h-4 w-4" />
-                  Información de la Mascota
-                </div>
-                <div className="pl-6 space-y-2">
-                  <div className="font-medium text-base">{petName}</div>
-                  <div className="text-sm text-muted-foreground">
-                    Cliente: {clientName}
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              {/* Información de la Cita */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  Información de la Cita
-                </div>
-                <div className="pl-6 space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground">Fecha</div>
-                      <div className="font-medium">
-                        {format(startDate, "EEEE, dd 'de' MMMM 'de' yyyy", {
-                          locale: es,
-                        })}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Horario
-                      </div>
-                      <div className="font-medium flex items-center gap-1">
-                        <Clock className="h-3 w-3" />
-                        {format(startDate, 'HH:mm', { locale: es })} -{' '}
-                        {format(endDate, 'HH:mm', { locale: es })}
-                        {isPast && (
-                          <span
-                            className="ml-2 text-xs px-2 py-0.5 rounded"
-                            style={{
-                              backgroundColor: `${statusColor}22`,
-                              color: statusColor,
-                            }}
-                          >
-                            Pasada
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Tipo de Cita
-                      </div>
-                      <div className="font-medium flex items-center gap-2">
-                        <div
-                          className="w-3 h-3 rounded-full"
-                          style={{ backgroundColor: appointmentTypeColor }}
-                        />
-                        {appointmentTypeName}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-sm text-muted-foreground">
-                        Personal Médico
-                      </div>
-                      <div className="font-medium flex items-center gap-1">
-                        <UserCheck className="h-3 w-3" />
-                        {staffName}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Motivo de la cita */}
-              {appointment.reason && (
-                <>
-                  <Separator />
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <FileText className="h-4 w-4" />
-                      Motivo de la Cita
-                    </div>
-                    <div className="pl-6">
-                      <div className="text-sm bg-muted/50 rounded-lg p-3">
-                        {appointment.reason}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {/* Notas */}
-              {appointment.notes && (
-                <>
-                  <Separator />
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-                      <FileText className="h-4 w-4" />
-                      Notas
-                    </div>
-                    <div className="pl-6">
-                      <div className="text-sm bg-muted/50 rounded-lg p-3">
-                        {appointment.notes}
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </CardContent>
-          </Card>
-        </PopoverContent>
-      </Popover>
+              </CardHeader>
+              <CardContent className="space-y-6">{body}</CardContent>
+            </Card>
+          </PopoverContent>
+        </Popover>
+      )}
 
       {/* Modales de Edición y Eliminación */}
       <AppointmentEdit
