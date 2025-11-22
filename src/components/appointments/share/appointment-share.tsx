@@ -4,7 +4,14 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { Field } from '@/components/ui/field'
 import { Button } from '@/components/ui/button'
 import { AppointmentWithRelations } from '@/types/appointment.types'
@@ -14,7 +21,7 @@ import { toast } from 'sonner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Mail, Phone } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import PhoneInput, { phoneUtils } from '@/components/ui/phone-input'
+import { phoneUtils } from '@/components/ui/phone-input'
 import { Form } from '@/components/ui/form'
 import { EmailShareSection, WhatsAppShareSection } from './'
 
@@ -26,12 +33,20 @@ interface AppointmentShareProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function AppointmentShare({ appointment, open, onOpenChange }: AppointmentShareProps) {
+export function AppointmentShare({
+  appointment,
+  open,
+  onOpenChange,
+}: AppointmentShareProps) {
   const pet = appointment.pets
   const client = pet?.customers
   const petName = pet?.name || 'Mascota no especificada'
-  const clientName = client ? `${client.first_name} ${client.last_name}` : 'Cliente no especificado'
-  const staffName = appointment.staff ? `${appointment.staff.first_name} ${appointment.staff.last_name}` : 'Personal no asignado'
+  const clientName = client
+    ? `${client.first_name} ${client.last_name}`
+    : 'Cliente no especificado'
+  const staffName = appointment.staff
+    ? `${appointment.staff.first_name} ${appointment.staff.last_name}`
+    : 'Personal no asignado'
   const appointmentTypeName = appointment.appointment_types?.name || 'Sin tipo'
   const startDate = new Date(appointment.scheduled_start)
   const endDate = new Date(appointment.scheduled_end)
@@ -49,19 +64,48 @@ export function AppointmentShare({ appointment, open, onOpenChange }: Appointmen
     })
     .superRefine((val, ctx) => {
       if (val.mode === 'email') {
-        if (!val.email || !z.email('Formato de email inválido').safeParse(val.email).success) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Formato de email inválido', path: ['email'] })
+        if (
+          !val.email ||
+          !z.email('Formato de email inválido').safeParse(val.email).success
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Formato de email inválido',
+            path: ['email'],
+          })
         }
-        if (!val.subject || !z.string().nonempty('El campo es requerido').safeParse(val.subject).success) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El campo es requerido', path: ['subject'] })
+        if (
+          !val.subject ||
+          !z.string().nonempty('El campo es requerido').safeParse(val.subject)
+            .success
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'El campo es requerido',
+            path: ['subject'],
+          })
         }
-        if (!val.email_body || !z.string().nonempty('El cuerpo no debe estar vacío').safeParse(val.email_body).success) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'El cuerpo no debe estar vacío', path: ['email_body'] })
+        if (
+          !val.email_body ||
+          !z
+            .string()
+            .nonempty('El cuerpo no debe estar vacío')
+            .safeParse(val.email_body).success
+        ) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'El cuerpo no debe estar vacío',
+            path: ['email_body'],
+          })
         }
       }
       if (val.mode === 'whatsapp') {
         if (!val.phone || !phoneUtils.validate(val.phone)) {
-          ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Ingresa un número de WhatsApp válido', path: ['phone'] })
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Ingresa un número de WhatsApp válido',
+            path: ['phone'],
+          })
         }
       }
     })
@@ -96,12 +140,17 @@ export function AppointmentShare({ appointment, open, onOpenChange }: Appointmen
 
   const handleSend = form.handleSubmit((values) => {
     if (values.mode === 'email') {
-      const subject = encodeURIComponent(values.subject || 'Detalles de Cita Médica')
+      const subject = encodeURIComponent(
+        values.subject || 'Detalles de Cita Médica'
+      )
       const parser = document.createElement('div')
       parser.innerHTML = values.email_body || shareText
       const plainEmail = parser.textContent || parser.innerText || ''
       const body = encodeURIComponent(plainEmail)
-      window.open(`mailto:${values.email}?subject=${subject}&body=${body}`, '_blank')
+      window.open(
+        `mailto:${values.email}?subject=${subject}&body=${body}`,
+        '_blank'
+      )
     } else {
       const base = 'https://wa.me/'
       const parser = document.createElement('div')
@@ -130,22 +179,51 @@ export function AppointmentShare({ appointment, open, onOpenChange }: Appointmen
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-xl" side="right">
+      <SheetContent className="!w-full !max-w-2xl" side="right">
         <SheetHeader>
           <SheetTitle>Compartir Cita</SheetTitle>
-          <SheetDescription>Envía los detalles por correo o WhatsApp.</SheetDescription>
+          <SheetDescription>
+            Elige el método y personaliza el mensaje antes de enviar.
+          </SheetDescription>
         </SheetHeader>
         <ScrollArea className="h-full">
-          <div className="space-y-4 px-6">
-            <div className="rounded-md border p-3 text-sm whitespace-pre-wrap bg-muted/50">{shareText}</div>
+          <div className="space-y-6 px-6">
+            <div className="rounded-lg border bg-muted/30 p-4">
+              <div className="text-sm font-medium mb-2">Resumen de la Cita</div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <div className="text-muted-foreground">Mascota</div>
+                  <div className="font-semibold">{petName}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Cliente</div>
+                  <div className="font-semibold">{clientName}</div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Fecha</div>
+                  <div className="font-semibold">
+                    {format(startDate, 'dd/MM/yyyy', { locale: es })}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-muted-foreground">Horario</div>
+                  <div className="font-semibold">
+                    {format(startDate, 'HH:mm', { locale: es })} -{' '}
+                    {format(endDate, 'HH:mm', { locale: es })}
+                  </div>
+                </div>
+              </div>
+            </div>
             <Form {...form}>
-              <form className="space-y-4">
+              <form className="space-y-6">
                 <Field orientation="vertical">
                   <label className="text-sm font-medium">Método</label>
                   <ButtonGroup>
                     <Button
                       type="button"
-                      variant={form.watch('mode') === 'email' ? 'default' : 'outline'}
+                      variant={
+                        form.watch('mode') === 'email' ? 'default' : 'outline'
+                      }
                       size="sm"
                       onClick={() => handleModeChange('email')}
                       aria-pressed={form.watch('mode') === 'email'}
@@ -154,7 +232,11 @@ export function AppointmentShare({ appointment, open, onOpenChange }: Appointmen
                     </Button>
                     <Button
                       type="button"
-                      variant={form.watch('mode') === 'whatsapp' ? 'default' : 'outline'}
+                      variant={
+                        form.watch('mode') === 'whatsapp'
+                          ? 'default'
+                          : 'outline'
+                      }
                       size="sm"
                       onClick={() => handleModeChange('whatsapp')}
                       aria-pressed={form.watch('mode') === 'whatsapp'}
@@ -164,18 +246,22 @@ export function AppointmentShare({ appointment, open, onOpenChange }: Appointmen
                   </ButtonGroup>
                 </Field>
 
-                {form.watch('mode') === 'email' ? (
-                  <EmailShareSection form={form} shareText={shareText} />
-                ) : (
-                  <WhatsAppShareSection form={form} />
-                )}
+                <div className="space-y-4">
+                  {form.watch('mode') === 'email' ? (
+                    <EmailShareSection form={form} shareText={shareText} />
+                  ) : (
+                    <WhatsAppShareSection form={form} />
+                  )}
+                </div>
               </form>
             </Form>
           </div>
         </ScrollArea>
         <SheetFooter>
           <Field orientation="horizontal">
-            <Button variant="outline" onClick={handleCopyShare}>Copiar</Button>
+            <Button variant="outline" onClick={handleCopyShare}>
+              Copiar
+            </Button>
             <Button onClick={handleSend}>Enviar</Button>
           </Field>
         </SheetFooter>

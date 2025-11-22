@@ -1,6 +1,12 @@
 'use client'
 
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
+import {
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from '@/components/ui/form'
 import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
 import { Input } from '@/components/ui/input'
 import type { UseFormReturn } from 'react-hook-form'
@@ -34,7 +40,11 @@ export default function EmailShareSection({
           <FormItem>
             <FormLabel>Asunto</FormLabel>
             <FormControl>
-              <Input type="text" placeholder="Detalles de Cita Médica" {...field} />
+              <Input
+                type="text"
+                placeholder="Detalles de Cita Médica"
+                {...field}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -45,13 +55,15 @@ export default function EmailShareSection({
         name="email_body"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Body</FormLabel>
+            <FormLabel>Mensaje</FormLabel>
             <FormControl>
               <RichMinimalEditor
                 value={(field.value as string) || ''}
                 onChange={(html) => field.onChange(html)}
                 onParsedChange={({ html }) =>
-                  form.setValue('email_body', html || '', { shouldValidate: true })
+                  form.setValue('email_body', html || '', {
+                    shouldValidate: true,
+                  })
                 }
                 placeholder={shareText}
               />
