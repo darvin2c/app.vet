@@ -38,7 +38,7 @@ export default function WhatsAppShareSection({
       />
       <FormField
         control={form.control}
-        name="message"
+        name="message_html"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Mensaje</FormLabel>

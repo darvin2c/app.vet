@@ -24,6 +24,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { phoneUtils } from '@/components/ui/phone-input'
 import { Form } from '@/components/ui/form'
 import { EmailShareSection, WhatsAppShareSection } from './'
+import { toHtmlEmail } from '@/components/ui/rich-minimal-editor/parsers'
 
 type Appointment = AppointmentWithRelations
 
@@ -52,6 +53,7 @@ export function AppointmentShare({
   const endDate = new Date(appointment.scheduled_end)
 
   const shareText = `Cita médica:\nMascota: ${petName}\nCliente: ${clientName}\nFecha: ${format(startDate, 'dd/MM/yyyy', { locale: es })}\nHora: ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}\nTipo: ${appointmentTypeName}\nPersonal: ${staffName}`
+  const emailPreset = `<p>Hola ${clientName || ''},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
 
   const schema = z
     .object({
@@ -60,6 +62,7 @@ export function AppointmentShare({
       subject: z.string().optional().or(z.literal('')),
       email_body: z.string().optional().or(z.literal('')),
       phone: z.string().optional().or(z.literal('')),
+      message_html: z.string().optional().or(z.literal('')),
       message: z.string().optional().or(z.literal('')),
     })
     .superRefine((val, ctx) => {
@@ -116,16 +119,17 @@ export function AppointmentShare({
       mode: 'email',
       email: client?.email || '',
       subject: `Detalles de Cita Médica`,
-      email_body: shareText,
+      email_body: emailPreset,
       phone: '',
       message: '',
+      message_html: '',
     },
   })
 
   useEffect(() => {
     const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
     if (form.getValues('mode') === 'whatsapp') {
-      form.setValue('message', preset, { shouldValidate: true })
+      form.setValue('message_html', preset, { shouldValidate: true })
     }
   }, [appointment.id])
 
@@ -143,20 +147,15 @@ export function AppointmentShare({
       const subject = encodeURIComponent(
         values.subject || 'Detalles de Cita Médica'
       )
-      const parser = document.createElement('div')
-      parser.innerHTML = values.email_body || shareText
-      const plainEmail = parser.textContent || parser.innerText || ''
-      const body = encodeURIComponent(plainEmail)
+      const bodyHtml = toHtmlEmail(values.email_body || shareText)
+      const body = encodeURIComponent(bodyHtml)
       window.open(
         `mailto:${values.email}?subject=${subject}&body=${body}`,
         '_blank'
       )
     } else {
       const base = 'https://wa.me/'
-      const parser = document.createElement('div')
-      parser.innerHTML = values.message || shareText
-      const plain = parser.textContent || parser.innerText || ''
-      const text = encodeURIComponent(plain)
+      const text = encodeURIComponent(values.message || shareText)
       const url = `${base}${values.phone}?text=${text}`
       window.open(url, '_blank')
     }
@@ -167,13 +166,14 @@ export function AppointmentShare({
     if (next === 'email') {
       form.setValue('phone', '')
       form.setValue('message', '')
-      form.setValue('email_body', shareText)
+      form.setValue('message_html', '')
+      form.setValue('email_body', emailPreset)
     } else {
       form.setValue('email', '')
       form.setValue('subject', 'Detalles de Cita Médica')
       form.setValue('email_body', '')
       const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
-      form.setValue('message', preset, { shouldValidate: true })
+      form.setValue('message_html', preset, { shouldValidate: true })
     }
   }
 
