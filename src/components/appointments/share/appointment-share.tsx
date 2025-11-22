@@ -122,14 +122,13 @@ export function AppointmentShare({
       email_body: emailPreset,
       phone: '',
       message: '',
-      message_html: '',
     },
   })
 
   useEffect(() => {
     const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
     if (form.getValues('mode') === 'whatsapp') {
-      form.setValue('message_html', preset, { shouldValidate: true })
+      form.setValue('message', preset, { shouldValidate: true })
     }
   }, [appointment.id])
 
@@ -166,14 +165,13 @@ export function AppointmentShare({
     if (next === 'email') {
       form.setValue('phone', '')
       form.setValue('message', '')
-      form.setValue('message_html', '')
       form.setValue('email_body', emailPreset)
     } else {
       form.setValue('email', '')
       form.setValue('subject', 'Detalles de Cita Médica')
       form.setValue('email_body', '')
       const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
-      form.setValue('message_html', preset, { shouldValidate: true })
+      form.setValue('message', preset, { shouldValidate: true })
     }
   }
 

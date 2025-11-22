@@ -38,7 +38,7 @@ export default function WhatsAppShareSection({
       />
       <FormField
         control={form.control}
-        name="message_html"
+        name="message"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Mensaje</FormLabel>
@@ -46,11 +46,6 @@ export default function WhatsAppShareSection({
               <RichMinimalEditor
                 value={(field.value as string) || ''}
                 onChange={(html) => field.onChange(html)}
-                onParsedChange={({ whatsappText }) =>
-                  form.setValue('message', whatsappText || '', {
-                    shouldValidate: true,
-                  })
-                }
               />
             </FormControl>
             <FormMessage />
