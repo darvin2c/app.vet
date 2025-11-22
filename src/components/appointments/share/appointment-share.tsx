@@ -128,6 +128,13 @@ export function AppointmentShare({
                     ref={emailRef}
                     shareText={presetHtml}
                     defaultEmail={client?.email || ''}
+                    appointment={{
+                      id: appointment.id,
+                      title: `Cita: ${appointmentTypeName} - ${petName}`,
+                      description: toWhatsAppText(presetHtml),
+                      start: appointment.scheduled_start,
+                      end: appointment.scheduled_end,
+                    }}
                   />
                 ) : (
                   <WhatsAppShareSection

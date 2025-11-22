@@ -24,6 +24,13 @@ export async function sendEmail(options: {
   subject: string
   html: string
   from?: string
+  attachments?: Array<{
+    filename: string
+    content: string | Buffer
+    contentType?: string
+    contentDisposition?: 'attachment' | 'inline'
+    headers?: Record<string, string>
+  }>
 }) {
   const transporter = createTransporter()
   const from = options.from || process.env.SMTP_FROM
@@ -32,6 +39,7 @@ export async function sendEmail(options: {
     to: options.to.join(','),
     subject: options.subject,
     html: options.html,
+    attachments: options.attachments,
   })
   return result
 }
