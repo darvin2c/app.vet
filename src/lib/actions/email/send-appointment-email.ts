@@ -40,10 +40,12 @@ export async function sendAppointmentEmailAction(params: {
   const { data: apptRaw, error } = await supabase
     .from('appointments')
     .select(
-      `id, scheduled_start, scheduled_end,
-       appointment_types(name),
-       pets(name, customers(email)),
-       staff(first_name,last_name)`
+      `
+      id, scheduled_start, scheduled_end,
+      appointment_types(name),
+      pets(name, customers(email)),
+      staff(first_name,last_name)
+      `
     )
     .eq('id', params.appointmentId)
     .single()
