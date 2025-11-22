@@ -30,13 +30,13 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { AppointmentEdit } from '@/components/appointments/appointment-edit'
-import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import dayjs from '@/lib/dayjs'
 import { AppointmentShare } from '@/components/appointments/appointment-share'
-import useAgendaInteractionStore from '@/hooks/agenda/use-agenda-interaction-store'
+import { AppointmentEdit } from '@/components/appointments/appointment-edit'
+import { AppointmentDelete } from '@/components/appointments/appointment-delete'
+// removed agenda interaction store (not needed)
 
 type Appointment = AppointmentWithRelations
 
@@ -47,12 +47,10 @@ interface EventCardProps {
 
 export function EventCard({ appointment, children }: EventCardProps) {
   const [open, setOpen] = useState(false)
-  const {
-    setDragBlocked,
-    setEditAppointment,
-    setShareAppointment,
-    setDeleteAppointment,
-  } = useAgendaInteractionStore()
+  const [editOpen, setEditOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+  const [deleteOpen, setDeleteOpen] = useState(false)
+  // no drag block management needed
   const isMobile = useIsMobile()
 
   const pet = appointment.pets
@@ -81,27 +79,24 @@ export function EventCard({ appointment, children }: EventCardProps) {
   const handleEditClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setOpen(false)
-    setEditAppointment(appointment)
+    setEditOpen(true)
   }
 
   const handleShareClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setOpen(false)
-    setShareAppointment(appointment)
+    setShareOpen(true)
   }
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
-    setOpen(false)
-    setDeleteAppointment(appointment)
+    setDeleteOpen(true)
   }
 
   useEffect(() => {
-    setDragBlocked(false)
-  }, [setDragBlocked])
+    // noop
+  }, [])
 
   const headerLeft = (
     <div className="space-y-2">
@@ -338,7 +333,23 @@ export function EventCard({ appointment, children }: EventCardProps) {
         </Popover>
       )}
 
-      {/* Modales administrados desde AgendaCalendar */}
+      <AppointmentEdit
+        appointment={appointment as any}
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        onSuccess={() => setEditOpen(false)}
+      />
+      <AppointmentShare
+        appointment={appointment as any}
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+      />
+      <AppointmentDelete
+        appointment={appointment as any}
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        onSuccess={() => setDeleteOpen(false)}
+      />
     </>
   )
 }

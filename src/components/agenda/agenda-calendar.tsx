@@ -12,14 +12,10 @@ import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-
 import { Tables } from '@/types/supabase.types'
 import dayjs from '@/lib/dayjs'
 import { AppointmentCreate } from '../appointments/appointment-create'
-import { AppointmentEdit } from '@/components/appointments/appointment-edit'
-import { AppointmentShare } from '@/components/appointments/appointment-share'
-import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import Event from './event'
 import AgendaHeader from './agenda-header'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
-import useAgendaInteractionStore from '@/hooks/agenda/use-agenda-interaction-store'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -39,15 +35,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const { currentTenant } = useCurrentTenantStore()
   const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month')
-  const {
-    dragBlocked,
-    editAppointment,
-    shareAppointment,
-    deleteAppointment,
-    setEditAppointment,
-    setShareAppointment,
-    setDeleteAppointment,
-  } = useAgendaInteractionStore()
 
   // Estados para el modal de crear cita
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -225,7 +212,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       weekHeader?.removeEventListener('click', handleWeekHeaderClick)
     }
   }, [view])
-  console.log(currentTenant)
   return (
     <div className={className}>
       <IlamyCalendar
@@ -233,19 +219,15 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         events={events}
         initialView={view}
         onViewChange={handleViewChange}
-        onEventUpdate={
-          dragBlocked
-            ? undefined
-            : (event) => {
-                appointmentUpdate.mutate({
-                  id: event.id as string,
-                  data: {
-                    scheduled_start: event.start.toISOString(),
-                    scheduled_end: event.end.toISOString(),
-                  },
-                })
-              }
-        }
+        onEventUpdate={(event) => {
+          appointmentUpdate.mutate({
+            id: event.id as string,
+            data: {
+              scheduled_start: event.start.toISOString(),
+              scheduled_end: event.end.toISOString(),
+            },
+          })
+        }}
         renderEvent={(event) => <Event event={event} />}
         locale="es"
         firstDayOfWeek="monday"
@@ -256,7 +238,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         }
         onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
-        disableDragAndDrop={dragBlocked}
+        disableDragAndDrop={true}
       />
 
       {businessHoursCss && <style>{businessHoursCss}</style>}
@@ -269,31 +251,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         defaultScheduledStart={selectedDateTime?.startTime}
         defaultScheduledEnd={selectedDateTime?.endTime}
       />
-
-      {/* Modales globales de editar/compartir/eliminar */}
-      {editAppointment && (
-        <AppointmentEdit
-          appointment={editAppointment}
-          open={!!editAppointment}
-          onOpenChange={(o) => !o && setEditAppointment(null)}
-          onSuccess={() => setEditAppointment(null)}
-        />
-      )}
-      {shareAppointment && (
-        <AppointmentShare
-          appointment={shareAppointment}
-          open={!!shareAppointment}
-          onOpenChange={(o) => !o && setShareAppointment(null)}
-        />
-      )}
-      {deleteAppointment && (
-        <AppointmentDelete
-          appointment={deleteAppointment}
-          open={!!deleteAppointment}
-          onOpenChange={(o) => !o && setDeleteAppointment(null)}
-          onSuccess={() => setDeleteAppointment(null)}
-        />
-      )}
     </div>
   )
 }
