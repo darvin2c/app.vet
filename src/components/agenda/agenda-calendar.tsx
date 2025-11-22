@@ -12,6 +12,9 @@ import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-
 import { Tables } from '@/types/supabase.types'
 import dayjs from '@/lib/dayjs'
 import { AppointmentCreate } from '../appointments/appointment-create'
+import { AppointmentEdit } from '@/components/appointments/appointment-edit'
+import { AppointmentShare } from '@/components/appointments/appointment-share'
+import { AppointmentDelete } from '@/components/appointments/appointment-delete'
 import Event from './event'
 import AgendaHeader from './agenda-header'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
@@ -36,7 +39,15 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const { currentTenant } = useCurrentTenantStore()
   const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month')
-  const { dragBlocked } = useAgendaInteractionStore()
+  const {
+    dragBlocked,
+    editAppointment,
+    shareAppointment,
+    deleteAppointment,
+    setEditAppointment,
+    setShareAppointment,
+    setDeleteAppointment,
+  } = useAgendaInteractionStore()
 
   // Estados para el modal de crear cita
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -258,6 +269,31 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         defaultScheduledStart={selectedDateTime?.startTime}
         defaultScheduledEnd={selectedDateTime?.endTime}
       />
+
+      {/* Modales globales de editar/compartir/eliminar */}
+      {editAppointment && (
+        <AppointmentEdit
+          appointment={editAppointment}
+          open={!!editAppointment}
+          onOpenChange={(o) => !o && setEditAppointment(null)}
+          onSuccess={() => setEditAppointment(null)}
+        />
+      )}
+      {shareAppointment && (
+        <AppointmentShare
+          appointment={shareAppointment}
+          open={!!shareAppointment}
+          onOpenChange={(o) => !o && setShareAppointment(null)}
+        />
+      )}
+      {deleteAppointment && (
+        <AppointmentDelete
+          appointment={deleteAppointment}
+          open={!!deleteAppointment}
+          onOpenChange={(o) => !o && setDeleteAppointment(null)}
+          onSuccess={() => setDeleteAppointment(null)}
+        />
+      )}
     </div>
   )
 }

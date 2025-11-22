@@ -46,11 +46,13 @@ interface EventCardProps {
 }
 
 export function EventCard({ appointment, children }: EventCardProps) {
-  const [editOpen, setEditOpen] = useState(false)
-  const [deleteOpen, setDeleteOpen] = useState(false)
   const [open, setOpen] = useState(false)
-  const [shareOpen, setShareOpen] = useState(false)
-  const { setDragBlocked } = useAgendaInteractionStore()
+  const {
+    setDragBlocked,
+    setEditAppointment,
+    setShareAppointment,
+    setDeleteAppointment,
+  } = useAgendaInteractionStore()
   const isMobile = useIsMobile()
 
   const pet = appointment.pets
@@ -76,17 +78,30 @@ export function EventCard({ appointment, children }: EventCardProps) {
     statusList.find((s) => s.value === appointment.status)?.color || '#64748b'
   const statusLabel = getStatus(appointment.status)
 
-  const handleEditSuccess = () => {
-    setEditOpen(false)
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpen(false)
+    setEditAppointment(appointment)
   }
 
-  const handleDeleteSuccess = () => {
-    setDeleteOpen(false)
+  const handleShareClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpen(false)
+    setShareAppointment(appointment)
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setOpen(false)
+    setDeleteAppointment(appointment)
   }
 
   useEffect(() => {
-    setDragBlocked(editOpen || shareOpen)
-  }, [editOpen, shareOpen, setDragBlocked])
+    setDragBlocked(false)
+  }, [setDragBlocked])
 
   const headerLeft = (
     <div className="space-y-2">
@@ -125,10 +140,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {
-            setOpen(false)
-            setEditOpen(true)
-          }}
+          onClick={handleEditClick}
           aria-label="Editar"
         >
           <Edit className="h-4 w-4" />
@@ -136,10 +148,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {
-            setOpen(false)
-            setShareOpen(true)
-          }}
+          onClick={handleShareClick}
           aria-label="Compartir"
         >
           <Share2 className="h-4 w-4" />
@@ -147,10 +156,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => {
-            setOpen(false)
-            setDeleteOpen(true)
-          }}
+          onClick={handleDeleteClick}
           aria-label="Eliminar"
           className="text-destructive"
         >
@@ -332,26 +338,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
         </Popover>
       )}
 
-      {/* Modales de Edición y Eliminación */}
-      <AppointmentEdit
-        appointment={appointment}
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        onSuccess={handleEditSuccess}
-      />
-
-      <AppointmentDelete
-        appointment={appointment}
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        onSuccess={handleDeleteSuccess}
-      />
-
-      <AppointmentShare
-        appointment={appointment}
-        open={shareOpen}
-        onOpenChange={setShareOpen}
-      />
+      {/* Modales administrados desde AgendaCalendar */}
     </>
   )
 }
