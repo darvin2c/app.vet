@@ -19,6 +19,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { Mail, Phone } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { EmailShareSection, WhatsAppShareSection } from './'
+import { toWhatsAppText } from '@/components/ui/rich-minimal-editor/parsers'
 import SummaryCard from './summary-card'
 import { useIsMobile } from '@/hooks/use-mobile'
 
@@ -50,19 +51,15 @@ export function AppointmentShare({
   const startDate = new Date(appointment.scheduled_start)
   const endDate = new Date(appointment.scheduled_end)
 
-  const shareText = `Cita médica:\nMascota: ${petName}\nCliente: ${clientName}\nFecha: ${format(startDate, 'dd/MM/yyyy', { locale: es })}\nHora: ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}\nTipo: ${appointmentTypeName}\nPersonal: ${staffName}`
-  const emailPreset = `<p>Hola ${clientName || ''},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
+  const presetHtml = `<p>Hola ${clientName || ''},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
 
   const [mode, setMode] = React.useState<'email' | 'whatsapp'>('email')
 
-  useEffect(() => {
-    const preset = `<p>Hola ${clientName},</p><p>Te comparto los detalles de la cita médica de <strong>${petName}</strong>:</p><ul><li><strong>Fecha:</strong> ${format(startDate, 'dd/MM/yyyy', { locale: es })}</li><li><strong>Hora:</strong> ${format(startDate, 'HH:mm', { locale: es })} - ${format(endDate, 'HH:mm', { locale: es })}</li><li><strong>Tipo:</strong> ${appointmentTypeName}</li><li><strong>Personal:</strong> ${staffName}</li></ul><p>Por favor confirma tu asistencia. ¡Gracias!</p>`
-    // preset handled inside child
-  }, [appointment.id])
+  // preset handled inside child
 
   const handleCopyShare = async () => {
     try {
-      await navigator.clipboard.writeText(shareText)
+      await navigator.clipboard.writeText(toWhatsAppText(presetHtml))
       toast.success('Información copiada')
     } catch {
       toast.error('No se pudo copiar')
@@ -129,14 +126,14 @@ export function AppointmentShare({
                 {mode === 'email' ? (
                   <EmailShareSection
                     ref={emailRef}
-                    shareText={emailPreset}
+                    shareText={presetHtml}
                     defaultEmail={client?.email || ''}
                   />
                 ) : (
                   <WhatsAppShareSection
                     ref={whatsappRef}
                     defaultPhone={client?.phone || ''}
-                    defaultMessage={shareText}
+                    defaultMessage={presetHtml}
                   />
                 )}
               </div>
