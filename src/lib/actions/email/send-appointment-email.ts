@@ -3,6 +3,7 @@
 import { sendEmail } from '@/lib/smtp'
 import { renderAppointmentEmailWrapper } from '@/lib/render-email'
 import { uuidV4 } from '@/lib/utils'
+import { createClient } from '@/lib/supabase/server'
 
 function pad(n: number) {
   return String(n).padStart(2, '0')
@@ -29,28 +30,52 @@ function escapeText(s: string) {
 }
 
 export async function sendAppointmentEmailAction(params: {
-  to: string
-  subject: string
-  html: string
-  start: string
-  end: string
-  title: string
-  description?: string
-  location?: string
-  organizerEmail?: string
-  uid?: string
+  appointmentId: string
+  to?: string
+  subject?: string
+  html?: string
+  from?: string
 }) {
-  const uid = params.uid || uuidV4()
+  const supabase = await createClient()
+  const { data: apptRaw, error } = await supabase
+    .from('appointments')
+    .select(
+      `id, scheduled_start, scheduled_end,
+       appointment_types(name),
+       pets(name, customers(email)),
+       staff(first_name,last_name)`
+    )
+    .eq('id', params.appointmentId)
+    .single()
+
+  const appt = apptRaw as any
+  if (error || !appt) {
+    throw new Error('No se encontró la cita')
+  }
+
+  const uid = appt.id || uuidV4()
   const dtstamp = toIcsDate(new Date().toISOString())
-  const dtstart = toIcsDate(params.start)
-  const dtend = toIcsDate(params.end)
-  const summary = escapeText(params.title)
-  const description = escapeText(params.description || '')
-  const location = escapeText(params.location || '')
-  const fromAddress = process.env.SMTP_FROM
-  const organizerEmail = params.organizerEmail || fromAddress || undefined
+  const dtstart = toIcsDate(appt.scheduled_start)
+  const dtend = toIcsDate(appt.scheduled_end)
+  const typeName = (appt as any)?.appointment_types?.name || 'Cita'
+  const petName = (appt as any)?.pets?.name || ''
+  const summary = escapeText(
+    `Cita: ${typeName}${petName ? ` - ${petName}` : ''}`
+  )
+  const staff = (appt as any)?.staff
+    ? `${(appt as any).staff.first_name || ''} ${(appt as any).staff.last_name || ''}`.trim()
+    : ''
+  const descriptionDefault = `Detalles de cita para ${petName || 'paciente'}`
+  const description = escapeText(descriptionDefault)
+  const location = ''
+  const fromAddress = params.from || process.env.SMTP_FROM
+  const organizerEmail = fromAddress || undefined
+  const toEmail = params.to || (appt as any)?.pets?.customers?.email
+  if (!toEmail) {
+    throw new Error('Destinatario no disponible')
+  }
   const organizer = organizerEmail ? `ORGANIZER:mailto:${organizerEmail}` : ''
-  const attendee = `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${params.to}`
+  const attendee = `ATTENDEE;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${toEmail}`
 
   const icsLines = [
     'BEGIN:VCALENDAR',
@@ -73,14 +98,27 @@ export async function sendAppointmentEmailAction(params: {
   ].filter(Boolean) as string[]
   const icsContent = icsLines.join('\r\n') + '\r\n'
 
+  const defaultHtml = `
+    <p>Hola,</p>
+    <p>Te compartimos los detalles de la cita de <strong>${petName || ''}</strong>:</p>
+    <ul>
+      <li><strong>Fecha:</strong> ${new Date(appt.scheduled_start).toLocaleDateString('es-PE')}</li>
+      <li><strong>Hora:</strong> ${new Date(appt.scheduled_start).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })} - ${new Date(appt.scheduled_end).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })}</li>
+      <li><strong>Tipo:</strong> ${typeName}</li>
+      ${staff ? `<li><strong>Personal:</strong> ${staff}</li>` : ''}
+      
+    </ul>
+    <p>Gracias.</p>
+  `
+
   const wrappedHtml = await renderAppointmentEmailWrapper({
     title: 'Detalles de Cita',
-    contentHtml: params.html,
+    contentHtml: params.html || defaultHtml,
   })
 
   const result = await sendEmail({
-    to: [params.to],
-    subject: params.subject,
+    to: [toEmail],
+    subject: params.subject || 'Detalles de Cita Médica',
     html: wrappedHtml,
     attachments: [
       {

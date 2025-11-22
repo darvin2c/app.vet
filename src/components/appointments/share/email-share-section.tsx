@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { toHtmlEmail } from '@/components/ui/rich-minimal-editor/parsers'
 
 export interface EmailShareHandle {
-  submit: () => void
+  submit: () => Promise<void>
 }
 
 export default forwardRef<
@@ -25,17 +25,9 @@ export default forwardRef<
   {
     shareText: string
     defaultEmail?: string
-    appointment?: {
-      id: string
-      title: string
-      description?: string
-      location?: string
-      start: string
-      end: string
-      organizerEmail?: string
-    }
+    appointmentId: string
   }
->(function EmailShareSection({ shareText, defaultEmail, appointment }, ref) {
+>(function EmailShareSection({ shareText, defaultEmail, appointmentId }, ref) {
   const schema = z
     .object({
       email: z.string().optional().or(z.literal('')),
@@ -91,32 +83,27 @@ export default forwardRef<
   const onSubmit = async (values: z.infer<typeof schema>) => {
     const subject = values.subject || 'Detalles de Cita Médica'
     const html = toHtmlEmail(values.email_body || shareText)
-    const meta = appointment || {
-      id: '',
-      title: 'Cita',
-      start: new Date().toISOString(),
-      end: new Date(new Date().getTime() + 30 * 60000).toISOString(),
-    }
     await fetch('/api/send-appointment-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        appointmentId,
         to: values.email,
         subject,
         html,
-        start: meta.start,
-        end: meta.end,
-        title: meta.title,
-        description: meta.description || '',
-        location: meta.location || '',
-        organizerEmail: meta.organizerEmail || undefined,
-        uid: meta.id || undefined,
+        from: undefined,
       }),
     })
   }
 
   useImperativeHandle(ref, () => ({
-    submit: () => form.handleSubmit(onSubmit)(),
+    submit: () =>
+      new Promise<void>((resolve) =>
+        form.handleSubmit(async (vals) => {
+          await onSubmit(vals as any)
+          resolve()
+        })()
+      ),
   }))
 
   return (

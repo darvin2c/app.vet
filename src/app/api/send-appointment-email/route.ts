@@ -5,16 +5,11 @@ export async function POST(request: Request) {
   try {
     const body = await request.json()
     const result = await sendAppointmentEmailAction({
+      appointmentId: body.appointmentId,
       to: body.to,
       subject: body.subject,
       html: body.html,
-      start: body.start,
-      end: body.end,
-      title: body.title,
-      description: body.description,
-      location: body.location,
-      organizerEmail: body.organizerEmail,
-      uid: body.uid,
+      from: body.from,
     })
     return NextResponse.json(result)
   } catch (e: any) {

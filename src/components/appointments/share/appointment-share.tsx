@@ -66,11 +66,15 @@ export function AppointmentShare({
     }
   }
 
-  const emailRef = React.useRef<{ submit: () => void } | null>(null)
-  const whatsappRef = React.useRef<{ submit: () => void } | null>(null)
-  const handleSend = () => {
-    if (mode === 'email') emailRef.current?.submit()
-    else whatsappRef.current?.submit()
+  const emailRef = React.useRef<{ submit: () => Promise<void> } | null>(null)
+  const whatsappRef = React.useRef<{ submit: () => Promise<void> } | null>(null)
+  const handleSend = async () => {
+    if (mode === 'email') {
+      await emailRef.current?.submit()
+    } else {
+      await whatsappRef.current?.submit()
+    }
+    onOpenChange(false)
   }
 
   const handleModeChange = (next: 'email' | 'whatsapp') => setMode(next)
@@ -128,13 +132,7 @@ export function AppointmentShare({
                     ref={emailRef}
                     shareText={presetHtml}
                     defaultEmail={client?.email || ''}
-                    appointment={{
-                      id: appointment.id,
-                      title: `Cita: ${appointmentTypeName} - ${petName}`,
-                      description: toWhatsAppText(presetHtml),
-                      start: appointment.scheduled_start,
-                      end: appointment.scheduled_end,
-                    }}
+                    appointmentId={appointment.id}
                   />
                 ) : (
                   <WhatsAppShareSection

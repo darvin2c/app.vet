@@ -17,7 +17,7 @@ import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
 import { toWhatsAppText } from '@/components/ui/rich-minimal-editor/parsers'
 
 export interface WhatsAppShareHandle {
-  submit: () => void
+  submit: () => Promise<void>
 }
 
 export default forwardRef<
@@ -57,7 +57,13 @@ export default forwardRef<
   }
 
   useImperativeHandle(ref, () => ({
-    submit: () => form.handleSubmit(onSubmit)(),
+    submit: () =>
+      new Promise<void>((resolve) =>
+        form.handleSubmit((vals) => {
+          onSubmit(vals as any)
+          resolve()
+        })()
+      ),
   }))
 
   return (
