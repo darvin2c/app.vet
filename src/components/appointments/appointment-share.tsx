@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, type UseFormReturn } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
@@ -150,7 +150,10 @@ export function AppointmentShare({
       const subject = encodeURIComponent(
         values.subject || 'Detalles de Cita Médica'
       )
-      const body = encodeURIComponent(values.email_body || shareText)
+      const parser = document.createElement('div')
+      parser.innerHTML = values.email_body || shareText
+      const plainEmail = parser.textContent || parser.innerText || ''
+      const body = encodeURIComponent(plainEmail)
       window.open(
         `mailto:${values.email}?subject=${subject}&body=${body}`,
         '_blank'
@@ -228,105 +231,9 @@ export function AppointmentShare({
                 </Field>
 
                 {form.watch('mode') === 'email' ? (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Correo electrónico</FormLabel>
-                          <FormControl>
-                            <input
-                              type="email"
-                              placeholder="usuario@correo.com"
-                              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="subject"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Asunto</FormLabel>
-                          <FormControl>
-                            <input
-                              type="text"
-                              placeholder="Detalles de Cita Médica"
-                              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email_body"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Cuerpo</FormLabel>
-                          <FormControl>
-                            <textarea
-                              rows={6}
-                              placeholder={shareText}
-                              className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                              value={(field.value as string) || ''}
-                              onChange={(e) => field.onChange(e.target.value)}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
+                  <EmailShareSection form={form} shareText={shareText} />
                 ) : (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="phone"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>WhatsApp</FormLabel>
-                          <FormControl>
-                            <PhoneInput
-                              value={field.value as string}
-                              onChange={(val) => field.onChange(val)}
-                              defaultCountry="PE"
-                              showCountrySelect
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="message"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Mensaje</FormLabel>
-                          <FormControl>
-                            <RichMinimalEditor
-                              value={(field.value as string) || ''}
-                              onChange={(html) => field.onChange(html)}
-                              onParsedChange={({ whatsappText }) =>
-                                form.setValue('message', whatsappText || '', {
-                                  shouldValidate: true,
-                                })
-                              }
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </>
+                  <WhatsAppShareSection form={form} />
                 )}
               </form>
             </Form>
@@ -342,5 +249,122 @@ export function AppointmentShare({
         </SheetFooter>
       </SheetContent>
     </Sheet>
+  )
+}
+
+function EmailShareSection({
+  form,
+  shareText,
+}: {
+  form: UseFormReturn<any>
+  shareText: string
+}) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Correo electrónico</FormLabel>
+            <FormControl>
+              <input
+                type="email"
+                placeholder="usuario@correo.com"
+                className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="subject"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Asunto</FormLabel>
+            <FormControl>
+              <input
+                type="text"
+                placeholder="Detalles de Cita Médica"
+                className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="email_body"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Body</FormLabel>
+            <FormControl>
+              <RichMinimalEditor
+                value={(field.value as string) || ''}
+                onChange={(html) => field.onChange(html)}
+                onParsedChange={({ html }) =>
+                  form.setValue('email_body', html || '', {
+                    shouldValidate: true,
+                  })
+                }
+                placeholder={shareText}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
+  )
+}
+
+function WhatsAppShareSection({ form }: { form: UseFormReturn<any> }) {
+  return (
+    <>
+      <FormField
+        control={form.control}
+        name="phone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>WhatsApp</FormLabel>
+            <FormControl>
+              <PhoneInput
+                value={field.value as string}
+                onChange={(val) => field.onChange(val)}
+                defaultCountry="PE"
+                showCountrySelect
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="message"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Mensaje</FormLabel>
+            <FormControl>
+              <RichMinimalEditor
+                value={(field.value as string) || ''}
+                onChange={(html) => field.onChange(html)}
+                onParsedChange={({ whatsappText }) =>
+                  form.setValue('message', whatsappText || '', {
+                    shouldValidate: true,
+                  })
+                }
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </>
   )
 }
