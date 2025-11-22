@@ -1,6 +1,7 @@
 'use server'
 
 import { sendEmail } from '@/lib/smtp'
+import { renderAppointmentEmailWrapper } from '@/lib/render-email'
 import { uuidV4 } from '@/lib/utils'
 
 function pad(n: number) {
@@ -72,10 +73,15 @@ export async function sendAppointmentEmailAction(params: {
   ].filter(Boolean) as string[]
   const icsContent = icsLines.join('\r\n') + '\r\n'
 
+  const wrappedHtml = await renderAppointmentEmailWrapper({
+    title: 'Detalles de Cita',
+    contentHtml: params.html,
+  })
+
   const result = await sendEmail({
     to: [params.to],
     subject: params.subject,
-    html: params.html,
+    html: wrappedHtml,
     attachments: [
       {
         filename: 'cita.ics',
