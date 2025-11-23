@@ -14,6 +14,8 @@ import { AppointmentCreateButton } from '../appointments/appointment-create-butt
 import dayjs, { Dayjs } from 'dayjs'
 import { useEffect } from 'react'
 import { ResponsiveButton } from '../ui/responsive-button'
+import { useIsMobile } from '@/hooks/use-mobile'
+import { SidebarTrigger } from '@/components/ui/sidebar-left'
 
 export default function AgendaHeader({
   initialDate,
@@ -22,17 +24,26 @@ export default function AgendaHeader({
   initialDate: Dayjs
   initialView: 'month' | 'week' | 'day' | 'year'
 }) {
+
+  const isMobile = useIsMobile()
+
   useEffect(() => {
     if (currentDate.format('YYYY-MM-DD') !== initialDate.format('YYYY-MM-DD')) {
       setCurrentDate(initialDate)
     }
   }, [initialDate])
 
-  useEffect(() => {}, [initialView])
+  useEffect(() => { }, [initialView])
   const { view, setView, nextPeriod, prevPeriod, currentDate, setCurrentDate } =
     useIlamyCalendarContext()
   return (
-    <div className="flex items-center justify-between p-4 bg-background border-b border-border">
+    <div className="flex items-center justify-between pb-4 bg-background border-b border-border">
+      {isMobile && (
+        <SidebarTrigger
+          variant="outline"
+          className="cursor-ew-resize h-8 w-8"
+        />
+      )}
       <ButtonGroup>
         <ResponsiveButton
           variant="outline"

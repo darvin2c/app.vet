@@ -19,7 +19,6 @@ import { SidebarTrigger as SidebarTriggerRight } from '@/components/ui/sidebar-r
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsFetching } from '@tanstack/react-query'
 import { ButtonGroup } from '../button-group'
-import { Button } from '../button'
 
 export interface SearchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
