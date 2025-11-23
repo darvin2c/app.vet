@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Check, ChevronsUpDown, Plus, X, Edit, Circle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,
@@ -75,7 +74,8 @@ export function AppointmentTypeSelect({
               aria-expanded={open}
               className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
-            ><div className="flex items-center gap-2">
+            >
+              <div className="flex items-center gap-2">
                 <Circle
                   className="w-4 h-4 text-muted-foreground"
                   style={{ color: selectedAppointmentType?.color || 'inherit' }}
@@ -96,18 +96,24 @@ export function AppointmentTypeSelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
                           <EmptyMedia>
                             <Circle className="w-10 h-10 text-muted-foreground" />
                           </EmptyMedia>
-                          <EmptyTitle>No se encontraron tipos de cita</EmptyTitle>
+                          <EmptyTitle>
+                            No se encontraron tipos de cita
+                          </EmptyTitle>
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {appointmentTypes.map((type: AppointmentType) => (
