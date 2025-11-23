@@ -2,8 +2,8 @@
 
 import { useIlamyCalendarContext } from '@ilamy/calendar'
 import { Button } from '../ui/button'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { ButtonGroup } from '../ui/button-group'
+import { ChevronLeft, ChevronRight, Circle } from 'lucide-react'
+import { ButtonGroup, ButtonGroupText } from '../ui/button-group'
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
 import {
   DropdownMenuContent,
@@ -11,8 +11,9 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import { AppointmentCreateButton } from '../appointments/appointment-create-button'
-import { Dayjs } from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import { useEffect } from 'react'
+import { ResponsiveButton } from '../ui/responsive-button'
 
 export default function AgendaHeader({
   initialDate,
@@ -32,30 +33,36 @@ export default function AgendaHeader({
     useIlamyCalendarContext()
   return (
     <div className="flex items-center justify-between p-4 bg-background border-b border-border">
-      <div className="flex items-center gap-4">
-        <Button
+      <ButtonGroup>
+        <ResponsiveButton
           variant="outline"
           size="sm"
           onClick={() => prevPeriod()}
-          className="flex items-center gap-2"
+          icon={ChevronLeft}
         >
-          <ChevronLeft className="h-4 w-4" />
           Anterior
-        </Button>
-
-        <h2 className="text-lg font-semibold text-foreground">
-          {currentDate.format('MMMM YYYY')}
-        </h2>
-
-        <Button
+        </ResponsiveButton>
+        <ResponsiveButton
+          variant="outline"
+          icon={Circle}
+          size="sm"
+          onClick={() => setCurrentDate(dayjs())}
+        >
+          Hoy
+        </ResponsiveButton>
+        <ResponsiveButton
           variant="outline"
           size="sm"
           onClick={() => nextPeriod()}
-          className="flex items-center gap-2"
+          icon={ChevronRight}
         >
           Siguiente
-          <ChevronRight className="h-4 w-4" />
-        </Button>
+        </ResponsiveButton>
+      </ButtonGroup>
+      <div>
+        <span className="text-sm font-semibold text-foreground">
+          {currentDate.format('MMMM YYYY')}
+        </span>
       </div>
       <div>
         <div className="flex items-center gap-2">
