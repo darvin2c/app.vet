@@ -7,22 +7,22 @@ import {
   useCallback,
   startTransition,
 } from 'react'
-import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
 import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
-import { Tables } from '@/types/supabase.types'
-import dayjs from '@/lib/dayjs'
-import { AppointmentCreate } from '../appointments/appointment-create'
-import Event from './event'
-import AgendaHeader from './agenda-header'
-import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import { AppointmentCreate } from '../appointments/appointment-create'
+import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
+import { Tables } from '@/types/supabase.types'
+import AgendaHeader from './agenda-header'
+import dayjs from '@/lib/dayjs'
+import Event from './event'
 
 type Appointment = Tables<'appointments'> & {
   pets:
-    | (Tables<'pets'> & {
-        customers: Tables<'customers'> | null
-      })
-    | null
+  | (Tables<'pets'> & {
+    customers: Tables<'customers'> | null
+  })
+  | null
   staff: Tables<'staff'> | null
   appointment_types: Tables<'appointment_types'> | null
 }
@@ -31,10 +31,14 @@ interface AgendaCalendarProps {
   className?: string
 }
 
+type View = 'month' | 'week' | 'day' | 'year'
+
 export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const { currentTenant } = useCurrentTenantStore()
-  const [view, setView] = useState<'month' | 'week' | 'day' | 'year'>('month')
+  const [view, setView] = useState<View>(
+    localStorage.getItem('agenda-view') as View || 'month'
+  )
 
   // Estados para el modal de crear cita
   const [createModalOpen, setCreateModalOpen] = useState(false)
@@ -212,6 +216,12 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       weekHeader?.removeEventListener('click', handleWeekHeaderClick)
     }
   }, [view])
+
+  useEffect(() => {
+    // save view to localStorage
+    localStorage.setItem('agenda-view', view)
+  }, [view])
+
   return (
     <div className={className}>
       <IlamyCalendar
