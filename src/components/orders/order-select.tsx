@@ -29,6 +29,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '../ui/empty'
+import { Spinner } from '../ui/spinner'
 
 type Order = Tables<'orders'>
 
@@ -101,13 +102,13 @@ export function OrderSelect({
                 <Badge
                   className={
                     orderStatusColors[
-                      selectedOrder.status as keyof typeof orderStatusColors
+                    selectedOrder.status as keyof typeof orderStatusColors
                     ]
                   }
                 >
                   {
                     orderStatusLabels[
-                      selectedOrder.status as keyof typeof orderStatusLabels
+                    selectedOrder.status as keyof typeof orderStatusLabels
                     ]
                   }
                 </Badge>
@@ -130,17 +131,19 @@ export function OrderSelect({
             />
             <CommandList>
               <CommandEmpty>
-                <Empty>
-                  <EmptyHeader>
-                    <EmptyMedia>
-                      <ShoppingCart className="h-8 w-8 text-muted-foreground" />
-                    </EmptyMedia>
-                    <EmptyTitle>No se encontraron órdenes</EmptyTitle>
-                    <EmptyDescription>
-                      Intenta buscar con otra palabra clave.
-                    </EmptyDescription>
-                  </EmptyHeader>
-                </Empty>
+                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  <Empty>
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+                      </EmptyMedia>
+                      <EmptyTitle>No se encontraron órdenes</EmptyTitle>
+                      <EmptyDescription>
+                        Intenta buscar con otra palabra clave.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
+                }
               </CommandEmpty>
               <CommandGroup>
                 {orders.map((order: Order) => (
@@ -157,13 +160,13 @@ export function OrderSelect({
                       <Badge
                         className={
                           orderStatusColors[
-                            order.status as keyof typeof orderStatusColors
+                          order.status as keyof typeof orderStatusColors
                           ]
                         }
                       >
                         {
                           orderStatusLabels[
-                            order.status as keyof typeof orderStatusLabels
+                          order.status as keyof typeof orderStatusLabels
                           ]
                         }
                       </Badge>

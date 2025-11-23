@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -20,6 +21,9 @@ import { usePetList } from '@/hooks/pets/use-pet-list'
 import { PetCreate } from './pet-create'
 import { PetEdit } from './pet-edit'
 import { Tables } from '@/types/supabase.types'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { PetIcon } from '../icons'
 
 type Pet = Tables<'pets'> & { breeds: Tables<'breeds'> | null }
 
@@ -49,17 +53,17 @@ export function PetSelect({
     search: searchTerm,
     filters: customerId
       ? [
-          {
-            field: 'customer_id',
-            operator: 'eq',
-            value: customerId,
-          },
-          {
-            field: 'is_active',
-            operator: 'eq',
-            value: true,
-          },
-        ]
+        {
+          field: 'customer_id',
+          operator: 'eq',
+          value: customerId,
+        },
+        {
+          field: 'is_active',
+          operator: 'eq',
+          value: true,
+        },
+      ]
       : [],
   })
   const pets = data?.data
@@ -105,36 +109,49 @@ export function PetSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron mascotas.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {pets?.map((pet) => (
-                  <CommandItem
-                    key={pet.id}
-                    value={pet.name}
-                    onSelect={() => handleSelect(pet.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Heart className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span>{pet.name}</span>
-                        {pet.breeds && (
-                          <span className="text-sm text-muted-foreground">
-                            {pet.breeds.name}
-                          </span>
-                        )}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <PetIcon />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron mascotas</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {pets?.map((pet) => (
+                    <CommandItem
+                      key={pet.id}
+                      value={pet.name}
+                      onSelect={() => handleSelect(pet.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Heart className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span>{pet.name}</span>
+                          {pet.breeds && (
+                            <span className="text-sm text-muted-foreground">
+                              {pet.breeds.name}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === pet.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === pet.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

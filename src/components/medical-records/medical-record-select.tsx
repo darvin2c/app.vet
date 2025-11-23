@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -20,6 +21,8 @@ import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record
 import { Tables } from '@/types/supabase.types'
 import { MedicalRecordCreate } from './medical-record-create'
 import { MedicalRecordEdit } from './medical-record-edit'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type MedicalRecord = Tables<'clinical_records'> & {
   pets: {
@@ -138,48 +141,59 @@ export function MedicalRecordSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading
-                  ? 'Cargando...'
-                  : 'No se encontraron registros médicos.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {medicalRecords.map((medicalRecord) => (
-                  <CommandItem
-                    key={medicalRecord.id}
-                    value={medicalRecord.reason || 'Registro médico'}
-                    onSelect={() => handleSelect(medicalRecord.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <FileText className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-medium">
-                          {medicalRecord.reason || 'Registro médico'}
-                        </span>
-                        {medicalRecord.record_date && (
-                          <span className="text-sm text-muted-foreground">
-                            Fecha:{' '}
-                            {new Date(
-                              medicalRecord.record_date
-                            ).toLocaleDateString()}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <FileText className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron registros médicos</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {medicalRecords.map((medicalRecord) => (
+                    <CommandItem
+                      key={medicalRecord.id}
+                      value={medicalRecord.reason || 'Registro médico'}
+                      onSelect={() => handleSelect(medicalRecord.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {medicalRecord.reason || 'Registro médico'}
                           </span>
-                        )}
-                        {medicalRecord.pets?.name && (
-                          <span className="text-sm text-muted-foreground">
-                            Mascota: {medicalRecord.pets.name}
-                          </span>
-                        )}
+                          {medicalRecord.record_date && (
+                            <span className="text-sm text-muted-foreground">
+                              Fecha:{' '}
+                              {new Date(
+                                medicalRecord.record_date
+                              ).toLocaleDateString()}
+                            </span>
+                          )}
+                          {medicalRecord.pets?.name && (
+                            <span className="text-sm text-muted-foreground">
+                              Mascota: {medicalRecord.pets.name}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === medicalRecord.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === medicalRecord.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

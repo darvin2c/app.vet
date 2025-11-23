@@ -21,6 +21,8 @@ import useProductList from '@/hooks/products/use-products-list'
 import { Tables } from '@/types/supabase.types'
 import { ProductCreate } from './product-create'
 import { ProductEdit } from './product-edit'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Product = Tables<'products'>
 
@@ -117,41 +119,54 @@ export function ProductSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron productos.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {products.map((product: Product) => (
-                  <CommandItem
-                    key={product.id}
-                    value={product.name}
-                    onSelect={() => handleSelect(product.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{product.name}</span>
-                        {product.sku && (
-                          <span className="text-sm text-muted-foreground">
-                            SKU: {product.sku}
-                          </span>
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Package className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron productos</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {products.map((product: Product) => (
+                    <CommandItem
+                      key={product.id}
+                      value={product.name}
+                      onSelect={() => handleSelect(product.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Package className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{product.name}</span>
+                          {product.sku && (
+                            <span className="text-sm text-muted-foreground">
+                              SKU: {product.sku}
+                            </span>
+                          )}
+                        </div>
+                        {product.stock !== undefined && (
+                          <div className="ml-auto text-sm text-muted-foreground">
+                            Stock: {product.stock}
+                          </div>
                         )}
                       </div>
-                      {product.stock !== undefined && (
-                        <div className="ml-auto text-sm text-muted-foreground">
-                          Stock: {product.stock}
-                        </div>
-                      )}
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === product.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === product.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

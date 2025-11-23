@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -23,6 +24,8 @@ import { CustomerCreate } from './customer-create'
 import { CustomerEdit } from './customer-edit'
 import { Tables } from '@/types/supabase.types'
 import { usePagination } from '../ui/pagination'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Customer = Tables<'customers'>
 
@@ -104,44 +107,57 @@ export function CustomerSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron clientes.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {customers.map((customer: Customer) => (
-                  <CommandItem
-                    key={customer.id}
-                    value={`${customer.first_name} ${customer.last_name}`}
-                    onSelect={() => handleSelect(customer.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-4 w-4">
-                        <AvatarImage src={''} />
-                        <AvatarFallback className="text-xs">
-                          {customer.first_name?.[0]}
-                          {customer.last_name?.[0]}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col">
-                        <span>
-                          {customer.first_name} {customer.last_name}
-                        </span>
-                        {customer.email && (
-                          <span className="text-sm text-muted-foreground">
-                            {customer.email}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <User className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron clientes</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {customers.map((customer: Customer) => (
+                    <CommandItem
+                      key={customer.id}
+                      value={`${customer.first_name} ${customer.last_name}`}
+                      onSelect={() => handleSelect(customer.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-4 w-4">
+                          <AvatarImage src={''} />
+                          <AvatarFallback className="text-xs">
+                            {customer.first_name?.[0]}
+                            {customer.last_name?.[0]}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col">
+                          <span>
+                            {customer.first_name} {customer.last_name}
                           </span>
-                        )}
+                          {customer.email && (
+                            <span className="text-sm text-muted-foreground">
+                              {customer.email}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === customer.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === customer.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

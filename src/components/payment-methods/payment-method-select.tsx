@@ -9,12 +9,15 @@ import { Tables } from '@/types/supabase.types'
 import { Badge } from '@/components/ui/badge'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -106,42 +109,55 @@ export function PaymentMethodSelect({
               value={searchTerm}
               onValueChange={setSearchTerm}
             />
-            <CommandEmpty>
-              {isLoading ? 'Cargando...' : 'No se encontraron métodos de pago.'}
-            </CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-auto">
-              {filteredMethods.map((method) => (
-                <CommandItem
-                  key={method.id}
-                  value={`${method.name}`}
-                  onSelect={() => handleSelect(method.id)}
-                >
-                  <div className="flex items-center gap-2">
-                    <CreditCard className="h-4 w-4" />
-                    <div className="flex flex-col">
-                      <span>{method.name}</span>
-                      <div className="flex items-center gap-2">
-                        <Badge
-                          className={
-                            getPaymentType(method.payment_type)?.badgeClass ??
-                            'bg-gray-100 text-gray-800'
-                          }
-                        >
-                          {getPaymentType(method.payment_type)?.label ??
-                            'Otros'}
-                        </Badge>
+            <CommandList>
+              <CommandEmpty>
+                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  <>
+                    <Empty>
+                      <EmptyHeader>
+                        <EmptyMedia>
+                          <CreditCard className="w-10 h-10 text-muted-foreground" />
+                        </EmptyMedia>
+                        <EmptyTitle>No se encontraron métodos de pago</EmptyTitle>
+                      </EmptyHeader>
+                    </Empty>
+                  </>
+                }
+              </CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
+                {filteredMethods.map((method) => (
+                  <CommandItem
+                    key={method.id}
+                    value={`${method.name}`}
+                    onSelect={() => handleSelect(method.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <CreditCard className="h-4 w-4" />
+                      <div className="flex flex-col">
+                        <span>{method.name}</span>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            className={
+                              getPaymentType(method.payment_type)?.badgeClass ??
+                              'bg-gray-100 text-gray-800'
+                            }
+                          >
+                            {getPaymentType(method.payment_type)?.label ??
+                              'Otros'}
+                          </Badge>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <Check
-                    className={cn(
-                      'h-4 w-4',
-                      value === method.id ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                    <Check
+                      className={cn(
+                        'h-4 w-4',
+                        value === method.id ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>

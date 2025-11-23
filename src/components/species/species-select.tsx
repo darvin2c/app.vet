@@ -23,6 +23,8 @@ import {
 } from '@/components/ui/popover'
 import { usePagination } from '../ui/pagination'
 import { Avatar, AvatarFallback } from '../ui/avatar'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 // Base props shared across both modes
 type SpeciesSelectBaseProps = {
@@ -86,11 +88,11 @@ export function SpeciesSelect(props: SpeciesSelectProps) {
       const next = selectedIds.includes(speciesId)
         ? selectedIds.filter((id) => id !== speciesId)
         : [...selectedIds, speciesId]
-      ;(onValueChange as (v: string[]) => void)?.(next)
+        ; (onValueChange as (v: string[]) => void)?.(next)
       // keep popover open in multi-select
       return
     }
-    ;(onValueChange as (v: string) => void)?.(
+    ; (onValueChange as (v: string) => void)?.(
       singleValue === speciesId ? '' : speciesId
     )
     setOpen(false)
@@ -140,7 +142,18 @@ export function SpeciesSelect(props: SpeciesSelectProps) {
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? 'Cargando...' : 'No se encontraron especies.'}
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Zap className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron especies</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {species.map((s: Species) => (

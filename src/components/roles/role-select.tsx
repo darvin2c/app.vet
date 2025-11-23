@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -22,6 +23,8 @@ import { Tables } from '@/types/supabase.types'
 import { RoleCreate } from './role-create'
 import { RoleEdit } from './role-edit'
 import { usePagination } from '../ui/pagination'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Role = Tables<'roles'>
 
@@ -104,42 +107,55 @@ export function RoleSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron roles.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {roles.map((role) => (
-                  <CommandItem
-                    key={role.id}
-                    value={role.name}
-                    onSelect={() => handleSelect(role.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-6 w-6">
-                        <AvatarFallback className="text-xs bg-primary/10">
-                          <Shield className="h-3 w-3" />
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex flex-col items-start min-w-0 flex-1">
-                        <span className="text-sm font-medium truncate">
-                          {role.name}
-                        </span>
-                        {role.description && (
-                          <span className="text-xs text-muted-foreground truncate">
-                            {role.description}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Shield className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron roles</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {roles.map((role) => (
+                    <CommandItem
+                      key={role.id}
+                      value={role.name}
+                      onSelect={() => handleSelect(role.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar className="h-6 w-6">
+                          <AvatarFallback className="text-xs bg-primary/10">
+                            <Shield className="h-3 w-3" />
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex flex-col items-start min-w-0 flex-1">
+                          <span className="text-sm font-medium truncate">
+                            {role.name}
                           </span>
-                        )}
+                          {role.description && (
+                            <span className="text-xs text-muted-foreground truncate">
+                              {role.description}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === role.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === role.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

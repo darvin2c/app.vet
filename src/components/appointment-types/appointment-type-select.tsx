@@ -11,6 +11,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -22,6 +23,8 @@ import { AppointmentTypeCreate } from './appointment-type-create'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { Tables } from '@/types/supabase.types'
 import { usePagination } from '../ui/pagination'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type AppointmentType = Tables<'appointment_types'>
 
@@ -66,18 +69,23 @@ export function AppointmentTypeSelect({
       <InputGroup className={cn('w-full', className)}>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <Button
-              variant="outline"
+            <InputGroupButton
+              variant="ghost"
               role="combobox"
               aria-expanded={open}
-              className="flex-1 justify-between"
+              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
               disabled={disabled}
-            >
-              <span className="truncate">
-                {selectedAppointmentType?.name || placeholder}
-              </span>
+            ><div className="flex items-center gap-2">
+                <Circle
+                  className="w-4 h-4 text-muted-foreground"
+                  style={{ color: selectedAppointmentType?.color || 'inherit' }}
+                />
+                <span className="truncate">
+                  {selectedAppointmentType?.name || placeholder}
+                </span>
+              </div>
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </Button>
+            </InputGroupButton>
           </PopoverTrigger>
           <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
             <Command>
@@ -86,39 +94,52 @@ export function AppointmentTypeSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron tipos de cita.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {appointmentTypes.map((type: AppointmentType) => (
-                  <CommandItem
-                    key={type.id}
-                    value={type.name}
-                    onSelect={() => handleSelect(type.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Circle
-                        className="w-4 h-4 text-muted-foreground"
-                        style={{ color: type.color || 'inherit' }}
-                      />
-                      <div className="flex flex-col">
-                        <span>{type.name}</span>
-                        {type.description && (
-                          <span className="text-sm text-muted-foreground">
-                            {type.description}
-                          </span>
-                        )}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Circle className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron tipos de cita</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {appointmentTypes.map((type: AppointmentType) => (
+                    <CommandItem
+                      key={type.id}
+                      value={type.name}
+                      onSelect={() => handleSelect(type.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Circle
+                          className="w-4 h-4 text-muted-foreground"
+                          style={{ color: type.color || 'inherit' }}
+                        />
+                        <div className="flex flex-col">
+                          <span>{type.name}</span>
+                          {type.description && (
+                            <span className="text-sm text-muted-foreground">
+                              {type.description}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === type.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === type.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

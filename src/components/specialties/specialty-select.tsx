@@ -28,6 +28,8 @@ import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { Tables } from '@/types/supabase.types'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Specialty = Tables<'specialties'>
 
@@ -139,33 +141,51 @@ export function SpecialtySelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading
-                  ? 'Cargando...'
-                  : 'No se encontraron especialidades.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {specialties.map((specialty: Specialty) => (
-                  <CommandItem
-                    key={specialty.id}
-                    value={specialty.name}
-                    onSelect={() => handleSelect(specialty.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                      <span className="font-medium">{specialty.name}</span>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value.includes(specialty.id)
-                          ? 'opacity-100'
-                          : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <GraduationCap className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron especialidades</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {specialties.map((specialty: Specialty) => (
+                    <CommandItem
+                      key={specialty.id}
+                      value={specialty.name}
+                      onSelect={() => handleSelect(specialty.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <GraduationCap className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span>{specialty.name}</span>
+                          {specialty.description && (
+                            <span className="text-sm text-muted-foreground">
+                              {specialty.description}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value.includes(specialty.id)
+                            ? 'opacity-100'
+                            : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

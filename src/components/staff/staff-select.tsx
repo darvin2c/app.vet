@@ -8,6 +8,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -21,6 +22,8 @@ import { StaffEdit } from './staff-edit'
 import { Tables } from '@/types/supabase.types'
 import { cn } from '@/lib/utils'
 import { usePagination } from '../ui/pagination'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Staff = Tables<'staff'>
 
@@ -96,38 +99,51 @@ export function StaffSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontró personal.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {staff.map((member: Staff) => (
-                  <CommandItem
-                    key={member.id}
-                    value={getStaffFullName(member)}
-                    onSelect={() => handleSelect(member.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <UserCheck className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-medium">
-                          {getStaffFullName(member)}
-                        </span>
-                        {member.email && (
-                          <span className="text-sm text-muted-foreground">
-                            {member.email}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <UserCheck className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontró personal</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {staff.map((member: Staff) => (
+                    <CommandItem
+                      key={member.id}
+                      value={getStaffFullName(member)}
+                      onSelect={() => handleSelect(member.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <UserCheck className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">
+                            {getStaffFullName(member)}
                           </span>
-                        )}
+                          {member.email && (
+                            <span className="text-sm text-muted-foreground">
+                              {member.email}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === member.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === member.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

@@ -21,6 +21,8 @@ import useSuppliers from '@/hooks/suppliers/use-supplier-list'
 import { SupplierCreate } from './supplier-create'
 import { SupplierEdit } from './supplier-edit'
 import { Database } from '@/types/supabase.types'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type Supplier = Database['public']['Tables']['suppliers']['Row']
 
@@ -91,36 +93,49 @@ export function SupplierSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron proveedores.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {suppliers.map((supplier: Supplier) => (
-                  <CommandItem
-                    key={supplier.id}
-                    value={supplier.name}
-                    onSelect={() => handleSelect(supplier.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Building className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span className="font-medium">{supplier.name}</span>
-                        {supplier.contact_person && (
-                          <span className="text-sm text-muted-foreground">
-                            {supplier.contact_person}
-                          </span>
-                        )}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Building className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron proveedores</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {suppliers.map((supplier: Supplier) => (
+                    <CommandItem
+                      key={supplier.id}
+                      value={supplier.name}
+                      onSelect={() => handleSelect(supplier.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Building className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span className="font-medium">{supplier.name}</span>
+                          {supplier.contact_person && (
+                            <span className="text-sm text-muted-foreground">
+                              Contacto: {supplier.contact_person}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === supplier.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === supplier.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

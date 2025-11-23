@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Search as SearchIcon, X, Loader2, PanelLeftIcon } from 'lucide-react'
+import { Search as SearchIcon, X, Loader2 } from 'lucide-react'
 import { useQueryState, parseAsString } from 'nuqs'
 import { cn } from '@/lib/utils'
 import { useDebounce } from '@/hooks/use-debounce'

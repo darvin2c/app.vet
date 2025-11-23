@@ -6,12 +6,15 @@ import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { Tables } from '@/types/supabase.types'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 import {
   Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -88,36 +91,49 @@ export function BreedSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron razas.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {breeds.map((breed) => (
-                  <CommandItem
-                    key={breed.id}
-                    value={breed.name}
-                    onSelect={() => handleSelect(breed.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Dog className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span>{breed.name}</span>
-                        {breed.species && (
-                          <span className="text-sm text-muted-foreground">
-                            {breed.species.name}
-                          </span>
-                        )}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Dog className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron razas</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {breeds.map((breed) => (
+                    <CommandItem
+                      key={breed.id}
+                      value={breed.name}
+                      onSelect={() => handleSelect(breed.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Dog className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span>{breed.name}</span>
+                          {breed.species && (
+                            <span className="text-sm text-muted-foreground">
+                              {breed.species.name}
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === breed.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === breed.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

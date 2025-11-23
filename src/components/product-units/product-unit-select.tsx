@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -20,6 +21,8 @@ import useProductUnitList from '@/hooks/product-units/use-product-unit-list'
 import { ProductUnitCreate } from './product-unit-create'
 import { ProductUnitEdit } from './product-unit-edit'
 import { Tables } from '@/types/supabase.types'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
 
 type ProductUnit = Tables<'product_units'>
 
@@ -101,36 +104,46 @@ export function ProductUnitSelect({
                 value={searchTerm}
                 onValueChange={setSearchTerm}
               />
-              <CommandEmpty>
-                {isLoading ? 'Cargando...' : 'No se encontraron unidades.'}
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto">
-                {productUnits.map((unit: ProductUnit) => (
-                  <CommandItem
-                    key={unit.id}
-                    value={unit.name}
-                    onSelect={() => handleSelect(unit.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <Package className="w-4 h-4 text-muted-foreground" />
-                      <div className="flex flex-col">
-                        <span>{unit.name}</span>
-                        {unit.abbreviation && (
-                          <span className="text-sm text-muted-foreground">
-                            {unit.abbreviation}
+              <CommandList>
+                <CommandEmpty>
+                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                    <>
+                      <Empty>
+                        <EmptyHeader>
+                          <EmptyMedia>
+                            <Package className="w-10 h-10 text-muted-foreground" />
+                          </EmptyMedia>
+                          <EmptyTitle>No se encontraron unidades</EmptyTitle>
+                        </EmptyHeader>
+                      </Empty>
+                    </>
+                  }
+                </CommandEmpty>
+                <CommandGroup className="max-h-64 overflow-auto">
+                  {productUnits.map((unit: ProductUnit) => (
+                    <CommandItem
+                      key={unit.id}
+                      value={unit.name}
+                      onSelect={() => handleSelect(unit.id)}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Package className="w-4 h-4 text-muted-foreground" />
+                        <div className="flex flex-col">
+                          <span>
+                            {unit.name} ({unit.abbreviation})
                           </span>
-                        )}
+                        </div>
                       </div>
-                    </div>
-                    <Check
-                      className={cn(
-                        'h-4 w-4',
-                        value === unit.id ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
+                      <Check
+                        className={cn(
+                          'h-4 w-4',
+                          value === unit.id ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
             </Command>
           </PopoverContent>
         </Popover>

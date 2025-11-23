@@ -10,6 +10,7 @@ import {
   CommandGroup,
   CommandInput,
   CommandItem,
+  CommandList,
 } from '@/components/ui/command'
 import {
   Popover,
@@ -17,6 +18,9 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { useUserList, UserWithRole } from '@/hooks/users/use-user-list'
+import { Spinner } from '../ui/spinner'
+import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 interface UserSelectProps {
   value?: string
@@ -94,38 +98,55 @@ export function UserSelect({
               value={searchTerm}
               onValueChange={setSearchTerm}
             />
-            <CommandEmpty>
-              {isLoading ? 'Cargando...' : 'No se encontraron usuarios.'}
-            </CommandEmpty>
-            <CommandGroup className="max-h-64 overflow-auto">
-              {users.map((user: UserWithRole) => (
-                <CommandItem
-                  key={user.id}
-                  value={`${user.first_name} ${user.last_name}`}
-                  onSelect={() => handleSelect(user.id)}
-                >
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <div className="flex flex-col">
-                      <span className="font-medium">
-                        {user.first_name} {user.last_name}
-                      </span>
-                      {user.email && (
+            <CommandList>
+              <CommandEmpty>
+                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  <>
+                    <Empty>
+                      <EmptyHeader>
+                        <EmptyMedia>
+                          <User className="w-10 h-10 text-muted-foreground" />
+                        </EmptyMedia>
+                        <EmptyTitle>No se encontraron usuarios</EmptyTitle>
+                      </EmptyHeader>
+                    </Empty>
+                  </>
+                }
+              </CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
+                {users.map((user: UserWithRole) => (
+                  <CommandItem
+                    key={user.id}
+                    value={`${user.first_name} ${user.last_name}`}
+                    onSelect={() => handleSelect(user.id)}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Avatar className="h-4 w-4">
+                        <AvatarImage src={''} />
+                        <AvatarFallback className="text-xs">
+                          {user.first_name?.[0]}
+                          {user.last_name?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <span>
+                          {user.first_name} {user.last_name}
+                        </span>
                         <span className="text-sm text-muted-foreground">
                           {user.email}
                         </span>
-                      )}
+                      </div>
                     </div>
-                  </div>
-                  <Check
-                    className={cn(
-                      'h-4 w-4',
-                      value === user.id ? 'opacity-100' : 'opacity-0'
-                    )}
-                  />
-                </CommandItem>
-              ))}
-            </CommandGroup>
+                    <Check
+                      className={cn(
+                        'h-4 w-4',
+                        value === user.id ? 'opacity-100' : 'opacity-0'
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </CommandList>
           </Command>
         </PopoverContent>
       </Popover>
