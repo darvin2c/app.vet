@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { Search as SearchIcon, X, Loader2 } from 'lucide-react'
+import { Search as SearchIcon, X, Loader2, PanelLeftIcon } from 'lucide-react'
 import { useQueryState, parseAsString } from 'nuqs'
 import { cn } from '@/lib/utils'
 import { useDebounce } from '@/hooks/use-debounce'
@@ -18,6 +18,8 @@ import { SidebarTrigger as SidebarTriggerRight } from '@/components/ui/sidebar-r
 
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsFetching } from '@tanstack/react-query'
+import { ButtonGroup } from '../button-group'
+import { Button } from '../button'
 
 export interface SearchProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
@@ -73,9 +75,9 @@ const InternalSearchInput = React.forwardRef<
     ref
   ) => {
     const sizeClasses = {
-      sm: 'h-8',
-      default: 'h-9',
-      lg: 'h-12',
+      sm: '!h-8',
+      default: '!h-9',
+      lg: '!h-12',
     }
 
     const iconSizeClasses = {
@@ -92,71 +94,72 @@ const InternalSearchInput = React.forwardRef<
     const isFetching = useIsFetching()
 
     return (
-      <InputGroup className={cn(sizeClasses[size], containerClassName)}>
-        {/* Search icon - left side */}
-        <InputGroupAddon align="inline-start">
-          {hasSidebarTriggerLeft && isMobile && (
-            <SidebarTriggerLeft className="cursor-ew-resize" />
-          )}
-          <SearchIcon className={iconSizeClasses[size]} />
-        </InputGroupAddon>
-
-        {/* Input field */}
-        <InputGroupInput
-          ref={ref}
-          type="text"
-          value={currentValue}
-          onChange={onChange}
-          placeholder={placeholder}
-          className={cn(
-            size === 'sm' && 'text-sm',
-            size === 'lg' && 'text-lg',
-            className
-          )}
-          {...props}
-        />
-
-        {/* Right side elements */}
-        {/* Loading spinner - highest priority */}
-        {isLoading || isFetching ? (
-          <Loader2
-            className={cn(
-              'animate-spin text-muted-foreground',
-              iconSizeClasses[size]
-            )}
+      <ButtonGroup className="w-full h-full *:h-auto">
+        {hasSidebarTriggerLeft && isMobile && (
+          <SidebarTriggerLeft
+            variant="outline"
+            className="cursor-ew-resize h-auto w-10"
           />
-        ) : null}
-
-        {/* Clear button */}
-        {showClearButton ? (
-          <InputGroupButton
-            type="button"
-            onClick={onClear}
-            size={size === 'sm' ? 'icon-xs' : 'icon-sm'}
-            className="text-muted-foreground hover:text-foreground"
-          >
-            <X className={iconSizeClasses[size]} />
-          </InputGroupButton>
-        ) : null}
-
-        {/* Keyboard shortcut hint */}
-        {showShortcut ? (
-          <InputGroupText className="text-xs pointer-events-none">
-            <Kbd>Ctrl+K</Kbd>
-          </InputGroupText>
-        ) : null}
-
-        {/* Suffix */}
-        {showSuffix ? (
-          <InputGroupAddon align={'inline-end'} className="gap-0 p-0">
-            {suffix}
-          </InputGroupAddon>
-        ) : null}
-        {/* Search icon - right side */}
-        {hasSidebarTriggerRight && isMobile && (
-          <SidebarTriggerRight className="cursor-ew-resize" />
         )}
-      </InputGroup>
+        <InputGroup className={cn(sizeClasses[size], containerClassName)}>
+          {/* Search icon - left side */}
+          <InputGroupAddon align="inline-start">
+            <SearchIcon className={iconSizeClasses[size]} />
+          </InputGroupAddon>
+
+          {/* Input field */}
+          <InputGroupInput
+            ref={ref}
+            type="text"
+            value={currentValue}
+            onChange={onChange}
+            placeholder={placeholder}
+            className={cn(
+              size === 'sm' && 'text-sm',
+              size === 'lg' && 'text-lg',
+              className
+            )}
+            {...props}
+          />
+
+          {/* Right side elements */}
+          {/* Loading spinner - highest priority */}
+          {isLoading || isFetching ? (
+            <Loader2
+              className={cn(
+                'animate-spin text-muted-foreground',
+                iconSizeClasses[size]
+              )}
+            />
+          ) : null}
+
+          {/* Clear button */}
+          {showClearButton ? (
+            <InputGroupButton
+              type="button"
+              onClick={onClear}
+              size={size === 'sm' ? 'icon-xs' : 'icon-sm'}
+              className="text-muted-foreground hover:text-foreground"
+            >
+              <X className={iconSizeClasses[size]} />
+            </InputGroupButton>
+          ) : null}
+
+          {/* Keyboard shortcut hint */}
+          {showShortcut ? (
+            <InputGroupText className="text-xs pointer-events-none">
+              <Kbd>Ctrl+K</Kbd>
+            </InputGroupText>
+          ) : null}
+
+          {/* Suffix */}
+          {/* Search icon - right side */}
+        </InputGroup>
+        {showSuffix ? suffix : null}
+        {hasSidebarTriggerRight && isMobile && (
+          <SidebarTriggerRight className="cursor-ew-resize h-auto w-10" />
+        )}
+      </ButtonGroup>
     )
   }
 )

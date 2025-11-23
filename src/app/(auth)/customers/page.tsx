@@ -47,18 +47,18 @@ export default function CustomersPage() {
             placeholder="Buscar cliente"
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <CustomerImportButton variant="ghost" />
-                <CustomerCreateButton variant="ghost" />
-              </ButtonGroup>
+                <CustomerImportButton variant="outline" />
+                <CustomerCreateButton variant="outline" />
+              </>
             }
           />
         }
