@@ -38,20 +38,20 @@ export default function ProductUnitsPage() {
             placeholder="Buscar unidades..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <ProductUnitImportButton variant="ghost" />
-                <ProductUnitCreateButton variant="ghost" />
-              </ButtonGroup>
+                <ProductUnitImportButton variant="outline" />
+                <ProductUnitCreateButton variant="outline" />
+              </>
             }
           />
         }

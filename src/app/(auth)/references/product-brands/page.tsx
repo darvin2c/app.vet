@@ -38,18 +38,18 @@ export default function ProductBrandsPage() {
             placeholder="Buscar marcas..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <ProductBrandImportButton variant="ghost" />
-                <ProductBrandCreateButton variant="ghost" />
-              </ButtonGroup>
+                <ProductBrandImportButton variant="outline" />
+                <ProductBrandCreateButton variant="outline" />
+              </>
             }
           />
         }

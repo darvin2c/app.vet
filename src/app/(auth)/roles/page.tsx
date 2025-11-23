@@ -47,11 +47,17 @@ export default function RolesPage() {
             placeholder="Buscar rol"
             size="lg"
             suffix={
-              <ButtonGroup>
-                <Filters filters={filters} />
-                <OrderBy config={orderByConfig} />
-                <RoleCreateButton variant={'ghost'} />
-              </ButtonGroup>
+              <>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <RoleCreateButton variant={'outline'} />
+              </>
             }
           />
         }

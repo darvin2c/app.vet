@@ -55,12 +55,18 @@ export default function SuppliersPage() {
             placeholder="Buscar proveedores..."
             size="lg"
             suffix={
-              <ButtonGroup>
-                <Filters filters={filters} />
-                <OrderBy config={orderByConfig} />
-                <SupplierImportButton />
-                <SupplierCreateButton />
-              </ButtonGroup>
+              <>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <SupplierImportButton variant="outline" />
+                <SupplierCreateButton variant="outline" />
+              </>
             }
           />
         }

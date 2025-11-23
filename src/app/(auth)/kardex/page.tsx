@@ -46,14 +46,17 @@ export default function KardexPage() {
           placeholder="Buscar por referencia o nota..."
           size="lg"
           suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
+            <>
+              <Filters
+                filters={filters}
+                triggerProps={{ variant: 'outline' }}
+              />
               <OrderBy
                 config={orderByConfig}
-                triggerProps={{ variant: 'ghost' }}
+                triggerProps={{ variant: 'outline' }}
               />
-              <ProductMovementCreateButton variant={'ghost'} />
-            </ButtonGroup>
+              <ProductMovementCreateButton variant={'outline'} />
+            </>
           }
         />
       }

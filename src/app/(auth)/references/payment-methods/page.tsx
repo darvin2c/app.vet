@@ -59,18 +59,18 @@ export default function PaymentMethodsPage() {
             placeholder="Buscar métodos de pago..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <PaymentMethodImportButton variant="ghost" />
-                <PaymentMethodCreateButton variant="ghost" />
-              </ButtonGroup>
+                <PaymentMethodImportButton variant="outline" />
+                <PaymentMethodCreateButton variant="outline" />
+              </>
             }
           />
         }

@@ -39,22 +39,22 @@ export default function AppointmentTypesPage() {
             placeholder="Buscar tipos de citas..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <AppointmentTypeImportButton variant="ghost" />
-                <AppointmentTypeCreateButton variant="ghost" />
-              </ButtonGroup>
+                <AppointmentTypeImportButton variant="outline" />
+                <AppointmentTypeCreateButton variant="outline" />
+              </>
             }
           />
         }

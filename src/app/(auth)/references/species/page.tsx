@@ -38,22 +38,22 @@ export default function SpeciesPage() {
             placeholder="Buscar especies..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <SpeciesImportButton variant="ghost" />
-                <SpeciesCreateButton variant="ghost" />
-              </ButtonGroup>
+                <SpeciesImportButton variant="outline" />
+                <SpeciesCreateButton variant="outline" />
+              </>
             }
           />
         }

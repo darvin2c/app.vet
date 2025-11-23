@@ -91,11 +91,17 @@ export default function OrdersPage() {
             placeholder="Buscar por número de orden, cliente o mascota"
             size="lg"
             suffix={
-              <ButtonGroup>
-                <Filters filters={filters} />
-                <OrderBy config={orderByConfig} />
-                <OrderCreateButton variant={'ghost'} />
-              </ButtonGroup>
+              <>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <OrderCreateButton variant={'outline'} />
+              </>
             }
           />
         }

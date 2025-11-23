@@ -64,9 +64,12 @@ export default function DashboardPage() {
           placeholder="Buscar en actividad..."
           size="lg"
           suffix={
-            <ButtonGroup>
-              <Filters filters={filters} triggerProps={{ variant: 'ghost' }} />
-            </ButtonGroup>
+            <>
+              <Filters
+                filters={filters}
+                triggerProps={{ variant: 'outline' }}
+              />
+            </>
           }
         />
       }

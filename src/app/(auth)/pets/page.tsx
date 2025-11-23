@@ -68,22 +68,22 @@ export default function PetsPage() {
             placeholder="Buscar por nombre o microchip"
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <PetImportButton variant="ghost" />
-                <PetCreateButton variant="ghost" />
-              </ButtonGroup>
+                <PetImportButton variant="outline" />
+                <PetCreateButton variant="outline" />
+              </>
             }
           />
         }

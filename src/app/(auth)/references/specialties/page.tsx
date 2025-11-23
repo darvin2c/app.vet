@@ -38,22 +38,22 @@ export default function SpecialtiesPage() {
             placeholder="Buscar especialidades..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <SpecialtyImportButton variant="ghost" />
-                <SpecialtyCreateButton variant="ghost" />
-              </ButtonGroup>
+                <SpecialtyImportButton variant="outline" />
+                <SpecialtyCreateButton variant="outline" />
+              </>
             }
           />
         }

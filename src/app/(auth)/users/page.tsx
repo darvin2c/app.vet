@@ -55,17 +55,17 @@ export default function UsersPage() {
             placeholder="Buscar usuario por nombre o email"
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <UserInviteCreateButton />
-              </ButtonGroup>
+                <UserInviteCreateButton variant="outline" />
+              </>
             }
           />
         }

@@ -68,18 +68,18 @@ export default function ProductsPage() {
             placeholder="Buscar producto"
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <ProductImportButton variant={'ghost'} />
-                <ProductCreateButton variant={'ghost'} />
-              </ButtonGroup>
+                <ProductImportButton variant={'outline'} />
+                <ProductCreateButton variant={'outline'} />
+              </>
             }
           />
         }

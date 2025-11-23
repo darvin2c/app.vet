@@ -38,18 +38,18 @@ export default function ProductCategoriesPage() {
             placeholder="Buscar categorías..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <ProductCategoryImportButton variant={'ghost'} />
-                <ProductCategoryCreateButton variant={'ghost'} />
-              </ButtonGroup>
+                <ProductCategoryImportButton variant={'outline'} />
+                <ProductCategoryCreateButton variant={'outline'} />
+              </>
             }
           />
         }

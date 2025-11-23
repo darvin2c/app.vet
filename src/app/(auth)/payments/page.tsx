@@ -59,18 +59,18 @@ export default function PaymentsPage() {
             placeholder="Buscar pago por referencia, notas o cliente"
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
                 <OrderBy
                   config={orderByConfig}
-                  triggerProps={{ variant: 'ghost' }}
+                  triggerProps={{ variant: 'outline' }}
                 />
-                <PaymentImportButton variant="ghost" />
-                <PaymentCreateButton variant="ghost" />
-              </ButtonGroup>
+                <PaymentImportButton variant="outline" />
+                <PaymentCreateButton variant="outline" />
+              </>
             }
           />
         }

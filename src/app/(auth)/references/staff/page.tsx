@@ -40,22 +40,22 @@ export default function StaffPage() {
             placeholder="Buscar personal..."
             size="lg"
             suffix={
-              <ButtonGroup>
+              <>
                 <Filters
                   filters={filters}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{
-                    variant: 'ghost',
+                    variant: 'outline',
                   }}
                 />
-                <StaffImportButton variant="ghost" />
-                <StaffCreateButton variant="ghost" />
-              </ButtonGroup>
+                <StaffImportButton variant="outline" />
+                <StaffCreateButton variant="outline" />
+              </>
             }
           />
         }
