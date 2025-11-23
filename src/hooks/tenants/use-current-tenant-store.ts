@@ -1,9 +1,9 @@
 'use client'
 
-import { Database } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { create } from 'zustand'
 
-type Tenant = Database['public']['Tables']['tenants']['Row']
+type Tenant = Tables<'tenants'>
 
 type CurrentTenantStore = {
   currentTenant: Tenant | null

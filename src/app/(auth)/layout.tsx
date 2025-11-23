@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import { headers } from 'next/headers'
 import { AppSidebar } from '@/components/tenants/app-sidebar'
+import TenantLoad from '@/components/tenants/tenant-load'
 
 const loginUrl = process.env.NEXT_PUBLIC_LOGIN || '/dev-login'
 
@@ -21,5 +22,9 @@ export default async function AuthLayout({
     return redirect(`${loginUrl}?next=${encodeURIComponent(currentUrl)}`)
   }
 
-  return <AppSidebar>{children}</AppSidebar>
+  return (
+    <TenantLoad>
+      <AppSidebar>{children}</AppSidebar>
+    </TenantLoad>
+  )
 }

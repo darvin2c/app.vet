@@ -1,12 +1,12 @@
-import { useCallback, useMemo } from 'react'
-import { useProfile } from './use-user'
+import { useCallback } from 'react'
 import { GROUPS } from './perms/groups'
 import { RESOURCES } from './perms/resources'
 import { PERMS } from './perms'
 import type { TreeGroup } from './perms/types'
+import useProfileStore from './use-profile-store'
 
 export default function usePerms() {
-  const { data: profile } = useProfile()
+  const { profile } = useProfileStore()
   const { role, isSuperuser } = profile || {}
 
   const getPerm = useCallback(
