@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { PosPaymentMethodSelector } from './pos-payment-method-selector'
 import { PosPaymentMethodSelectorButton } from './pos-payment-method-selector-button'
 
-export function POSPayment({}: {}) {
+export function POSPayment({ }: {}) {
   const { order, payments } = usePOSStore()
 
   // Calcular valores desde el store
@@ -19,42 +19,6 @@ export function POSPayment({}: {}) {
   const cartTotal = cartSubtotal + cartTax
   const totalPaid = order?.paid_amount || 0
   const remainingAmount = order?.balance || 0
-
-  // Determinar el estado del botón según el pago
-  const getButtonConfig = () => {
-    if (order?.status === 'confirmed') {
-      return {
-        text: 'Guardar sin Pago',
-        icon: Save,
-        variant: 'outline' as const,
-        className: 'border-amber-200 text-amber-700 hover:bg-amber-50',
-      }
-    } else if (order?.status === 'partial_payment') {
-      return {
-        text: 'Guardar con Pago Parcial',
-        icon: CreditCard,
-        variant: 'default' as const,
-        className: 'bg-orange-600 hover:bg-orange-700',
-      }
-    } else if (order?.status === 'paid') {
-      return {
-        text: 'Completar Orden',
-        icon: CheckCircle,
-        variant: 'default' as const,
-        className: 'bg-green-600 hover:bg-green-700',
-      }
-    }
-
-    // Valor por defecto si no hay orden o status
-    return {
-      text: 'Guardar Orden',
-      icon: Save,
-      variant: 'default' as const,
-      className: 'bg-blue-600 hover:bg-blue-700',
-    }
-  }
-
-  const buttonConfig = getButtonConfig()
 
   return (
     <div className="flex flex-col h-full">

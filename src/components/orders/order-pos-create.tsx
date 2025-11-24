@@ -34,13 +34,13 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
     }
   }, [open, clearAll])
 
-  const handleOrderCreated = () => {
+  const handleClose = () => {
     // Cerrar el modal POS cuando se crea la orden
     onOpenChange(false)
     clearAll()
   }
 
-  const handleClose = async () => {
+  const onSubmit = async () => {
     // Cerrar el modal POS
     const data = getOrderData()
     try {
@@ -49,9 +49,9 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
         items: data.orderItems,
         payments: data.payments,
       })
+      handleClose()
     } catch (error) {
       console.error('Error creating order:', error)
-      handleClose()
     }
   }
 
@@ -69,7 +69,7 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
           {currentView === 'payment' && (
             <SheetFooter className="fixed bottom-0 left-0  p-4 bg-background">
               <Field orientation="horizontal">
-                <Button size="lg" onClick={handleOrderCreated}>
+                <Button size="lg" onClick={onSubmit}>
                   Guardar Orden
                 </Button>
                 <Button variant="outline" size="lg" onClick={handleClose}>
