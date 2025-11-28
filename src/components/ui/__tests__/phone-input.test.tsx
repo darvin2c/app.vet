@@ -120,23 +120,23 @@ describe('PhoneInput', () => {
     const trigger = screen.getByLabelText('country-select')
 
     fireEvent.change(input, { target: { value: '45' } })
-    let [v1] = onChange.mock.calls.at(-1)!
+    const [v1] = onChange.mock.calls.at(-1)!
     expect(v1).toBe('+5145')
 
     fireEvent.click(trigger)
     fireEvent.click(screen.getByText('Colombia'))
     await waitFor(() => expect(onChange).toHaveBeenCalledTimes(2))
-    let [v2] = onChange.mock.calls.at(-1)!
+    const [v2] = onChange.mock.calls.at(-1)!
     expect(v2).toBe('+5745')
 
     fireEvent.change(input, { target: { value: '456' } })
-    let [v3] = onChange.mock.calls.at(-1)!
+    const [v3] = onChange.mock.calls.at(-1)!
     expect(v3).toBe('+57456')
 
     fireEvent.click(trigger)
     fireEvent.click(screen.getByText('Perú'))
     await waitFor(() => expect(onChange).toHaveBeenCalledTimes(4))
-    let [v4] = onChange.mock.calls.at(-1)!
+    const [v4] = onChange.mock.calls.at(-1)!
     expect(v4).toBe('+51456')
   })
 
@@ -216,15 +216,15 @@ describe('PhoneInput', () => {
       const input = screen.getByLabelText('phone-input') as HTMLInputElement
 
       fireEvent.change(input, { target: { value: '9' } })
-      let [v1] = onChange.mock.calls.at(-1)!
+      const [v1] = onChange.mock.calls.at(-1)!
       expect(v1).toBe('+519')
 
       fireEvent.change(input, { target: { value: '98' } })
-      let [v2] = onChange.mock.calls.at(-1)!
+      const [v2] = onChange.mock.calls.at(-1)!
       expect(v2).toBe('+5198')
 
       fireEvent.change(input, { target: { value: '987' } })
-      let [v3] = onChange.mock.calls.at(-1)!
+      const [v3] = onChange.mock.calls.at(-1)!
       expect(v3).toBe('+51987')
     })
 
@@ -234,12 +234,12 @@ describe('PhoneInput', () => {
       const input = screen.getByLabelText('phone-input') as HTMLInputElement
 
       fireEvent.change(input, { target: { value: '123' } })
-      let [v1] = onChange.mock.calls.at(-1)!
+      const [v1] = onChange.mock.calls.at(-1)!
       expect(v1).toBe('+51123')
 
       // Simular backspace cambiando el valor a 12
       fireEvent.change(input, { target: { value: '12' } })
-      let [v2] = onChange.mock.calls.at(-1)!
+      const [v2] = onChange.mock.calls.at(-1)!
       expect(v2).toBe('+5112')
     })
 
@@ -255,7 +255,7 @@ describe('PhoneInput', () => {
       } as any)
       // El control se actualiza en onChange, simulamos el valor pegado
       fireEvent.change(input, { target: { value: 'abc 000-111' } })
-      let [v] = onChange.mock.calls.at(-1)!
+      const [v] = onChange.mock.calls.at(-1)!
       expect(input.value).toBe('000111')
       expect(v).toBe('+51000111')
     })
@@ -269,7 +269,7 @@ describe('PhoneInput', () => {
       fireEvent.change(input, { target: { value: 'こ123' } })
       fireEvent.compositionEnd(input)
 
-      let [v] = onChange.mock.calls.at(-1)!
+      const [v] = onChange.mock.calls.at(-1)!
       expect(input.value).toBe('123')
       expect(v).toBe('+51123')
     })
@@ -281,7 +281,7 @@ describe('PhoneInput', () => {
 
       // Simular autofill estableciendo el valor y disparando input
       fireEvent.input(input, { target: { value: '888777' } })
-      let [v] = onChange.mock.calls.at(-1)!
+      const [v] = onChange.mock.calls.at(-1)!
       expect(input.value).toBe('888777')
       expect(v).toBe('+51888777')
     })

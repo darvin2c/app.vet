@@ -1,4 +1,3 @@
-import { maskitoParseNumber } from '@maskito/kit'
 import { z } from 'zod'
 
 export const posPaymentSchema = z.object({

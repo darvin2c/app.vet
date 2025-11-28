@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useDebounce } from '@/hooks/use-debounce'
 
-import type { SearchFilterConfig } from './types'
 
 interface SearchFilterProps {
   config: any // Temporal para evitar errores de tipado

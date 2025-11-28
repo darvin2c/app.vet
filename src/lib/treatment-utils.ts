@@ -1,4 +1,3 @@
-import type { Database } from '@/types/supabase.types'
 
 // TODO: Estos enums no existen en la base de datos actual
 // type TreatmentStatus = Database['public']['Enums']['treatment_status']

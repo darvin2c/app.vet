@@ -20,7 +20,6 @@ import {
   updateAppointmentSchema,
 } from '@/schemas/appointments.schema'
 import type { Tables } from '@/types/supabase.types'
-import { toast } from 'sonner'
 import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
 

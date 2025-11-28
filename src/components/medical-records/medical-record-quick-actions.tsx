@@ -7,12 +7,10 @@ import { Badge } from '@/components/ui/badge'
 import {
   Stethoscope,
   Calendar,
-  FileText,
   Paperclip,
   Package,
   Edit,
   Eye,
-  Plus,
   Clock,
   CheckCircle,
   XCircle,

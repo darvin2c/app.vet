@@ -14,8 +14,6 @@ import {
   ItemSeparator,
 } from '@/components/ui/item'
 import {
-  Trash2,
-  Package,
   ShoppingCart,
   Edit,
   CreditCard,

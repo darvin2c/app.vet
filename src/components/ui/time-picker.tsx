@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { useState, useCallback, useRef, useEffect } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Clock, ClockIcon } from 'lucide-react'
 import { z } from 'zod'
 import { cn } from '@/lib/utils'

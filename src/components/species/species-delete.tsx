@@ -3,10 +3,8 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { useSpeciesDelete } from '@/hooks/species/use-species-delete'
 import { Tables } from '@/types/supabase.types'
-import { Trash2 } from 'lucide-react'
 
 interface SpeciesDeleteProps {
   species: Tables<'species'>

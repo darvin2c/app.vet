@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation'
 import { Tabs, TabsContent } from '@/components/ui/tabs'
 import { usePetDetail } from '@/hooks/pets/use-pet-detail'
 import { usePetAppointments } from '@/hooks/pets/use-pet-appointments'
-import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 // Import modular components
 import { PetProfileHeader } from '@/components/pets/pet-profile-header'

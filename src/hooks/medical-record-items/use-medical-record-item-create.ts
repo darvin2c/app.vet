@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
-import { Tables, TablesInsert } from '@/types/supabase.types'
+import { TablesInsert } from '@/types/supabase.types'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useMedicalRecordItemCreate() {

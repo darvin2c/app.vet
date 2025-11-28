@@ -7,7 +7,6 @@ import {
   Trash2,
   CreditCard,
   Printer,
-  File,
   Eye,
   Download,
 } from 'lucide-react'

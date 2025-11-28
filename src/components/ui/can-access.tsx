@@ -2,7 +2,6 @@
 
 import usePerms from '@/hooks/auth/use-perms'
 import Forbidden, { ForbiddenProps } from './forbidden'
-import useProfileStore from '@/hooks/auth/use-profile-store'
 
 type CanAccessProps = {
   resource?: string

@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 import { ShoppingCart, Check, ChevronsUpDown, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,

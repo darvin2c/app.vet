@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { ReferenceSidebar } from '@/components/references/reference-sidebar'
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar-left'
 
 export const metadata: Metadata = {
   title: {

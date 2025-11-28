@@ -7,7 +7,6 @@ import {
   Tag,
   Dna,
   CreditCard,
-  Shield,
   LucideIcon,
 } from 'lucide-react'
 

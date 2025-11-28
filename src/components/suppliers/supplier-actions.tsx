@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2, Database, IdCard } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, IdCard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,

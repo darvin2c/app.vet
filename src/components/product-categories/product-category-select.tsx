@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { Check, ChevronsUpDown, Plus, X, Edit, Tag } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
   Command,

@@ -3,7 +3,7 @@
 import { useIlamyCalendarContext } from '@ilamy/calendar'
 import { Button } from '../ui/button'
 import { ChevronLeft, ChevronRight, Circle } from 'lucide-react'
-import { ButtonGroup, ButtonGroupText } from '../ui/button-group'
+import { ButtonGroup } from '../ui/button-group'
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu'
 import {
   DropdownMenuContent,

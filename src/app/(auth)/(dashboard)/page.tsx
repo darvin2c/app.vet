@@ -2,7 +2,6 @@
 
 import PageBase from '@/components/page-base'
 import { SearchInput } from '@/components/ui/search-input'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { Filters } from '@/components/ui/filters'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import type { FilterConfig } from '@/components/ui/filters'

@@ -4,7 +4,6 @@ import { AppointmentTypeList } from '@/components/appointment-types/appointment-
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 import { SearchInput } from '@/components/ui/search-input'
-import { ButtonGroup } from '@/components/ui/button-group'
 import PageBase from '@/components/page-base'
 import { Filters } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'

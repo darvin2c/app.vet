@@ -41,8 +41,6 @@ import {
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
   ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
   Wrench,
 } from 'lucide-react'
 import useProductList from '@/hooks/products/use-products-list'

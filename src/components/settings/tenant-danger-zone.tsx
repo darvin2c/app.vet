@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { AlertTriangle } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import TenantDeleteConfirmation from './tenant-delete-confirmation'

@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import { Enums } from '@/types/supabase.types'
 
 export const orderBaseSchema = z.object({
   customer_id: z.string(),

@@ -3,7 +3,6 @@
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import { Dog, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
 import { useBreedsList } from '@/hooks/breeds/use-breed-list'
-import { Tables } from '@/types/supabase.types'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 import { Spinner } from '../ui/spinner'

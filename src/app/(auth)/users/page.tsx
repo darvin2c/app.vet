@@ -1,5 +1,4 @@
 import { UserList } from '@/components/users/user-list'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { SearchInput } from '@/components/ui/search-input'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { FilterConfig } from '@/components/ui/filters'

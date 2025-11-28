@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import type { Tables } from '@/types/supabase.types'
-import { toast } from 'sonner'
 import { Form } from '../ui/form'
 import { Separator } from '../ui/separator'
 import { appointmentTypeUpdateSchema } from '@/schemas/appointment-types.schema'

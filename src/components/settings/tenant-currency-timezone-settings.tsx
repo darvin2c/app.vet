@@ -18,7 +18,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CurrencySelector } from '@/components/ui/currency-select'
 import { TimezoneInput } from '@/components/ui/timezone-input'
-import { Loader2, DollarSign } from 'lucide-react'
+import { Loader2 } from 'lucide-react'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
 import { useTenantUpdate } from '@/hooks/tenants/use-tenant-update'
 import { z } from 'zod'

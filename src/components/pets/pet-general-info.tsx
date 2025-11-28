@@ -2,7 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tables } from '@/types/supabase.types'
 import { PetInfoField } from './pet-info-field'
 import { PetStatusBadge } from './pet-status-badge'
-import { calculateAge, formatSex, formatDate } from '@/lib/pet-utils'
+import { formatSex, formatDate } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null

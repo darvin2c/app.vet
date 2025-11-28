@@ -2,7 +2,7 @@
 
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
-import { ShoppingCart, CheckCircle, Save, CreditCard } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
 import { PosPaymentTable } from '@/components/orders/pos/pos-payment-table'
 import { PaymentSummary } from '@/components/orders/pos/payment-summary'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'

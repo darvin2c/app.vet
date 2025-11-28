@@ -15,7 +15,6 @@ import {
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Form } from '../ui/form'
 import {
-  AppointmentTypeCreateSchema,
   appointmentTypeCreateSchema,
 } from '@/schemas/appointment-types.schema'
 import CanAccess from '@/components/ui/can-access'

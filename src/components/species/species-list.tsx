@@ -41,7 +41,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
   AlertCircle,
   ArrowUpRightIcon,
-  ChevronLeft,
   ChevronRight,
   ChevronDown,
   Stethoscope,

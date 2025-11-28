@@ -14,16 +14,11 @@ import {
   type Cell,
 } from '@tanstack/react-table'
 import {
-  ArrowUpRightIcon,
-  CheckCircle2Icon,
-  ChevronLeft,
-  ChevronRight,
   CreditCard,
 } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
   Empty,
@@ -50,7 +45,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ViewModeToggle, type ViewMode } from '@/components/ui/view-mode-toggle'
+import { type ViewMode } from '@/components/ui/view-mode-toggle'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 
 import usePaymentList, {
@@ -64,7 +59,6 @@ import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
 
-import type { Tables } from '@/types/supabase.types'
 
 interface PaymentListProps {
   filterConfig: FilterConfig[]

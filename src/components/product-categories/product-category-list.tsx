@@ -1,14 +1,11 @@
 'use client'
 
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable,
-  getPaginationRowModel,
-  getSortedRowModel,
-  SortingState,
   HeaderGroup,
   Header,
   Row,
@@ -24,7 +21,7 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Database, Tables } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { ProductCategoryActions } from './product-category-actions'
 import { ProductCategoryCreateButton } from './product-category-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -40,7 +37,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { ArrowUpRightIcon, ChevronLeft, ChevronRight, Tag } from 'lucide-react'
+import { ArrowUpRightIcon, Tag } from 'lucide-react'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Sheet,
   SheetContent,
@@ -8,7 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import useCustomerCreate, {
+import {
   useCustomerCreateBulk,
 } from '@/hooks/customers/use-customer-create'
 import { DataImport } from '@/components/ui/data-import'

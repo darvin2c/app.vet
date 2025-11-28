@@ -2,7 +2,6 @@ import {
   Item,
   ItemContent,
   ItemTitle,
-  ItemDescription,
   ItemActions,
 } from '@/components/ui/item'
 import { Tables } from '@/types/supabase.types'

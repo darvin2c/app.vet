@@ -303,7 +303,7 @@ export function useDataImport<T extends Record<string, unknown>>(
       schemaKeys.length > 0 ? schemaKeys : ['column1', 'column2', 'column3']
 
     // Generar 3 filas de ejemplo usando zod-mock
-    let csvContent = finalSchemaKeys.join(',') + '\n'
+    const csvContent = finalSchemaKeys.join(',') + '\n'
 
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
     const link = document.createElement('a')

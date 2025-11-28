@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { AlertConfirmation } from '@/components/ui/alert-confirmation'
 import useDeleteProductUnit from '@/hooks/product-units/use-product-unit-delete'
 import { Tables } from '@/types/supabase.types'

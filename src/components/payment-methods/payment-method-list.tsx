@@ -22,7 +22,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Database, Tables } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { PaymentMethodActions } from './payment-method-actions'
 import { PaymentMethodCreateButton } from './payment-method-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'

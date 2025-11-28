@@ -11,7 +11,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { DatePicker } from '@/components/ui/date-picker'
 import { type ClinicalParameterFormData } from '@/schemas/clinical-parameters.schema'
-import { MedicalRecordSelect } from '@/components/medical-records/medical-record-select'
 
 interface ClinicalParameterFormProps {
   petId?: string

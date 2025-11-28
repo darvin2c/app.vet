@@ -6,8 +6,6 @@ import {
   ChevronsUpDown,
   GraduationCap,
   X,
-  Plus,
-  Edit,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'

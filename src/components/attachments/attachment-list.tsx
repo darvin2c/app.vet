@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useAttachmentList } from '@/hooks/attachments/use-attachment-list'
 import { AttachmentFilters } from '@/schemas/attachments.schema'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -24,14 +24,12 @@ import {
   Music,
   File,
   Search,
-  Filter,
   Eye,
   Download,
   Calendar,
   User,
   Tag,
   Shield,
-  ShieldCheck,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'

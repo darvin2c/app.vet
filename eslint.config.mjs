@@ -1,6 +1,7 @@
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { FlatCompat } from '@eslint/eslintrc';
+import unusedImports from 'eslint-plugin-unused-imports';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -11,17 +12,19 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
-
   {
     plugins: {
-      'unused-imports': await import('eslint-plugin-unused-imports'),
+      'unused-imports': unusedImports,
     },
-
     rules: {
-      // ❌ Remueve importaciones no usadas automáticamente
+      // Desactiva la regla base de no-unused-vars
+      'no-unused-vars': 'off',
+      '@typescript-eslint/no-unused-vars': 'off',
+
+      // Activa la regla de unused-imports que auto-elimina importaciones no usadas
       'unused-imports/no-unused-imports': 'error',
 
-      // Opcional: control de variables no usadas
+      // Configura el manejo de variables no usadas
       'unused-imports/no-unused-vars': [
         'warn',
         {
@@ -32,14 +35,6 @@ const eslintConfig = [
         },
       ],
     },
-
-    ignores: [
-      'node_modules/**',
-      '.next/**',
-      'out/**',
-      'build/**',
-      'next-env.d.ts',
-    ],
   },
 ];
 

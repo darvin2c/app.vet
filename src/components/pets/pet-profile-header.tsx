@@ -1,4 +1,4 @@
-import { ArrowLeft, Calendar, Menu, User, MapPin, Phone } from 'lucide-react'
+import { ArrowLeft, Calendar, Menu, User, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'

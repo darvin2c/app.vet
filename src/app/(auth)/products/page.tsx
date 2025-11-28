@@ -1,7 +1,6 @@
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 import { ProductCreateButton } from '@/components/products/product-create-button'
 import { ProductList } from '@/components/products/product-list'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { SearchInput } from '@/components/ui/search-input'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { FilterConfig } from '@/components/ui/filters'

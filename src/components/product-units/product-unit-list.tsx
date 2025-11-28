@@ -40,8 +40,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
   AlertCircle,
   ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
   Scale,
 } from 'lucide-react'
 import useProductUnits from '@/hooks/product-units/use-product-unit-list'

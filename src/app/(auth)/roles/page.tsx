@@ -1,6 +1,5 @@
 import { RoleCreateButton } from '@/components/roles/role-create-button'
 import { RoleList } from '@/components/roles/role-list'
-import { ButtonGroup } from '@/components/ui/button-group'
 import { SearchInput } from '@/components/ui/search-input'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { FilterConfig } from '@/components/ui/filters'

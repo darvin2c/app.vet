@@ -4,10 +4,8 @@ import {
   Clock,
   User,
   UserCheck,
-  Stethoscope,
   MoreHorizontal,
 } from 'lucide-react'
-import type { Tables } from '@/types/supabase.types'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

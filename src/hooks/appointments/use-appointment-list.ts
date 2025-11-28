@@ -27,7 +27,7 @@ export function useAppointmentList({ filters }: { filters?: AppliedFilter[] }) {
         throw new Error('No hay tenant seleccionado')
       }
 
-      let query = supabase
+      const query = supabase
         .from('appointments')
         .select(
           `

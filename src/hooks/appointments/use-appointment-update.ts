@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TablesUpdate } from '@/types/supabase.types'
-import { removeUndefined } from '@/lib/utils'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { toast } from 'sonner'
 

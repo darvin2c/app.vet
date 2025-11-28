@@ -40,8 +40,6 @@ import { TableSkeleton } from '@/components/ui/table-skeleton'
 import {
   AlertCircle,
   ArrowUpRightIcon,
-  ChevronLeft,
-  ChevronRight,
   Stethoscope,
 } from 'lucide-react'
 import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'

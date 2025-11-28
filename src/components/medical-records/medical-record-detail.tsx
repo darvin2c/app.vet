@@ -14,11 +14,9 @@ import { MedicalRecordEdit } from './medical-record-edit'
 import {
   Calendar,
   User,
-  FileText,
   Stethoscope,
   Edit,
   Paperclip,
-  Activity,
   Clock,
 } from 'lucide-react'
 

@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import {
   useForm,
-  FormProvider,
   useFormContext,
   Controller,
 } from 'react-hook-form'
@@ -11,13 +10,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
+
+
 import {
   Field,
   FieldContent,
@@ -37,7 +31,6 @@ import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import {
   posPaymentSchema,
-  POSPaymentSchema,
 } from '@/schemas/pos-payment.schema'
 import { Form } from '@/components/ui/form'
 import { usePagination } from '@/components/ui/pagination'
