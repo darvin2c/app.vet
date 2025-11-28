@@ -23,7 +23,6 @@ import {
 import useInvitationCreate from '@/hooks/invitations/use-invitation-create'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { sendInvitationsAction } from '@/lib/actions/email/send-invitations'
-import { toast } from 'sonner'
 import CanAccess from '@/components/ui/can-access'
 
 interface UserInviteCreateProps {
