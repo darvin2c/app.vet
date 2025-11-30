@@ -34,7 +34,6 @@ export function ServiceCreate({ open, onOpenChange }: ServiceCreateProps) {
       name: '',
       sku: undefined,
       category_id: undefined,
-      unit_id: undefined,
       is_active: true,
     },
   })

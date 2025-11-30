@@ -22,7 +22,6 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ServiceActions } from './service-actions'
-import { Database } from '@/types/supabase.types'
 import { ServiceCreateButton } from './service-create-button'
 import { ServiceImportButton } from './service-import-button'
 import {
@@ -43,7 +42,7 @@ import {
   ArrowUpRightIcon,
   Wrench,
 } from 'lucide-react'
-import useProductList from '@/hooks/products/use-products-list'
+import useProductList, { Product } from '@/hooks/products/use-products-list'
 import {
   useFilters,
   FilterConfig,
@@ -63,7 +62,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { Pagination, usePagination } from '../ui/pagination'
 
-type Service = Database['public']['Tables']['products']['Row']
+type Service = Product
 
 export function ServicesList({
   filterConfig,
@@ -121,28 +120,15 @@ export function ServicesList({
       ),
     },
     {
-      accessorKey: 'category_id',
+      accessorKey: 'category',
       header: ({ header }) => (
-        <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
+        <OrderByTableHeader field="category.name" orderByHook={orderByHook}>
           Categoría
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<Service> }) => (
         <div className="text-sm text-muted-foreground">
-          {row.getValue('category_id') || '-'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'unit_id',
-      header: ({ header }) => (
-        <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
-          Unidad
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Service> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.getValue('unit_id') || '-'}
+          {row.original.category?.name || '-'}
         </div>
       ),
     },
@@ -219,20 +205,12 @@ export function ServicesList({
               <ServiceActions service={service} />
             </div>
 
-            <div className="space-y-2">
-              {service.category_id && (
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Categoría:</span>{' '}
-                  {service.category_id}
-                </div>
-              )}
-              {service.unit_id && (
-                <div className="text-sm">
-                  <span className="text-muted-foreground">Unidad:</span>{' '}
-                  {service.unit_id}
-                </div>
-              )}
-            </div>
+            {service.category_id && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Categoría:</span>{' '}
+                {service.category_id}
+              </div>
+            )}
 
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={service.is_active} />
@@ -257,7 +235,6 @@ export function ServicesList({
               {service.category_id && (
                 <span>Categoría: {service.category_id}</span>
               )}
-              {service.unit_id && <span>Unidad: {service.unit_id}</span>}
               <IsActiveDisplay value={service.is_active} />
             </div>
           </ItemContent>

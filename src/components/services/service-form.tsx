@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/field'
 import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
-import { ProductUnitSelect } from '@/components/product-units/product-unit-select'
 import { ProductBrandSelect } from '@/components/product-brands/product-brand-select'
 import { Tables } from '@/types/supabase.types'
 
@@ -63,7 +62,7 @@ export function ServiceForm({ mode = 'create', service }: ServiceFormProps) {
       {/* Categorización */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium">Categorización</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Field>
             <FieldLabel htmlFor="category_id">Categoría</FieldLabel>
             <FieldContent>
@@ -85,18 +84,6 @@ export function ServiceForm({ mode = 'create', service }: ServiceFormProps) {
                 placeholder="Seleccionar marca..."
               />
               <FieldError errors={[errors.brand_id]} />
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="unit_id">Unidad</FieldLabel>
-            <FieldContent>
-              <ProductUnitSelect
-                value={watch('unit_id') || ''}
-                onValueChange={(value) => setValue('unit_id', value)}
-                placeholder="Seleccionar unidad..."
-              />
-              <FieldError errors={[errors.unit_id]} />
             </FieldContent>
           </Field>
         </div>

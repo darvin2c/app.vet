@@ -10,16 +10,17 @@ import {
   AppliedPagination,
   applySupabasePagination,
 } from '@/components/ui/pagination'
+import { Tables } from '@/types/supabase.types'
+
+export type Product = Tables<'products'> & {
+  category?: Tables<'product_categories'>
+  unit?: Tables<'product_units'>
+} 
 
 export default function useProductList({
   filters = [],
   search,
-  orders = [
-    {
-      field: 'created_at',
-      direction: 'desc',
-    },
-  ],
+  orders,
   pagination,
 }: {
   filters?: AppliedFilter[]
@@ -48,12 +49,12 @@ export default function useProductList({
         .select(
           `
           *,
-          product_categories (
+          category:category_id (
             id,
             name,
             is_active
           ),
-          product_units (
+          unit:unit_id (
             id,
             name,
             abbreviation,
