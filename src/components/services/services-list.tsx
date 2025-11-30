@@ -61,6 +61,7 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { Pagination, usePagination } from '../ui/pagination'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 type Service = Product
 
@@ -99,25 +100,28 @@ export function ServicesList({
       accessorKey: 'name',
       header: ({ header }) => (
         <OrderByTableHeader field="name" orderByHook={orderByHook}>
-          Nombre
+          Servicio
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Service> }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
-      ),
-    },
-    {
-      accessorKey: 'sku',
-      header: ({ header }) => (
-        <OrderByTableHeader field="sku" orderByHook={orderByHook}>
-          SKU
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Service> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.getValue('sku') || '-'}
-        </div>
-      ),
+      cell: ({ row }: { row: Row<Service> }) => {
+        const service = row.original
+        return (
+          <div className="flex items-center gap-3">
+            <Avatar className="h-9 w-9">
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                S
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col">
+              <span className="font-medium">{service.name}</span>
+              <div className="text-xs text-muted-foreground space-x-2">
+                {service.sku && <span>SKU: {service.sku}</span>}
+                {service.barcode && <span>Código: {service.barcode}</span>}
+              </div>
+            </div>
+          </div>
+        )
+      },
     },
     {
       accessorKey: 'category',
@@ -205,10 +209,10 @@ export function ServicesList({
               <ServiceActions service={service} />
             </div>
 
-            {service.category_id && (
+            {service.category?.name && (
               <div className="text-sm">
                 <span className="text-muted-foreground">Categoría:</span>{' '}
-                {service.category_id}
+                {service.category.name}
               </div>
             )}
 
@@ -232,8 +236,8 @@ export function ServicesList({
               <ItemDescription>SKU: {service.sku}</ItemDescription>
             )}
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              {service.category_id && (
-                <span>Categoría: {service.category_id}</span>
+              {service.category?.name && (
+                <span>Categoría: {service.category.name}</span>
               )}
               <IsActiveDisplay value={service.is_active} />
             </div>

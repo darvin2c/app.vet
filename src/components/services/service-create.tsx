@@ -33,6 +33,7 @@ export function ServiceCreate({ open, onOpenChange }: ServiceCreateProps) {
     defaultValues: {
       name: '',
       sku: undefined,
+      barcode: undefined,
       category_id: undefined,
       is_active: true,
     },

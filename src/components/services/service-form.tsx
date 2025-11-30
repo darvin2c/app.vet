@@ -56,6 +56,18 @@ export function ServiceForm({ mode = 'create', service }: ServiceFormProps) {
               <FieldError errors={[errors.sku]} />
             </FieldContent>
           </Field>
+
+          <Field>
+            <FieldLabel htmlFor="barcode">Código de Barras</FieldLabel>
+            <FieldContent>
+              <Input
+                id="barcode"
+                placeholder="Código de barras"
+                {...register('barcode')}
+              />
+              <FieldError errors={[errors.barcode]} />
+            </FieldContent>
+          </Field>
         </div>
       </div>
 
