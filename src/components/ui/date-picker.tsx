@@ -30,8 +30,33 @@ import {
 } from '@/components/ui/sheet'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { DayPicker } from 'react-day-picker'
+import { TimePicker, type TimePickerProps } from '@/components/ui/time-picker'
 
 const DATE_FORMAT = 'dd/MM/yyyy'
+
+// Función auxiliar para combinar fecha y hora
+function combineDateTime(date: Date, timeString: string, format: '12h' | '24h'): Date {
+  const timeParts = timeString.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i)
+  if (!timeParts) return date
+  
+  let hours = parseInt(timeParts[1], 10)
+  const minutes = parseInt(timeParts[2], 10)
+  const period = timeParts[3]?.toUpperCase()
+  
+  // Convertir de 12h a 24h si es necesario
+  if (format === '12h' && period) {
+    if (period === 'PM' && hours !== 12) {
+      hours += 12
+    } else if (period === 'AM' && hours === 12) {
+      hours = 0
+    }
+  }
+  
+  const newDate = new Date(date)
+  newDate.setHours(hours, minutes, 0, 0)
+  return newDate
+}
+
 
 export interface DatePickerProps
   extends Omit<React.ComponentProps<'input'>, 'value' | 'onChange'> {
@@ -54,6 +79,16 @@ export interface DatePickerProps
   > & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant']
   }
+  
+  /**
+   * Mostrar selector de tiempo junto con la fecha
+   */
+  hasTime?: boolean
+  
+  /**
+   * Props para el TimePicker
+   */
+  timeProps?: Omit<TimePickerProps, 'value' | 'onChange' | 'className'>
 }
 
 /**
@@ -64,11 +99,14 @@ export function DatePicker({
   onChange,
   error,
   calendarProps,
+  hasTime = false,
+  timeProps,
   ...props
 }: DatePickerProps) {
   const [open, setOpen] = useState(false)
   const [inputValue, setInputValue] = useState('')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
+  const [timeValue, setTimeValue] = useState<string>('')
   const isMobile = useIsMobile()
 
   // Configuración de Maskito para fecha dd/MM/yyyy
@@ -94,14 +132,28 @@ export function DatePicker({
     return undefined
   }, [value])
 
-  // Sincronizar inputValue con dateValue
+  // Sincronizar inputValue y timeValue con dateValue
   useEffect(() => {
     if (dateValue) {
       setInputValue(format(dateValue, DATE_FORMAT))
+      if (hasTime) {
+        const hours = dateValue.getHours()
+        const minutes = dateValue.getMinutes()
+        const timeFormat = timeProps?.format || '24h'
+        
+        if (timeFormat === '12h') {
+          const period = hours >= 12 ? 'PM' : 'AM'
+          const displayHours = hours % 12 || 12
+          setTimeValue(`${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`)
+        } else {
+          setTimeValue(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`)
+        }
+      }
     } else {
       setInputValue('')
+      setTimeValue('')
     }
-  }, [dateValue])
+  }, [dateValue, hasTime, timeProps?.format])
 
   // Validar y parsear fecha del input
   const validateAndParseDate = useCallback((inputVal: string): Date | null => {
@@ -157,34 +209,90 @@ export function DatePicker({
         if (!isMobile) {
           // En desktop, aplicar inmediatamente
           setInputValue(format(selectedDate, DATE_FORMAT))
-          onChange?.(selectedDate)
-          setOpen(false)
+          
+          // Si hasTime está activado y hay un timeValue, combinar fecha y hora
+          let finalDate = selectedDate
+          if (hasTime && timeValue) {
+            finalDate = combineDateTime(selectedDate, timeValue, timeProps?.format || '24h')
+          }
+          
+          onChange?.(finalDate)
+          
+          // Solo cerrar si no hay time picker o si ya está completo
+          if (!hasTime) {
+            setOpen(false)
+          }
         }
       }
     },
-    [onChange, isMobile]
+    [onChange, isMobile, hasTime, timeValue, timeProps?.format]
   )
 
   // Manejar botón "Hoy"
   const handleTodayClick = useCallback(() => {
     const today = new Date()
     setSelectedDate(today)
+    
+    // Si hasTime está activado, establecer la hora actual también
+    if (hasTime) {
+      const hours = today.getHours()
+      const minutes = today.getMinutes()
+      const timeFormat = timeProps?.format || '24h'
+      
+      if (timeFormat === '12h') {
+        const period = hours >= 12 ? 'PM' : 'AM'
+        const displayHours = hours % 12 || 12
+        setTimeValue(`${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`)
+      } else {
+        setTimeValue(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`)
+      }
+    }
+    
     if (!isMobile) {
       // En desktop, aplicar inmediatamente
       setInputValue(format(today, DATE_FORMAT))
       onChange?.(today)
-      setOpen(false)
+      
+      // Solo cerrar si no hay time picker
+      if (!hasTime) {
+        setOpen(false)
+      }
     }
-  }, [onChange, isMobile])
+  }, [onChange, isMobile, hasTime, timeProps?.format])
 
+  // Manejar cambio de tiempo
+  const handleTimeChange = useCallback(
+    (newTimeValue: string) => {
+      setTimeValue(newTimeValue)
+      
+      // Si hay una fecha seleccionada, combinar fecha y hora
+      if (selectedDate && newTimeValue) {
+        const combinedDate = combineDateTime(selectedDate, newTimeValue, timeProps?.format || '24h')
+        
+        // En desktop, aplicar inmediatamente
+        if (!isMobile) {
+          onChange?.(combinedDate)
+        }
+      }
+    },
+    [selectedDate, onChange, isMobile, timeProps?.format]
+  )
+  
   // Manejar confirmación en mobile
   const handleConfirm = useCallback(() => {
     if (selectedDate) {
       setInputValue(format(selectedDate, DATE_FORMAT))
-      onChange?.(selectedDate)
+      
+      // Si hasTime está activado y hay timeValue, combinar fecha y hora
+      let finalDate = selectedDate
+      if (hasTime && timeValue) {
+        finalDate = combineDateTime(selectedDate, timeValue, timeProps?.format || '24h')
+      }
+      
+      onChange?.(finalDate)
     }
     setOpen(false)
-  }, [selectedDate, onChange])
+  }, [selectedDate, onChange, hasTime, timeValue, timeProps?.format])
 
   // Manejar cancelación en mobile
   const handleCancel = useCallback(() => {
@@ -211,6 +319,22 @@ export function DatePicker({
         className={cn('w-full', isMobile && 'max-w-sm')}
         {...calendarProps}
       />
+      
+      {/* Time Picker cuando hasTime está activado */}
+      {hasTime && (
+        <div className="w-full px-4 pb-2">
+          <TimePicker
+            value={timeValue}
+            onChange={handleTimeChange}
+            format={timeProps?.format || '24h'}
+            placeholder={timeProps?.placeholder}
+            disabled={timeProps?.disabled}
+            error={timeProps?.error}
+            errorMessage={timeProps?.errorMessage}
+          />
+        </div>
+      )}
+      
       <div className="flex justify-center pb-3 px-4">
         <Button
           type="button"
