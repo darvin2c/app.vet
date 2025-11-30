@@ -5,14 +5,13 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/ui/form'
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentForm } from './appointment-form'
 import { useAppointmentCreate } from '@/hooks/appointments/use-appointment-create'
@@ -95,15 +94,15 @@ export function AppointmentCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-3xl">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="!w-full !max-w-3xl overflow-y-auto">
         <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Nueva Cita</DrawerTitle>
-            <DrawerDescription>
+          <SheetHeader>
+            <SheetTitle>Nueva Cita</SheetTitle>
+            <SheetDescription>
               Programa una nueva cita médica
-            </DrawerDescription>
-          </DrawerHeader>
+            </SheetDescription>
+          </SheetHeader>
 
           <div className="px-4">
             <Form {...form}>
@@ -116,7 +115,7 @@ export function AppointmentCreate({
             </Form>
           </div>
 
-          <DrawerFooter>
+          <SheetFooter>
             <ResponsiveButton
               type="submit"
               onClick={form.handleSubmit(onSubmit as any)}
@@ -125,18 +124,17 @@ export function AppointmentCreate({
             >
               {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
             </ResponsiveButton>
-            <DrawerClose asChild>
-              <ResponsiveButton
-                variant="outline"
-                disabled={createAppointment.isPending}
-                icon={X}
-              >
-                Cancelar
-              </ResponsiveButton>
-            </DrawerClose>
-          </DrawerFooter>
+            <ResponsiveButton
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={createAppointment.isPending}
+              icon={X}
+            >
+              Cancelar
+            </ResponsiveButton>
+          </SheetFooter>
         </CanAccess>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }

@@ -5,13 +5,13 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/ui/form'
 import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+} from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AppointmentForm } from './appointment-form'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
@@ -80,15 +80,15 @@ export function AppointmentEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-2xl">
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetContent className="!w-full !max-w-2xl overflow-y-auto">
         <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Cita</DrawerTitle>
-            <DrawerDescription>
+          <SheetHeader>
+            <SheetTitle>Editar Cita</SheetTitle>
+            <SheetDescription>
               Modifica los datos de la cita médica
-            </DrawerDescription>
-          </DrawerHeader>
+            </SheetDescription>
+          </SheetHeader>
           <div className="px-4 pb-4">
             <Form {...form}>
               <form
@@ -99,7 +99,7 @@ export function AppointmentEdit({
               </form>
             </Form>
           </div>
-          <DrawerFooter>
+          <SheetFooter>
             <ResponsiveButton
               variant="outline"
               onClick={() => onOpenChange(false)}
@@ -116,9 +116,9 @@ export function AppointmentEdit({
             >
               Actualizar Cita
             </ResponsiveButton>
-          </DrawerFooter>
+          </SheetFooter>
         </CanAccess>
-      </DrawerContent>
-    </Drawer>
+      </SheetContent>
+    </Sheet>
   )
 }
