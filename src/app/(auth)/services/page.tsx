@@ -1,15 +1,15 @@
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
-import { ProductCreateButton } from '@/components/products/product-create-button'
+import { ServiceImportButton } from '@/components/services/service-import-button'
+import { ServiceCreateButton } from '@/components/services/service-create-button'
+import { ServicesList } from '@/components/services/services-list'
 import { SearchInput } from '@/components/ui/search-input'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { FilterConfig } from '@/components/ui/filters'
 import { OrderBy } from '@/components/ui/order-by'
 import { Filters } from '@/components/ui/filters'
 import PageBase from '@/components/page-base'
-import { ServiceImportButton } from '@/components/services/service-import-button'
-import { ServicesList } from '@/components/services/services-list'
 
-export default function ProductsPage() {
+export default function ServicesPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
@@ -19,27 +19,14 @@ export default function ProductsPage() {
       operator: 'eq',
     },
     {
-      field: 'category_id',
-      label: 'Categoría',
-      operator: 'eq',
-      component: ProductCategorySelect,
-    },
-    {
-      field: 'unit_id',
-      label: 'Unidad',
-      placeholder: 'Selecciona unidad',
-      operator: 'eq',
-      options: [],
-    },
-    {
-      field: 'min_stock',
-      label: 'Stock mínimo',
-      placeholder: 'Stock mínimo',
+      field: 'created_at',
+      label: 'Fecha de creación',
+      placeholder: 'Selecciona rango de fechas',
       operator: 'gte',
     },
     {
-      field: 'created_at',
-      label: 'Fecha de creación',
+      field: 'updated_at',
+      label: 'Fecha de actualización',
       placeholder: 'Selecciona rango de fechas',
       operator: 'gte',
     },
@@ -48,21 +35,19 @@ export default function ProductsPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
-      { field: 'sku', label: 'SKU', sortable: true },
-      { field: 'category_id', label: 'Categoría', sortable: true },
-      { field: 'unit_id', label: 'Unidad', sortable: true },
+      { field: 'created_at', label: 'Fecha de creación', sortable: true },
       { field: 'is_active', label: 'Estado', sortable: true },
     ],
   }
 
   return (
     <PageBase
-      title="Productos"
-      subtitle="Gestiona el catálogo de productos"
+      title="Servicios"
+      subtitle="Gestiona el catálogo de servicios"
       search={
         <SearchInput
           hasSidebarTriggerLeft
-          placeholder="Buscar producto"
+          placeholder="Buscar servicio"
           size="lg"
           suffix={
             <>
@@ -75,7 +60,7 @@ export default function ProductsPage() {
                 triggerProps={{ variant: 'outline' }}
               />
               <ServiceImportButton variant={'outline'} />
-              <ProductCreateButton variant={'outline'} />
+              <ServiceCreateButton variant={'outline'} />
             </>
           }
         />
