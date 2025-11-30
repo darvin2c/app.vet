@@ -955,7 +955,7 @@ export function TimePicker({
 
   if (isMobile) {
     return (
-      <div>
+      <>
         {inputComponent}
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetContent side="bottom" className="h-auto">
@@ -976,20 +976,20 @@ export function TimePicker({
             {inputError || errorMessage}
           </p>
         )}
-      </div>
+      </>
     )
   }
 
   // Para desktop
   return (
-    <div>
+    <>
       <Popover open={open} onOpenChange={setOpen}>
         {inputComponent}
         <PopoverContent className="w-auto p-0" align="start">
           {content}
         </PopoverContent>
       </Popover>
-    </div>
+    </>
   )
 }
 

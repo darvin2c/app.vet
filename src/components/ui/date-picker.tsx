@@ -31,6 +31,7 @@ import {
 import { useIsMobile } from '@/hooks/use-mobile'
 import { DayPicker } from 'react-day-picker'
 import { TimePicker, type TimePickerProps } from '@/components/ui/time-picker'
+import { ButtonGroup } from './button-group'
 
 const DATE_FORMAT = 'dd/MM/yyyy'
 
@@ -320,20 +321,7 @@ export function DatePicker({
         {...calendarProps}
       />
       
-      {/* Time Picker cuando hasTime está activado */}
-      {hasTime && (
-        <div className="w-full px-4 pb-2">
-          <TimePicker
-            value={timeValue}
-            onChange={handleTimeChange}
-            format={timeProps?.format || '24h'}
-            placeholder={timeProps?.placeholder}
-            disabled={timeProps?.disabled}
-            error={timeProps?.error}
-            errorMessage={timeProps?.errorMessage}
-          />
-        </div>
-      )}
+
       
       <div className="flex justify-center pb-3 px-4">
         <Button
@@ -350,43 +338,30 @@ export function DatePicker({
   )
 
   const inputGroupContent = (
-    <InputGroup
-      data-disabled={props.disabled}
-      className={cn(
-        error && 'border-destructive ring-destructive/20',
-        props.disabled && 'opacity-50'
-      )}
-    >
-      <InputGroupInput
-        ref={maskedInputRef}
-        type="text"
-        placeholder={DATE_FORMAT}
-        value={inputValue}
-        onChange={handleInputChange}
-        onBlur={handleInputBlur}
-        aria-invalid={!!error}
+    <ButtonGroup>
+      <InputGroup
+        data-disabled={props.disabled}
         className={cn(
-          'font-mono',
-          error && 'text-destructive placeholder:text-destructive/50'
+          error && 'border-destructive ring-destructive/20',
+          props.disabled && 'opacity-50'
         )}
-        {...props}
-      />
-
-      <InputGroupAddon align="inline-end">
-        {isMobile ? (
-          <InputGroupButton
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            disabled={props.disabled}
-            onClick={handleCalendarButtonClick}
-            title="Abrir calendario"
-            aria-label="Abrir calendario"
-          >
-            <CalendarIcon className="h-4 w-4" />
-          </InputGroupButton>
-        ) : (
-          <PopoverTrigger asChild>
+      >
+        <InputGroupInput
+          ref={maskedInputRef}
+          type="text"
+          placeholder={DATE_FORMAT}
+          value={inputValue}
+          onChange={handleInputChange}
+          onBlur={handleInputBlur}
+          aria-invalid={!!error}
+          className={cn(
+            'font-mono',
+            error && 'text-destructive placeholder:text-destructive/50'
+          )}
+          {...props}
+        />
+        <InputGroupAddon align="inline-end">
+          {isMobile ? (
             <InputGroupButton
               type="button"
               variant="ghost"
@@ -398,14 +373,41 @@ export function DatePicker({
             >
               <CalendarIcon className="h-4 w-4" />
             </InputGroupButton>
-          </PopoverTrigger>
+          ) : (
+            <PopoverTrigger asChild>
+              <InputGroupButton
+                type="button"
+                variant="ghost"
+                size="icon-xs"
+                disabled={props.disabled}
+                onClick={handleCalendarButtonClick}
+                title="Abrir calendario"
+                aria-label="Abrir calendario"
+              >
+                <CalendarIcon className="h-4 w-4" />
+              </InputGroupButton>
+            </PopoverTrigger>
+          )}
+        </InputGroupAddon>
+      </InputGroup>
+        {hasTime && (
+          <>
+              <TimePicker
+                value={timeValue}
+                onChange={handleTimeChange}
+                format={timeProps?.format || '24h'}
+                placeholder={timeProps?.placeholder}
+                disabled={timeProps?.disabled || props.disabled}
+                error={!!timeProps?.error}
+                errorMessage={timeProps?.errorMessage}
+              />
+          </>
         )}
-      </InputGroupAddon>
-    </InputGroup>
+    </ButtonGroup>
   )
 
   return (
-    <div className={cn('relative', props.className)}>
+    <>
       {/* InputGroup común para mobile y desktop */}
       {isMobile ? (
         inputGroupContent
@@ -449,7 +451,7 @@ export function DatePicker({
           </SheetContent>
         </Sheet>
       )}
-    </div>
+    </>
   )
 }
 
