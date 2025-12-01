@@ -14,9 +14,11 @@ import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
 import { AppointmentStatusGrid } from '@/components/appointments/appointment-status-grid'
 
-import Calendar20 from '@/components/ui/calendar-20'
 import { useAvailableTimeSlots } from '@/hooks/appointments/use-available-time-slots'
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
+import DatePicker from '../ui/date-picker'
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '../ui/input-group'
+import { addMinutes } from 'date-fns'
 
 interface AppointmentFormProps {
   disablePetSelection?: boolean
@@ -99,24 +101,55 @@ export function AppointmentForm({
         <Field data-invalid={!!errors.scheduled_start}>
           <FieldLabel htmlFor="scheduled_start">Fecha y Horario *</FieldLabel>
           <FieldContent>
-            <Calendar20
-              startValue={
-                watch('scheduled_start')
-                  ? new Date(watch('scheduled_start'))
-                  : undefined
-              }
-              endValue={
-                watch('scheduled_end')
-                  ? new Date(watch('scheduled_end'))
-                  : undefined
-              }
-              onStartChange={(date) =>
-                setValue('scheduled_start', date?.toISOString() || '')
-              }
-              onEndChange={(date) =>
-                setValue('scheduled_end', date?.toISOString() || '')
-              }
-            />
+            <div className="flex  gap-2">
+              <DatePicker
+                value={watch('scheduled_start')}
+                hasTime
+                onChange={(value) => {
+                  if (value) {
+                    setValue('scheduled_start', value.toISOString())
+                    const duration = parseInt(
+                      (
+                        document.getElementById(
+                          'scheduled_duration'
+                        ) as HTMLInputElement
+                      )?.value || '60'
+                    )
+                    const endDate = addMinutes(value, duration)
+                    setValue('scheduled_end', endDate.toISOString())
+                  }
+                }}
+              />
+              <InputGroup
+                  className="max-w-30"
+              >
+                <InputGroupInput
+                  id="scheduled_duration"
+                  list="duration"
+                  placeholder="duración"
+                  defaultValue="60"
+                  onChange={(e) => {
+                    const duration = parseInt(e.target.value) || 0
+                    const startDate = watch('scheduled_start')
+                    if (startDate && duration > 0) {
+                      const start = new Date(startDate)
+                      const end = addMinutes(start, duration)
+                      setValue('scheduled_end', end.toISOString())
+                    }
+                  }}
+                />
+                <datalist id="duration">
+                  <option value="15">15 minutos</option>
+                  <option value="30">30 minutos</option>
+                  <option value="45">45 minutos</option>
+                  <option value="60">1 hora</option>
+                  <option value="75">1 hora y 15 minutos</option>
+                  <option value="90">1 hora y 30 minutos</option>
+                  <option value="120">2 horas</option>
+                </datalist>
+                <InputGroupAddon align='inline-end'>mins</InputGroupAddon>
+              </InputGroup>
+            </div>
             <FieldError errors={[errors.scheduled_start]} />
           </FieldContent>
         </Field>
