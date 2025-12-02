@@ -101,7 +101,11 @@ export function StaffSelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
@@ -112,7 +116,7 @@ export function StaffSelect({
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {staff.map((member: Staff) => (

@@ -110,11 +110,11 @@ export function OrderPrint({
 
   const computedSubtotal = Array.isArray(order.order_items)
     ? order.order_items.reduce((sum: number, it: any) => {
-      const qty = it.quantity ?? 0
-      const unit = it.unit_price ?? 0
-      const line = it.total ?? qty * unit
-      return sum + line
-    }, 0)
+        const qty = it.quantity ?? 0
+        const unit = it.unit_price ?? 0
+        const line = it.total ?? qty * unit
+        return sum + line
+      }, 0)
     : subtotal
   const displaySubtotal = order.subtotal ?? computedSubtotal
   const displayTaxAmount = order.tax_amount ?? 0
@@ -125,20 +125,33 @@ export function OrderPrint({
   // Clases específicas por vista
   const viewClasses = {
     full: 'max-w-4xl mx-auto p-8 sm:p-12 lg:p-16 text-sm leading-relaxed print:p-6 print:text-xs print:max-w-none print:mx-0',
-    ticket: 'max-w-[80mm] mx-auto p-4 text-xs leading-tight bg-white text-black',
+    ticket:
+      'max-w-[80mm] mx-auto p-4 text-xs leading-tight bg-white text-black',
   }
 
   return (
     <div className="w-full h-full flex flex-col">
       {/* Controles de vista e impresión */}
       <div className="flex justify-between items-center mb-4 p-4 bg-muted/50 rounded-lg print-hide shrink-0">
-        <Tabs value={currentView} onValueChange={(v) => setCurrentView(v as 'full' | 'ticket')} className="w-auto">
+        <Tabs
+          value={currentView}
+          onValueChange={(v) => setCurrentView(v as 'full' | 'ticket')}
+          className="w-auto"
+        >
           <TabsList>
-            <TabsTrigger value="full" disabled={isPrinting} className="flex items-center gap-2">
+            <TabsTrigger
+              value="full"
+              disabled={isPrinting}
+              className="flex items-center gap-2"
+            >
               <FileText className="h-4 w-4" />
               Vista Completa
             </TabsTrigger>
-            <TabsTrigger value="ticket" disabled={isPrinting} className="flex items-center gap-2">
+            <TabsTrigger
+              value="ticket"
+              disabled={isPrinting}
+              className="flex items-center gap-2"
+            >
               <Receipt className="h-4 w-4" />
               Vista Ticket
             </TabsTrigger>
@@ -158,7 +171,10 @@ export function OrderPrint({
       <ScrollArea className="flex-1 border rounded-md bg-background">
         <div className="p-4 min-h-full flex justify-center">
           {/* Contenido de impresión */}
-          <div ref={printRef} className={cn(baseClasses, viewClasses[currentView])}>
+          <div
+            ref={printRef}
+            className={cn(baseClasses, viewClasses[currentView])}
+          >
             {currentView === 'ticket' ? (
               // TICKET VIEW
               <div className="flex flex-col gap-3">
@@ -169,14 +185,25 @@ export function OrderPrint({
                     </h1>
                   )}
                   {tenantAddress && (
-                    <p className="text-[10px] text-muted-foreground mt-1">{tenantAddress}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">
+                      {tenantAddress}
+                    </p>
                   )}
                   {tenantPhone && (
-                    <p className="text-[10px] text-muted-foreground">Tel: {tenantPhone}</p>
+                    <p className="text-[10px] text-muted-foreground">
+                      Tel: {tenantPhone}
+                    </p>
                   )}
                   <div className="mt-2 text-[11px]">
-                    <p>Orden: <span className="font-mono font-bold">{order.order_number}</span></p>
-                    <p><DateDisplay value={order.created_at} /></p>
+                    <p>
+                      Orden:{' '}
+                      <span className="font-mono font-bold">
+                        {order.order_number}
+                      </span>
+                    </p>
+                    <p>
+                      <DateDisplay value={order.created_at} />
+                    </p>
                   </div>
                 </div>
 
@@ -184,9 +211,13 @@ export function OrderPrint({
                 {(customerName || customerDoc) && (
                   <div className="text-[11px] space-y-0.5 border-b pb-3 border-border">
                     <p className="font-semibold text-xs">Cliente:</p>
-                    <p className="uppercase">{customerName || 'Cliente General'}</p>
+                    <p className="uppercase">
+                      {customerName || 'Cliente General'}
+                    </p>
                     {customerDoc && <p>DOC: {customerDoc}</p>}
-                    {customerAddress && <p className="truncate">{customerAddress}</p>}
+                    {customerAddress && (
+                      <p className="truncate">{customerAddress}</p>
+                    )}
                   </div>
                 )}
 
@@ -198,7 +229,8 @@ export function OrderPrint({
                     <div className="col-span-4 text-right">Total</div>
                   </div>
                   <div className="space-y-1.5">
-                    {Array.isArray(order.order_items) && order.order_items.length > 0 ? (
+                    {Array.isArray(order.order_items) &&
+                    order.order_items.length > 0 ? (
                       order.order_items.map((it: any, idx: number) => {
                         const qty = it.quantity ?? 0
                         const unit = it.unit_price ?? 0
@@ -210,7 +242,9 @@ export function OrderPrint({
                             </div>
                             <div className="grid grid-cols-12 text-muted-foreground">
                               <div className="col-span-6"></div>
-                              <div className="col-span-2 text-center">{qty}</div>
+                              <div className="col-span-2 text-center">
+                                {qty}
+                              </div>
                               <div className="col-span-4 text-right font-medium text-foreground">
                                 {formatCurrency.format(line)}
                               </div>
@@ -255,10 +289,17 @@ export function OrderPrint({
                 {/* Pagos */}
                 {order.payments && order.payments.length > 0 && (
                   <div className="border-t border-border pt-2 mt-2">
-                    <p className="text-[10px] font-bold mb-1 uppercase text-muted-foreground">Pagos</p>
+                    <p className="text-[10px] font-bold mb-1 uppercase text-muted-foreground">
+                      Pagos
+                    </p>
                     {order.payments.map((p: any) => (
-                      <div key={p.id} className="flex justify-between text-[10px]">
-                        <span><DateDisplay value={p.payment_date} /></span>
+                      <div
+                        key={p.id}
+                        className="flex justify-between text-[10px]"
+                      >
+                        <span>
+                          <DateDisplay value={p.payment_date} />
+                        </span>
                         <span>{p.payment_method}</span>
                         <span>{formatCurrency.format(p.amount)}</span>
                       </div>
@@ -293,7 +334,9 @@ export function OrderPrint({
                   <div className="flex gap-4">
                     <div>
                       {tenantName && (
-                        <h1 className="text-2xl font-bold tracking-tight text-foreground">{tenantName}</h1>
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground">
+                          {tenantName}
+                        </h1>
                       )}
                       <div className="text-sm text-muted-foreground mt-2 space-y-1">
                         {tenantAddress && <p>{tenantAddress}</p>}
@@ -311,7 +354,9 @@ export function OrderPrint({
                     </p>
                     <div className="mt-4 text-sm">
                       <p className="text-muted-foreground">Fecha de Emisión</p>
-                      <p className="font-medium"><DateDisplay value={order.created_at} /></p>
+                      <p className="font-medium">
+                        <DateDisplay value={order.created_at} />
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -326,10 +371,22 @@ export function OrderPrint({
                       <p className="font-semibold text-lg text-foreground">
                         {customerName || 'Cliente General'}
                       </p>
-                      {customerDoc && <p className="text-muted-foreground">ID: {customerDoc}</p>}
-                      {customerAddress && <p className="text-muted-foreground">{customerAddress}</p>}
-                      {customerPhone && <p className="text-muted-foreground">{customerPhone}</p>}
-                      {customerEmail && <p className="text-muted-foreground">{customerEmail}</p>}
+                      {customerDoc && (
+                        <p className="text-muted-foreground">
+                          ID: {customerDoc}
+                        </p>
+                      )}
+                      {customerAddress && (
+                        <p className="text-muted-foreground">
+                          {customerAddress}
+                        </p>
+                      )}
+                      {customerPhone && (
+                        <p className="text-muted-foreground">{customerPhone}</p>
+                      )}
+                      {customerEmail && (
+                        <p className="text-muted-foreground">{customerEmail}</p>
+                      )}
                     </div>
                   </div>
                   <div className="bg-muted/30 p-4 rounded-lg border border-border/50">
@@ -339,15 +396,28 @@ export function OrderPrint({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Estado</span>
-                        <span className="font-medium capitalize">{order.status}</span>
+                        <span className="font-medium capitalize">
+                          {order.status}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Total Orden</span>
-                        <span className="font-bold">{formatCurrency.format(total)}</span>
+                        <span className="text-muted-foreground">
+                          Total Orden
+                        </span>
+                        <span className="font-bold">
+                          {formatCurrency.format(total)}
+                        </span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-muted-foreground">Balance Pendiente</span>
-                        <span className={cn("font-bold", balance > 0 ? "text-red-600" : "text-green-600")}>
+                        <span className="text-muted-foreground">
+                          Balance Pendiente
+                        </span>
+                        <span
+                          className={cn(
+                            'font-bold',
+                            balance > 0 ? 'text-red-600' : 'text-green-600'
+                          )}
+                        >
                           {formatCurrency.format(balance)}
                         </span>
                       </div>
@@ -376,7 +446,7 @@ export function OrderPrint({
                     </thead>
                     <tbody className="divide-y divide-border">
                       {Array.isArray(order.order_items) &&
-                        order.order_items.length > 0 ? (
+                      order.order_items.length > 0 ? (
                         order.order_items.map((it: any, idx: number) => {
                           const qty = it.quantity ?? 0
                           const unit = it.unit_price ?? 0
@@ -385,10 +455,14 @@ export function OrderPrint({
                             <tr key={it.id ?? idx}>
                               <td className="py-4 pr-4">
                                 <p className="font-medium text-foreground">
-                                  {it.description ?? it.name ?? 'Item sin nombre'}
+                                  {it.description ??
+                                    it.name ??
+                                    'Item sin nombre'}
                                 </p>
                                 {it.product?.sku && (
-                                  <p className="text-xs text-muted-foreground mt-0.5">SKU: {it.product.sku}</p>
+                                  <p className="text-xs text-muted-foreground mt-0.5">
+                                    SKU: {it.product.sku}
+                                  </p>
                                 )}
                               </td>
                               <td className="py-4 text-center text-muted-foreground">
@@ -440,17 +514,29 @@ export function OrderPrint({
                           <table className="w-full text-xs">
                             <thead className="bg-muted/50">
                               <tr>
-                                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Fecha</th>
-                                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Método</th>
-                                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Monto</th>
+                                <th className="px-3 py-2 text-left font-medium text-muted-foreground">
+                                  Fecha
+                                </th>
+                                <th className="px-3 py-2 text-left font-medium text-muted-foreground">
+                                  Método
+                                </th>
+                                <th className="px-3 py-2 text-right font-medium text-muted-foreground">
+                                  Monto
+                                </th>
                               </tr>
                             </thead>
                             <tbody className="divide-y divide-border">
                               {order.payments.map((p: any) => (
                                 <tr key={p.id}>
-                                  <td className="px-3 py-2"><DateDisplay value={p.payment_date} /></td>
-                                  <td className="px-3 py-2 capitalize">{p.payment_method}</td>
-                                  <td className="px-3 py-2 text-right">{formatCurrency.format(p.amount)}</td>
+                                  <td className="px-3 py-2">
+                                    <DateDisplay value={p.payment_date} />
+                                  </td>
+                                  <td className="px-3 py-2 capitalize">
+                                    {p.payment_method}
+                                  </td>
+                                  <td className="px-3 py-2 text-right">
+                                    {formatCurrency.format(p.amount)}
+                                  </td>
                                 </tr>
                               ))}
                             </tbody>
@@ -464,11 +550,17 @@ export function OrderPrint({
                     <div className="bg-muted/10 p-6 rounded-lg border border-border space-y-3">
                       <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Subtotal</span>
-                        <span className="font-medium">{formatCurrency.format(displaySubtotal)}</span>
+                        <span className="font-medium">
+                          {formatCurrency.format(displaySubtotal)}
+                        </span>
                       </div>
                       <div className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">Impuestos {tax > 0 && `(${tax}%)`}</span>
-                        <span className="font-medium">{formatCurrency.format(displayTaxAmount)}</span>
+                        <span className="text-muted-foreground">
+                          Impuestos {tax > 0 && `(${tax}%)`}
+                        </span>
+                        <span className="font-medium">
+                          {formatCurrency.format(displayTaxAmount)}
+                        </span>
                       </div>
                       <Separator className="my-2" />
                       <div className="flex justify-between text-lg font-bold">
@@ -481,7 +573,11 @@ export function OrderPrint({
                       </div>
                       <div className="flex justify-between text-base font-medium pt-1">
                         <span>Balance Pendiente</span>
-                        <span className={cn(balance > 0 ? "text-red-600" : "text-green-600")}>
+                        <span
+                          className={cn(
+                            balance > 0 ? 'text-red-600' : 'text-green-600'
+                          )}
+                        >
                           {formatCurrency.format(balance)}
                         </span>
                       </div>
@@ -493,9 +589,12 @@ export function OrderPrint({
                 <div className="mt-auto pt-8 border-t border-border">
                   <div className="flex justify-between items-end">
                     <div className="text-sm text-muted-foreground max-w-md">
-                      <p className="font-medium text-foreground mb-1">Términos y Condiciones</p>
+                      <p className="font-medium text-foreground mb-1">
+                        Términos y Condiciones
+                      </p>
                       <p className="text-xs">
-                        Gracias por su preferencia. Para cualquier consulta sobre esta orden, por favor contáctenos.
+                        Gracias por su preferencia. Para cualquier consulta
+                        sobre esta orden, por favor contáctenos.
                       </p>
                     </div>
                     <img
@@ -515,6 +614,6 @@ export function OrderPrint({
           </div>
         </div>
       </ScrollArea>
-    </div >
+    </div>
   )
 }

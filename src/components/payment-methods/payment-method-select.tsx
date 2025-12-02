@@ -111,18 +111,24 @@ export function PaymentMethodSelect({
             />
             <CommandList>
               <CommandEmpty>
-                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                {isLoading ? (
+                  <div className="min-h-[100px]">
+                    <Spinner />
+                  </div>
+                ) : (
                   <>
                     <Empty>
                       <EmptyHeader>
                         <EmptyMedia>
                           <CreditCard className="w-10 h-10 text-muted-foreground" />
                         </EmptyMedia>
-                        <EmptyTitle>No se encontraron métodos de pago</EmptyTitle>
+                        <EmptyTitle>
+                          No se encontraron métodos de pago
+                        </EmptyTitle>
                       </EmptyHeader>
                     </Empty>
                   </>
-                }
+                )}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
                 {filteredMethods.map((method) => (

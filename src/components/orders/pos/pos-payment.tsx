@@ -10,7 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { PosPaymentMethodSelector } from './pos-payment-method-selector'
 import { PosPaymentMethodSelectorButton } from './pos-payment-method-selector-button'
 
-export function POSPayment({ }: {}) {
+export function POSPayment({}: {}) {
   const { order, payments } = usePOSStore()
 
   // Calcular valores desde el store

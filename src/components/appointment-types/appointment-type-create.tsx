@@ -14,9 +14,7 @@ import {
 } from '@/components/ui/sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { Form } from '../ui/form'
-import {
-  appointmentTypeCreateSchema,
-} from '@/schemas/appointment-types.schema'
+import { appointmentTypeCreateSchema } from '@/schemas/appointment-types.schema'
 import CanAccess from '@/components/ui/can-access'
 
 interface AppointmentTypeCreateProps {

@@ -36,14 +36,18 @@ import { ButtonGroup } from './button-group'
 const DATE_FORMAT = 'dd/MM/yyyy'
 
 // Función auxiliar para combinar fecha y hora
-function combineDateTime(date: Date, timeString: string, format: '12h' | '24h'): Date {
+function combineDateTime(
+  date: Date,
+  timeString: string,
+  format: '12h' | '24h'
+): Date {
   const timeParts = timeString.match(/(\d{1,2}):(\d{2})(?:\s*(AM|PM))?/i)
   if (!timeParts) return date
-  
+
   let hours = parseInt(timeParts[1], 10)
   const minutes = parseInt(timeParts[2], 10)
   const period = timeParts[3]?.toUpperCase()
-  
+
   // Convertir de 12h a 24h si es necesario
   if (format === '12h' && period) {
     if (period === 'PM' && hours !== 12) {
@@ -52,12 +56,11 @@ function combineDateTime(date: Date, timeString: string, format: '12h' | '24h'):
       hours = 0
     }
   }
-  
+
   const newDate = new Date(date)
   newDate.setHours(hours, minutes, 0, 0)
   return newDate
 }
-
 
 export interface DatePickerProps
   extends Omit<React.ComponentProps<'input'>, 'value' | 'onChange'> {
@@ -80,12 +83,12 @@ export interface DatePickerProps
   > & {
     buttonVariant?: React.ComponentProps<typeof Button>['variant']
   }
-  
+
   /**
    * Mostrar selector de tiempo junto con la fecha
    */
   hasTime?: boolean
-  
+
   /**
    * Props para el TimePicker
    */
@@ -141,13 +144,17 @@ export function DatePicker({
         const hours = dateValue.getHours()
         const minutes = dateValue.getMinutes()
         const timeFormat = timeProps?.format || '24h'
-        
+
         if (timeFormat === '12h') {
           const period = hours >= 12 ? 'PM' : 'AM'
           const displayHours = hours % 12 || 12
-          setTimeValue(`${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`)
+          setTimeValue(
+            `${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`
+          )
         } else {
-          setTimeValue(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`)
+          setTimeValue(
+            `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+          )
         }
       }
     } else {
@@ -210,15 +217,19 @@ export function DatePicker({
         if (!isMobile) {
           // En desktop, aplicar inmediatamente
           setInputValue(format(selectedDate, DATE_FORMAT))
-          
+
           // Si hasTime está activado y hay un timeValue, combinar fecha y hora
           let finalDate = selectedDate
           if (hasTime && timeValue) {
-            finalDate = combineDateTime(selectedDate, timeValue, timeProps?.format || '24h')
+            finalDate = combineDateTime(
+              selectedDate,
+              timeValue,
+              timeProps?.format || '24h'
+            )
           }
-          
+
           onChange?.(finalDate)
-          
+
           // Solo cerrar si no hay time picker o si ya está completo
           if (!hasTime) {
             setOpen(false)
@@ -233,27 +244,31 @@ export function DatePicker({
   const handleTodayClick = useCallback(() => {
     const today = new Date()
     setSelectedDate(today)
-    
+
     // Si hasTime está activado, establecer la hora actual también
     if (hasTime) {
       const hours = today.getHours()
       const minutes = today.getMinutes()
       const timeFormat = timeProps?.format || '24h'
-      
+
       if (timeFormat === '12h') {
         const period = hours >= 12 ? 'PM' : 'AM'
         const displayHours = hours % 12 || 12
-        setTimeValue(`${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`)
+        setTimeValue(
+          `${String(displayHours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} ${period}`
+        )
       } else {
-        setTimeValue(`${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`)
+        setTimeValue(
+          `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+        )
       }
     }
-    
+
     if (!isMobile) {
       // En desktop, aplicar inmediatamente
       setInputValue(format(today, DATE_FORMAT))
       onChange?.(today)
-      
+
       // Solo cerrar si no hay time picker
       if (!hasTime) {
         setOpen(false)
@@ -265,11 +280,15 @@ export function DatePicker({
   const handleTimeChange = useCallback(
     (newTimeValue: string) => {
       setTimeValue(newTimeValue)
-      
+
       // Si hay una fecha seleccionada, combinar fecha y hora
       if (selectedDate && newTimeValue) {
-        const combinedDate = combineDateTime(selectedDate, newTimeValue, timeProps?.format || '24h')
-        
+        const combinedDate = combineDateTime(
+          selectedDate,
+          newTimeValue,
+          timeProps?.format || '24h'
+        )
+
         // En desktop, aplicar inmediatamente
         if (!isMobile) {
           onChange?.(combinedDate)
@@ -278,18 +297,22 @@ export function DatePicker({
     },
     [selectedDate, onChange, isMobile, timeProps?.format]
   )
-  
+
   // Manejar confirmación en mobile
   const handleConfirm = useCallback(() => {
     if (selectedDate) {
       setInputValue(format(selectedDate, DATE_FORMAT))
-      
+
       // Si hasTime está activado y hay timeValue, combinar fecha y hora
       let finalDate = selectedDate
       if (hasTime && timeValue) {
-        finalDate = combineDateTime(selectedDate, timeValue, timeProps?.format || '24h')
+        finalDate = combineDateTime(
+          selectedDate,
+          timeValue,
+          timeProps?.format || '24h'
+        )
       }
-      
+
       onChange?.(finalDate)
     }
     setOpen(false)
@@ -320,9 +343,7 @@ export function DatePicker({
         className={cn('w-full', isMobile && 'max-w-sm')}
         {...calendarProps}
       />
-      
 
-      
       <div className="flex justify-center pb-3 px-4">
         <Button
           type="button"
@@ -390,19 +411,19 @@ export function DatePicker({
           )}
         </InputGroupAddon>
       </InputGroup>
-        {hasTime && (
-          <>
-              <TimePicker
-                value={timeValue}
-                onChange={handleTimeChange}
-                format={timeProps?.format || '24h'}
-                placeholder={timeProps?.placeholder}
-                disabled={timeProps?.disabled || props.disabled}
-                error={!!timeProps?.error}
-                errorMessage={timeProps?.errorMessage}
-              />
-          </>
-        )}
+      {hasTime && (
+        <>
+          <TimePicker
+            value={timeValue}
+            onChange={handleTimeChange}
+            format={timeProps?.format || '24h'}
+            placeholder={timeProps?.placeholder}
+            disabled={timeProps?.disabled || props.disabled}
+            error={!!timeProps?.error}
+            errorMessage={timeProps?.errorMessage}
+          />
+        </>
+      )}
     </ButtonGroup>
   )
 

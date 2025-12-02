@@ -95,7 +95,11 @@ export function SupplierSelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
@@ -106,7 +110,7 @@ export function SupplierSelect({
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {suppliers.map((supplier: Supplier) => (

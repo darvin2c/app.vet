@@ -100,7 +100,11 @@ export function UserSelect({
             />
             <CommandList>
               <CommandEmpty>
-                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                {isLoading ? (
+                  <div className="min-h-[100px]">
+                    <Spinner />
+                  </div>
+                ) : (
                   <>
                     <Empty>
                       <EmptyHeader>
@@ -111,7 +115,7 @@ export function UserSelect({
                       </EmptyHeader>
                     </Empty>
                   </>
-                }
+                )}
               </CommandEmpty>
               <CommandGroup className="max-h-64 overflow-auto">
                 {users.map((user: UserWithRole) => (

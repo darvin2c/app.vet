@@ -1,12 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Check,
-  ChevronsUpDown,
-  GraduationCap,
-  X,
-} from 'lucide-react'
+import { Check, ChevronsUpDown, GraduationCap, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
@@ -141,18 +136,24 @@ export function SpecialtySelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
                           <EmptyMedia>
                             <GraduationCap className="w-10 h-10 text-muted-foreground" />
                           </EmptyMedia>
-                          <EmptyTitle>No se encontraron especialidades</EmptyTitle>
+                          <EmptyTitle>
+                            No se encontraron especialidades
+                          </EmptyTitle>
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {specialties.map((specialty: Specialty) => (

@@ -1,4 +1,3 @@
-
 // TODO: Estos enums no existen en la base de datos actual
 // type TreatmentStatus = Database['public']['Enums']['treatment_status']
 // type TreatmentType = Database['public']['Enums']['treatment_type']

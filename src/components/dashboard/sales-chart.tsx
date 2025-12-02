@@ -11,7 +11,13 @@ import {
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 type Point = { date: string; value: number }
 
@@ -45,16 +51,19 @@ export function SalesChart() {
     <Card className="shadow-sm">
       <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
         <div className="space-y-1">
-          <CardTitle className="text-base font-medium">Ventas Totales</CardTitle>
+          <CardTitle className="text-base font-medium">
+            Ventas Totales
+          </CardTitle>
           <p className="text-2xl font-bold">
-            S/ {totalSales.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
+            S/{' '}
+            {totalSales.toLocaleString('es-PE', { minimumFractionDigits: 2 })}
           </p>
           <p className="text-xs text-muted-foreground">
             +12.5% respecto al periodo anterior
           </p>
         </div>
         <div className="flex items-center gap-2">
-           <Select value={range} onValueChange={(v) => setRange(v as any)}>
+          <Select value={range} onValueChange={(v) => setRange(v as any)}>
             <SelectTrigger className="w-[100px] h-8 text-xs">
               <SelectValue />
             </SelectTrigger>
@@ -73,27 +82,38 @@ export function SalesChart() {
           }}
           className="aspect-[4/2] w-full"
         >
-          <AreaChart data={data} margin={{ left: 0, right: 0, top: 0, bottom: 0 }}>
+          <AreaChart
+            data={data}
+            margin={{ left: 0, right: 0, top: 0, bottom: 0 }}
+          >
             <defs>
               <linearGradient id="fillSales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--color-sales)" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="var(--color-sales)" stopOpacity={0} />
+                <stop
+                  offset="5%"
+                  stopColor="var(--color-sales)"
+                  stopOpacity={0.3}
+                />
+                <stop
+                  offset="95%"
+                  stopColor="var(--color-sales)"
+                  stopOpacity={0}
+                />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" vertical={false} />
-            <XAxis 
-                dataKey="date" 
-                tickLine={false} 
-                axisLine={false} 
-                tickMargin={8}
-                minTickGap={32}
-                tickFormatter={(value) => value}
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={8}
+              minTickGap={32}
+              tickFormatter={(value) => value}
             />
-            <YAxis 
-                tickLine={false} 
-                axisLine={false} 
-                tickFormatter={(value) => `S/ ${value}`}
-                width={60}
+            <YAxis
+              tickLine={false}
+              axisLine={false}
+              tickFormatter={(value) => `S/ ${value}`}
+              width={60}
             />
             <Area
               type="monotone"
@@ -104,9 +124,9 @@ export function SalesChart() {
             />
             <ChartTooltip
               content={
-                <ChartTooltipContent 
-                    labelFormatter={(value) => value}
-                    indicator="dot"
+                <ChartTooltipContent
+                  labelFormatter={(value) => value}
+                  indicator="dot"
                 />
               }
             />

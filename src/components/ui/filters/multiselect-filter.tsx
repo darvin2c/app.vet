@@ -12,7 +12,6 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 
-
 interface MultiSelectFilterProps {
   config: any // Temporal para evitar errores de tipado
   value: string[]

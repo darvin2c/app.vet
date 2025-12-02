@@ -3,7 +3,6 @@
 import React from 'react'
 import { Label } from '@/components/ui/label'
 
-
 interface CustomFilterProps {
   config: any // Temporal para evitar errores de tipado
   value: string

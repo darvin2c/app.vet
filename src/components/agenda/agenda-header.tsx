@@ -24,7 +24,6 @@ export default function AgendaHeader({
   initialDate: Dayjs
   initialView: 'month' | 'week' | 'day' | 'year'
 }) {
-
   const isMobile = useIsMobile()
 
   useEffect(() => {
@@ -33,7 +32,7 @@ export default function AgendaHeader({
     }
   }, [initialDate])
 
-  useEffect(() => { }, [initialView])
+  useEffect(() => {}, [initialView])
   const { view, setView, nextPeriod, prevPeriod, currentDate, setCurrentDate } =
     useIlamyCalendarContext()
   return (

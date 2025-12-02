@@ -53,17 +53,17 @@ export function PetSelect({
     search: searchTerm,
     filters: customerId
       ? [
-        {
-          field: 'customer_id',
-          operator: 'eq',
-          value: customerId,
-        },
-        {
-          field: 'is_active',
-          operator: 'eq',
-          value: true,
-        },
-      ]
+          {
+            field: 'customer_id',
+            operator: 'eq',
+            value: customerId,
+          },
+          {
+            field: 'is_active',
+            operator: 'eq',
+            value: true,
+          },
+        ]
       : [],
   })
   const pets = data?.data
@@ -111,7 +111,11 @@ export function PetSelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
@@ -122,7 +126,7 @@ export function PetSelect({
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {pets?.map((pet) => (

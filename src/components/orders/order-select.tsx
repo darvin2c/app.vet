@@ -100,13 +100,13 @@ export function OrderSelect({
                 <Badge
                   className={
                     orderStatusColors[
-                    selectedOrder.status as keyof typeof orderStatusColors
+                      selectedOrder.status as keyof typeof orderStatusColors
                     ]
                   }
                 >
                   {
                     orderStatusLabels[
-                    selectedOrder.status as keyof typeof orderStatusLabels
+                      selectedOrder.status as keyof typeof orderStatusLabels
                     ]
                   }
                 </Badge>
@@ -129,7 +129,11 @@ export function OrderSelect({
             />
             <CommandList>
               <CommandEmpty>
-                {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                {isLoading ? (
+                  <div className="min-h-[100px]">
+                    <Spinner />
+                  </div>
+                ) : (
                   <Empty>
                     <EmptyHeader>
                       <EmptyMedia>
@@ -141,7 +145,7 @@ export function OrderSelect({
                       </EmptyDescription>
                     </EmptyHeader>
                   </Empty>
-                }
+                )}
               </CommandEmpty>
               <CommandGroup>
                 {orders.map((order: Order) => (
@@ -158,13 +162,13 @@ export function OrderSelect({
                       <Badge
                         className={
                           orderStatusColors[
-                          order.status as keyof typeof orderStatusColors
+                            order.status as keyof typeof orderStatusColors
                           ]
                         }
                       >
                         {
                           orderStatusLabels[
-                          order.status as keyof typeof orderStatusLabels
+                            order.status as keyof typeof orderStatusLabels
                           ]
                         }
                       </Badge>

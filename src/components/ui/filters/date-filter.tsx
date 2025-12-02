@@ -15,7 +15,6 @@ import {
 import { Calendar as CalendarComponent } from '@/components/ui/calendar'
 import { cn } from '@/lib/utils'
 
-
 interface DateFilterProps {
   config: any // Temporal para evitar errores de tipado
   value: string

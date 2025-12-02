@@ -13,9 +13,15 @@ import {
 import { Tables } from '@/types/supabase.types'
 
 export type Product = Tables<'products'> & {
-  category?: Pick<Tables<'product_categories'>, 'id' | 'name' | 'is_active'> | null
-  unit?: Pick<Tables<'product_units'>, 'id' | 'name' | 'abbreviation' | 'is_active'> | null
-} 
+  category?: Pick<
+    Tables<'product_categories'>,
+    'id' | 'name' | 'is_active'
+  > | null
+  unit?: Pick<
+    Tables<'product_units'>,
+    'id' | 'name' | 'abbreviation' | 'is_active'
+  > | null
+}
 
 export default function useProductList({
   filters = [],

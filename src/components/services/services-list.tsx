@@ -38,10 +38,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import {
-  ArrowUpRightIcon,
-  Wrench,
-} from 'lucide-react'
+import { ArrowUpRightIcon, Wrench } from 'lucide-react'
 import useProductList, { Product } from '@/hooks/products/use-products-list'
 import {
   useFilters,

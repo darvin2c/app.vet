@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  Clock,
-  User,
-  UserCheck,
-  MoreHorizontal,
-} from 'lucide-react'
+import { Clock, User, UserCheck, MoreHorizontal } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {

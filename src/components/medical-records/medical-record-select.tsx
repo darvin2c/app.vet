@@ -143,18 +143,24 @@ export function MedicalRecordSelect({
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
                           <EmptyMedia>
                             <FileText className="w-10 h-10 text-muted-foreground" />
                           </EmptyMedia>
-                          <EmptyTitle>No se encontraron registros médicos</EmptyTitle>
+                          <EmptyTitle>
+                            No se encontraron registros médicos
+                          </EmptyTitle>
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {medicalRecords.map((medicalRecord) => (
@@ -187,7 +193,9 @@ export function MedicalRecordSelect({
                       <Check
                         className={cn(
                           'h-4 w-4',
-                          value === medicalRecord.id ? 'opacity-100' : 'opacity-0'
+                          value === medicalRecord.id
+                            ? 'opacity-100'
+                            : 'opacity-0'
                         )}
                       />
                     </CommandItem>

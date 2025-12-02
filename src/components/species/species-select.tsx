@@ -88,11 +88,11 @@ export function SpeciesSelect(props: SpeciesSelectProps) {
       const next = selectedIds.includes(speciesId)
         ? selectedIds.filter((id) => id !== speciesId)
         : [...selectedIds, speciesId]
-        ; (onValueChange as (v: string[]) => void)?.(next)
+      ;(onValueChange as (v: string[]) => void)?.(next)
       // keep popover open in multi-select
       return
     }
-    ; (onValueChange as (v: string) => void)?.(
+    ;(onValueChange as (v: string) => void)?.(
       singleValue === speciesId ? '' : speciesId
     )
     setOpen(false)
@@ -142,7 +142,11 @@ export function SpeciesSelect(props: SpeciesSelectProps) {
               />
               <CommandList>
                 <CommandEmpty>
-                  {isLoading ? <div className="min-h-[100px]"><Spinner /></div> :
+                  {isLoading ? (
+                    <div className="min-h-[100px]">
+                      <Spinner />
+                    </div>
+                  ) : (
                     <>
                       <Empty>
                         <EmptyHeader>
@@ -153,7 +157,7 @@ export function SpeciesSelect(props: SpeciesSelectProps) {
                         </EmptyHeader>
                       </Empty>
                     </>
-                  }
+                  )}
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {species.map((s: Species) => (

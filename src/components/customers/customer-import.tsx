@@ -7,9 +7,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
-import {
-  useCustomerCreateBulk,
-} from '@/hooks/customers/use-customer-create'
+import { useCustomerCreateBulk } from '@/hooks/customers/use-customer-create'
 import { DataImport } from '@/components/ui/data-import'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { toast } from 'sonner'

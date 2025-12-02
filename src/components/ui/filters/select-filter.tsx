@@ -12,7 +12,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-
 interface SelectFilterProps {
   config: any // Temporal para evitar errores de tipado
   value: string

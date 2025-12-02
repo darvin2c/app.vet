@@ -13,9 +13,7 @@ import {
   type Header,
   type Cell,
 } from '@tanstack/react-table'
-import {
-  CreditCard,
-} from 'lucide-react'
+import { CreditCard } from 'lucide-react'
 
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Badge } from '@/components/ui/badge'
@@ -58,7 +56,6 @@ import { useSearch } from '@/components/ui/search-input/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
-
 
 interface PaymentListProps {
   filterConfig: FilterConfig[]

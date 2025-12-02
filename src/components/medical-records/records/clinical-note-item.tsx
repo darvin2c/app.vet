@@ -1,9 +1,4 @@
-import {
-  Item,
-  ItemContent,
-  ItemTitle,
-  ItemActions,
-} from '@/components/ui/item'
+import { Item, ItemContent, ItemTitle, ItemActions } from '@/components/ui/item'
 import { Tables } from '@/types/supabase.types'
 import { FileText } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'

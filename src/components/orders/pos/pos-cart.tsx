@@ -13,12 +13,7 @@ import {
   ItemGroup,
   ItemSeparator,
 } from '@/components/ui/item'
-import {
-  ShoppingCart,
-  Edit,
-  CreditCard,
-  Trash,
-} from 'lucide-react'
+import { ShoppingCart, Edit, CreditCard, Trash } from 'lucide-react'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { TablesInsert, Tables } from '@/types/supabase.types'
 import { ButtonGroup } from '@/components/ui/button-group'

@@ -1,16 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  useForm,
-  useFormContext,
-  Controller,
-} from 'react-hook-form'
+import { useForm, useFormContext, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
-
 
 import {
   Field,
@@ -29,9 +24,7 @@ import { CurrencyDisplay, CurrencyInput } from '@/components/ui/current-input'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
-import {
-  posPaymentSchema,
-} from '@/schemas/pos-payment.schema'
+import { posPaymentSchema } from '@/schemas/pos-payment.schema'
 import { Form } from '@/components/ui/form'
 import { usePagination } from '@/components/ui/pagination'
 import {
