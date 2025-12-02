@@ -345,7 +345,7 @@ export function PetList({
       {/* Contenido según la vista seleccionada */}
       {viewMode === 'table' && (
         <>
-          <div className="rounded-md border">
+          <div>
             <Table>
               <TableHeader>
                 {table.getHeaderGroups().map(renderTableHeader)}
