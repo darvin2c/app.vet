@@ -25,6 +25,7 @@ import {
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { DashboardIcon } from '../icons'
 
 interface NavItem {
   title: string
@@ -43,6 +44,12 @@ const navigationGroups: NavGroup[] = [
   {
     label: 'Clínica',
     items: [
+      {
+        title: 'dashboard',
+        href: '/',
+        icon: DashboardIcon,
+        tooltip: 'Dashboard',
+      },
       {
         title: 'Agenda',
         href: '/agenda',

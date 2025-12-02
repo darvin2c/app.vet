@@ -1,5 +1,6 @@
 import {
   Heart,
+  LayoutDashboard,
   MinusCircle,
   Package,
   PawPrint,
@@ -18,6 +19,7 @@ export const DeleteIcon = Trash2
 export const EditIcon = Pencil
 
 // resource icons
+export const DashboardIcon = LayoutDashboard
 export const PetIcon = PawPrint
 export const ProductIcon = Package
 export const ServiceIcon = Stethoscope
