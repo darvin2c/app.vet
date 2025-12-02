@@ -74,7 +74,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
           style={{
             backgroundColor: `${typeColor}${isPast ? '15' : '22'}`,
             color: '#1f2937',
-            borderLeftColor: statusColor,
+            borderLeftColor: typeColor,
             ...(isPast
               ? {
                   backgroundImage: `linear-gradient(${typeColor}15, ${typeColor}15), repeating-linear-gradient(135deg, ${statusColor}33 0px, ${statusColor}33 2px, transparent 2px, transparent 6px)`,
@@ -105,7 +105,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
             'relative overflow-hidden'
           )}
           style={{
-            borderLeftColor: statusColor,
+            borderLeftColor: typeColor,
             borderLeftWidth: 4,
             borderLeftStyle: 'solid',
           }}
@@ -245,7 +245,7 @@ export default function Event({ event }: { event: CalendarEvent }) {
           'relative overflow-hidden'
         )}
         style={{
-          borderLeftColor: statusColor,
+          borderLeftColor: typeColor,
           borderLeftWidth: 3,
           borderLeftStyle: 'solid',
         }}

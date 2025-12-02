@@ -5,7 +5,7 @@ const APPOINTMENT_STATUSES: readonly {
   label: string
   color: string
 }[] = [
-  { value: 'scheduled', label: 'Programada', color: '#FFD700' },
+  { value: 'scheduled', label: 'Programada', color: '#808080' },
   { value: 'confirmed', label: 'Confirmada', color: '#22C55E' },
   { value: 'in_progress', label: 'En Progreso', color: '#007BFF' },
   { value: 'completed', label: 'Completada', color: '#22C55E' },
