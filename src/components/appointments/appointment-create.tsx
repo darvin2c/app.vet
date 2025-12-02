@@ -21,6 +21,7 @@ import {
 } from '@/schemas/appointments.schema'
 import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
+import { Field, FieldGroup } from '../ui/field'
 
 interface AppointmentCreateProps {
   open: boolean
@@ -72,25 +73,21 @@ export function AppointmentCreate({
   }, [defaultScheduledStart, defaultScheduledEnd, defaultPetId, form])
 
   const onSubmit: SubmitHandler<CreateAppointmentSchema> = async (data) => {
-    try {
-      await createAppointment.mutateAsync({
-        pet_id: data.pet_id,
-        veterinarian_id: data.veterinarian_id,
-        appointment_type_id: data.appointment_type_id,
-        scheduled_start: data.scheduled_start,
-        scheduled_end: data.scheduled_end,
-        status: data.status,
-        reason: data.reason,
-        notes: data.notes,
-      })
+    await createAppointment.mutateAsync({
+      pet_id: data.pet_id,
+      veterinarian_id: data.veterinarian_id,
+      appointment_type_id: data.appointment_type_id,
+      scheduled_start: data.scheduled_start,
+      scheduled_end: data.scheduled_end,
+      status: data.status,
+      reason: data.reason,
+      notes: data.notes,
+    })
 
-      // Handle success
-      form.reset()
-      onOpenChange(false)
-      onSuccess?.()
-    } catch (error) {
-      // Error is already handled by the hook
-    }
+    // Handle success
+    form.reset()
+    onOpenChange(false)
+    onSuccess?.()
   }
 
   return (
@@ -99,9 +96,7 @@ export function AppointmentCreate({
         <CanAccess resource="products" action="create">
           <SheetHeader>
             <SheetTitle>Nueva Cita</SheetTitle>
-            <SheetDescription>
-              Programa una nueva cita médica
-            </SheetDescription>
+            <SheetDescription>Programa una nueva cita médica</SheetDescription>
           </SheetHeader>
 
           <div className="px-4">
@@ -116,22 +111,28 @@ export function AppointmentCreate({
           </div>
 
           <SheetFooter>
-            <ResponsiveButton
-              type="submit"
-              onClick={form.handleSubmit(onSubmit as any)}
-              isLoading={createAppointment.isPending}
-              icon={Check}
-            >
-              {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={createAppointment.isPending}
-              icon={X}
-            >
-              Cancelar
-            </ResponsiveButton>
+            <FieldGroup>
+              <Field orientation="horizontal">
+                <ResponsiveButton
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit as any)}
+                  isLoading={createAppointment.isPending}
+                  isResponsive={false}
+                  icon={Check}
+                >
+                  {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
+                </ResponsiveButton>
+                <ResponsiveButton
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={createAppointment.isPending}
+                  isResponsive={false}
+                  icon={X}
+                >
+                  Cancelar
+                </ResponsiveButton>
+              </Field>
+            </FieldGroup>
           </SheetFooter>
         </CanAccess>
       </SheetContent>

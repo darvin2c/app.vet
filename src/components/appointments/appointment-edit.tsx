@@ -22,6 +22,7 @@ import {
 import type { Tables } from '@/types/supabase.types'
 import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
+import { Field, FieldGroup } from '../ui/field'
 
 type Appointment = Tables<'appointments'>
 
@@ -100,22 +101,26 @@ export function AppointmentEdit({
             </Form>
           </div>
           <SheetFooter>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={updateAppointment.isPending}
-              icon={X}
-            >
-              Cancelar
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              isLoading={updateAppointment.isPending}
-              icon={Check}
-            >
-              Actualizar Cita
-            </ResponsiveButton>
+            <FieldGroup>
+              <Field orientation="horizontal">
+                <ResponsiveButton
+                  type="submit"
+                  onClick={form.handleSubmit(onSubmit)}
+                  isLoading={updateAppointment.isPending}
+                  icon={Check}
+                >
+                  Actualizar Cita
+                </ResponsiveButton>
+                <ResponsiveButton
+                  variant="outline"
+                  onClick={() => onOpenChange(false)}
+                  disabled={updateAppointment.isPending}
+                  icon={X}
+                >
+                  Cancelar
+                </ResponsiveButton>
+              </Field>
+            </FieldGroup>
           </SheetFooter>
         </CanAccess>
       </SheetContent>

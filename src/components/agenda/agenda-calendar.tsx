@@ -19,10 +19,10 @@ import Event from './event'
 
 type Appointment = Tables<'appointments'> & {
   pets:
-  | (Tables<'pets'> & {
-    customers: Tables<'customers'> | null
-  })
-  | null
+    | (Tables<'pets'> & {
+        customers: Tables<'customers'> | null
+      })
+    | null
   staff: Tables<'staff'> | null
   appointment_types: Tables<'appointment_types'> | null
 }
@@ -37,7 +37,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const { currentTenant } = useCurrentTenantStore()
   const [view, setView] = useState<View>(
-    localStorage.getItem('agenda-view') as View || 'month'
+    (localStorage.getItem('agenda-view') as View) || 'month'
   )
 
   // Estados para el modal de crear cita
@@ -94,8 +94,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
       end.format('YYYY-MM-DD')
     )
     setSelectedDateTime({
-      startTime: start.format('YYYY-MM-DDTHH:mm'),
-      endTime: end.format('YYYY-MM-DDTHH:mm'),
+      startTime: start.toISOString(),
+      endTime: end.toISOString(),
     })
     setCreateModalOpen(true)
   }

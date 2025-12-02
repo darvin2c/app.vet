@@ -17,7 +17,12 @@ import { AppointmentStatusGrid } from '@/components/appointments/appointment-sta
 import { useAvailableTimeSlots } from '@/hooks/appointments/use-available-time-slots'
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
 import DatePicker from '../ui/date-picker'
-import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from '../ui/input-group'
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from '../ui/input-group'
 import { addMinutes } from 'date-fns'
 
 interface AppointmentFormProps {
@@ -120,9 +125,7 @@ export function AppointmentForm({
                   }
                 }}
               />
-              <InputGroup
-                  className="max-w-30"
-              >
+              <InputGroup className="max-w-30">
                 <InputGroupInput
                   id="scheduled_duration"
                   list="duration"
@@ -147,7 +150,7 @@ export function AppointmentForm({
                   <option value="90">1 hora y 30 minutos</option>
                   <option value="120">2 horas</option>
                 </datalist>
-                <InputGroupAddon align='inline-end'>mins</InputGroupAddon>
+                <InputGroupAddon align="inline-end">mins</InputGroupAddon>
               </InputGroup>
             </div>
             <FieldError errors={[errors.scheduled_start]} />
@@ -179,21 +182,6 @@ export function AppointmentForm({
               {...control.register('reason')}
             />
             <FieldError errors={[errors.reason]} />
-          </FieldContent>
-        </Field>
-      </FieldGroup>
-
-      <FieldGroup>
-        <Field data-invalid={!!errors.notes}>
-          <FieldLabel htmlFor="notes">Notas</FieldLabel>
-          <FieldContent>
-            <Textarea
-              id="notes"
-              placeholder="Notas adicionales sobre la cita..."
-              className="resize-none"
-              {...control.register('notes')}
-            />
-            <FieldError errors={[errors.notes]} />
           </FieldContent>
         </Field>
       </FieldGroup>

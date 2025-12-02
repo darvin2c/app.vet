@@ -32,7 +32,9 @@ export function useAppointmentCreate() {
       return appointment
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['appointments'] })
+      queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'appointments'],
+      })
       toast.success('Cita creada exitosamente')
     },
     onError: (error) => {
