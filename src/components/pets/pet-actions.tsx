@@ -116,11 +116,6 @@ export function PetActions({
             <span>Agregar foto</span>
           </DropdownMenuItem>
 
-          <DropdownMenuItem onClick={handleChangeStatus}>
-            <Activity className="mr-2 h-4 w-4" />
-            <span>Cambiar estado</span>
-          </DropdownMenuItem>
-
           <DropdownMenuSeparator />
 
           <DropdownMenuItem onClick={handleViewHistory}>
