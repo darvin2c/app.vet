@@ -11,12 +11,15 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import PhoneInput from '@/components/ui/phone-input'
+import { AddressInput } from '@/components/ui/address-input'
 
 export function CustomerForm({ mode }: { mode: 'create' | 'edit' }) {
   const {
     register,
     formState: { errors },
     watch,
+    setValue,
   } = useFormContext<CreateCustomerSchema>()
 
   // Watcher para validar campos relacionados
@@ -89,10 +92,13 @@ export function CustomerForm({ mode }: { mode: 'create' | 'edit' }) {
           <Field>
             <FieldLabel htmlFor="phone">Teléfono</FieldLabel>
             <FieldContent>
-              <Input
-                id="phone"
+              <PhoneInput
+                value={watch('phone') || ''}
+                onChange={(value) =>
+                  setValue('phone', value, { shouldValidate: true })
+                }
                 placeholder="+51 999 999 999"
-                {...register('phone')}
+                variant="form"
               />
               <FieldError errors={[errors.phone]} />
             </FieldContent>
@@ -102,11 +108,12 @@ export function CustomerForm({ mode }: { mode: 'create' | 'edit' }) {
         <Field>
           <FieldLabel htmlFor="address">Dirección</FieldLabel>
           <FieldContent>
-            <Textarea
-              id="address"
+            <AddressInput
+              value={watch('address') || ''}
+              onChange={(value) =>
+                setValue('address', value, { shouldValidate: true })
+              }
               placeholder="Ingrese la dirección completa"
-              rows={3}
-              {...register('address')}
             />
             <FieldError errors={[errors.address]} />
           </FieldContent>

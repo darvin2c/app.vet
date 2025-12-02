@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import PhoneInput from '@/components/ui/phone-input'
+import { AddressInput } from '@/components/ui/address-input'
 
 import { CreateSupplierSchema } from '@/schemas/suppliers.schema'
 import { Tables } from '@/types/supabase.types'
@@ -72,10 +74,13 @@ export function SupplierForm({
         <Field>
           <FieldLabel htmlFor="phone">Teléfono</FieldLabel>
           <FieldContent>
-            <Input
-              id="phone"
+            <PhoneInput
+              value={watch('phone') || ''}
+              onChange={(value) =>
+                setValue('phone', value, { shouldValidate: true })
+              }
               placeholder="Número de teléfono"
-              {...register('phone')}
+              variant="form"
             />
             <FieldError errors={[errors.phone]} />
           </FieldContent>
@@ -85,10 +90,12 @@ export function SupplierForm({
       <Field>
         <FieldLabel htmlFor="address">Dirección</FieldLabel>
         <FieldContent>
-          <Input
-            id="address"
+          <AddressInput
+            value={watch('address') || ''}
+            onChange={(value) =>
+              setValue('address', value, { shouldValidate: true })
+            }
             placeholder="Dirección completa"
-            {...register('address')}
           />
           <FieldError errors={[errors.address]} />
         </FieldContent>

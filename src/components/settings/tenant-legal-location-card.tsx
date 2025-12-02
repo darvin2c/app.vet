@@ -7,6 +7,8 @@ import { Loader2, FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '../ui/card'
 import { Input } from '@/components/ui/input'
+import { AddressInput } from '@/components/ui/address-input'
+import { PlaceResult } from '@/types/address.types'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import React from 'react'
@@ -89,6 +91,41 @@ export default function TenantLegalLocationCard() {
     }
   }
 
+  const handleAddressSelect = (place: PlaceResult) => {
+    let streetNumber = ''
+    let route = ''
+
+    place.addressComponents.forEach((component) => {
+      const types = component.types
+
+      if (types.includes('street_number')) {
+        streetNumber = component.longText
+      }
+      if (types.includes('route')) {
+        route = component.longText
+      }
+      if (types.includes('locality')) {
+        form.setValue('city', component.longText)
+      }
+      if (types.includes('administrative_area_level_1')) {
+        form.setValue('state', component.longText)
+      }
+      if (types.includes('country')) {
+        form.setValue('country', component.longText)
+      }
+      if (types.includes('postal_code')) {
+        form.setValue('postal_code', component.longText)
+      }
+    })
+
+    const street = `${route} ${streetNumber}`.trim()
+    if (street) {
+      form.setValue('street', street)
+    } else {
+      form.setValue('street', place.formattedAddress.split(',')[0])
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="w-full max-w-4xl">
@@ -143,7 +180,12 @@ export default function TenantLegalLocationCard() {
                   <FieldDescription>Ej. Av. Principal 123</FieldDescription>
                 </FieldContent>
                 <div className="w-full sm:min-w-[300px]">
-                  <Input id="street" {...form.register('street')} />
+                  <AddressInput
+                    value={form.watch('street') || ''}
+                    onChange={(value) => form.setValue('street', value)}
+                    onAddressSelect={handleAddressSelect}
+                    placeholder="Ej. Av. Principal 123"
+                  />
                   <FieldError errors={[form.formState.errors.street]} />
                 </div>
               </Field>
