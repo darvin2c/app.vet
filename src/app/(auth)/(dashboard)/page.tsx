@@ -1,137 +1,93 @@
 'use client'
 
 import PageBase from '@/components/page-base'
-import { SearchInput } from '@/components/ui/search-input'
-import { Filters } from '@/components/ui/filters'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type { FilterConfig } from '@/components/ui/filters'
 import {
-  DashboardActivityList,
   KpiGrid,
-  VisitorsChart,
-  GenderDonut,
-  TopProductsTable,
+  SalesChart,
+  AppointmentsList,
+  QuickActions,
 } from '@/components/dashboard'
+import { CalendarIcon } from 'lucide-react'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export default function DashboardPage() {
-  const filters: FilterConfig[] = [
+  const kpis = [
     {
-      field: 'from_date',
-      label: 'Desde',
-      operator: 'gte',
-      placeholder: 'Fecha inicial',
+      label: 'Ventas Hoy',
+      value: 1580,
+      delta: { value: 12.5, direction: 'up' as const },
+      helper: 'vs. ayer (S/ 1,350)',
+      sparkline: [1200, 1300, 1250, 1400, 1350, 1500, 1580],
     },
     {
-      field: 'to_date',
-      label: 'Hasta',
-      operator: 'lte',
-      placeholder: 'Fecha final',
+      label: 'Citas Pendientes',
+      value: 12,
+      delta: { value: 4, direction: 'down' as const },
+      helper: '4 por confirmar',
+      sparkline: [15, 14, 16, 13, 12, 12, 12],
+    },
+    {
+      label: 'Pagos Recibidos',
+      value: 4250,
+      delta: { value: 8.2, direction: 'up' as const },
+      helper: '34% en tarjeta',
+      sparkline: [3000, 3200, 3500, 3800, 4000, 4100, 4250],
+    },
+    {
+      label: 'Nuevos Pacientes',
+      value: 5,
+      delta: { value: 2, direction: 'up' as const },
+      helper: 'Esta semana',
+      sparkline: [1, 2, 1, 3, 2, 4, 5],
     },
   ]
 
-  const activities = [
-    {
-      id: 'a1',
-      title: 'Nueva cita creada',
-      description: 'Consulta general para paciente Max',
-      date: '2025-11-10',
-      status: 'success' as const,
-    },
-    {
-      id: 'a2',
-      title: 'Pago registrado',
-      description: 'Orden #10234 por S/. 180.00',
-      date: '2025-11-11',
-      status: 'success' as const,
-    },
-    {
-      id: 'a3',
-      title: 'Cita reprogramada',
-      description: 'Paciente Luna, cambio de horario',
-      date: '2025-11-12',
-      status: 'warning' as const,
-    },
-  ]
+  const headerControls = (
+    <div className="flex items-center justify-end gap-2">
+      <Select defaultValue="today">
+        <SelectTrigger className="w-[140px]">
+          <CalendarIcon className="mr-2 h-4 w-4" />
+          <SelectValue placeholder="Periodo" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="today">Hoy</SelectItem>
+          <SelectItem value="week">Esta Semana</SelectItem>
+          <SelectItem value="month">Este Mes</SelectItem>
+          <SelectItem value="quarter">Este Trimestre</SelectItem>
+        </SelectContent>
+      </Select>
+    </div>
+  )
 
   return (
     <PageBase
       title="Dashboard"
-      subtitle="Resumen operativo del día"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar en actividad..."
-          size="lg"
-          suffix={
-            <>
-              <Filters
-                filters={filters}
-                triggerProps={{ variant: 'outline' }}
-              />
-            </>
-          }
-        />
-      }
+      subtitle="Resumen general de operaciones"
+      search={headerControls}
     >
       <div className="space-y-6">
-        <KpiGrid
-          items={[
-            {
-              label: 'Ingresos',
-              value: 9542,
-              delta: { value: 12.5, direction: 'up' },
-              helper: 'Últimos 30 días',
-              sparkline: [9, 12, 10, 13, 11, 15, 14, 18, 16, 20],
-            },
-            {
-              label: 'Nuevos clientes',
-              value: 1234,
-              delta: { value: 20, direction: 'down' },
-              helper: 'Periodo actual',
-              sparkline: [180, 150, 160, 140, 130, 120, 110, 115, 118, 112],
-            },
-            {
-              label: 'Cuentas activas',
-              value: 45678,
-              delta: { value: 12.5, direction: 'up' },
-              helper: 'Retención estable',
-              sparkline: [
-                45000, 45200, 45350, 45400, 45550, 45600, 45650, 45700, 45750,
-                45800,
-              ],
-            },
-            {
-              label: 'Tasa de crecimiento',
-              value: 4.5,
-              delta: { value: 4.5, direction: 'up' },
-              helper: 'Proyección mensual',
-              sparkline: [3.5, 3.6, 3.9, 4.1, 4.0, 4.2, 4.3, 4.5, 4.4, 4.6],
-            },
-          ]}
-        />
-        <Tabs defaultValue="overview">
-          <TabsList>
-            <TabsTrigger value="overview">Resumen</TabsTrigger>
-            <TabsTrigger value="performance">Rendimiento</TabsTrigger>
-            <TabsTrigger value="products">Productos</TabsTrigger>
-          </TabsList>
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <VisitorsChart />
-              <GenderDonut />
-            </div>
-            <DashboardActivityList activities={activities} />
-          </TabsContent>
-          <TabsContent value="performance" className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-              <VisitorsChart />
-              <GenderDonut />
-            </div>
-          </TabsContent>
-          <TabsContent value="products" className="space-y-6">
-            <TopProductsTable />
-          </TabsContent>
-        </Tabs>
+        {/* KPI Cards Row */}
+        <KpiGrid items={kpis} />
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {/* Left Column (Charts) - Spans 2 columns */}
+          <div className="space-y-6 lg:col-span-2">
+            <QuickActions />
+            <SalesChart />
+          </div>
+
+          {/* Right Column (Lists) - Spans 1 column */}
+          <div className="space-y-6">
+            <AppointmentsList />
+          </div>
+        </div>
       </div>
     </PageBase>
   )
