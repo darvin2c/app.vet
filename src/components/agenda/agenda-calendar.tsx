@@ -48,8 +48,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   } | null>(null)
 
   // Obtener citas del mes actual
-  const startOfMonth = currentDate.startOf('month')
-  const endOfMonth = currentDate.endOf('month')
+  const startOfMonth = currentDate.startOf('month').add(-15, 'day')
+  const endOfMonth = currentDate.endOf('month').add(15, 'day')
 
   const { data: appointments = [], isLoading } = useAppointments({
     filters: [
