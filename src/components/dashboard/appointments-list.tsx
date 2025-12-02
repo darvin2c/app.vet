@@ -12,7 +12,7 @@ import {
   Calendar as CalendarIcon,
   RefreshCcw,
 } from 'lucide-react'
-import { format } from 'date-fns'
+import { format, formatRelative } from 'date-fns'
 import { es } from 'date-fns/locale'
 import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import { EventCard } from '../agenda/event-card'
@@ -23,6 +23,7 @@ import {
   ItemDescription,
   ItemGroup,
   ItemMedia,
+  ItemSeparator,
   ItemTitle,
 } from '@/components/ui/item'
 import {
@@ -107,7 +108,7 @@ export function AppointmentsList() {
         </CardHeader>
         <CardContent className="pt-2">
           <ItemGroup>
-            {appointments?.map((apt) => {
+            {appointments?.map((apt, index) => {
               const pet = apt.pets
               const client = pet?.customers
               const appointmentType = apt.appointment_types
@@ -124,17 +125,21 @@ export function AppointmentsList() {
                 statusList.find((s) => s.value === status)?.color || '#64748b'
               const statusLabel = getStatus(status)
 
-              const startTime = format(new Date(apt.scheduled_start), 'HH:mm', {
+              const start = new Date(apt.scheduled_start)
+              const end = new Date(apt.scheduled_end)
+
+              let dateText = formatRelative(start, new Date(), { locale: es })
+              // Capitalize first letter
+              dateText = dateText.charAt(0).toUpperCase() + dateText.slice(1)
+
+              const endTime = format(end, 'p', {
                 locale: es,
               })
-              const endTime = format(new Date(apt.scheduled_end), 'HH:mm', {
-                locale: es,
-              })
-              const timeRange = `${startTime} - ${endTime}`
+              const timeRange = `${dateText} - ${endTime}`
 
               return (
                 <EventCard key={apt.id} appointment={apt}>
-                  <Item className="hover:bg-muted/50 transition-colors cursor-pointer px-2 py-1">
+                  <Item className="hover:bg-muted/50 transition-colors cursor-pointer px-0">
                     <ItemMedia>
                       <div
                         className="flex h-3 w-3 items-center justify-center rounded-full border"
@@ -151,24 +156,23 @@ export function AppointmentsList() {
                         <span className="ml-2 font-normal text-muted-foreground">
                           ({clientName})
                         </span>
+                        <Badge
+                          variant="outline"
+                          style={{
+                            borderColor: statusColor,
+                            color: statusColor,
+                            backgroundColor: `${statusColor}10`,
+                          }}
+                        >
+                          {statusLabel}
+                        </Badge>
                       </ItemTitle>
                       <ItemDescription>
                         {typeName} • {timeRange}
                       </ItemDescription>
                     </ItemContent>
-                    <ItemActions>
-                      <Badge
-                        variant="outline"
-                        style={{
-                          borderColor: statusColor,
-                          color: statusColor,
-                          backgroundColor: `${statusColor}10`,
-                        }}
-                      >
-                        {statusLabel}
-                      </Badge>
-                    </ItemActions>
                   </Item>
+                  {index < appointments.length - 1 && <ItemSeparator />}
                 </EventCard>
               )
             })}
