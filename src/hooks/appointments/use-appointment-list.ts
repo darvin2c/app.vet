@@ -1,21 +1,18 @@
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
-import { Database } from '@/types/supabase.types'
+import { Database, Tables } from '@/types/supabase.types'
 import useCurrentTenantStore from '../tenants/use-current-tenant-store'
 import { AppliedFilter, applySupabaseFilters } from '@/components/ui/filters'
 
-export type AppointmentWithRelations =
-  Database['public']['Tables']['appointments']['Row'] & {
-    pets:
-      | (Database['public']['Tables']['pets']['Row'] & {
-          customers: Database['public']['Tables']['customers']['Row'] | null
-        })
-      | null
-    staff: Database['public']['Tables']['staff']['Row'] | null
-    appointment_types:
-      | Database['public']['Tables']['appointment_types']['Row']
-      | null
-  }
+export type AppointmentWithRelations = Tables<'appointments'> & {
+  pets:
+    | (Tables<'pets'> & {
+        customers: Tables<'customers'> | null
+      })
+    | null
+  staff: Tables<'staff'> | null
+  appointment_types: Tables<'appointment_types'> | null
+}
 
 export function useAppointmentList({ filters }: { filters?: AppliedFilter[] }) {
   const { currentTenant } = useCurrentTenantStore()
