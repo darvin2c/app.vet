@@ -2,6 +2,7 @@ import {
   Heart,
   MinusCircle,
   Package,
+  PawPrint,
   Pencil,
   PlusCircle,
   ShoppingCart,
@@ -17,7 +18,7 @@ export const DeleteIcon = Trash2
 export const EditIcon = Pencil
 
 // resource icons
-export const PetIcon = Heart
+export const PetIcon = PawPrint
 export const ProductIcon = Package
 export const ServiceIcon = Stethoscope
 export const OrderIcon = ShoppingCart

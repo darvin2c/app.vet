@@ -36,6 +36,7 @@ import dayjs from '@/lib/dayjs'
 import { AppointmentShare } from '@/components/appointments/share/appointment-share'
 import { AppointmentEdit } from '@/components/appointments/appointment-edit'
 import { AppointmentDelete } from '@/components/appointments/appointment-delete'
+import { PetIcon } from '../icons'
 // removed agenda interaction store (not needed)
 
 type Appointment = AppointmentWithRelations
@@ -100,13 +101,13 @@ export function EventCard({ appointment, children }: EventCardProps) {
 
   const headerLeft = (
     <div className="space-y-2">
-      <div className="text-xl font-semibold">
+      <div className="flex gap-2 items-center text-lg font-semibold">
         <div
-          className="w-3 h-3 rounded-full border-2 border-white shadow-sm"
+          className="items-center w-3 h-3 rounded-full border-2 border-white shadow-sm"
           style={{ backgroundColor: appointmentTypeColor }}
           title={appointmentTypeName}
-        />{' '}
-        Detalles de la Cita{' '}
+        />
+        <div>Detalles de la Cita</div>
       </div>
       <div className="flex items-center gap-2">
         <Badge
@@ -162,16 +163,20 @@ export function EventCard({ appointment, children }: EventCardProps) {
   )
 
   const body = (
-    <div className="space-y-6">
-      <div className="space-y-3">
-        <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <User className="h-4 w-4" />
+    <div className="space-y-4">
+      <div className="">
+        <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+          <PetIcon className="h-4 w-4" />
           Información de la Mascota
         </div>
         <div className="pl-6 space-y-2">
-          <div className="font-medium text-base">{petName}</div>
-          <div className="text-sm text-muted-foreground">
-            Cliente: {clientName}
+          <div className="flex items-center gap-2 text-sm">
+            <div className="text-muted-foreground">Mascota:</div>
+            <div>{petName}</div>
+          </div>
+          <div className="flex items-center gap-2 text-sm ">
+            <div className="text-muted-foreground">Cliente:</div>
+            <div>{clientName}</div>
           </div>
         </div>
       </div>
@@ -187,7 +192,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="text-sm text-muted-foreground">Fecha</div>
-              <div className="font-medium">
+              <div className="text-sm">
                 {format(startDate, "EEEE, dd 'de' MMMM 'de' yyyy", {
                   locale: es,
                 })}
@@ -195,7 +200,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
             </div>
             <div>
               <div className="text-sm text-muted-foreground">Horario</div>
-              <div className="font-medium flex items-center gap-1">
+              <div className="flex items-center gap-1 text-sm">
                 <Clock className="h-3 w-3" />
                 {format(startDate, 'HH:mm', { locale: es })} -{' '}
                 {format(endDate, 'HH:mm', { locale: es })}
@@ -216,7 +221,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="text-sm text-muted-foreground">Tipo de Cita</div>
-              <div className="font-medium flex items-center gap-2">
+              <div className="text-sm flex items-center gap-2">
                 <div
                   className="w-3 h-3 rounded-full"
                   style={{ backgroundColor: appointmentTypeColor }}
@@ -228,7 +233,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
               <div className="text-sm text-muted-foreground">
                 Personal Médico
               </div>
-              <div className="font-medium flex items-center gap-1">
+              <div className="text-sm flex items-center gap-1">
                 <UserCheck className="h-3 w-3" />
                 {staffName}
               </div>
@@ -299,7 +304,7 @@ export function EventCard({ appointment, children }: EventCardProps) {
                   </div>
                 </SheetTitle>
               </SheetHeader>
-              <div className="space-y-6 pb-4 px-6">{body}</div>
+              <div className="pb-8 px-6">{body}</div>
             </SheetContent>
           </Sheet>
         </>
@@ -321,13 +326,13 @@ export function EventCard({ appointment, children }: EventCardProps) {
           </PopoverTrigger>
           <PopoverContent className="w-96 p-0" side="top" align="start">
             <Card className="border-0 shadow-none">
-              <CardHeader className="pb-4">
+              <CardHeader>
                 <div className="flex items-start justify-between">
                   {headerLeft}
                   {headerActions}
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">{body}</CardContent>
+              <CardContent>{body}</CardContent>
             </Card>
           </PopoverContent>
         </Popover>
