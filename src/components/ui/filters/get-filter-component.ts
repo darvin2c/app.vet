@@ -49,7 +49,8 @@ export function getFilterComponent(
       // Detectar si es fecha o número basado en el nombre del campo
       if (
         config.field.toLowerCase().includes('date') ||
-        config.field.toLowerCase().includes('time')
+        config.field.toLowerCase().includes('time') ||
+        config.field.toLowerCase().endsWith('_at')
       ) {
         return DateFilter
       }
@@ -78,7 +79,8 @@ export function getFilterComponent(
       // Detectar si es fecha o número basado en el nombre del campo
       if (
         config.field.toLowerCase().includes('date') ||
-        config.field.toLowerCase().includes('time')
+        config.field.toLowerCase().includes('time') ||
+        config.field.toLowerCase().endsWith('_at')
       ) {
         return DateFilter
       }
@@ -140,7 +142,8 @@ export function getInputType(
       // Detectar tipo basado en el nombre del campo
       if (
         field.toLowerCase().includes('date') ||
-        field.toLowerCase().includes('time')
+        field.toLowerCase().includes('time') ||
+        field.toLowerCase().endsWith('_at')
       ) {
         return 'date'
       }
@@ -159,7 +162,8 @@ export function getInputType(
     case 'lte':
       if (
         field.toLowerCase().includes('date') ||
-        field.toLowerCase().includes('time')
+        field.toLowerCase().includes('time') ||
+        field.toLowerCase().endsWith('_at')
       ) {
         return 'date'
       }

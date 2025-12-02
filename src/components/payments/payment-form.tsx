@@ -10,6 +10,7 @@ import {
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
+import { DatePicker } from '@/components/ui/date-picker'
 import { PaymentMethodSelect } from '@/components/payment-methods/payment-method-select'
 import { CustomerSelect } from '@/components/customers/customer-select'
 import { OrderSelect } from '@/components/orders/order-select'
@@ -55,14 +56,14 @@ export function PaymentForm({
         <Field>
           <FieldLabel htmlFor="payment_date">Fecha de Pago *</FieldLabel>
           <FieldContent>
-            <Input
+            <DatePicker
               id="payment_date"
-              type="date"
-              disabled={mode === 'update'}
-              value={
-                mode === 'update' && payment ? payment.payment_date : undefined
+              name="payment_date"
+              value={form.watch('payment_date')}
+              onChange={(date) =>
+                setValue('payment_date', date?.toISOString() || '')
               }
-              {...form.register('payment_date')}
+              disabled={mode === 'update'}
             />
             <FieldError errors={[errors.payment_date]} />
           </FieldContent>
