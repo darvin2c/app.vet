@@ -1,16 +1,5 @@
 import { z } from 'zod'
-
-// Enum para estados de citas
-export const appointmentStatusEnum = z.enum([
-  'scheduled',
-  'confirmed',
-  'in_progress',
-  'completed',
-  'cancelled',
-  'no_show',
-])
-
-export type AppointmentStatus = z.infer<typeof appointmentStatusEnum>
+import { Enums, Constants } from '@/types/supabase.types'
 
 // Schema para crear una cita
 export const createAppointmentSchema = z
@@ -28,7 +17,10 @@ export const createAppointmentSchema = z
       const date = new Date(val)
       return !isNaN(date.getTime())
     }, 'Fecha y hora de fin inválida'),
-    status: appointmentStatusEnum.optional().default('scheduled'),
+    status: z
+      .enum(Constants.public.Enums.appointment_status)
+      .optional()
+      .default('scheduled'),
     reason: z.string().optional(),
     notes: z.string().optional(),
   })
@@ -46,6 +38,9 @@ export const updateAppointmentSchema = createAppointmentSchema
   .extend({
     id: z.string().uuid('ID de cita inválido'),
   })
+
+// Enum para status
+const appointmentStatusEnum = z.enum(Constants.public.Enums.appointment_status)
 
 // Schema para filtros de citas
 export const appointmentFiltersSchema = z.object({

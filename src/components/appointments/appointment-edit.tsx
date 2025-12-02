@@ -57,7 +57,6 @@ export function AppointmentEdit({
         scheduled_end: appointment.scheduled_end,
         status: appointment.status as UpdateAppointmentSchema['status'],
         reason: appointment.reason || '',
-        notes: appointment.notes || '',
       })
     }
   }, [appointment, open, form])
@@ -73,7 +72,6 @@ export function AppointmentEdit({
         scheduled_end: data.scheduled_end,
         status: data.status,
         reason: data.reason,
-        notes: data.notes,
       },
     })
     onOpenChange(false)
