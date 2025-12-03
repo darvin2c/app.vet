@@ -165,7 +165,7 @@ export function SalesChart() {
       <CardContent className="pt-4">
         <ChartContainer
           config={{
-            sales: { label: 'Ventas', color: 'hsl(var(--primary))' },
+            sales: { label: 'Ventas', color: 'var(--chart-5)' },
           }}
           className="aspect-[4/2] w-full"
         >

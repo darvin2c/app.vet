@@ -64,7 +64,7 @@ export function MetricCard({
       {sparkline.length > 0 && (
         <div className="h-16 w-full">
           <ChartContainer
-            config={{ s: { color: 'hsl(var(--primary))' } }}
+            config={{ s: { color: 'var(--chart-5)' } }}
             className="h-full w-full aspect-auto"
           >
             <AreaChart

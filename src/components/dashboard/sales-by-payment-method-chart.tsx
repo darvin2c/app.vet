@@ -86,16 +86,16 @@ export function SalesByPaymentMethodChart() {
 
     const generateColor = (index: number, total: number) => {
       // Si solo hay un elemento, usamos el color base
-      if (total <= 1) return 'var(--primary)'
+      if (total <= 1) return 'var(--chart-5)'
 
       // Lógica invertida:
       // Elemento más grande (index 0) -> Más claro (factor 0.8)
       // Elemento más pequeño (index N) -> Más oscuro (factor 0)
       const lightnessFactor = 0.8 - (index / (total - 1)) * 0.8
 
-      // Usamos color-mix para mezclar el color primario con blanco
+      // Usamos color-mix para mezclar el color base con blanco
       // El porcentaje es la cantidad de blanco
-      return `color-mix(in srgb, var(--primary), white ${lightnessFactor * 100}%)`
+      return `color-mix(in srgb, var(--chart-5), white ${lightnessFactor * 100}%)`
     }
 
     const typesData = sortedTypes.map((item, index) => ({
@@ -156,7 +156,7 @@ export function SalesByPaymentMethodChart() {
           config={{
             amount: {
               label: 'Monto',
-              color: 'hsl(var(--primary))',
+              color: 'var(--primary)',
             },
           }}
           className="mx-auto aspect-square max-h-[300px]"

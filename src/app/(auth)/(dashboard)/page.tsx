@@ -13,7 +13,7 @@ import {
 export default function DashboardPage() {
   return (
     <PageBase title="Dashboard" subtitle="Resumen general de operaciones">
-      <div className="space-y-6">
+      <div className="space-y-6 pb-10">
         {/* KPI Cards Row */}
         <KpiGrid />
 

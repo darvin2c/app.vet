@@ -56,7 +56,7 @@ export function VisitorsChart() {
       <CardContent>
         <ChartContainer
           config={{
-            visitors: { label: 'Visitantes', color: 'hsl(var(--primary))' },
+            visitors: { label: 'Visitantes', color: 'var(--primary)' },
           }}
           className="aspect-[3/1]"
         >

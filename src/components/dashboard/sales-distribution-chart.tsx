@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import {
   ChartContainer,
   ChartTooltip,
@@ -11,13 +11,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { supabase } from '@/lib/supabase/client'
 import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '../ui/skeleton'
-import {
-  subDays,
-  format,
-  startOfToday,
-  differenceInDays,
-  isValid,
-} from 'date-fns'
+import { subDays, format, startOfToday } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 
@@ -31,9 +25,7 @@ export function SalesDistributionChart() {
     to: defaultTo,
   })
 
-  const startDate = dateRange?.from
-    ? format(dateRange.from, 'yyyy-MM-dd')
-    : ''
+  const startDate = dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''
   const endDate = dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : ''
 
   const query = useQuery({
@@ -42,11 +34,13 @@ export function SalesDistributionChart() {
       if (!startDate || !endDate) return []
       const { data, error } = await supabase
         .from('order_items')
-        .select(`
+        .select(
+          `
           total,
           orders!inner(created_at),
           products(is_service)
-        `)
+        `
+        )
         .gte('orders.created_at', startDate)
         .lte('orders.created_at', endDate)
 
@@ -74,8 +68,12 @@ export function SalesDistributionChart() {
     })
 
     return [
-      { name: 'Servicios', value: servicesTotal, color: 'hsl(var(--chart-2))' },
-      { name: 'Productos', value: productsTotal, color: 'hsl(var(--chart-1))' },
+      {
+        name: 'Servicios',
+        value: servicesTotal,
+        color: 'var(--chart-5)',
+      },
+      { name: 'Productos', value: productsTotal, color: 'var(--chart-1)' },
     ].filter((item) => item.value > 0)
   }, [query.data])
 
@@ -126,11 +124,11 @@ export function SalesDistributionChart() {
           config={{
             servicios: {
               label: 'Servicios',
-              color: 'hsl(var(--chart-2))',
+              color: 'var(--chart-5)',
             },
             productos: {
               label: 'Productos',
-              color: 'hsl(var(--chart-1))',
+              color: 'var(--chart-1)',
             },
           }}
           className="mx-auto aspect-square max-h-[250px]"
