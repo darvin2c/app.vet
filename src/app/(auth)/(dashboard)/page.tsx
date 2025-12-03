@@ -27,9 +27,9 @@ export default function DashboardPage() {
 
           {/* Right Column (Lists) - Spans 1 column */}
           <div className="space-y-6">
+            <AppointmentsList />
             <SalesDistributionChart />
             <SalesByPaymentMethodChart />
-            <AppointmentsList />
           </div>
         </div>
       </div>

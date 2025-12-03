@@ -11,6 +11,7 @@ import {
   Plus,
   Calendar as CalendarIcon,
   RefreshCcw,
+  Calendar,
 } from 'lucide-react'
 import { format, formatRelative } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -38,6 +39,15 @@ import { AppointmentCreate } from '../appointments/appointment-create'
 import { TableSkeleton } from '../ui/table-skeleton'
 import { Spinner } from '../ui/spinner'
 import { AppliedFilter } from '../ui/filters'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from '../ui/empty'
+import { AppointmentCreateButton } from '../appointments/appointment-create-button'
 
 export function AppointmentsList() {
   const [createOpen, setCreateOpen] = useState(false)
@@ -45,12 +55,13 @@ export function AppointmentsList() {
   // Memoizamos los filtros para evitar recrearlos en cada render
   // Usamos startOfDay para que la fecha sea estable durante el día
   const filters: AppliedFilter[] = useMemo(() => {
-    const now = new Date()
+    const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
     return [
       {
         field: 'scheduled_start',
         operator: 'gte',
-        value: now.toISOString(),
+        value: startOfDay.toISOString(),
       },
     ]
   }, []) // Dependencias vacías para que solo se cree una vez al montar
@@ -68,6 +79,29 @@ export function AppointmentsList() {
 
   if (isPending) {
     return <TableSkeleton variant="list" />
+  }
+
+  if (appointments?.length == 0) {
+    return (
+      <Card className="shadow-sm">
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <Calendar className="h-8 w-8 text-muted-foreground" />
+            </EmptyMedia>
+            <EmptyTitle>No Citas Programadas</EmptyTitle>
+            <EmptyDescription>
+              No tienes citas programadas pendientes.
+            </EmptyDescription>
+          </EmptyHeader>
+          <EmptyContent>
+            <div className="flex gap-2">
+              <AppointmentCreateButton />
+            </div>
+          </EmptyContent>
+        </Empty>
+      </Card>
+    )
   }
 
   return (
