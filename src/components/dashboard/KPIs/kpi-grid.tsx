@@ -2,27 +2,12 @@
 
 import { useState, useEffect } from 'react'
 import { DateRange } from 'react-day-picker'
-import {
-  format,
-  subDays,
-  startOfToday,
-  differenceInDays,
-  isValid,
-} from 'date-fns'
-import { es } from 'date-fns/locale'
-import { Calendar as CalendarIcon } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { subDays, startOfToday, differenceInDays, isValid } from 'date-fns'
 import { OrderKpi } from './order-kpi'
 import { AppointmentKpi } from './appointment-kpi'
 import { OrderAvgKpi } from './order-avg-kpi'
 import { PetNewKpi } from './pet-new-kpi'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
 
 export function KpiGrid() {
   const today = startOfToday()
@@ -53,44 +38,9 @@ export function KpiGrid() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-end">
-        <div className="grid gap-2">
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button
-                id="date"
-                variant={'outline'}
-                className={cn(
-                  'w-[300px] justify-start text-left font-normal',
-                  !dateRange && 'text-muted-foreground'
-                )}
-              >
-                <CalendarIcon className="mr-2 h-4 w-4" />
-                {dateRange?.from ? (
-                  dateRange.to ? (
-                    <>
-                      {format(dateRange.from, 'LLL dd, y', { locale: es })} -{' '}
-                      {format(dateRange.to, 'LLL dd, y', { locale: es })}
-                    </>
-                  ) : (
-                    format(dateRange.from, 'LLL dd, y', { locale: es })
-                  )
-                ) : (
-                  <span>Seleccionar fechas</span>
-                )}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Calendar
-                mode="range"
-                defaultMonth={dateRange?.from}
-                selected={dateRange}
-                onSelect={setDateRange}
-                numberOfMonths={2}
-                showOutsideDays={false}
-              />
-            </PopoverContent>
-          </Popover>
+      <div className="flex items-center justify-end gap-2">
+        <div className="w-full sm:w-[300px]">
+          <DateRangePicker date={dateRange} onDateChange={setDateRange} />
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
