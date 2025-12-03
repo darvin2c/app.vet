@@ -87,6 +87,7 @@ export function KpiGrid() {
                 selected={dateRange}
                 onSelect={setDateRange}
                 numberOfMonths={2}
+                showOutsideDays={false}
               />
             </PopoverContent>
           </Popover>
