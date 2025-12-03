@@ -5,8 +5,10 @@ import { Badge } from '@/components/ui/badge'
 import { ChartContainer } from '@/components/ui/chart'
 import { Area, AreaChart } from 'recharts'
 import { useId } from 'react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 type MetricCardProps = {
+  isPending?: boolean
   label: string
   value: number
   delta?: { value: number; direction: 'up' | 'down' }
@@ -15,6 +17,7 @@ type MetricCardProps = {
 }
 
 export function MetricCard({
+  isPending,
   label,
   value,
   delta,
@@ -27,6 +30,19 @@ export function MetricCard({
     ? `${delta.direction === 'up' ? '+' : '-'}${delta.value}%`
     : ''
   const gradientId = `gradient-${id}`
+
+  if (isPending) {
+    return (
+      <Card className="shadow-none overflow-hidden py-0 gap-0 flex flex-col justify-between">
+        <div className="p-6 pb-2">
+          <Skeleton className="h-4 w-24 mb-2" />
+          <Skeleton className="h-8 w-32 mb-1" />
+          <Skeleton className="h-3 w-40" />
+        </div>
+        <Skeleton className="h-16 w-full rounded-none" />
+      </Card>
+    )
+  }
 
   return (
     <Card className="shadow-none overflow-hidden py-0 gap-0 flex flex-col justify-between">
