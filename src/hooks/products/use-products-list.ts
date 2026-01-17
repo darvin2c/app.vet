@@ -21,6 +21,7 @@ export type Product = Tables<'products'> & {
     Tables<'product_units'>,
     'id' | 'name' | 'abbreviation' | 'is_active'
   > | null
+  brand?: Pick<Tables<'product_brands'>, 'id' | 'name' | 'is_active'> | null
 }
 
 export default function useProductList({
@@ -64,6 +65,11 @@ export default function useProductList({
             id,
             name,
             abbreviation,
+            is_active
+          ),
+          brand:brand_id (
+            id,
+            name,
             is_active
           )
         `

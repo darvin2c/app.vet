@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/table'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Database } from '@/types/supabase.types'
 import { ProductActions } from './product-actions'
 import { ProductCreateButton } from './product-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -46,7 +45,7 @@ import {
   ChevronRight,
   Package,
 } from 'lucide-react'
-import useProductList from '@/hooks/products/use-products-list'
+import useProductList, { Product } from '@/hooks/products/use-products-list'
 import {
   useFilters,
   FilterConfig,
@@ -64,8 +63,6 @@ import {
 } from '@/components/ui/item'
 import { Alert, AlertDescription, AlertTitle } from '../ui/alert'
 import { Pagination, usePagination } from '../ui/pagination'
-
-type Product = Database['public']['Tables']['products']['Row']
 
 export function ProductList({
   filterConfig,
@@ -129,7 +126,7 @@ export function ProductList({
       ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="text-sm text-muted-foreground">
-          {row.getValue('category_id') || '-'}
+          {row.original.category?.name || '-'}
         </div>
       ),
     },
@@ -142,7 +139,20 @@ export function ProductList({
       ),
       cell: ({ row }: { row: Row<Product> }) => (
         <div className="text-sm text-muted-foreground">
-          {row.getValue('unit_id') || '-'}
+          {row.original.unit?.name || '-'}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'brand_id',
+      header: ({ header }) => (
+        <OrderByTableHeader field="brand_id" orderByHook={orderByHook}>
+          Marca
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Product> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.original.brand?.name || '-'}
         </div>
       ),
     },
@@ -261,16 +271,22 @@ export function ProductList({
             </div>
 
             <div className="space-y-2">
-              {product.category_id && (
+              {product.category && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">Categoría:</span>{' '}
-                  {product.category_id}
+                  {product.category.name}
                 </div>
               )}
-              {product.unit_id && (
+              {product.unit && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">Unidad:</span>{' '}
-                  {product.unit_id}
+                  {product.unit.name}
+                </div>
+              )}
+              {product.brand && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Marca:</span>{' '}
+                  {product.brand.name}
                 </div>
               )}
               <div className="text-sm">
@@ -307,10 +323,11 @@ export function ProductList({
               <ItemDescription>SKU: {product.sku}</ItemDescription>
             )}
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
-              {product.category_id && (
-                <span>Categoría: {product.category_id}</span>
+              {product.category && (
+                <span>Categoría: {product.category.name}</span>
               )}
-              {product.unit_id && <span>Unidad: {product.unit_id}</span>}
+              {product.unit && <span>Unidad: {product.unit.name}</span>}
+              {product.brand && <span>Marca: {product.brand.name}</span>}
               <span>
                 Precio:{' '}
                 {new Intl.NumberFormat('es-PE', {
