@@ -455,25 +455,23 @@ function TimePickerContent({
     (hour: number) => {
       setUserSelections((prev) => ({ ...prev, hour }))
 
+      const effectiveMinute = userSelections.minute ?? parsedInitialTime.minutes
+      const effectivePeriod = userSelections.period ?? parsedInitialTime.period
+
       // Solo proceder si tenemos todos los valores necesarios
       if (
-        userSelections.minute !== null &&
-        (format === '24h' || userSelections.period !== null)
+        effectiveMinute !== null &&
+        (format === '24h' || effectivePeriod !== null)
       ) {
         const timeString = formatTimeString(
           hour,
-          userSelections.minute,
-          userSelections.period || undefined
+          effectiveMinute,
+          effectivePeriod || undefined
         )
         onTimeSelect(timeString)
-
-        // Cerrar si la selección está completa
-        if (format === '24h' || userSelections.period !== null) {
-          onClose?.()
-        }
       }
     },
-    [userSelections, format, onTimeSelect, onClose]
+    [userSelections, parsedInitialTime, format, onTimeSelect]
   )
 
   // Handler para selección de minutos
@@ -481,25 +479,28 @@ function TimePickerContent({
     (minute: number) => {
       setUserSelections((prev) => ({ ...prev, minute }))
 
+      const effectiveHour = userSelections.hour ?? parsedInitialTime.hours
+      const effectivePeriod = userSelections.period ?? parsedInitialTime.period
+
       // Solo proceder si tenemos todos los valores necesarios
       if (
-        userSelections.hour !== null &&
-        (format === '24h' || userSelections.period !== null)
+        effectiveHour !== null &&
+        (format === '24h' || effectivePeriod !== null)
       ) {
         const timeString = formatTimeString(
-          userSelections.hour,
+          effectiveHour,
           minute,
-          userSelections.period || undefined
+          effectivePeriod || undefined
         )
         onTimeSelect(timeString)
 
-        // Cerrar si la selección está completa
-        if (format === '24h' || userSelections.period !== null) {
+        // Cerrar si la selección está completa (en 24h al seleccionar minutos)
+        if (format === '24h') {
           onClose?.()
         }
       }
     },
-    [userSelections, format, onTimeSelect, onClose]
+    [userSelections, parsedInitialTime, format, onTimeSelect, onClose]
   )
 
   // Handler para selección de período
@@ -507,18 +508,21 @@ function TimePickerContent({
     (period: 'AM' | 'PM') => {
       setUserSelections((prev) => ({ ...prev, period }))
 
+      const effectiveHour = userSelections.hour ?? parsedInitialTime.hours
+      const effectiveMinute = userSelections.minute ?? parsedInitialTime.minutes
+
       // Solo proceder si tenemos todos los valores necesarios
-      if (userSelections.hour !== null && userSelections.minute !== null) {
+      if (effectiveHour !== null && effectiveMinute !== null) {
         const timeString = formatTimeString(
-          userSelections.hour,
-          userSelections.minute,
+          effectiveHour,
+          effectiveMinute,
           period
         )
         onTimeSelect(timeString)
         onClose?.()
       }
     },
-    [userSelections, onTimeSelect, onClose]
+    [userSelections, parsedInitialTime, onTimeSelect, onClose]
   )
 
   // Handler para "Ahora"
