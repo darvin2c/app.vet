@@ -14,15 +14,9 @@ import { StaffSelect } from '@/components/staff/staff-select'
 import { AppointmentTypeSelect } from '@/components/appointment-types/appointment-type-select'
 import { AppointmentStatusGrid } from '@/components/appointments/appointment-status-grid'
 
-import { useAvailableTimeSlots } from '@/hooks/appointments/use-available-time-slots'
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
 import DatePicker from '../ui/date-picker'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-  InputGroupText,
-} from '../ui/input-group'
+import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
 import { addMinutes } from 'date-fns'
 
 interface AppointmentFormProps {
@@ -39,17 +33,6 @@ export function AppointmentForm({
     watch,
     setValue,
   } = useFormContext<CreateAppointmentSchema>()
-
-  // Watch veterinarian and date changes to get available time slots
-  const veterinarianId = watch('veterinarian_id')
-  const scheduledStart = watch('scheduled_start')
-
-  // Get available time slots for the selected date and veterinarian
-  const selectedDate = scheduledStart ? new Date(scheduledStart) : undefined
-  const { data: availableTimeSlots = [] } = useAvailableTimeSlots({
-    date: selectedDate,
-    staffId: veterinarianId,
-  })
 
   return (
     <div className="space-y-6">
@@ -112,6 +95,7 @@ export function AppointmentForm({
                 hasTime
                 onChange={(value) => {
                   if (value) {
+                    console.log('value', value)
                     setValue('scheduled_start', value.toISOString())
                     const duration = parseInt(
                       (

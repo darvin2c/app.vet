@@ -281,21 +281,24 @@ export function DatePicker({
     (newTimeValue: string) => {
       setTimeValue(newTimeValue)
 
-      // Si hay una fecha seleccionada, combinar fecha y hora
-      if (selectedDate && newTimeValue) {
+      // Si hay una fecha seleccionada o un valor existente, combinar fecha y hora
+      const targetDate = selectedDate ?? dateValue
+
+      if (targetDate && newTimeValue) {
         const combinedDate = combineDateTime(
-          selectedDate,
+          targetDate,
           newTimeValue,
           timeProps?.format || '24h'
         )
 
-        // En desktop, aplicar inmediatamente
-        if (!isMobile) {
+        // Solo notificar si la fecha combinada es diferente (implica que el parseo fue exitoso)
+        // y aplicar inmediatamente (el TimePicker está fuera del Sheet/Popover)
+        if (combinedDate !== targetDate) {
           onChange?.(combinedDate)
         }
       }
     },
-    [selectedDate, onChange, isMobile, timeProps?.format]
+    [selectedDate, dateValue, onChange, timeProps?.format]
   )
 
   // Manejar confirmación en mobile
