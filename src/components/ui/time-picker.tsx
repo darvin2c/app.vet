@@ -21,6 +21,7 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetFooter,
 } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Toggle } from '@/components/ui/toggle'
@@ -537,6 +538,13 @@ function TimePickerContent({
       hours = hours % 12 || 12
     }
 
+    // Actualizar selecciones visuales también
+    setUserSelections({
+      hour: hours,
+      minute: minutes,
+      period: period || null,
+    })
+
     const timeString = formatTimeString(hours, minutes, period)
     onTimeSelect(timeString)
     onClose?.()
@@ -616,19 +624,40 @@ export function TimePicker({
 }: TimePickerProps) {
   const [open, setOpen] = useState(false)
   const [inputError, setInputError] = useState<string | null>(null)
+  const [tempValue, setTempValue] = useState(value)
   const isMobile = useIsMobile()
+
+  // Sincronizar tempValue cuando se abre el picker
+  React.useEffect(() => {
+    if (open) {
+      setTempValue(value)
+    }
+  }, [open, value])
 
   // Determinar si hay error
   const hasError = error || !!inputError || !!errorMessage
 
   const handleTimeSelect = useCallback(
     (timeString: string) => {
-      onChange?.(timeString)
+      if (isMobile) {
+        setTempValue(timeString)
+      } else {
+        onChange?.(timeString)
+      }
     },
-    [onChange]
+    [onChange, isMobile]
   )
 
   const handleClose = useCallback(() => {
+    setOpen(false)
+  }, [])
+
+  const handleConfirm = useCallback(() => {
+    onChange?.(tempValue)
+    setOpen(false)
+  }, [onChange, tempValue])
+
+  const handleCancel = useCallback(() => {
     setOpen(false)
   }, [])
 
@@ -835,9 +864,9 @@ export function TimePicker({
   const content = (
     <TimePickerContent
       format={format}
-      initialTime={value}
+      initialTime={isMobile ? tempValue : value}
       onTimeSelect={handleTimeSelect}
-      onClose={handleClose}
+      onClose={isMobile ? undefined : handleClose}
     />
   )
 
@@ -967,6 +996,19 @@ export function TimePicker({
               <SheetTitle>Seleccionar Hora</SheetTitle>
             </SheetHeader>
             {content}
+            <SheetFooter className="flex flex-row gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleCancel}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button type="button" onClick={handleConfirm} className="flex-1">
+                Confirmar
+              </Button>
+            </SheetFooter>
           </SheetContent>
         </Sheet>
 
