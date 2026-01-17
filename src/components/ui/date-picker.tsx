@@ -143,7 +143,7 @@ export function DatePicker({
       if (hasTime) {
         const hours = dateValue.getHours()
         const minutes = dateValue.getMinutes()
-        const timeFormat = timeProps?.format || '24h'
+        const timeFormat = timeProps?.format || '12h'
 
         if (timeFormat === '12h') {
           const period = hours >= 12 ? 'PM' : 'AM'
@@ -224,7 +224,7 @@ export function DatePicker({
             finalDate = combineDateTime(
               selectedDate,
               timeValue,
-              timeProps?.format || '24h'
+              timeProps?.format || '12h'
             )
           }
 
@@ -249,7 +249,7 @@ export function DatePicker({
     if (hasTime) {
       const hours = today.getHours()
       const minutes = today.getMinutes()
-      const timeFormat = timeProps?.format || '24h'
+      const timeFormat = timeProps?.format || '12h'
 
       if (timeFormat === '12h') {
         const period = hours >= 12 ? 'PM' : 'AM'
@@ -288,7 +288,7 @@ export function DatePicker({
         const combinedDate = combineDateTime(
           targetDate,
           newTimeValue,
-          timeProps?.format || '24h'
+          timeProps?.format || '12h'
         )
 
         // Solo notificar si la fecha combinada es diferente (implica que el parseo fue exitoso)
@@ -312,7 +312,7 @@ export function DatePicker({
         finalDate = combineDateTime(
           selectedDate,
           timeValue,
-          timeProps?.format || '24h'
+          timeProps?.format || '12h'
         )
       }
 
@@ -419,7 +419,7 @@ export function DatePicker({
           <TimePicker
             value={timeValue}
             onChange={handleTimeChange}
-            format={timeProps?.format || '24h'}
+            format={timeProps?.format || '12h'}
             placeholder={timeProps?.placeholder}
             disabled={timeProps?.disabled || props.disabled}
             error={!!timeProps?.error}

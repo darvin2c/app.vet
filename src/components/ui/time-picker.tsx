@@ -601,7 +601,7 @@ export interface TimePickerProps {
 export function TimePicker({
   value = '',
   onChange,
-  format = '24h',
+  format = '12h',
   placeholder = format === '12h' ? 'HH:MM AM/PM' : 'HH:MM',
   disabled = false,
   className,
