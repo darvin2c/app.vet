@@ -81,10 +81,7 @@ export function AppointmentEdit({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent
-        className="!w-full !max-w-2xl overflow-y-auto"
-        side="bottom"
-      >
+      <SheetContent className="!w-full !max-w-2xl overflow-y-auto">
         <CanAccess resource="products" action="update">
           <ScrollArea className="max-h-[calc(100vh-90px)]">
             <SheetHeader>
