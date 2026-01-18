@@ -2,17 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { CustomerForm } from './customer-form'
 import {
   createCustomerSchema,
@@ -20,7 +10,6 @@ import {
 } from '@/schemas/customers.schema'
 import useCustomerCreate from '@/hooks/customers/use-customer-create'
 import { Tables } from '@/types/supabase.types'
-import { Field } from '../ui/field'
 import CanAccess from '@/components/ui/can-access'
 
 interface CustomerCreateProps {
@@ -57,51 +46,22 @@ export function CustomerCreate({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className={`!w-full !max-w-4xl`} side="right">
-        <ScrollArea className="h-full">
-          <CanAccess resource="products" action="create">
-            <SheetHeader>
-              <SheetTitle>Crear Cliente</SheetTitle>
-              <SheetDescription>
-                Ingresa la información del cliente.
-              </SheetDescription>
-            </SheetHeader>
-
-            <div className="flex-1 min-h-0">
-              <div className="px-4">
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmit as any)}
-                    className="space-y-4"
-                  >
-                    <CustomerForm mode="create" />
-                  </form>
-                </Form>
-              </div>
-            </div>
-
-            <SheetFooter>
-              <Field orientation="horizontal">
-                <Button
-                  type="submit"
-                  onClick={form.handleSubmit(onSubmit as any)}
-                  disabled={createCustomer.isPending}
-                >
-                  {createCustomer.isPending ? 'Creando...' : 'Crear Cliente'}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={createCustomer.isPending}
-                >
-                  Cancelar
-                </Button>
-              </Field>
-            </SheetFooter>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Crear Cliente"
+        description="Ingresa la información del cliente."
+        form={form}
+        onSubmit={onSubmit as any}
+        isPending={createCustomer.isPending}
+        submitLabel="Crear Cliente"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-4xl"
+      >
+        <CustomerForm mode="create" />
+      </FormSheet>
+    </CanAccess>
   )
 }

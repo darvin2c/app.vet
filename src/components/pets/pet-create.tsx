@@ -4,20 +4,8 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { petCreateSchema } from '@/schemas/pets.schema'
 import { useCreatePet } from '@/hooks/pets/use-pet-create'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { PetForm } from './pet-form'
-import { Form } from '../ui/form'
-import { Button } from '../ui/button'
-import { useIsMobile } from '@/hooks/use-mobile'
-import { ScrollArea } from '../ui/scroll-area'
-import { Field } from '../ui/field'
 import CanAccess from '@/components/ui/can-access'
 
 interface PetCreateProps {
@@ -28,7 +16,6 @@ interface PetCreateProps {
 
 export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
   const createPet = useCreatePet()
-  const isMobile = useIsMobile()
   const form = useForm({
     resolver: zodResolver(petCreateSchema),
     defaultValues: {
@@ -51,46 +38,22 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
   })
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!max-w-4xl !w-full">
-        <ScrollArea className="h-full">
-          <CanAccess resource="products" action="create">
-            <SheetHeader>
-              <SheetTitle>Crear Mascota</SheetTitle>
-              <SheetDescription>
-                Completa la información para registrar una nueva mascota.
-              </SheetDescription>
-            </SheetHeader>
-
-            <div className="px-4">
-              <Form {...form}>
-                <form onSubmit={onSubmit} className="space-y-4">
-                  <PetForm />
-                </form>
-              </Form>
-            </div>
-
-            <SheetFooter>
-              <Field orientation="horizontal">
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={createPet.isPending}
-                >
-                  {createPet.isPending ? 'Creando...' : 'Crear Mascota'}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={createPet.isPending}
-                >
-                  Cancelar
-                </Button>
-              </Field>
-            </SheetFooter>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Crear Mascota"
+        description="Completa la información para registrar una nueva mascota."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createPet.isPending}
+        submitLabel="Crear Mascota"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-4xl"
+      >
+        <PetForm />
+      </FormSheet>
+    </CanAccess>
   )
 }

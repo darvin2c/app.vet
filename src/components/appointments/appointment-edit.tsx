@@ -3,16 +3,7 @@
 import { useEffect } from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { AppointmentForm } from './appointment-form'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 import {
@@ -20,10 +11,7 @@ import {
   updateAppointmentSchema,
 } from '@/schemas/appointments.schema'
 import type { Tables } from '@/types/supabase.types'
-import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
-import { Field, FieldGroup } from '../ui/field'
-import { ScrollArea } from '../ui/scroll-area'
 
 type Appointment = Tables<'appointments'>
 
@@ -80,53 +68,22 @@ export function AppointmentEdit({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl overflow-y-auto">
-        <CanAccess resource="products" action="update">
-          <ScrollArea className="max-h-[calc(100vh-90px)]">
-            <SheetHeader>
-              <SheetTitle>Editar Cita</SheetTitle>
-              <SheetDescription>
-                Modifica los datos de la cita médica
-              </SheetDescription>
-            </SheetHeader>
-            <div className="px-4 pb-4">
-              <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-6"
-                >
-                  <AppointmentForm />
-                </form>
-              </Form>
-            </div>
-          </ScrollArea>
-          <SheetFooter>
-            <FieldGroup>
-              <Field orientation="horizontal">
-                <ResponsiveButton
-                  type="submit"
-                  isResponsive={false}
-                  onClick={form.handleSubmit(onSubmit)}
-                  isLoading={updateAppointment.isPending}
-                  icon={Check}
-                >
-                  Actualizar Cita
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  isResponsive={false}
-                  onClick={() => onOpenChange(false)}
-                  disabled={updateAppointment.isPending}
-                  icon={X}
-                >
-                  Cancelar
-                </ResponsiveButton>
-              </Field>
-            </FieldGroup>
-          </SheetFooter>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Cita"
+        description="Modifica los datos de la cita médica"
+        form={form}
+        onSubmit={onSubmit}
+        isPending={updateAppointment.isPending}
+        submitLabel="Actualizar Cita"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <AppointmentForm />
+      </FormSheet>
+    </CanAccess>
   )
 }

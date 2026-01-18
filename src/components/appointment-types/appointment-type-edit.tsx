@@ -4,17 +4,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useAppointmentTypeUpdate } from '@/hooks/appointment-types/use-appointment-type-update'
 import { AppointmentTypeForm } from './appointment-type-form'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { FormSheet } from '@/components/ui/form-sheet'
 import type { Tables } from '@/types/supabase.types'
-import { Form } from '../ui/form'
 import { Separator } from '../ui/separator'
 import { appointmentTypeUpdateSchema } from '@/schemas/appointment-types.schema'
 import CanAccess from '@/components/ui/can-access'
@@ -63,43 +54,23 @@ export function AppointmentTypeEdit({
   }
 
   return (
-    <Sheet open={open} onOpenChange={handleOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl">
-        <CanAccess resource="products" action="update">
-          <SheetHeader>
-            <SheetTitle>Editar Tipo de Cita</SheetTitle>
-            <SheetDescription>
-              Modifica los campos para actualizar el tipo de cita.
-            </SheetDescription>
-          </SheetHeader>
-
-          <Form {...form}>
-            <form onSubmit={onSubmit}>
-              <AppointmentTypeForm />
-              <Separator className="mt-4" />
-              <SheetFooter className="flex-row">
-                <ResponsiveButton
-                  type="button"
-                  variant="outline"
-                  onClick={() => handleOpenChange(false)}
-                  isLoading={updateMutation.isPending}
-                  isResponsive={false}
-                >
-                  Cancelar
-                </ResponsiveButton>
-                <ResponsiveButton
-                  type="submit"
-                  isLoading={updateMutation.isPending}
-                  disabled={updateMutation.isPending}
-                  isResponsive={false}
-                >
-                  Actualizar Tipo de Cita
-                </ResponsiveButton>
-              </SheetFooter>
-            </form>
-          </Form>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open as boolean}
+        onOpenChange={handleOpenChange}
+        title="Editar Tipo de Cita"
+        description="Modifica los campos para actualizar el tipo de cita."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updateMutation.isPending}
+        submitLabel="Actualizar Tipo de Cita"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <AppointmentTypeForm />
+        <Separator className="mt-4" />
+      </FormSheet>
+    </CanAccess>
   )
 }

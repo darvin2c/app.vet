@@ -7,18 +7,7 @@ import { petUpdateSchema, UpdatePetSchema } from '@/schemas/pets.schema'
 import { useUpdatePet } from '@/hooks/pets/use-pet-update'
 import { Tables } from '@/types/supabase.types'
 import { PetForm } from './pet-form'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { Form } from '../ui/form'
-import { Button } from '../ui/button'
-import { Field } from '../ui/field'
-import { ScrollArea } from '../ui/scroll-area'
+import { FormSheet } from '@/components/ui/form-sheet'
 import CanAccess from '@/components/ui/can-access'
 
 interface PetEditProps {
@@ -71,48 +60,22 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
   })
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="!w-full !max-w-4xl">
-        <ScrollArea className="max-h-screen">
-          <CanAccess resource="products" action="update">
-            <SheetHeader>
-              <SheetTitle>Editar Mascota</SheetTitle>
-              <SheetDescription>
-                Modifica la información de la mascota.
-              </SheetDescription>
-            </SheetHeader>
-
-            <div className="px-4 overflow-y-auto">
-              <Form {...form}>
-                <form onSubmit={onSubmit} className="space-y-4">
-                  <PetForm mode="edit" pet={pet} />
-                </form>
-              </Form>
-            </div>
-
-            <SheetFooter>
-              <Field orientation="horizontal">
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={updatePet.isPending}
-                >
-                  {updatePet.isPending
-                    ? 'Actualizando...'
-                    : 'Actualizar Mascota'}
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={updatePet.isPending}
-                >
-                  Cancelar
-                </Button>
-              </Field>
-            </SheetFooter>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Mascota"
+        description="Modifica la información de la mascota."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updatePet.isPending}
+        submitLabel="Actualizar Mascota"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-4xl"
+      >
+        <PetForm mode="edit" pet={pet} />
+      </FormSheet>
+    </CanAccess>
   )
 }

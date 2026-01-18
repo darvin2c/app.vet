@@ -2,14 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from '@/components/ui/sheet'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpecialtyForm } from './specialty-form'
 import {
@@ -17,7 +10,6 @@ import {
   specialtyCreateSchema,
 } from '@/schemas/specialties.schema'
 import useSpecialtyCreate from '@/hooks/specialties/use-specialty-create'
-import { Form } from '../ui/form'
 import CanAccess from '@/components/ui/can-access'
 
 interface SpecialtyCreateProps {
@@ -43,29 +35,22 @@ export function SpecialtyCreate({ open, onOpenChange }: SpecialtyCreateProps) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
-        <CanAccess resource="products" action="create">
-          <SheetHeader>
-            <SheetTitle>Crear Especialidad</SheetTitle>
-            <SheetDescription>
-              Agrega una nueva especialidad para tu centro veterinario.
-            </SheetDescription>
-          </SheetHeader>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <SpecialtyForm />
-
-              <SheetFooter>
-                <ResponsiveButton type="submit" isLoading={isPending}>
-                  Crear Especialidad
-                </ResponsiveButton>
-              </SheetFooter>
-            </form>
-          </Form>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Crear Especialidad"
+        description="Agrega una nueva especialidad para tu centro veterinario."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={isPending}
+        submitLabel="Crear Especialidad"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <SpecialtyForm />
+      </FormSheet>
+    </CanAccess>
   )
 }

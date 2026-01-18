@@ -4,22 +4,12 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 
 import { ProductUnitForm } from './product-unit-form'
 import useProductUnitUpdate from '@/hooks/product-units/use-product-unit-update'
 import { Tables } from '@/types/supabase.types'
 import { productUnitUpdateSchema } from '@/schemas/product-units.schema'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import CanAccess from '@/components/ui/can-access'
 
 interface ProductUnitEditProps {
@@ -63,43 +53,22 @@ export function ProductUnitEdit({
   })
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-4xl">
-        <ScrollArea className="h-full">
-          <CanAccess resource="products" action="update">
-            <SheetHeader>
-              <SheetTitle>Editar Unidad de Producto</SheetTitle>
-              <SheetDescription>
-                Modifica los datos de la unidad de producto.
-              </SheetDescription>
-            </SheetHeader>
-            <Form {...form}>
-              <form onSubmit={onSubmit} className="space-y-4">
-                <div className="px-4 overflow-y-auto">
-                  <ProductUnitForm />
-                </div>
-                <SheetFooter className="flex-row">
-                  <Button
-                    type="submit"
-                    onClick={onSubmit}
-                    disabled={mutation.isPending}
-                  >
-                    Actualizar Unidad
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => onOpenChange(false)}
-                    disabled={mutation.isPending}
-                  >
-                    Cancelar
-                  </Button>
-                </SheetFooter>
-              </form>
-            </Form>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Unidad de Producto"
+        description="Modifica los datos de la unidad de producto."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={mutation.isPending}
+        submitLabel="Actualizar Unidad"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-4xl"
+      >
+        <ProductUnitForm />
+      </FormSheet>
+    </CanAccess>
   )
 }

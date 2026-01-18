@@ -3,17 +3,8 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import { ScrollArea } from '@/components/ui/scroll-area'
-import { Form } from '@/components/ui/form'
 import { Field } from '@/components/ui/field'
 import { UserInviteForm } from './user-invite-form'
 import {
@@ -79,45 +70,25 @@ export function UserInviteCreate({
   })
 
   return (
-    <Sheet open={isOpen} onOpenChange={setOpen}>
-      <SheetContent className="!max-w-2xl">
-        <ScrollArea>
-          <CanAccess resource="products" action="create">
-            <SheetHeader>
-              <SheetTitle>Invitar Usuarios</SheetTitle>
-              <SheetDescription>
-                Envía invitaciones por correo a usuarios para unirse al tenant.
-              </SheetDescription>
-            </SheetHeader>
-
-            <Form {...(form as any)}>
-              <form onSubmit={onSubmit} className="p-6">
-                <UserInviteForm />
-              </form>
-            </Form>
-
-            <SheetFooter>
-              <Field orientation="horizontal">
-                <ResponsiveButton
-                  onClick={onSubmit}
-                  isLoading={createOne.isPending}
-                  type="submit"
-                  variant="default"
-                >
-                  Enviar Invitaciones
-                </ResponsiveButton>
-                <ResponsiveButton
-                  onClick={() => setOpen(false)}
-                  variant="outline"
-                  isLoading={createOne.isPending}
-                >
-                  Cancelar
-                </ResponsiveButton>
-              </Field>
-            </SheetFooter>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={isOpen}
+        onOpenChange={setOpen as any}
+        title="Invitar Usuarios"
+        description="Envía invitaciones por correo a usuarios para unirse al tenant."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createOne.isPending}
+        submitLabel="Enviar Invitaciones"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="p-6">
+          <UserInviteForm />
+          <Field orientation="horizontal" />
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

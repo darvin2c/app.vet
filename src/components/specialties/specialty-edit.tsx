@@ -2,18 +2,10 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from '@/components/ui/sheet'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpecialtyForm } from './specialty-form'
 import useSpecialtyUpdate from '@/hooks/specialties/use-specialty-update'
-import { Form } from '@/components/ui/form'
 import { Tables } from '@/types/supabase.types'
 import {
   SpecialtyUpdateSchema,
@@ -48,30 +40,20 @@ export function SpecialtyEdit({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Editar Especialidad</SheetTitle>
-          <SheetDescription>
-            Actualiza la información de la especialidad seleccionada.
-          </SheetDescription>
-        </SheetHeader>
-
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <SpecialtyForm />
-
-            <SheetFooter>
-              <ResponsiveButton
-                type="submit"
-                isLoading={updateSpecialty.isPending}
-              >
-                Guardar Cambios
-              </ResponsiveButton>
-            </SheetFooter>
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Especialidad"
+      description="Actualiza la información de la especialidad seleccionada."
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateSpecialty.isPending}
+      submitLabel="Guardar Cambios"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <SpecialtyForm />
+    </FormSheet>
   )
 }

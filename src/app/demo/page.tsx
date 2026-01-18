@@ -21,7 +21,8 @@ const demos = [
   },
   {
     title: 'Form Sheet',
-    description: 'Componente reutilizable para formularios en sheets laterales.',
+    description:
+      'Componente reutilizable para formularios en sheets laterales.',
     href: '/demo/form-sheet',
   },
   {
