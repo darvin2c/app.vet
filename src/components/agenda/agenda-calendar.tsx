@@ -17,6 +17,7 @@ import dayjs from '@/lib/dayjs'
 import Event from './event'
 import { AgendaEventForm } from './agenda-event-form'
 import { cx } from 'class-variance-authority'
+import { Dayjs } from 'dayjs'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -81,10 +82,13 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setView(newView)
   }
 
-  const handleDateChange = useCallback((date: any) => {
-    startTransition(() => {
-      setCurrentDate(dayjs(date))
-    })
+  const handleDateChange = useCallback((date: Dayjs) => {
+    // Defer update to avoid "Cannot update ... while rendering" error
+    setTimeout(() => {
+      startTransition(() => {
+        setCurrentDate(dayjs(date))
+      })
+    }, 0)
   }, [])
 
   const businessHoursCss = useMemo(() => {
