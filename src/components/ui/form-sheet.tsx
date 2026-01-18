@@ -14,9 +14,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import CanAccess from '@/components/ui/can-access'
 import { cn } from '@/lib/utils'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { Spinner } from './spinner'
 
 interface FormSheetProps<T extends FieldValues> {
   open: boolean
@@ -27,13 +27,11 @@ interface FormSheetProps<T extends FieldValues> {
   form: UseFormReturn<T>
   onSubmit: (data: T) => void
   children: React.ReactNode
-  isLoading?: boolean
+  isPending?: boolean
   submitLabel?: string
   cancelLabel?: string
   className?: string
   side?: 'top' | 'bottom' | 'left' | 'right'
-  resource?: string
-  action?: string
 }
 
 export function FormSheet<T extends FieldValues>({
@@ -45,13 +43,11 @@ export function FormSheet<T extends FieldValues>({
   form,
   onSubmit,
   children,
-  isLoading = false,
+  isPending = false,
   submitLabel = 'Guardar',
   cancelLabel = 'Cancelar',
   className,
   side = 'right',
-  resource,
-  action,
 }: FormSheetProps<T>) {
   const isMobile = useIsMobile()
 
@@ -83,13 +79,13 @@ export function FormSheet<T extends FieldValues>({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={isPending}
                 className="flex-1"
               >
                 {cancelLabel}
               </Button>
-              <Button type="submit" disabled={isLoading} className="flex-1">
-                {isLoading ? 'Guardando...' : submitLabel}
+              <Button type="submit" disabled={isPending} className="flex-1">
+                {isPending ? 'Guardando...' : submitLabel}
               </Button>
             </div>
           ) : (
@@ -98,12 +94,12 @@ export function FormSheet<T extends FieldValues>({
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
-                disabled={isLoading}
+                disabled={isPending}
               >
                 {cancelLabel}
               </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? 'Guardando...' : submitLabel}
+              <Button type="submit" disabled={isPending}>
+                {isPending ? 'Guardando...' : submitLabel}
               </Button>
             </>
           )}
@@ -120,18 +116,12 @@ export function FormSheet<T extends FieldValues>({
         className={cn(
           '!w-full p-0 gap-0',
           isMobile
-            ? 'h-[90vh] !max-w-full rounded-t-xl'
+            ? 'max-h-[95vh] !max-w-full rounded-t-xl'
             : 'sm:!max-w-xl h-full',
           className
         )}
       >
-        {resource && action ? (
-          <CanAccess resource={resource} action={action}>
-            {FormContent}
-          </CanAccess>
-        ) : (
-          FormContent
-        )}
+        {FormContent}
       </SheetContent>
     </Sheet>
   )

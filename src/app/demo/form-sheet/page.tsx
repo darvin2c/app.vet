@@ -84,7 +84,7 @@ export default function FormSheetDemo() {
         description="Agrega una nueva tarea a tu lista."
         form={form}
         onSubmit={onSubmit}
-        isLoading={loading}
+        isPending={loading}
         submitLabel="Crear Tarea"
       >
         <div className="space-y-4">
@@ -135,7 +135,7 @@ export default function FormSheetDemo() {
         description="Este formulario demuestra el comportamiento del scroll cuando hay muchos campos."
         form={formLong}
         onSubmit={onSubmit}
-        isLoading={loading}
+        isPending={loading}
         submitLabel="Guardar Todo"
       >
         <div className="space-y-6">
