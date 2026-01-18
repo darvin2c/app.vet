@@ -28,7 +28,6 @@ src/
 │   │   ├── <feature>-import.tsx # debes de usar un `./data-import` para mostrar el importador dentro de un Sheet
 │   │   ├── <feature>-delete.tsx  # debe de usar ui/alert-confirmation
 │   │   ├── <feature>-actions.tsx
-│   │   ├── <feature>-create-button.tsx
 │   │   └── <feature>-select.tsx # solo cuando se necesita
 │   └── ui/ # componentes reutilizables no deben de ser modificados salvo escepciones.
 ├── lib/
