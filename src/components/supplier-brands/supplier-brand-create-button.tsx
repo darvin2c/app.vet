@@ -2,30 +2,35 @@
 
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  ResponsiveButton,
+  ResponsiveButtonProps,
+} from '@/components/ui/responsive-button'
 import { SupplierBrandCreate } from './supplier-brand-create'
 
-interface SupplierBrandCreateButtonProps {
-  variant?: 'default' | 'outline' | 'ghost'
-  size?: 'default' | 'sm' | 'lg'
+interface SupplierBrandCreateButtonProps extends ResponsiveButtonProps {
   supplierId?: string
   brandId?: string
 }
 
 export function SupplierBrandCreateButton({
-  variant = 'default',
-  size = 'default',
+  children,
   supplierId,
   brandId,
+  ...props
 }: SupplierBrandCreateButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
     <>
-      <Button variant={variant} size={size} onClick={() => setOpen(true)}>
-        <Plus className="mr-2 h-4 w-4" />
-        Asignar Marca
-      </Button>
+      <ResponsiveButton
+        icon={Plus}
+        onClick={() => setOpen(true)}
+        tooltip="Asignar Marca"
+        {...props}
+      >
+        {children || 'Asignar Marca'}
+      </ResponsiveButton>
 
       <SupplierBrandCreate
         open={open}
