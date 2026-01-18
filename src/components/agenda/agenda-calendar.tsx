@@ -16,6 +16,7 @@ import AgendaHeader from './agenda-header'
 import dayjs from '@/lib/dayjs'
 import Event from './event'
 import { AgendaEventForm } from './agenda-event-form'
+import { cx } from 'class-variance-authority'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -197,7 +198,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   }, [view])
 
   return (
-    <div className={className}>
+    <div className={cx('min-h-0 min-w-0', className)}>
       <IlamyCalendar
         stickyViewHeader={true}
         events={events}
