@@ -185,6 +185,7 @@ Para las consultas y mutaciones de la base de datos se debe de usar react-query 
 
 - Para los formularios se usara `react-hook-form`
 - Para la validación se usara `zod`
+- Para los formularios en sheet (paneles laterales) se debe usar el componente `FormSheet` ubicado en `@/components/ui/form-sheet`. Este componente maneja la advertencia de cambios sin guardar y la estructura estándar.
 
 **Correcto**
 
