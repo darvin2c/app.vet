@@ -99,4 +99,15 @@ describe('EntitySelect — Controlled Mode', () => {
     await user.click(editBtn)
     expect(screen.getByRole('dialog').textContent).toContain('Editar 1')
   })
+
+  it('renderSelected personaliza la visualización del item seleccionado', () => {
+    render(
+      <EntitySelect
+        items={items}
+        value="1"
+        renderSelected={(item) => <span>Custom: {item.title}</span>}
+      />
+    )
+    expect(screen.getByText('Custom: Ana')).toBeTruthy()
+  })
 })

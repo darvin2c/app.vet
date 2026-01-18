@@ -1,6 +1,6 @@
 'use client'
 import { useMemo, useState } from 'react'
-import { Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import { Check, ChevronsUpDown, Plus, X, Edit, SearchX } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
 import {
@@ -20,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Spinner } from '@/components/ui/spinner'
 import {
   Empty,
+  EmptyDescription,
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
@@ -55,6 +56,7 @@ export interface EntitySelectProps {
     open: boolean
     onOpenChange: (open: boolean) => void
   }) => React.ReactNode
+  renderSelected?: (item: ComboboxItem) => React.ReactNode
 }
 
 export function EntitySelect(props: EntitySelectProps) {
@@ -72,6 +74,7 @@ export function EntitySelect(props: EntitySelectProps) {
     onSearchTermChange,
     renderCreate,
     renderEdit,
+    renderSelected,
   } = props
 
   const [open, setOpen] = useState(false)
@@ -119,22 +122,28 @@ export function EntitySelect(props: EntitySelectProps) {
               disabled={disabled}
             >
               {selected ? (
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-4 w-4">
-                    <AvatarImage src={selected.avatarUrl || ''} />
-                    <AvatarFallback className="text-xs">
-                      {selected.initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span>{selected.title}</span>
-                    {selected.subtitle && (
-                      <span className="text-sm text-muted-foreground">
-                        {selected.subtitle}
+                renderSelected ? (
+                  renderSelected(selected)
+                ) : (
+                  <div className="flex items-center gap-2 min-w-0 text-left">
+                    <Avatar className="h-5 w-5 shrink-0">
+                      <AvatarImage src={selected.avatarUrl || ''} />
+                      <AvatarFallback className="text-[10px]">
+                        {selected.initials}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col min-w-0 overflow-hidden">
+                      <span className="truncate text-sm font-medium leading-none">
+                        {selected.title}
                       </span>
-                    )}
+                      {selected.subtitle && (
+                        <span className="truncate text-xs text-muted-foreground leading-none mt-0.5">
+                          {selected.subtitle}
+                        </span>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )
               ) : (
                 <span className="text-muted-foreground">{placeholder}</span>
               )}
@@ -146,25 +155,31 @@ export function EntitySelect(props: EntitySelectProps) {
             align="start"
           >
             <Command>
-              <CommandInput
-                placeholder="Buscar…"
-                value={searchTerm}
-                onValueChange={handleSearchChange}
-              />
+              <div className="relative">
+                <CommandInput
+                  placeholder="Buscar…"
+                  value={searchTerm}
+                  onValueChange={handleSearchChange}
+                />
+                {isPending && items.length > 0 && (
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <Spinner className="h-4 w-4" />
+                  </div>
+                )}
+              </div>
               <CommandList>
                 <CommandEmpty>
-                  {isPending ? (
-                    <div className="min-h-[100px]">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <Empty>
-                      <EmptyHeader>
-                        <EmptyMedia />
-                        <EmptyTitle>Sin resultados</EmptyTitle>
-                      </EmptyHeader>
-                    </Empty>
-                  )}
+                  <Empty>
+                    <EmptyHeader>
+                      <EmptyMedia>
+                        <SearchX className="h-10 w-10 text-muted-foreground" />
+                      </EmptyMedia>
+                      <EmptyTitle>Sin resultados</EmptyTitle>
+                      <EmptyDescription>
+                        No se encontraron coincidencias para la búsqueda actual.
+                      </EmptyDescription>
+                    </EmptyHeader>
+                  </Empty>
                 </CommandEmpty>
                 <CommandGroup className="max-h-64 overflow-auto">
                   {items.map((item) => (
