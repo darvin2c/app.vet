@@ -12,7 +12,7 @@ function requestOrigin(req: NextRequest) {
   return `${proto}://${xfHost ?? host}${pathname}${search}`
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // Update session and refresh tokens
   const headers = new Headers()
   const currentUlr = requestOrigin(request)
