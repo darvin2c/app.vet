@@ -222,6 +222,17 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         onDateChange={handleDateChange}
         disableDragAndDrop={true}
         renderEventForm={(props) => <AgendaEventForm {...props} />}
+        renderCurrentTimeIndicator={({ progress, currentTime }) => (
+          <div
+            style={{ top: `${progress}%` }}
+            className="absolute left-0 right-0 z-20 pointer-events-none"
+          >
+            <div className="h-[1px] w-full bg-red-500" />
+            <div className="absolute left-0 -translate-y-1/2 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-r-sm shadow-sm">
+              {currentTime.format('HH:mm')}
+            </div>
+          </div>
+        )}
       />
 
       {businessHoursCss && <style>{businessHoursCss}</style>}
