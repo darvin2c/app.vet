@@ -11,6 +11,16 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Form } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -50,6 +60,53 @@ export function FormSheet<T extends FieldValues>({
   side = 'right',
 }: FormSheetProps<T>) {
   const isMobile = useIsMobile()
+  const [showExitWarning, setShowExitWarning] = React.useState(false)
+  const { isDirty } = form.formState
+
+  React.useEffect(() => {
+    if (!open) return
+
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (isDirty) {
+        e.preventDefault()
+        e.returnValue = ''
+        return ''
+      }
+    }
+
+    const handlePopState = (e: PopStateEvent) => {
+      if (isDirty) {
+        // Prevenir la navegación hacia atrás
+        history.pushState(null, '', window.location.href)
+        setShowExitWarning(true)
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    window.addEventListener('popstate', handlePopState)
+
+    // Agregar un estado al historial cuando se abre el sheet para poder interceptar el "atrás"
+    history.pushState(null, '', window.location.href)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+      window.removeEventListener('popstate', handlePopState)
+    }
+  }, [open, isDirty])
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!newOpen && isDirty) {
+      setShowExitWarning(true)
+    } else {
+      onOpenChange(newOpen)
+    }
+  }
+
+  const handleConfirmExit = () => {
+    setShowExitWarning(false)
+    form.reset() // Opcional: limpiar el formulario al salir forzosamente
+    onOpenChange(false)
+  }
 
   const FormContent = (
     <Form {...form}>
@@ -78,7 +135,7 @@ export function FormSheet<T extends FieldValues>({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => onOpenChange(false)}
+                onClick={() => handleOpenChange(false)}
                 disabled={isPending}
                 className="flex-1"
               >
@@ -100,7 +157,7 @@ export function FormSheet<T extends FieldValues>({
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => onOpenChange(false)}
+                onClick={() => handleOpenChange(false)}
                 disabled={isPending}
               >
                 {cancelLabel}
@@ -123,20 +180,48 @@ export function FormSheet<T extends FieldValues>({
   )
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
-      <SheetContent
-        side={isMobile ? 'bottom' : side}
-        className={cn(
-          '!w-full p-0 gap-0',
-          isMobile
-            ? 'max-h-[95vh] !max-w-full rounded-t-xl'
-            : 'sm:!max-w-xl h-full',
-          className
-        )}
-      >
-        {FormContent}
-      </SheetContent>
-    </Sheet>
+    <>
+      <Sheet open={open} onOpenChange={handleOpenChange}>
+        {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
+        <SheetContent
+          side={isMobile ? 'bottom' : side}
+          className={cn(
+            '!w-full p-0 gap-0',
+            isMobile
+              ? 'max-h-[95vh] !max-w-full rounded-t-xl'
+              : 'sm:!max-w-xl h-full',
+            className
+          )}
+          onInteractOutside={(e) => {
+            if (isDirty) {
+              e.preventDefault()
+              setShowExitWarning(true)
+            }
+          }}
+        >
+          {FormContent}
+        </SheetContent>
+      </Sheet>
+
+      <AlertDialog open={showExitWarning} onOpenChange={setShowExitWarning}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              ¿Estás seguro de que quieres salir?
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              Tienes cambios sin guardar. Si sales ahora, perderás toda la
+              información ingresada.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction onClick={handleConfirmExit}>
+              Salir sin guardar
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   )
 }
