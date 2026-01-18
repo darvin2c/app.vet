@@ -5,14 +5,7 @@ import { useForm, FormProvider, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { AttachmentForm } from './attachment-form'
 import {
@@ -89,45 +82,31 @@ export function AttachmentCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="max-h-[90vh]">
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>
-              {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
-            </DrawerTitle>
-            <DrawerDescription>
-              {allowMultiple
-                ? 'Selecciona múltiples archivos para subir al registro médico'
-                : 'Selecciona un archivo para subir al registro médico'}
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4 overflow-y-auto">
-            <FormProvider {...form}>
-              <AttachmentForm allowMultiple={allowMultiple} />
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="button"
-              onClick={handleSubmit}
-              isLoading={isLoading}
-              disabled={isLoading}
-            >
-              {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title={allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
+        description={
+          allowMultiple
+            ? 'Selecciona múltiples archivos para subir al registro médico'
+            : 'Selecciona un archivo para subir al registro médico'
+        }
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={isLoading}
+        submitLabel={allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4 overflow-y-auto">
+          <AttachmentForm allowMultiple={allowMultiple} />
+          <ResponsiveButton type="submit" className="sr-only">
+            {allowMultiple ? 'Subir Archivos' : 'Subir Archivo'}
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

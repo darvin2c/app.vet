@@ -2,14 +2,7 @@
 
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalParameterForm } from './clinical-parameter-form'
 import {
@@ -54,44 +47,25 @@ export function ClinicalParameterEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Parámetros Clínicos</DrawerTitle>
-            <DrawerDescription>
-              Modifica los parámetros clínicos del registro médico
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <FormProvider {...form}>
-            <div className="px-4">
-              <ClinicalParameterForm petId={clinicalParameter.pet_id} />
-            </div>
-          </FormProvider>
-
-          <DrawerFooter>
-            <div className="flex gap-2">
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                className="flex-1"
-              >
-                Cancelar
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="button"
-                onClick={form.handleSubmit(onSubmit)}
-                isLoading={updateClinicalParameter.isPending}
-                className="flex-1"
-              >
-                Actualizar Parámetros
-              </ResponsiveButton>
-            </div>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Parámetros Clínicos"
+      description="Modifica los parámetros clínicos del registro médico"
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateClinicalParameter.isPending}
+      submitLabel="Actualizar Parámetros"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <div className="px-4">
+        <ClinicalParameterForm petId={clinicalParameter.pet_id} />
+        <ResponsiveButton type="submit" className="sr-only">
+          Actualizar Parámetros
+        </ResponsiveButton>
+      </div>
+    </FormSheet>
   )
 }

@@ -4,22 +4,11 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 
 import { StaffForm } from './staff-form'
 import useCreateStaff from '@/hooks/staff/use-staff-create'
 import { Separator } from '../ui/separator'
-import { ScrollArea } from '../ui/scroll-area'
 import { staffCreateSchema } from '@/schemas/staff.schema'
 import CanAccess from '@/components/ui/can-access'
 
@@ -60,41 +49,26 @@ export function StaffCreate({
   })
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      {children && <SheetTrigger asChild>{children}</SheetTrigger>}
-      <SheetContent className="!w-full !max-w-2xl">
-        <ScrollArea className="!h-full">
-          <CanAccess resource="products" action="create">
-            <SheetHeader>
-              <SheetTitle>Crear Personal</SheetTitle>
-              <SheetDescription>
-                Completa los datos para crear un nuevo miembro del personal.
-              </SheetDescription>
-            </SheetHeader>
-            <Form {...form}>
-              <form onSubmit={onSubmit}>
-                <div className="px-4">
-                  <StaffForm />
-                </div>
-                <Separator className="mt-4" />
-                <SheetFooter>
-                  <Button type="submit" disabled={mutation.isPending}>
-                    Crear Personal
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => setOpen(false)}
-                    disabled={mutation.isPending}
-                  >
-                    Cancelar
-                  </Button>
-                </SheetFooter>
-              </form>
-            </Form>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open as boolean}
+        onOpenChange={setOpen as any}
+        trigger={children as any}
+        title="Crear Personal"
+        description="Completa los datos para crear un nuevo miembro del personal."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={mutation.isPending}
+        submitLabel="Crear Personal"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4">
+          <StaffForm />
+        </div>
+        <Separator className="mt-4" />
+      </FormSheet>
+    </CanAccess>
   )
 }

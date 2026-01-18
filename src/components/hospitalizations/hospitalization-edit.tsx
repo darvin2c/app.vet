@@ -4,14 +4,7 @@ import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { HospitalizationForm } from './hospitalization-form'
 import { useUpdateHospitalization } from '@/hooks/hospitalizations/use-hospitalization-update'
@@ -87,44 +80,25 @@ export function HospitalizationEdit({
   if (!hospitalization) return null
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Hospitalización</DrawerTitle>
-            <DrawerDescription>
-              Modifica los datos de la hospitalización
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <HospitalizationForm />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={updateHospitalization.isPending}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Actualizar Hospitalización
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Hospitalización"
+      description="Modifica los datos de la hospitalización"
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateHospitalization.isPending}
+      submitLabel="Actualizar Hospitalización"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <div className="px-4">
+        <HospitalizationForm />
+        <ResponsiveButton type="submit" className="sr-only">
+          Actualizar Hospitalización
+        </ResponsiveButton>
+      </div>
+    </FormSheet>
   )
 }

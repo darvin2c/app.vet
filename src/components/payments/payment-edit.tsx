@@ -2,17 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ScrollArea } from '../ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { PaymentForm } from './payment-form'
 import {
   UpdatePaymentSchema,
@@ -20,7 +10,6 @@ import {
 } from '@/schemas/payments.schema'
 import usePaymentUpdate from '@/hooks/payments/use-payment-update'
 import { Tables } from '@/types/supabase.types'
-import { Spinner } from '../ui/spinner'
 import CanAccess from '@/components/ui/can-access'
 
 interface PaymentEditProps {
@@ -53,53 +42,22 @@ export function PaymentEdit({ payment, open, onOpenChange }: PaymentEditProps) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl">
-        <CanAccess resource="products" action="update">
-          <SheetHeader>
-            <SheetTitle>Editar Pago</SheetTitle>
-            <SheetDescription>
-              Modifica la información del pago. Solo se pueden editar la
-              referencia y las notas.
-            </SheetDescription>
-          </SheetHeader>
-
-          <ScrollArea className="px-6">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit as any)}
-                className="space-y-4"
-              >
-                <PaymentForm mode="update" payment={payment} />
-              </form>
-            </Form>
-          </ScrollArea>
-
-          <SheetFooter className="gap-2 flex-row">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={updatePayment.isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              onClick={form.handleSubmit(onSubmit as any)}
-              disabled={updatePayment.isPending}
-            >
-              {updatePayment.isPending ? (
-                <>
-                  <Spinner />
-                  Actualizando...
-                </>
-              ) : (
-                'Actualizar Pago'
-              )}
-            </Button>
-          </SheetFooter>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Pago"
+        description="Modifica la información del pago. Solo se pueden editar la referencia y las notas."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updatePayment.isPending}
+        submitLabel="Actualizar Pago"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <PaymentForm mode="update" payment={payment} />
+      </FormSheet>
+    </CanAccess>
   )
 }

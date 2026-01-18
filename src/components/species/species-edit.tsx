@@ -3,15 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { SpeciesForm } from './species-form'
 import {
   speciesUpdateSchema,
@@ -19,9 +11,6 @@ import {
 } from '@/schemas/species.schema'
 import { useSpeciesUpdate } from '@/hooks/species/use-species-update'
 import { Tables } from '@/types/supabase.types'
-import { ScrollArea } from '../ui/scroll-area'
-import { Form } from '../ui/form'
-import { Field } from '../ui/field'
 import CanAccess from '@/components/ui/can-access'
 
 interface SpeciesEditProps {
@@ -73,47 +62,22 @@ export function SpeciesEdit({
   })
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetContent className="!max-w-2xl">
-        <ScrollArea>
-          <CanAccess resource="products" action="update">
-            <SheetHeader>
-              <SheetTitle>Editar Especie</SheetTitle>
-              <SheetDescription>
-                Modifica la información de la especie &quot;{species.name}
-                &quot;.
-              </SheetDescription>
-            </SheetHeader>
-
-            <Form {...form}>
-              <form onSubmit={onSubmit} className="px-4">
-                <SpeciesForm />
-              </form>
-            </Form>
-
-            <SheetFooter>
-              <Field orientation="horizontal">
-                <ResponsiveButton
-                  onClick={onSubmit}
-                  isLoading={updateSpecies.isPending}
-                  disabled={updateSpecies.isPending}
-                  type="submit"
-                  variant="default"
-                >
-                  Guardar Cambios
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={updateSpecies.isPending}
-                >
-                  Cancelar
-                </ResponsiveButton>
-              </Field>
-            </SheetFooter>
-          </CanAccess>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={setOpen as any}
+        title="Editar Especie"
+        description={`Modifica la información de la especie "${species.name}".`}
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updateSpecies.isPending}
+        submitLabel="Guardar Cambios"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <SpeciesForm />
+      </FormSheet>
+    </CanAccess>
   )
 }

@@ -3,20 +3,11 @@
 import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { BreedForm } from './breed-form'
 import { useBreedUpdate } from '@/hooks/breeds/use-breed-update'
 import { breedUpdateSchema, type BreedUpdate } from '@/schemas/breeds.schema'
 import { Tables } from '@/types/supabase.types'
-import { ScrollArea } from '../ui/scroll-area'
 
 interface BreedEditProps {
   open: boolean
@@ -56,43 +47,20 @@ export function BreedEdit({ open, onOpenChange, breed }: BreedEditProps) {
   })
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="max-w-2xl">
-        <ScrollArea>
-          <SheetHeader>
-            <SheetTitle>Editar Raza</SheetTitle>
-            <SheetDescription>
-              Modifica los datos de la raza {breed.name}
-            </SheetDescription>
-          </SheetHeader>
-
-          <div className="flex-1 overflow-y-auto px-4">
-            <FormProvider {...form}>
-              <form onSubmit={onSubmit} className="space-y-6">
-                <BreedForm />
-              </form>
-            </FormProvider>
-          </div>
-
-          <SheetFooter className="flex-row">
-            <ResponsiveButton
-              type="submit"
-              isLoading={updateBreed.isPending}
-              disabled={updateBreed.isPending}
-              onClick={onSubmit}
-            >
-              {updateBreed.isPending ? 'Actualizando...' : 'Actualizar Raza'}
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={updateBreed.isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </SheetFooter>
-        </ScrollArea>
-      </SheetContent>
-    </Sheet>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Raza"
+      description={`Modifica los datos de la raza ${breed.name}`}
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateBreed.isPending}
+      submitLabel="Actualizar Raza"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <BreedForm />
+    </FormSheet>
   )
 }

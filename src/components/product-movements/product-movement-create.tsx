@@ -2,23 +2,13 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ProductMovementForm } from './product-movement-form'
 import {
   CreateProductMovementSchema,
   CreateProductMovementData,
 } from '@/schemas/product-movements.schema'
 import useProductMovementCreate from '@/hooks/product-movements/use-product-movement-create'
-import { ScrollArea } from '../ui/scroll-area'
 import CanAccess from '@/components/ui/can-access'
 
 interface ProductMovementCreateProps {
@@ -52,48 +42,24 @@ export function ProductMovementCreate({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl">
-        <CanAccess resource="products" action="create">
-          <SheetHeader>
-            <SheetTitle>Crear Movimiento de Producto</SheetTitle>
-            <SheetDescription>
-              Completa la información para agregar un nuevo movimiento de
-              producto.
-            </SheetDescription>
-          </SheetHeader>
-
-          <ScrollArea className="px-6">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <ProductMovementForm mode="create" productId={productId} />
-              </form>
-            </Form>
-          </ScrollArea>
-
-          <SheetFooter className="gap-2 flex-row">
-            <Button
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={createProductMovement.isPending}
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              disabled={createProductMovement.isPending}
-            >
-              {createProductMovement.isPending
-                ? 'Creando...'
-                : 'Crear Movimiento'}
-            </Button>
-          </SheetFooter>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Crear Movimiento de Producto"
+        description="Completa la información para agregar un nuevo movimiento de producto."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createProductMovement.isPending}
+        submitLabel="Crear Movimiento"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-6">
+          <ProductMovementForm mode="create" productId={productId} />
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

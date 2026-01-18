@@ -2,17 +2,8 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
 import { UserRolesForm } from './user-roles-form'
 import { assignUserToTenantSchema } from '@/schemas/users.schema'
 import { useUserRoleUpdate } from '@/hooks/users/use-user-roles-update'
@@ -67,57 +58,34 @@ export function UserRolesEdit({
       : {}
 
   return (
-    <Sheet {...sheetProps}>
-      {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
-
-      {/* Si no hay trigger, usar el botón por defecto solo si no está en modo controlado */}
-      {!trigger && open === undefined && (
-        <SheetTrigger asChild>
-          <Button variant="ghost" size="sm">
-            <Settings className="h-4 w-4" />
-          </Button>
-        </SheetTrigger>
-      )}
-
-      <SheetContent side="right" className="!w-full !max-w-xl">
-        <CanAccess resource="products" action="update">
-          <SheetHeader>
-            <SheetTitle>Editar Roles de Usuario</SheetTitle>
-            <SheetDescription>
-              Gestiona los roles y permisos de {getFullName(user)}
-            </SheetDescription>
-          </SheetHeader>
-
-          <div className="px-4 overflow-y-auto">
-            <Form {...form}>
-              <form onSubmit={onSubmit} className="space-y-4">
-                <UserRolesForm user={user} />
-              </form>
-            </Form>
-          </div>
-
-          <SheetFooter>
-            <Field orientation="horizontal">
-              <Button
-                type="submit"
-                onClick={onSubmit}
-                disabled={updateUserRole.isPending}
-              >
-                {updateUserRole.isPending
-                  ? 'Actualizando...'
-                  : 'Actualizar Roles'}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => (onOpenChange ? onOpenChange(false) : undefined)}
-                disabled={updateUserRole.isPending}
-              >
-                Cancelar
-              </Button>
-            </Field>
-          </SheetFooter>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={(sheetProps as any).open}
+        onOpenChange={(sheetProps as any).onOpenChange}
+        trigger={
+          !trigger && open === undefined ? (
+            <Button variant="ghost" size="sm">
+              <Settings className="h-4 w-4" />
+            </Button>
+          ) : (
+            (trigger as any)
+          )
+        }
+        title="Editar Roles de Usuario"
+        description={`Gestiona los roles y permisos de ${getFullName(user)}`}
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updateUserRole.isPending}
+        submitLabel="Actualizar Roles"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
+        <div className="px-4 overflow-y-auto">
+          <UserRolesForm user={user} />
+          <Field orientation="horizontal" />
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

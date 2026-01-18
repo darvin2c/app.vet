@@ -28,7 +28,6 @@ src/
 │   │   ├── <feature>-import.tsx # debes de usar un `./data-import` para mostrar el importador dentro de un Sheet
 │   │   ├── <feature>-delete.tsx  # debe de usar ui/alert-confirmation
 │   │   ├── <feature>-actions.tsx
-│   │   ├── <feature>-create-button.tsx
 │   │   └── <feature>-select.tsx # solo cuando se necesita
 │   └── ui/ # componentes reutilizables no deben de ser modificados salvo escepciones.
 ├── lib/
@@ -185,6 +184,7 @@ Para las consultas y mutaciones de la base de datos se debe de usar react-query 
 
 - Para los formularios se usara `react-hook-form`
 - Para la validación se usara `zod`
+- Para los formularios en sheet (paneles laterales) se debe usar el componente `FormSheet` ubicado en `@/components/ui/form-sheet`. Este componente maneja la advertencia de cambios sin guardar y la estructura estándar.
 
 **Correcto**
 

@@ -2,17 +2,7 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ScrollArea } from '../ui/scroll-area'
-import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ProductMovementForm } from './product-movement-form'
 import {
   UpdateProductMovementSchema,
@@ -20,7 +10,6 @@ import {
 } from '@/schemas/product-movements.schema'
 import useProductMovementUpdate from '@/hooks/product-movements/use-product-movement-update'
 import { Tables } from '@/types/supabase.types'
-import { Spinner } from '../ui/spinner'
 
 interface ProductMovementEditProps {
   movement: Tables<'product_movements'>
@@ -56,50 +45,22 @@ export function ProductMovementEdit({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl">
-        <SheetHeader>
-          <SheetTitle>Editar Movimiento de Producto</SheetTitle>
-          <SheetDescription>
-            Modifica la información del movimiento de producto.
-          </SheetDescription>
-        </SheetHeader>
-
-        <ScrollArea className="px-6">
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit as any)}
-              className="space-y-4"
-            >
-              <ProductMovementForm mode="update" productMovement={movement} />
-            </form>
-          </Form>
-        </ScrollArea>
-
-        <SheetFooter className="gap-2 flex-row">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={updateProductMovement.isPending}
-          >
-            Cancelar
-          </Button>
-          <Button
-            type="submit"
-            onClick={form.handleSubmit(onSubmit as any)}
-            disabled={updateProductMovement.isPending}
-          >
-            {updateProductMovement.isPending ? (
-              <>
-                <Spinner />
-                Actualizando...
-              </>
-            ) : (
-              'Actualizar Movimiento'
-            )}
-          </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Movimiento de Producto"
+      description="Modifica la información del movimiento de producto."
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateProductMovement.isPending}
+      submitLabel="Actualizar Movimiento"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <div className="px-6">
+        <ProductMovementForm mode="update" productMovement={movement} />
+      </div>
+    </FormSheet>
   )
 }

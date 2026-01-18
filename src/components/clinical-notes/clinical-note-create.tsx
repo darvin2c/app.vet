@@ -3,14 +3,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalNoteForm } from './clinical-note-form'
 import {
@@ -66,46 +59,27 @@ export function ClinicalNoteCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Crear Nota Clínica</DrawerTitle>
-            <DrawerDescription>
-              Agregue una nueva nota clínica para la mascota
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4 pb-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <ClinicalNoteForm petId={petId} />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              isLoading={createClinicalNote.isPending}
-              disabled={createClinicalNote.isPending}
-            >
-              Crear Nota Clínica
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={createClinicalNote.isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Crear Nota Clínica"
+        description="Agregue una nueva nota clínica para la mascota"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createClinicalNote.isPending}
+        submitLabel="Crear Nota Clínica"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4 pb-4">
+          <ClinicalNoteForm petId={petId} />
+          <ResponsiveButton type="submit" className="sr-only">
+            Crear Nota Clínica
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

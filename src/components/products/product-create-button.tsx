@@ -24,7 +24,6 @@ export function ProductCreateButton({
       >
         {children || 'Nuevo'}
       </ResponsiveButton>
-
       <ProductCreate open={open} onOpenChange={setOpen} />
     </>
   )

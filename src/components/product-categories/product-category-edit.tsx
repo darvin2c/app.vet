@@ -4,16 +4,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 
 import { ProductCategoryForm } from './product-category-form'
 import useUpdateProductCategory from '@/hooks/product-categories/use-product-category-update'
@@ -63,39 +54,22 @@ export function ProductCategoryEdit({
   })
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-xl">
-        <DrawerHeader>
-          <DrawerTitle>Editar Categoría de Producto</DrawerTitle>
-          <DrawerDescription>
-            Modifica los datos de la categoría de producto.
-          </DrawerDescription>
-        </DrawerHeader>
-        <Form {...form}>
-          <form onSubmit={onSubmit} className="space-y-4">
-            <div className="px-4 overflow-y-auto">
-              <ProductCategoryForm />
-            </div>
-            <DrawerFooter>
-              <Button
-                type="submit"
-                onClick={form.handleSubmit(onSubmit as any)}
-                disabled={mutation.isPending}
-              >
-                Actualizar Categoría
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={mutation.isPending}
-              >
-                Cancelar
-              </Button>
-            </DrawerFooter>
-          </form>
-        </Form>
-      </DrawerContent>
-    </Drawer>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Categoría de Producto"
+      description="Modifica los datos de la categoría de producto."
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={mutation.isPending}
+      submitLabel="Actualizar Categoría"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-xl"
+    >
+      <div className="px-4 overflow-y-auto">
+        <ProductCategoryForm />
+      </div>
+    </FormSheet>
   )
 }

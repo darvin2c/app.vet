@@ -3,25 +3,14 @@
 import React from 'react'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form'
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { AppointmentForm } from './appointment-form'
 import { useAppointmentCreate } from '@/hooks/appointments/use-appointment-create'
 import {
   CreateAppointmentSchema,
   createAppointmentSchema,
 } from '@/schemas/appointments.schema'
-import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
-import { Field, FieldGroup } from '../ui/field'
 
 interface AppointmentCreateProps {
   open: boolean
@@ -91,51 +80,22 @@ export function AppointmentCreate({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-3xl overflow-y-auto">
-        <CanAccess resource="products" action="create">
-          <SheetHeader>
-            <SheetTitle>Nueva Cita</SheetTitle>
-            <SheetDescription>Programa una nueva cita médica</SheetDescription>
-          </SheetHeader>
-
-          <div className="px-4">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit as any)}
-                className="space-y-6"
-              >
-                <AppointmentForm disablePetSelection={!!defaultPetId} />
-              </form>
-            </Form>
-          </div>
-
-          <SheetFooter>
-            <FieldGroup>
-              <Field orientation="horizontal">
-                <ResponsiveButton
-                  type="submit"
-                  onClick={form.handleSubmit(onSubmit as any)}
-                  isLoading={createAppointment.isPending}
-                  isResponsive={false}
-                  icon={Check}
-                >
-                  {createAppointment.isPending ? 'Creando...' : 'Crear Cita'}
-                </ResponsiveButton>
-                <ResponsiveButton
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={createAppointment.isPending}
-                  isResponsive={false}
-                  icon={X}
-                >
-                  Cancelar
-                </ResponsiveButton>
-              </Field>
-            </FieldGroup>
-          </SheetFooter>
-        </CanAccess>
-      </SheetContent>
-    </Sheet>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Nueva Cita"
+        description="Programa una nueva cita médica"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createAppointment.isPending}
+        submitLabel="Crear Cita"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-3xl"
+      >
+        <AppointmentForm disablePetSelection={!!defaultPetId} />
+      </FormSheet>
+    </CanAccess>
   )
 }

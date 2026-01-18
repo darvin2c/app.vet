@@ -4,15 +4,7 @@ import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 
 import { PaymentMethodForm } from './payment-method-form'
 import {
@@ -66,39 +58,24 @@ export function PaymentMethodEdit({
   })
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!w-full !max-w-xl">
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Método de Pago</DrawerTitle>
-            <DrawerDescription>
-              Modifica los datos del método de pago.
-            </DrawerDescription>
-          </DrawerHeader>
-          <FormProvider {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4 overflow-y-auto">
-                <PaymentMethodForm />
-              </div>
-              <DrawerFooter>
-                <Button type="submit" disabled={mutation.isPending}>
-                  {mutation.isPending
-                    ? 'Actualizando...'
-                    : 'Actualizar Método de Pago'}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => onOpenChange(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </DrawerFooter>
-            </form>
-          </FormProvider>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Método de Pago"
+        description="Modifica los datos del método de pago."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={mutation.isPending}
+        submitLabel="Actualizar Método de Pago"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
+        <div className="px-4 overflow-y-auto">
+          <PaymentMethodForm />
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

@@ -219,11 +219,6 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        {/* ViewModeToggle corrected; temporarily hidden for typecheck sync */}
-        <PaymentCreateButton />
-      </div>
-
       {isPending ? (
         viewMode === 'table' ? (
           <TableSkeleton />
