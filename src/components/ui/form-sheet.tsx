@@ -16,6 +16,7 @@ import { Form } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import CanAccess from '@/components/ui/can-access'
 import { cn } from '@/lib/utils'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface FormSheetProps<T extends FieldValues> {
   open: boolean
@@ -52,13 +53,15 @@ export function FormSheet<T extends FieldValues>({
   resource,
   action,
 }: FormSheetProps<T>) {
+  const isMobile = useIsMobile()
+
   const FormContent = (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex h-full flex-col overflow-hidden"
       >
-        <SheetHeader>
+        <SheetHeader className={cn(isMobile ? 'text-left' : '')}>
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
@@ -69,18 +72,37 @@ export function FormSheet<T extends FieldValues>({
           </ScrollArea>
         </div>
 
-        <SheetFooter>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isLoading}
-          >
-            {cancelLabel}
-          </Button>
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Guardando...' : submitLabel}
-          </Button>
+        <SheetFooter className={cn(isMobile ? 'flex-col gap-2' : '')}>
+          {isMobile ? (
+            <>
+              <Button type="submit" disabled={isLoading} className="w-full">
+                {isLoading ? 'Guardando...' : submitLabel}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isLoading}
+                className="w-full"
+              >
+                {cancelLabel}
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                disabled={isLoading}
+              >
+                {cancelLabel}
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Guardando...' : submitLabel}
+              </Button>
+            </>
+          )}
         </SheetFooter>
       </form>
     </Form>
@@ -90,8 +112,14 @@ export function FormSheet<T extends FieldValues>({
     <Sheet open={open} onOpenChange={onOpenChange}>
       {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
       <SheetContent
-        side={side}
-        className={cn('!w-full !max-w-md p-0 gap-0 sm:!max-w-xl', className)}
+        side={isMobile ? 'bottom' : side}
+        className={cn(
+          '!w-full p-0 gap-0',
+          isMobile
+            ? 'h-[90vh] !max-w-full rounded-t-xl'
+            : 'sm:!max-w-xl h-full',
+          className
+        )}
       >
         {resource && action ? (
           <CanAccess resource={resource} action={action}>
