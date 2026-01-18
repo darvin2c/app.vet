@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { EventFormProps } from '@ilamy/calendar'
 import { AppointmentCreate } from '../appointments/appointment-create'
-import { AppointmentEdit } from '../appointments/appointment-edit'
 import { AppointmentDelete } from '../appointments/appointment-delete'
 import { Tables } from '@/types/supabase.types'
 
@@ -35,14 +34,6 @@ export function AgendaEventForm({
   if (isEdit && appointment) {
     return (
       <>
-        <AppointmentEdit
-          open={open || false}
-          onOpenChange={(isOpen) => !isOpen && onClose()}
-          appointment={appointment}
-          onSuccess={() => {
-            onClose()
-          }}
-        />
         <AppointmentDelete
           open={deleteOpen}
           onOpenChange={(open) => {

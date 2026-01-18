@@ -86,18 +86,21 @@ export function EventCard({
     e.preventDefault()
     e.stopPropagation()
     setEditOpen(true)
+    setOpen(false)
   }
 
   const handleShareClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setShareOpen(true)
+    setOpen(false)
   }
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDeleteOpen(true)
+    setOpen(false)
   }
 
   useEffect(() => {
