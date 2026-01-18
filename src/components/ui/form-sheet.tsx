@@ -72,7 +72,11 @@ export function FormSheet<T extends FieldValues>({
           </ScrollArea>
         </div>
 
-        <SheetFooter className={cn(isMobile ? 'flex-row gap-2 px-4 pb-4' : '')}>
+        <SheetFooter
+          className={cn(
+            isMobile ? 'flex-row gap-2 px-4 pb-4' : 'flex-row justify-end gap-2'
+          )}
+        >
           {isMobile ? (
             <div className="flex w-full gap-2">
               <Button
