@@ -21,7 +21,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
+import { TriangleAlert } from 'lucide-react'
 import { Form } from '@/components/ui/form'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
@@ -237,7 +238,8 @@ export function FormSheet<T extends FieldValues>({
       <AlertDialog open={showExitWarning} onOpenChange={setShowExitWarning}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
+            <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+              <TriangleAlert className="size-5" />
               ¿Estás seguro de que quieres salir?
             </AlertDialogTitle>
             <AlertDialogDescription>
@@ -247,7 +249,10 @@ export function FormSheet<T extends FieldValues>({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirmExit}>
+            <AlertDialogAction
+              onClick={handleConfirmExit}
+              className={buttonVariants({ variant: 'destructive' })}
+            >
               Salir sin guardar
             </AlertDialogAction>
           </AlertDialogFooter>
