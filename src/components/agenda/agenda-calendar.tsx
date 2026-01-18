@@ -217,6 +217,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         locale="es"
         firstDayOfWeek="monday"
         timezone={currentTenant?.timezone || undefined}
+        timeFormat="12-hour"
         headerComponent={
           <AgendaHeader initialDate={currentDate} initialView={view} />
         }
@@ -228,7 +229,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
             style={{ top: `${progress}%` }}
             className="absolute left-0 right-0 z-20 pointer-events-none"
           >
-            <div className="h-[1px] w-full bg-red-500" />
+            <div className="h-[0.5px] w-full bg-red-500" />
             <div className="absolute left-0 -translate-y-1/2 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-r-sm shadow-sm">
               {currentTime.format('HH:mm')}
             </div>

@@ -202,8 +202,8 @@ export function EventCard({ appointment, children }: EventCardProps) {
               <div className="text-sm text-muted-foreground">Horario</div>
               <div className="flex items-center gap-1 text-sm">
                 <Clock className="h-3 w-3" />
-                {format(startDate, 'HH:mm', { locale: es })} -{' '}
-                {format(endDate, 'HH:mm', { locale: es })}
+                {format(startDate, 'hh:mm a', { locale: es })} -{' '}
+                {format(endDate, 'hh:mm a', { locale: es })}
                 {isPast && (
                   <span
                     className="ml-2 text-xs px-2 py-0.5 rounded"
