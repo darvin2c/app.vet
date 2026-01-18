@@ -14,6 +14,7 @@ import {
   FieldError,
 } from '@/components/ui/field'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Separator } from '@/components/ui/separator'
 
 const taskSchema = z.object({
   title: z.string().min(1, 'El título es requerido'),
@@ -25,9 +26,20 @@ type TaskSchema = z.infer<typeof taskSchema>
 
 export default function FormSheetDemo() {
   const [open, setOpen] = useState(false)
+  const [openLong, setOpenLong] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const form = useForm<TaskSchema>({
+    resolver: zodResolver(taskSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      urgent: false,
+    },
+  })
+
+  // Formulario separado para el ejemplo largo para no mezclar estados
+  const formLong = useForm<TaskSchema>({
     resolver: zodResolver(taskSchema),
     defaultValues: {
       title: '',
@@ -44,7 +56,9 @@ export default function FormSheetDemo() {
     alert(JSON.stringify(data, null, 2))
     setLoading(false)
     setOpen(false)
+    setOpenLong(false)
     form.reset()
+    formLong.reset()
   }
 
   return (
@@ -55,8 +69,14 @@ export default function FormSheetDemo() {
         laterales.
       </p>
 
-      <Button onClick={() => setOpen(true)}>Crear Tarea</Button>
+      <div className="flex gap-4">
+        <Button onClick={() => setOpen(true)}>Crear Tarea (Simple)</Button>
+        <Button onClick={() => setOpenLong(true)} variant="outline">
+          Crear Tarea (Largo / Scroll)
+        </Button>
+      </div>
 
+      {/* Ejemplo Simple */}
       <FormSheet
         open={open}
         onOpenChange={setOpen}
@@ -102,6 +122,67 @@ export default function FormSheetDemo() {
             </FieldContent>
             <FieldLabel htmlFor="urgent" className="font-normal">
               Marcar como urgente
+            </FieldLabel>
+          </Field>
+        </div>
+      </FormSheet>
+
+      {/* Ejemplo Largo con Scroll */}
+      <FormSheet
+        open={openLong}
+        onOpenChange={setOpenLong}
+        title="Formulario Extenso"
+        description="Este formulario demuestra el comportamiento del scroll cuando hay muchos campos."
+        form={formLong}
+        onSubmit={onSubmit}
+        isLoading={loading}
+        submitLabel="Guardar Todo"
+      >
+        <div className="space-y-6">
+          <div className="bg-yellow-50 p-4 rounded-md border border-yellow-200 text-sm text-yellow-800 mb-4">
+            ℹ️ Haz scroll hacia abajo para ver cómo el header y footer se
+            mantienen fijos.
+          </div>
+
+          <Field>
+            <FieldLabel>Título Principal</FieldLabel>
+            <FieldContent>
+              <Input {...formLong.register('title')} placeholder="Título" />
+            </FieldContent>
+            <FieldError errors={[formLong.formState.errors.title]} />
+          </Field>
+
+          <Separator />
+
+          <h3 className="font-medium text-sm text-muted-foreground">
+            Información Detallada
+          </h3>
+
+          {Array.from({ length: 15 }).map((_, i) => (
+            <Field key={i}>
+              <FieldLabel>Campo Adicional {i + 1}</FieldLabel>
+              <FieldContent>
+                <Input
+                  placeholder={`Ingresa información para el campo ${i + 1}...`}
+                />
+              </FieldContent>
+            </Field>
+          ))}
+
+          <Separator />
+
+          <Field orientation="horizontal">
+            <FieldContent>
+              <Checkbox
+                id="urgent-long"
+                checked={formLong.watch('urgent')}
+                onCheckedChange={(checked) =>
+                  formLong.setValue('urgent', checked as boolean)
+                }
+              />
+            </FieldContent>
+            <FieldLabel htmlFor="urgent-long" className="font-normal">
+              Confirmar que has revisado todos los campos
             </FieldLabel>
           </Field>
         </div>
