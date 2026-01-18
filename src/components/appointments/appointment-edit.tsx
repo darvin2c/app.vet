@@ -20,7 +20,7 @@ import {
   updateAppointmentSchema,
 } from '@/schemas/appointments.schema'
 import type { Tables } from '@/types/supabase.types'
-import { X, Check } from 'lucide-react'
+import { Trash, X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
 import { Field, FieldGroup } from '../ui/field'
 
@@ -31,6 +31,7 @@ interface AppointmentEditProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
+  onDelete?: () => void
 }
 
 export function AppointmentEdit({
@@ -38,6 +39,7 @@ export function AppointmentEdit({
   open,
   onOpenChange,
   onSuccess,
+  onDelete,
 }: AppointmentEditProps) {
   const form = useForm<UpdateAppointmentSchema>({
     resolver: zodResolver(updateAppointmentSchema),
@@ -117,6 +119,16 @@ export function AppointmentEdit({
                 >
                   Cancelar
                 </ResponsiveButton>
+                {onDelete && (
+                  <ResponsiveButton
+                    variant="destructive"
+                    onClick={onDelete}
+                    disabled={updateAppointment.isPending}
+                    icon={Trash}
+                  >
+                    Eliminar
+                  </ResponsiveButton>
+                )}
               </Field>
             </FieldGroup>
           </SheetFooter>

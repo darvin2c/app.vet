@@ -10,12 +10,12 @@ import {
 import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
-import { AppointmentCreate } from '../appointments/appointment-create'
-import { IlamyCalendar, CalendarEvent, CellClickInfo } from '@ilamy/calendar'
+import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
 import { Tables } from '@/types/supabase.types'
 import AgendaHeader from './agenda-header'
 import dayjs from '@/lib/dayjs'
 import Event from './event'
+import { AgendaEventForm } from './agenda-event-form'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -39,13 +39,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [view, setView] = useState<View>(
     (localStorage.getItem('agenda-view') as View) || 'month'
   )
-
-  // Estados para el modal de crear cita
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [selectedDateTime, setSelectedDateTime] = useState<{
-    startTime: string
-    endTime: string
-  } | null>(null)
 
   // Obtener citas del mes actual
   const startOfMonth = currentDate.startOf('month').add(-15, 'day')
@@ -87,31 +80,11 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setView(newView)
   }
 
-  const handleCellClick = (info: CellClickInfo) => {
-    const { start, end } = info
-    console.log(
-      'Cell clicked:',
-      start.format('YYYY-MM-DD'),
-      end.format('YYYY-MM-DD')
-    )
-    setSelectedDateTime({
-      startTime: start.toISOString(),
-      endTime: end.toISOString(),
-    })
-    setCreateModalOpen(true)
-  }
-
   const handleDateChange = useCallback((date: any) => {
     startTransition(() => {
       setCurrentDate(dayjs(date))
     })
   }, [])
-
-  const handleCreateSuccess = () => {
-    console.log('Create success - closing modal and clearing state')
-    setCreateModalOpen(false)
-    setSelectedDateTime(null)
-  }
 
   const businessHoursCss = useMemo(() => {
     const bh = (currentTenant as any)?.business_hours
@@ -242,26 +215,16 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         renderEvent={(event) => <Event event={event} />}
         locale="es"
         firstDayOfWeek="monday"
-        onCellClick={handleCellClick}
         timezone={currentTenant?.timezone || undefined}
         headerComponent={
           <AgendaHeader initialDate={currentDate} initialView={view} />
         }
-        onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
         disableDragAndDrop={true}
+        renderEventForm={(props) => <AgendaEventForm {...props} />}
       />
 
       {businessHoursCss && <style>{businessHoursCss}</style>}
-
-      {/* Modal de crear cita */}
-      <AppointmentCreate
-        open={createModalOpen}
-        onOpenChange={setCreateModalOpen}
-        onSuccess={handleCreateSuccess}
-        defaultScheduledStart={selectedDateTime?.startTime}
-        defaultScheduledEnd={selectedDateTime?.endTime}
-      />
     </div>
   )
 }
