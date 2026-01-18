@@ -44,9 +44,14 @@ type Appointment = AppointmentWithRelations
 interface EventCardProps {
   appointment: Appointment
   children: React.ReactNode
+  className?: string
 }
 
-export function EventCard({ appointment, children }: EventCardProps) {
+export function EventCard({
+  appointment,
+  children,
+  className,
+}: EventCardProps) {
   const [open, setOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
@@ -282,18 +287,25 @@ export function EventCard({ appointment, children }: EventCardProps) {
     <>
       {isMobile ? (
         <>
-          <span
+          <div
             role="button"
             tabIndex={0}
-            onClick={() => setOpen(true)}
+            className={className}
+            onClick={(e) => {
+              e.stopPropagation()
+              setOpen(true)
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation()
+                setOpen(true)
+              }
             }}
             aria-haspopup="dialog"
             aria-expanded={open}
           >
             {children}
-          </span>
+          </div>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetContent side="bottom" className="!w-full !max-w-3xl ">
               <SheetHeader>
@@ -311,18 +323,25 @@ export function EventCard({ appointment, children }: EventCardProps) {
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <span
+            <div
               role="button"
               tabIndex={0}
-              onClick={() => setOpen(true)}
+              className={className}
+              onClick={(e) => {
+                e.stopPropagation()
+                setOpen(true)
+              }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation()
+                  setOpen(true)
+                }
               }}
               aria-haspopup="dialog"
               aria-expanded={open}
             >
               {children}
-            </span>
+            </div>
           </PopoverTrigger>
           <PopoverContent className="w-96 p-0" side="top" align="start">
             <Card className="border-0 shadow-none">

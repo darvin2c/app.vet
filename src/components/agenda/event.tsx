@@ -281,5 +281,9 @@ export default function Event({ event }: { event: CalendarEvent }) {
     )
   }
 
-  return <EventCard appointment={appointment}>{renderEventContent()}</EventCard>
+  return (
+    <EventCard appointment={appointment} className="h-full w-full block">
+      {renderEventContent()}
+    </EventCard>
+  )
 }

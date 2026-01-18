@@ -79,7 +79,6 @@ export function AppointmentShare({
 
   const handleModeChange = (next: 'email' | 'whatsapp') => setMode(next)
 
-  const isMobile = useIsMobile()
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl" side="right">
@@ -99,7 +98,6 @@ export function AppointmentShare({
               appointmentTypeName={appointmentTypeName}
               staffName={staffName}
               typeColor={appointmentTypeColor}
-              defaultOpen={!isMobile}
             />
             <div className="space-y-6">
               <Field orientation="vertical">

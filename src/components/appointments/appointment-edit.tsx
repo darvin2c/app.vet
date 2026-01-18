@@ -20,9 +20,10 @@ import {
   updateAppointmentSchema,
 } from '@/schemas/appointments.schema'
 import type { Tables } from '@/types/supabase.types'
-import { Trash, X, Check } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import CanAccess from '@/components/ui/can-access'
 import { Field, FieldGroup } from '../ui/field'
+import { ScrollArea } from '../ui/scroll-area'
 
 type Appointment = Tables<'appointments'>
 
@@ -31,7 +32,6 @@ interface AppointmentEditProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess?: () => void
-  onDelete?: () => void
 }
 
 export function AppointmentEdit({
@@ -39,7 +39,6 @@ export function AppointmentEdit({
   open,
   onOpenChange,
   onSuccess,
-  onDelete,
 }: AppointmentEditProps) {
   const form = useForm<UpdateAppointmentSchema>({
     resolver: zodResolver(updateAppointmentSchema),
@@ -82,29 +81,35 @@ export function AppointmentEdit({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="!w-full !max-w-2xl overflow-y-auto">
+      <SheetContent
+        className="!w-full !max-w-2xl overflow-y-auto"
+        side="bottom"
+      >
         <CanAccess resource="products" action="update">
-          <SheetHeader>
-            <SheetTitle>Editar Cita</SheetTitle>
-            <SheetDescription>
-              Modifica los datos de la cita médica
-            </SheetDescription>
-          </SheetHeader>
-          <div className="px-4 pb-4">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <AppointmentForm />
-              </form>
-            </Form>
-          </div>
+          <ScrollArea className="max-h-[calc(100vh-90px)]">
+            <SheetHeader>
+              <SheetTitle>Editar Cita</SheetTitle>
+              <SheetDescription>
+                Modifica los datos de la cita médica
+              </SheetDescription>
+            </SheetHeader>
+            <div className="px-4 pb-4">
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="space-y-6"
+                >
+                  <AppointmentForm />
+                </form>
+              </Form>
+            </div>
+          </ScrollArea>
           <SheetFooter>
             <FieldGroup>
               <Field orientation="horizontal">
                 <ResponsiveButton
                   type="submit"
+                  isResponsive={false}
                   onClick={form.handleSubmit(onSubmit)}
                   isLoading={updateAppointment.isPending}
                   icon={Check}
@@ -113,22 +118,13 @@ export function AppointmentEdit({
                 </ResponsiveButton>
                 <ResponsiveButton
                   variant="outline"
+                  isResponsive={false}
                   onClick={() => onOpenChange(false)}
                   disabled={updateAppointment.isPending}
                   icon={X}
                 >
                   Cancelar
                 </ResponsiveButton>
-                {onDelete && (
-                  <ResponsiveButton
-                    variant="destructive"
-                    onClick={onDelete}
-                    disabled={updateAppointment.isPending}
-                    icon={Trash}
-                  >
-                    Eliminar
-                  </ResponsiveButton>
-                )}
               </Field>
             </FieldGroup>
           </SheetFooter>
