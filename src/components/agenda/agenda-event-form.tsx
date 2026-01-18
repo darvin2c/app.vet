@@ -42,9 +42,6 @@ export function AgendaEventForm({
           onSuccess={() => {
             onClose()
           }}
-          onDelete={() => {
-            setDeleteOpen(true)
-          }}
         />
         <AppointmentDelete
           open={deleteOpen}
