@@ -64,38 +64,42 @@ export function FormSheet<T extends FieldValues>({
 }: FormSheetProps<T>) {
   const isMobile = useIsMobile()
   const [showExitWarning, setShowExitWarning] = React.useState(false)
+  const [historyPushed, setHistoryPushed] = React.useState(false)
   const { isDirty } = form.formState
 
+  // Solo manipular el historial cuando hay cambios sin guardar
   React.useEffect(() => {
-    if (!open) return
+    if (!open || !isDirty) {
+      setHistoryPushed(false)
+      return
+    }
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
-      if (isDirty) {
-        e.preventDefault()
-        e.returnValue = ''
-        return ''
-      }
+      e.preventDefault()
+      e.returnValue = ''
+      return ''
     }
 
     const handlePopState = (e: PopStateEvent) => {
-      if (isDirty) {
-        // Prevenir la navegación hacia atrás
-        history.pushState(null, '', window.location.href)
-        setShowExitWarning(true)
-      }
+      // Prevenir la navegación hacia atrás
+      history.pushState(null, '', window.location.href)
+      setShowExitWarning(true)
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
     window.addEventListener('popstate', handlePopState)
 
-    // Agregar un estado al historial cuando se abre el sheet para poder interceptar el "atrás"
-    history.pushState(null, '', window.location.href)
+    // Solo agregar al historial una vez cuando isDirty se vuelve true
+    if (!historyPushed) {
+      history.pushState(null, '', window.location.href)
+      setHistoryPushed(true)
+    }
 
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload)
       window.removeEventListener('popstate', handlePopState)
     }
-  }, [open, isDirty])
+  }, [open, isDirty, historyPushed])
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && isDirty) {
