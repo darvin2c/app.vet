@@ -10,14 +10,7 @@ import {
   type AttachmentCategory,
 } from '@/schemas/attachments.schema'
 import { AttachmentForm } from './attachment-form'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import CanAccess from '@/components/ui/can-access'
 
@@ -75,47 +68,25 @@ export function AttachmentEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar archivo</DrawerTitle>
-            <DrawerDescription>
-              Modificar información de "{attachment.file_name}"
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-6"
-              >
-                <AttachmentForm hideFileInput />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={updateMutation.isPending}
-              disabled={!form.formState.isDirty}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Guardar cambios
-            </ResponsiveButton>
-            <ResponsiveButton
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={updateMutation.isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar archivo"
+      description={`Modificar información de "${attachment.file_name}"`}
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateMutation.isPending}
+      submitLabel="Guardar cambios"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-2xl"
+    >
+      <div className="px-4">
+        <AttachmentForm hideFileInput />
+        <ResponsiveButton type="submit" className="sr-only">
+          Guardar cambios
+        </ResponsiveButton>
+      </div>
+    </FormSheet>
   )
 }

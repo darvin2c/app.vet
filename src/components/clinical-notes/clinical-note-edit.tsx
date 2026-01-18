@@ -3,14 +3,7 @@
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalNoteForm } from './clinical-note-form'
 import {
@@ -65,46 +58,27 @@ export function ClinicalNoteEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Nota Clínica</DrawerTitle>
-            <DrawerDescription>
-              Modifique los datos de la nota clínica
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4 pb-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <ClinicalNoteForm petId={clinicalNote.pet_id} />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              isLoading={updateClinicalNote.isPending}
-              disabled={updateClinicalNote.isPending}
-            >
-              Actualizar Nota Clínica
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={updateClinicalNote.isPending}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="update">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Editar Nota Clínica"
+        description="Modifique los datos de la nota clínica"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updateClinicalNote.isPending}
+        submitLabel="Actualizar Nota Clínica"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4 pb-4">
+          <ClinicalNoteForm petId={clinicalNote.pet_id} />
+          <ResponsiveButton type="submit" className="sr-only">
+            Actualizar Nota Clínica
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

@@ -4,14 +4,7 @@ import { useState, useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { MedicalRecordItemForm } from './medical-record-item-form'
 import {
@@ -94,45 +87,26 @@ export function MedicalRecordItemEdit({
     <>
       {trigger && <div onClick={() => setOpen(true)}>{trigger}</div>}
 
-      <Drawer open={isOpen} onOpenChange={handleOpenChange}>
-        <DrawerContent>
-          <CanAccess resource="products" action="update">
-            <DrawerHeader>
-              <DrawerTitle>Editar Item de Registro Médico</DrawerTitle>
-              <DrawerDescription>
-                Modifica los detalles del item de registro médico
-              </DrawerDescription>
-            </DrawerHeader>
-
-            <div className="px-4">
-              <FormProvider {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit)}
-                  className="space-y-4"
-                >
-                  <MedicalRecordItemForm />
-                </form>
-              </FormProvider>
-            </div>
-
-            <DrawerFooter>
-              <ResponsiveButton
-                type="button"
-                isLoading={updateMedicalRecordItem.isPending}
-                onClick={form.handleSubmit(onSubmit)}
-              >
-                Actualizar Item
-              </ResponsiveButton>
-              <ResponsiveButton
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-              >
-                Cancelar
-              </ResponsiveButton>
-            </DrawerFooter>
-          </CanAccess>
-        </DrawerContent>
-      </Drawer>
+      <FormSheet
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+        title="Editar Item de Registro Médico"
+        description="Modifica los detalles del item de registro médico"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={updateMedicalRecordItem.isPending}
+        submitLabel="Actualizar Item"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
+        <div className="px-4">
+          <MedicalRecordItemForm />
+          <ResponsiveButton type="submit" className="sr-only">
+            Actualizar Item
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
     </>
   )
 }

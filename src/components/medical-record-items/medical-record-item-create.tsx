@@ -3,14 +3,7 @@
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { MedicalRecordItemForm } from './medical-record-item-form'
 import {
@@ -58,44 +51,27 @@ export function MedicalRecordItemCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent>
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Agregar Item de Registro Médico</DrawerTitle>
-            <DrawerDescription>
-              Agrega un nuevo item al registro médico
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <MedicalRecordItemForm />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="button"
-              isLoading={createMedicalRecordItem.isPending}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Agregar Item
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Agregar Item de Registro Médico"
+        description="Agrega un nuevo item al registro médico"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createMedicalRecordItem.isPending}
+        submitLabel="Agregar Item"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
+        <div className="px-4">
+          <MedicalRecordItemForm />
+          <ResponsiveButton type="submit" className="sr-only">
+            Agregar Item
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

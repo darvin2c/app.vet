@@ -4,14 +4,7 @@ import { useEffect } from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { MedicalRecordForm } from './medical-record-form'
 import { useMedicalRecordUpdate } from '@/hooks/medical-records/use-medical-record-update'
@@ -76,39 +69,25 @@ export function MedicalRecordEdit({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-4xl">
-        <CanAccess resource="products" action="update">
-          <DrawerHeader>
-            <DrawerTitle>Editar Registro Médico</DrawerTitle>
-            <DrawerDescription>
-              Modifica la información del registro médico
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-              <MedicalRecordForm />
-            </form>
-          </FormProvider>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              onClick={form.handleSubmit(onSubmit)}
-              isLoading={updateMedicalRecord.isPending}
-            >
-              Actualizar Registro Médico
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <FormSheet
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Editar Registro Médico"
+      description="Modifica la información del registro médico"
+      form={form as any}
+      onSubmit={onSubmit as any}
+      isPending={updateMedicalRecord.isPending}
+      submitLabel="Actualizar Registro Médico"
+      cancelLabel="Cancelar"
+      side="right"
+      className="!max-w-4xl"
+    >
+      <div className="px-4">
+        <MedicalRecordForm />
+        <ResponsiveButton type="submit" className="sr-only">
+          Actualizar Registro Médico
+        </ResponsiveButton>
+      </div>
+    </FormSheet>
   )
 }

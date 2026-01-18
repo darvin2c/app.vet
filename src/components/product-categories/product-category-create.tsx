@@ -4,17 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-import { Button } from '@/components/ui/button'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from '@/components/ui/drawer-form'
-import { Form } from '@/components/ui/form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import CanAccess from '@/components/ui/can-access'
 
 import { ProductCategoryForm } from './product-category-form'
@@ -51,42 +41,25 @@ export function ProductCategoryCreate({
   })
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent className="!max-w-xl">
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Crear Categoría de Producto</DrawerTitle>
-            <DrawerDescription>
-              Completa los datos para crear una nueva categoría de producto.
-            </DrawerDescription>
-          </DrawerHeader>
-          <Form {...form}>
-            <form onSubmit={onSubmit} className="space-y-4">
-              <div className="px-4">
-                <ProductCategoryForm />
-              </div>
-              <DrawerFooter>
-                <Button
-                  type="submit"
-                  onClick={onSubmit}
-                  disabled={mutation.isPending}
-                >
-                  Crear Categoría
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  disabled={mutation.isPending}
-                >
-                  Cancelar
-                </Button>
-              </DrawerFooter>
-            </form>
-          </Form>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open as boolean}
+        onOpenChange={setOpen as any}
+        trigger={children as any}
+        title="Crear Categoría de Producto"
+        description="Completa los datos para crear una nueva categoría de producto."
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={mutation.isPending}
+        submitLabel="Crear Categoría"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
+        <div className="px-4">
+          <ProductCategoryForm />
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

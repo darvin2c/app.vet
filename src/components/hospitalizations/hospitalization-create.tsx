@@ -3,14 +3,7 @@
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { HospitalizationForm } from './hospitalization-form'
 import { useCreateHospitalization } from '@/hooks/hospitalizations/use-hospitalization-create'
@@ -57,44 +50,27 @@ export function HospitalizationCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Nueva Hospitalización</DrawerTitle>
-            <DrawerDescription>
-              Registra una nueva hospitalización para la mascota
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <div className="px-4">
-            <FormProvider {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="space-y-4"
-              >
-                <HospitalizationForm />
-              </form>
-            </FormProvider>
-          </div>
-
-          <DrawerFooter>
-            <ResponsiveButton
-              type="submit"
-              isLoading={createHospitalization.isPending}
-              onClick={form.handleSubmit(onSubmit)}
-            >
-              Registrar Hospitalización
-            </ResponsiveButton>
-            <ResponsiveButton
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancelar
-            </ResponsiveButton>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Nueva Hospitalización"
+        description="Registra una nueva hospitalización para la mascota"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createHospitalization.isPending}
+        submitLabel="Registrar Hospitalización"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4">
+          <HospitalizationForm />
+          <ResponsiveButton type="submit" className="sr-only">
+            Registrar Hospitalización
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }

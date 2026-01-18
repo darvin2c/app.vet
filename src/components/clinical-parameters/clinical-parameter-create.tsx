@@ -2,14 +2,7 @@
 
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerDescription,
-  DrawerFooter,
-} from '@/components/ui/drawer-form'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { ClinicalParameterForm } from './clinical-parameter-form'
 import {
@@ -57,44 +50,27 @@ export function ClinicalParameterCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="!max-w-2xl">
-        <CanAccess resource="products" action="create">
-          <DrawerHeader>
-            <DrawerTitle>Nuevos Parámetros Clínicos</DrawerTitle>
-            <DrawerDescription>
-              Registra los parámetros clínicos del registro médico
-            </DrawerDescription>
-          </DrawerHeader>
-
-          <FormProvider {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="px-4">
-              <ClinicalParameterForm petId={petId} />
-            </form>
-          </FormProvider>
-
-          <DrawerFooter>
-            <div className="flex gap-2">
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                className="flex-1"
-              >
-                Cancelar
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="button"
-                onClick={form.handleSubmit(onSubmit)}
-                isLoading={createClinicalParameter.isPending}
-                className="flex-1"
-              >
-                Crear Parámetros
-              </ResponsiveButton>
-            </div>
-          </DrawerFooter>
-        </CanAccess>
-      </DrawerContent>
-    </Drawer>
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Nuevos Parámetros Clínicos"
+        description="Registra los parámetros clínicos del registro médico"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={createClinicalParameter.isPending}
+        submitLabel="Crear Parámetros"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-2xl"
+      >
+        <div className="px-4">
+          <ClinicalParameterForm petId={petId} />
+          <ResponsiveButton type="submit" className="sr-only">
+            Crear Parámetros
+          </ResponsiveButton>
+        </div>
+      </FormSheet>
+    </CanAccess>
   )
 }
