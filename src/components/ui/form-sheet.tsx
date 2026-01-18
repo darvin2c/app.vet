@@ -72,22 +72,22 @@ export function FormSheet<T extends FieldValues>({
           </ScrollArea>
         </div>
 
-        <SheetFooter className={cn(isMobile ? 'flex-col gap-2' : '')}>
+        <SheetFooter className={cn(isMobile ? 'flex-row gap-2 px-4 pb-4' : '')}>
           {isMobile ? (
-            <>
-              <Button type="submit" disabled={isLoading} className="w-full">
-                {isLoading ? 'Guardando...' : submitLabel}
-              </Button>
+            <div className="flex w-full gap-2">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isLoading}
-                className="w-full"
+                className="flex-1"
               >
                 {cancelLabel}
               </Button>
-            </>
+              <Button type="submit" disabled={isLoading} className="flex-1">
+                {isLoading ? 'Guardando...' : submitLabel}
+              </Button>
+            </div>
           ) : (
             <>
               <Button
