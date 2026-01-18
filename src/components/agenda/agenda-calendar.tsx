@@ -10,12 +10,14 @@ import {
 import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-appointment-list'
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
-import { AppointmentCreate } from '../appointments/appointment-create'
 import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
 import { Tables } from '@/types/supabase.types'
 import AgendaHeader from './agenda-header'
 import dayjs from '@/lib/dayjs'
 import Event from './event'
+import { AgendaEventForm } from './agenda-event-form'
+import { cx } from 'class-variance-authority'
+import { Dayjs } from 'dayjs'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -39,13 +41,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [view, setView] = useState<View>(
     (localStorage.getItem('agenda-view') as View) || 'month'
   )
-
-  // Estados para el modal de crear cita
-  const [createModalOpen, setCreateModalOpen] = useState(false)
-  const [selectedDateTime, setSelectedDateTime] = useState<{
-    startTime: string
-    endTime: string
-  } | null>(null)
 
   // Obtener citas del mes actual
   const startOfMonth = currentDate.startOf('month').add(-15, 'day')
@@ -87,30 +82,14 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setView(newView)
   }
 
-  const handleCellClick = (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
-    console.log(
-      'Cell clicked:',
-      start.format('YYYY-MM-DD'),
-      end.format('YYYY-MM-DD')
-    )
-    setSelectedDateTime({
-      startTime: start.toISOString(),
-      endTime: end.toISOString(),
-    })
-    setCreateModalOpen(true)
-  }
-
-  const handleDateChange = useCallback((date: dayjs.Dayjs) => {
-    startTransition(() => {
-      setCurrentDate(date)
-    })
+  const handleDateChange = useCallback((date: Dayjs) => {
+    // Defer update to avoid "Cannot update ... while rendering" error
+    setTimeout(() => {
+      startTransition(() => {
+        setCurrentDate(dayjs(date))
+      })
+    }, 0)
   }, [])
-
-  const handleCreateSuccess = () => {
-    console.log('Create success - closing modal and clearing state')
-    setCreateModalOpen(false)
-    setSelectedDateTime(null)
-  }
 
   const businessHoursCss = useMemo(() => {
     const bh = (currentTenant as any)?.business_hours
@@ -223,7 +202,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
   }, [view])
 
   return (
-    <div className={className}>
+    <div className={cx('min-h-0 min-w-0', className)}>
       <IlamyCalendar
         stickyViewHeader={true}
         events={events}
@@ -241,26 +220,28 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         renderEvent={(event) => <Event event={event} />}
         locale="es"
         firstDayOfWeek="monday"
-        onCellClick={handleCellClick}
         timezone={currentTenant?.timezone || undefined}
+        timeFormat="12-hour"
         headerComponent={
           <AgendaHeader initialDate={currentDate} initialView={view} />
         }
-        onEventClick={(event) => console.log('Event clicked:', event)}
         onDateChange={handleDateChange}
         disableDragAndDrop={true}
+        renderEventForm={(props) => <AgendaEventForm {...props} />}
+        renderCurrentTimeIndicator={({ progress, currentTime }) => (
+          <div
+            style={{ top: `${progress}%` }}
+            className="absolute left-0 right-0 z-20 pointer-events-none"
+          >
+            <div className="h-[0.5px] w-full bg-red-500" />
+            <div className="absolute left-0 -translate-y-1/2 bg-red-500 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded-r-sm shadow-sm">
+              {currentTime.format('HH:mm')}
+            </div>
+          </div>
+        )}
       />
 
       {businessHoursCss && <style>{businessHoursCss}</style>}
-
-      {/* Modal de crear cita */}
-      <AppointmentCreate
-        open={createModalOpen}
-        onOpenChange={setCreateModalOpen}
-        onSuccess={handleCreateSuccess}
-        defaultScheduledStart={selectedDateTime?.startTime}
-        defaultScheduledEnd={selectedDateTime?.endTime}
-      />
     </div>
   )
 }

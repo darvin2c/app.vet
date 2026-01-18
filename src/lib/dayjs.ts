@@ -7,6 +7,9 @@ import updateLocale from 'dayjs/plugin/updateLocale'
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isBetween from 'dayjs/plugin/isBetween'
+import weekOfYear from 'dayjs/plugin/weekOfYear'
+import weekday from 'dayjs/plugin/weekday'
+import weekYear from 'dayjs/plugin/weekYear'
 import 'dayjs/locale/es'
 
 // Extender dayjs con los plugins necesarios
@@ -18,6 +21,9 @@ dayjs.extend(updateLocale)
 dayjs.extend(isSameOrAfter)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isBetween)
+dayjs.extend(weekOfYear)
+dayjs.extend(weekday)
+dayjs.extend(weekYear)
 
 // Configurar locale en español
 dayjs.locale('es')

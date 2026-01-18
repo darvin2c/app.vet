@@ -44,9 +44,14 @@ type Appointment = AppointmentWithRelations
 interface EventCardProps {
   appointment: Appointment
   children: React.ReactNode
+  className?: string
 }
 
-export function EventCard({ appointment, children }: EventCardProps) {
+export function EventCard({
+  appointment,
+  children,
+  className,
+}: EventCardProps) {
   const [open, setOpen] = useState(false)
   const [editOpen, setEditOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
@@ -81,18 +86,21 @@ export function EventCard({ appointment, children }: EventCardProps) {
     e.preventDefault()
     e.stopPropagation()
     setEditOpen(true)
+    setOpen(false)
   }
 
   const handleShareClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setShareOpen(true)
+    setOpen(false)
   }
 
   const handleDeleteClick = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
     setDeleteOpen(true)
+    setOpen(false)
   }
 
   useEffect(() => {
@@ -202,8 +210,8 @@ export function EventCard({ appointment, children }: EventCardProps) {
               <div className="text-sm text-muted-foreground">Horario</div>
               <div className="flex items-center gap-1 text-sm">
                 <Clock className="h-3 w-3" />
-                {format(startDate, 'HH:mm', { locale: es })} -{' '}
-                {format(endDate, 'HH:mm', { locale: es })}
+                {format(startDate, 'hh:mm a', { locale: es })} -{' '}
+                {format(endDate, 'hh:mm a', { locale: es })}
                 {isPast && (
                   <span
                     className="ml-2 text-xs px-2 py-0.5 rounded"
@@ -282,18 +290,25 @@ export function EventCard({ appointment, children }: EventCardProps) {
     <>
       {isMobile ? (
         <>
-          <span
+          <div
             role="button"
             tabIndex={0}
-            onClick={() => setOpen(true)}
+            className={className}
+            onClick={(e) => {
+              e.stopPropagation()
+              setOpen(true)
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation()
+                setOpen(true)
+              }
             }}
             aria-haspopup="dialog"
             aria-expanded={open}
           >
             {children}
-          </span>
+          </div>
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetContent side="bottom" className="!w-full !max-w-3xl ">
               <SheetHeader>
@@ -311,18 +326,25 @@ export function EventCard({ appointment, children }: EventCardProps) {
       ) : (
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <span
+            <div
               role="button"
               tabIndex={0}
-              onClick={() => setOpen(true)}
+              className={className}
+              onClick={(e) => {
+                e.stopPropagation()
+                setOpen(true)
+              }}
               onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') setOpen(true)
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.stopPropagation()
+                  setOpen(true)
+                }
               }}
               aria-haspopup="dialog"
               aria-expanded={open}
             >
               {children}
-            </span>
+            </div>
           </PopoverTrigger>
           <PopoverContent className="w-96 p-0" side="top" align="start">
             <Card className="border-0 shadow-none">

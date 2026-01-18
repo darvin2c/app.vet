@@ -1,7 +1,7 @@
 'use client'
 
 import { useIlamyCalendarContext, type CalendarEvent } from '@ilamy/calendar'
-import { Clock, User, UserCheck } from 'lucide-react'
+import { Calendar, Clock, User, UserCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
@@ -44,8 +44,8 @@ export default function Event({ event }: { event: CalendarEvent }) {
   const isPast = event.end.isBefore(dayjs())
 
   // Formatear horas
-  const startTime = format(event.start.toDate(), 'HH:mm', { locale: es })
-  const endTime = format(event.end.toDate(), 'HH:mm', { locale: es })
+  const startTime = format(event.start.toDate(), 'hh:mm a', { locale: es })
+  const endTime = format(event.end.toDate(), 'hh:mm a', { locale: es })
   const timeRange = `${startTime} - ${endTime}`
 
   // Función para renderizar el contenido del evento según la vista
@@ -189,12 +189,22 @@ export default function Event({ event }: { event: CalendarEvent }) {
             <span className="text-xs text-gray-500">({clientName})</span>
           </div>
 
-          {/* Horario */}
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-gray-600" />
-            <span className="text-sm font-medium text-gray-700">
-              {timeRange}
-            </span>
+          {/* Fecha y Horario */}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">
+                {format(event.start.toDate(), "EEEE, d 'de' MMMM", {
+                  locale: es,
+                })}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-gray-600" />
+              <span className="text-sm font-medium text-gray-700">
+                {timeRange}
+              </span>
+            </div>
           </div>
 
           {/* Personal médico si existe */}
@@ -271,5 +281,9 @@ export default function Event({ event }: { event: CalendarEvent }) {
     )
   }
 
-  return <EventCard appointment={appointment}>{renderEventContent()}</EventCard>
+  return (
+    <EventCard appointment={appointment} className="h-full w-full block">
+      {renderEventContent()}
+    </EventCard>
+  )
 }

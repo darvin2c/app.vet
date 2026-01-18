@@ -14,14 +14,11 @@ import { Button } from '@/components/ui/button'
 import { AppointmentWithRelations } from '@/types/appointment.types'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { toast } from 'sonner'
 import { ButtonGroup } from '@/components/ui/button-group'
 import { Mail, Phone } from 'lucide-react'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { EmailShareSection, WhatsAppShareSection } from './'
-import { toWhatsAppText } from '@/components/ui/rich-minimal-editor/parsers'
 import SummaryCard from './summary-card'
-import { useIsMobile } from '@/hooks/use-mobile'
 
 type Appointment = AppointmentWithRelations
 
@@ -57,15 +54,6 @@ export function AppointmentShare({
 
   // preset handled inside child
 
-  const handleCopyShare = async () => {
-    try {
-      await navigator.clipboard.writeText(toWhatsAppText(presetHtml))
-      toast.success('Información copiada')
-    } catch {
-      toast.error('No se pudo copiar')
-    }
-  }
-
   const emailRef = React.useRef<{ submit: () => Promise<void> } | null>(null)
   const whatsappRef = React.useRef<{ submit: () => Promise<void> } | null>(null)
   const handleSend = async () => {
@@ -79,7 +67,6 @@ export function AppointmentShare({
 
   const handleModeChange = (next: 'email' | 'whatsapp') => setMode(next)
 
-  const isMobile = useIsMobile()
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="!w-full !max-w-2xl" side="right">
@@ -99,7 +86,6 @@ export function AppointmentShare({
               appointmentTypeName={appointmentTypeName}
               staffName={staffName}
               typeColor={appointmentTypeColor}
-              defaultOpen={!isMobile}
             />
             <div className="space-y-6">
               <Field orientation="vertical">
@@ -147,8 +133,8 @@ export function AppointmentShare({
         </ScrollArea>
         <SheetFooter>
           <Field orientation="horizontal">
-            <Button variant="outline" onClick={handleCopyShare}>
-              Copiar
+            <Button variant="outline" onClick={() => onOpenChange(false)}>
+              Cancelar
             </Button>
             <Button onClick={handleSend}>Enviar</Button>
           </Field>
