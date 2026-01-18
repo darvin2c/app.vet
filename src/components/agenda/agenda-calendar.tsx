@@ -11,7 +11,7 @@ import { useAppointmentList as useAppointments } from '@/hooks/appointments/use-
 import { useAppointmentUpdate } from '@/hooks/appointments/use-appointment-update'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { AppointmentCreate } from '../appointments/appointment-create'
-import { IlamyCalendar, CalendarEvent } from '@ilamy/calendar'
+import { IlamyCalendar, CalendarEvent, CellClickInfo } from '@ilamy/calendar'
 import { Tables } from '@/types/supabase.types'
 import AgendaHeader from './agenda-header'
 import dayjs from '@/lib/dayjs'
@@ -87,7 +87,8 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setView(newView)
   }
 
-  const handleCellClick = (start: dayjs.Dayjs, end: dayjs.Dayjs) => {
+  const handleCellClick = (info: CellClickInfo) => {
+    const { start, end } = info
     console.log(
       'Cell clicked:',
       start.format('YYYY-MM-DD'),
@@ -100,9 +101,9 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     setCreateModalOpen(true)
   }
 
-  const handleDateChange = useCallback((date: dayjs.Dayjs) => {
+  const handleDateChange = useCallback((date: any) => {
     startTransition(() => {
-      setCurrentDate(date)
+      setCurrentDate(dayjs(date))
     })
   }, [])
 
