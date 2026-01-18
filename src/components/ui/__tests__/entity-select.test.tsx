@@ -40,18 +40,41 @@ describe('EntitySelect — Controlled Mode', () => {
     expect(screen.queryByText('Juan')).toBeNull()
   })
 
-  it('botón Crear abre renderCreate', async () => {
+  it('botón Crear abre renderCreate y onSuccess selecciona el valor', async () => {
     const user = userEvent.setup()
-    render(
-      <EntitySelect
-        items={items}
-        renderCreate={({ open, onOpenChange }) =>
-          open ? <div role="dialog">Crear</div> : null
-        }
-      />
-    )
+
+    function TestCreate() {
+      const [value, setValue] = useState('')
+      return (
+        <EntitySelect
+          value={value}
+          onValueChange={setValue}
+          items={items}
+          renderCreate={({ open, onOpenChange, onSuccess }) =>
+            open ? (
+              <div role="dialog">
+                Crear
+                <button onClick={() => onSuccess('1')}>Confirmar</button>
+              </div>
+            ) : null
+          }
+        />
+      )
+    }
+
+    render(<TestCreate />)
     await user.click(screen.getByLabelText('Crear nuevo recurso'))
     expect(screen.getByRole('dialog').textContent).toContain('Crear')
+
+    // Simular éxito
+    await user.click(screen.getByText('Confirmar'))
+
+    // El diálogo debe cerrarse
+    expect(screen.queryByRole('dialog')).toBeNull()
+
+    // El valor seleccionado debe ser '1' (Ana)
+    // Al estar seleccionado, debe mostrarse el nombre en el trigger
+    expect(screen.getByRole('combobox').textContent).toContain('Ana')
   })
 
   it('botón Editar abre renderEdit con id seleccionado', async () => {

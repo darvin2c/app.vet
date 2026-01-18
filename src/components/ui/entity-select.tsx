@@ -48,6 +48,7 @@ export interface EntitySelectProps {
   renderCreate?: (params: {
     open: boolean
     onOpenChange: (open: boolean) => void
+    onSuccess: (id: string) => void
   }) => React.ReactNode
   renderEdit?: (params: {
     id?: string
@@ -98,6 +99,11 @@ export function EntitySelect(props: EntitySelectProps) {
     } else {
       setInternalSearchTerm(term)
     }
+  }
+
+  const handleCreateSuccess = (id: string) => {
+    onValueChange?.(id)
+    setCreateOpen(false)
   }
 
   return (
@@ -236,7 +242,11 @@ export function EntitySelect(props: EntitySelectProps) {
         )}
       </InputGroup>
 
-      {renderCreate?.({ open: createOpen, onOpenChange: setCreateOpen })}
+      {renderCreate?.({
+        open: createOpen,
+        onOpenChange: setCreateOpen,
+        onSuccess: handleCreateSuccess,
+      })}
       {renderEdit?.({
         id: selected?.id,
         open: editOpen,

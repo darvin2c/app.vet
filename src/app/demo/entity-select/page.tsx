@@ -7,16 +7,27 @@ import { useQuery } from '@tanstack/react-query'
 function MockCreate({
   open,
   onOpenChange,
+  onSuccess,
 }: {
   open: boolean
   onOpenChange: (o: boolean) => void
+  onSuccess: (id: string) => void
 }) {
   if (!open) return null
   return (
     <div role="dialog" className="p-4">
       <div className="mb-2">Crear entidad</div>
-      <button className="btn" onClick={() => onOpenChange(false)}>
-        Cerrar
+      <button
+        className="btn"
+        onClick={() => {
+          // Simulamos creación exitosa de un ID '3'
+          onSuccess('3')
+        }}
+      >
+        Crear y Cerrar
+      </button>
+      <button className="btn ml-2" onClick={() => onOpenChange(false)}>
+        Cancelar
       </button>
     </div>
   )
