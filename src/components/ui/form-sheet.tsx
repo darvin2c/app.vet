@@ -85,7 +85,14 @@ export function FormSheet<T extends FieldValues>({
                 {cancelLabel}
               </Button>
               <Button type="submit" disabled={isPending} className="flex-1">
-                {isPending ? 'Guardando...' : submitLabel}
+                {isPending ? (
+                  <>
+                    <span className="sr-only">Guardando...</span>
+                    <Spinner className="animate-spin h-4 w-4" />
+                  </>
+                ) : (
+                  submitLabel
+                )}
               </Button>
             </div>
           ) : (
@@ -99,7 +106,14 @@ export function FormSheet<T extends FieldValues>({
                 {cancelLabel}
               </Button>
               <Button type="submit" disabled={isPending}>
-                {isPending ? 'Guardando...' : submitLabel}
+                {isPending ? (
+                  <>
+                    <Spinner />
+                    <span>Guardando...</span>
+                  </>
+                ) : (
+                  submitLabel
+                )}
               </Button>
             </>
           )}
