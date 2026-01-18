@@ -42,6 +42,7 @@ interface FormSheetProps<T extends FieldValues> {
   cancelLabel?: string
   className?: string
   side?: 'top' | 'bottom' | 'left' | 'right'
+  extraActions?: React.ReactNode
 }
 
 export function FormSheet<T extends FieldValues>({
@@ -58,6 +59,7 @@ export function FormSheet<T extends FieldValues>({
   cancelLabel = 'Cancelar',
   className,
   side = 'right',
+  extraActions,
 }: FormSheetProps<T>) {
   const isMobile = useIsMobile()
   const [showExitWarning, setShowExitWarning] = React.useState(false)
@@ -108,10 +110,31 @@ export function FormSheet<T extends FieldValues>({
     onOpenChange(false)
   }
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      // Si es Ctrl + Enter, enviar formulario
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault()
+        form.handleSubmit(onSubmit)()
+        return
+      }
+
+      // Si es solo Enter, prevenir envío si no es un textarea
+      const target = e.target as HTMLElement
+      if (
+        target.tagName !== 'TEXTAREA' &&
+        target.getAttribute('role') !== 'button'
+      ) {
+        e.preventDefault()
+      }
+    }
+  }
+
   const FormContent = (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
+        onKeyDown={handleKeyDown}
         className="flex h-full flex-col overflow-hidden"
       >
         <SheetHeader className={cn(isMobile ? 'text-left' : '')}>
@@ -127,51 +150,59 @@ export function FormSheet<T extends FieldValues>({
 
         <SheetFooter
           className={cn(
-            isMobile ? 'flex-row gap-2 px-4 pb-4' : 'flex-row justify-end gap-2'
+            isMobile
+              ? 'flex-col gap-2 px-4 pb-4'
+              : 'flex-row justify-between gap-2'
           )}
         >
           {isMobile ? (
-            <div className="flex w-full gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-                disabled={isPending}
-                className="flex-1"
-              >
-                {cancelLabel}
-              </Button>
-              <Button type="submit" disabled={isPending} className="flex-1">
-                {isPending ? (
-                  <>
-                    <span className="sr-only">Guardando...</span>
-                    <Spinner className="animate-spin h-4 w-4" />
-                  </>
-                ) : (
-                  submitLabel
-                )}
-              </Button>
+            <div className="flex flex-col gap-3 w-full">
+              <div className="flex w-full gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  disabled={isPending}
+                  className="flex-1"
+                >
+                  {cancelLabel}
+                </Button>
+                <Button type="submit" disabled={isPending} className="flex-1">
+                  {isPending ? (
+                    <>
+                      <span className="sr-only">Guardando...</span>
+                      <Spinner className="animate-spin h-4 w-4" />
+                    </>
+                  ) : (
+                    submitLabel
+                  )}
+                </Button>
+              </div>
+              {extraActions && <div className="w-full">{extraActions}</div>}
             </div>
           ) : (
             <>
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => handleOpenChange(false)}
-                disabled={isPending}
-              >
-                {cancelLabel}
-              </Button>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? (
-                  <>
-                    <Spinner />
-                    <span>Guardando...</span>
-                  </>
-                ) : (
-                  submitLabel
-                )}
-              </Button>
+              <div className="flex-1 flex justify-start">{extraActions}</div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => handleOpenChange(false)}
+                  disabled={isPending}
+                >
+                  {cancelLabel}
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? (
+                    <>
+                      <Spinner />
+                      <span>Guardando...</span>
+                    </>
+                  ) : (
+                    submitLabel
+                  )}
+                </Button>
+              </div>
             </>
           )}
         </SheetFooter>

@@ -24,9 +24,14 @@ const taskSchema = z.object({
 
 type TaskSchema = z.infer<typeof taskSchema>
 
+import { Trash2 } from 'lucide-react'
+
+// ... (existing imports)
+
 export default function FormSheetDemo() {
   const [open, setOpen] = useState(false)
   const [openLong, setOpenLong] = useState(false)
+  const [openExtra, setOpenExtra] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const form = useForm<TaskSchema>({
@@ -48,6 +53,15 @@ export default function FormSheetDemo() {
     },
   })
 
+  const formExtra = useForm<TaskSchema>({
+    resolver: zodResolver(taskSchema),
+    defaultValues: {
+      title: '',
+      description: '',
+      urgent: false,
+    },
+  })
+
   const onSubmit = async (data: TaskSchema) => {
     setLoading(true)
     console.log('Submitting:', data)
@@ -57,22 +71,23 @@ export default function FormSheetDemo() {
     setLoading(false)
     setOpen(false)
     setOpenLong(false)
+    setOpenExtra(false)
     form.reset()
     formLong.reset()
+    formExtra.reset()
   }
 
   return (
     <div className="p-8 space-y-4">
-      <h1 className="text-2xl font-bold">FormSheet Demo</h1>
-      <p className="text-muted-foreground">
-        Ejemplo de uso del componente FormSheet para formularios en sheets
-        laterales.
-      </p>
+      {/* ... (existing header) */}
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         <Button onClick={() => setOpen(true)}>Crear Tarea (Simple)</Button>
         <Button onClick={() => setOpenLong(true)} variant="outline">
           Crear Tarea (Largo / Scroll)
+        </Button>
+        <Button onClick={() => setOpenExtra(true)} variant="secondary">
+          Crear Tarea (Con Acciones Extra)
         </Button>
       </div>
 
@@ -121,6 +136,71 @@ export default function FormSheetDemo() {
               />
             </FieldContent>
             <FieldLabel htmlFor="urgent" className="font-normal">
+              Marcar como urgente
+            </FieldLabel>
+          </Field>
+        </div>
+      </FormSheet>
+
+      {/* Ejemplo con Acciones Extra */}
+      <FormSheet
+        open={openExtra}
+        onOpenChange={setOpenExtra}
+        title="Tarea con Acciones"
+        description="Ejemplo con botón extra y atajo de teclado (Ctrl+Enter)."
+        form={formExtra}
+        onSubmit={onSubmit}
+        isPending={loading}
+        submitLabel="Guardar Cambios"
+        extraActions={
+          <Button
+            variant="destructive"
+            type="button"
+            onClick={() => alert('Acción de eliminar ejecutada')}
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Eliminar
+          </Button>
+        }
+      >
+        <div className="space-y-4">
+          <div className="bg-blue-50 p-4 rounded-md border border-blue-200 text-sm text-blue-800">
+            💡 Tip: Intenta presionar <strong>Ctrl + Enter</strong> (o Cmd +
+            Enter) para enviar este formulario.
+          </div>
+          <Field>
+            <FieldLabel>Título</FieldLabel>
+            <FieldContent>
+              <Input
+                {...formExtra.register('title')}
+                placeholder="Título de la tarea"
+              />
+            </FieldContent>
+            <FieldError errors={[formExtra.formState.errors.title]} />
+          </Field>
+
+          <Field>
+            <FieldLabel>Descripción</FieldLabel>
+            <FieldContent>
+              <Input
+                {...formExtra.register('description')}
+                placeholder="Descripción (opcional)"
+              />
+            </FieldContent>
+            <FieldError errors={[formExtra.formState.errors.description]} />
+          </Field>
+
+          <Field orientation="horizontal">
+            <FieldContent>
+              <Checkbox
+                id="urgent-extra"
+                checked={formExtra.watch('urgent')}
+                onCheckedChange={(checked) =>
+                  formExtra.setValue('urgent', checked as boolean)
+                }
+              />
+            </FieldContent>
+            <FieldLabel htmlFor="urgent-extra" className="font-normal">
               Marcar como urgente
             </FieldLabel>
           </Field>
