@@ -8,7 +8,6 @@ import {
   Trash2,
   Eye,
   Camera,
-  Activity,
   FileText,
   Calendar,
   Download,
@@ -22,8 +21,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { PetEdit } from './pet-edit'
 import { PetDelete } from './pet-delete'
+import { PetEdit } from './pet-edit'
 import { AppointmentCreate } from '@/components/appointments/appointment-create'
 
 interface PetActionsProps {
@@ -103,7 +102,11 @@ export function PetActions({
           )}
 
           {/* Editar información básica */}
-          <DropdownMenuItem onClick={handleEdit}>
+          <DropdownMenuItem
+            onSelect={() => {
+              handleEdit()
+            }}
+          >
             <Edit className="mr-2 h-4 w-4" />
             <span>
               {variant === 'outline' ? 'Editar información básica' : 'Editar'}

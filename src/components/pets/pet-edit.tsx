@@ -60,7 +60,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
   })
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="pets" action="update">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}
