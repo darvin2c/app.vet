@@ -2,8 +2,7 @@
 
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Drawer } from '@/components/ui/drawer-form'
-import { DrawerFooter } from '@/components/ui/drawer'
+import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SupplierBrandForm } from './supplier-brand-form'
 import useSupplierBrandCreate from '@/hooks/supplier-brands/use-supplier-brand-create'
@@ -47,34 +46,29 @@ export function SupplierBrandCreate({
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
-      <CanAccess resource="products" action="create">
+    <CanAccess resource="products" action="create">
+      <FormSheet
+        open={open}
+        onOpenChange={onOpenChange}
+        title="Asignar Marca"
+        description="Asigna una marca a un proveedor"
+        form={form as any}
+        onSubmit={onSubmit as any}
+        isPending={isPending}
+        submitLabel="Asignar Marca"
+        cancelLabel="Cancelar"
+        side="right"
+        className="!max-w-xl"
+      >
         <FormProvider {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <div className="space-y-4 px-4">
             <SupplierBrandForm />
-
-            <DrawerFooter>
-              <ResponsiveButton
-                type="submit"
-                isLoading={isPending}
-                disabled={isPending}
-                icon={Plus}
-              >
-                Asignar Marca
-              </ResponsiveButton>
-              <ResponsiveButton
-                type="button"
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isPending}
-                icon={Plus}
-              >
-                Cancelar
-              </ResponsiveButton>
-            </DrawerFooter>
-          </form>
+            <ResponsiveButton type="submit" icon={Plus} className="sr-only">
+              Asignar Marca
+            </ResponsiveButton>
+          </div>
         </FormProvider>
-      </CanAccess>
-    </Drawer>
+      </FormSheet>
+    </CanAccess>
   )
 }
