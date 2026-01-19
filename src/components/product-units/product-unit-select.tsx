@@ -57,22 +57,23 @@ export function ProductUnitSelect({
       }}
       renderItem={(unit) => (
         <div className="flex items-center gap-2">
-          <Package className="w-4 h-4 text-muted-foreground" />
-          <div className="flex flex-col">
-            <span>
-              {unit.name} ({unit.abbreviation})
-            </span>
+          <div className="flex gap-2 items-center">
+            <span>{unit.name}</span>
+            {unit.abbreviation && (
+              <span className="text-xs text-muted-foreground">
+                ({unit.abbreviation})
+              </span>
+            )}
           </div>
         </div>
       )}
       renderSelected={(unit) => (
         <div className="flex items-center gap-2">
-          <Package className="w-4 h-4 text-muted-foreground" />
-          <div className="flex flex-col">
+          <div className="flex gap-2 items-center">
             <span>{unit.name}</span>
             {unit.abbreviation && (
               <span className="text-xs text-muted-foreground">
-                {unit.abbreviation}
+                ({unit.abbreviation})
               </span>
             )}
           </div>

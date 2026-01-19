@@ -58,11 +58,10 @@ export function ProductCategorySelect({
       }}
       renderItem={(category) => (
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span>{category.name}</span>
             {category.description && (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 {category.description}
               </span>
             )}
