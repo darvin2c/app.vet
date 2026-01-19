@@ -64,42 +64,19 @@ export function FormSheet<T extends FieldValues>({
 }: FormSheetProps<T>) {
   const isMobile = useIsMobile()
   const [showExitWarning, setShowExitWarning] = React.useState(false)
-  const [historyPushed, setHistoryPushed] = React.useState(false)
   const { isDirty } = form.formState
 
-  // Solo manipular el historial cuando hay cambios sin guardar
   React.useEffect(() => {
-    if (!open || !isDirty) {
-      setHistoryPushed(false)
-      return
-    }
+    if (!open || !isDirty) return
 
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       e.preventDefault()
       e.returnValue = ''
-      return ''
-    }
-
-    const handlePopState = (e: PopStateEvent) => {
-      // Prevenir la navegación hacia atrás
-      history.pushState(null, '', window.location.href)
-      setShowExitWarning(true)
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)
-    window.addEventListener('popstate', handlePopState)
-
-    // Solo agregar al historial una vez cuando isDirty se vuelve true
-    if (!historyPushed) {
-      history.pushState(null, '', window.location.href)
-      setHistoryPushed(true)
-    }
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload)
-      window.removeEventListener('popstate', handlePopState)
-    }
-  }, [open, isDirty, historyPushed])
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [open, isDirty])
 
   const handleOpenChange = (newOpen: boolean) => {
     if (!newOpen && isDirty) {
