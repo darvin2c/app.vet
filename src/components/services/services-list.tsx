@@ -104,13 +104,8 @@ export function ServicesList({
         const service = row.original
         return (
           <div className="flex items-center gap-3">
-            <Avatar className="h-9 w-9">
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                S
-              </AvatarFallback>
-            </Avatar>
             <div className="flex flex-col">
-              <span className="font-medium">{service.name}</span>
+              <span>{service.name}</span>
               <div className="text-xs text-muted-foreground space-x-2">
                 {service.sku && <span>SKU: {service.sku}</span>}
                 {service.barcode && <span>Código: {service.barcode}</span>}
