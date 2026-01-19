@@ -55,6 +55,7 @@ function MockEdit({
 
 export default function DemoEntitySelectPage() {
   const [value, setValue] = useState('')
+  const [multiValue, setMultiValue] = useState<string[]>([])
   const [search, setSearch] = useState('')
   const { appliedPagination } = usePagination()
   const { data, isPending } = useQuery({
@@ -162,6 +163,48 @@ export default function DemoEntitySelectPage() {
               </span>
             </div>
           )}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold">
+          6. Uso Genérico (Item personalizado)
+        </h2>
+        <EntitySelect<{ id: string; code: string; name: string }>
+          items={[
+            { id: '101', code: 'X-99', name: 'Reactor' },
+            { id: '102', code: 'Y-00', name: 'Capacitor' },
+          ]}
+          value="101"
+          placeholder="Seleccionar componente..."
+          renderSelected={(item) => (
+            <span className="font-mono text-xs">
+              [{item.code}] {item.name}
+            </span>
+          )}
+          renderItem={(item) => (
+            <div className="flex flex-col">
+              <span className="font-bold">{item.name}</span>
+              <span className="text-xs text-muted-foreground font-mono">
+                {item.code}
+              </span>
+            </div>
+          )}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <h2 className="text-lg font-semibold">7. Selección Múltiple</h2>
+        <EntitySelect
+          multiple
+          items={[
+            { id: '1', title: 'Opción 1', initials: 'O1' },
+            { id: '2', title: 'Opción 2', initials: 'O2' },
+            { id: '3', title: 'Opción 3', initials: 'O3' },
+          ]}
+          value={multiValue}
+          onValueChange={setMultiValue}
+          placeholder="Seleccionar múltiples..."
         />
       </div>
     </div>

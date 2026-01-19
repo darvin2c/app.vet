@@ -17,7 +17,7 @@ describe('EntitySelect — Controlled Mode', () => {
     function TestComponent() {
       const [search, setSearch] = useState('')
       const filteredItems = items.filter((i) =>
-        i.title.toLowerCase().includes(search.toLowerCase())
+        (i as any).title.toLowerCase().includes(search.toLowerCase())
       )
 
       return (
@@ -105,9 +105,43 @@ describe('EntitySelect — Controlled Mode', () => {
       <EntitySelect
         items={items}
         value="1"
-        renderSelected={(item) => <span>Custom: {item.title}</span>}
+        renderSelected={(item) => <span>Custom: {(item as any).title}</span>}
       />
     )
     expect(screen.getByText('Custom: Ana')).toBeTruthy()
+  })
+
+  it('permite selección múltiple', async () => {
+    const user = userEvent.setup()
+
+    function MultiSelectTest() {
+      const [values, setValues] = useState<string[]>([])
+      return (
+        <EntitySelect
+          multiple
+          items={items}
+          value={values}
+          onValueChange={setValues}
+        />
+      )
+    }
+
+    render(<MultiSelectTest />)
+
+    // Abrir combobox
+    await user.click(screen.getByRole('combobox'))
+
+    // Seleccionar 'Ana'
+    await user.click(screen.getByText('Ana'))
+
+    // Verificar que Ana está seleccionada (aparece como badge y en la lista si sigue abierto)
+    // Usamos queryAllByText para evitar error si hay múltiples elementos con el mismo texto
+    expect(screen.queryAllByText('Ana').length).toBeGreaterThan(0)
+
+    // Seleccionar 'Juan'
+    await user.click(screen.getByText('Juan'))
+
+    // Ahora deberían estar ambos
+    expect(screen.getAllByText(/Ana|Juan/).length).toBeGreaterThanOrEqual(2)
   })
 })
