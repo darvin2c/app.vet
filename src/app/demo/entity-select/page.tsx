@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import { EntitySelect, type ComboboxItem } from '@/components/ui/entity-select'
 import { usePagination } from '@/components/ui/pagination/use-pagination'
 import { useQuery } from '@tanstack/react-query'
@@ -53,7 +53,7 @@ function MockEdit({
   )
 }
 
-export default function DemoEntitySelectPage() {
+function EntitySelectDemoContent() {
   const [value, setValue] = useState('')
   const [multiValue, setMultiValue] = useState<string[]>([])
   const [search, setSearch] = useState('')
@@ -208,5 +208,13 @@ export default function DemoEntitySelectPage() {
         />
       </div>
     </div>
+  )
+}
+
+export default function DemoEntitySelectPage() {
+  return (
+    <Suspense fallback={<div>Cargando...</div>}>
+      <EntitySelectDemoContent />
+    </Suspense>
   )
 }
