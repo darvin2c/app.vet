@@ -80,7 +80,7 @@ export function AppointmentCreate({
   }
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="appointments" action="create">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

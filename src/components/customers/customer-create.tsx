@@ -46,7 +46,7 @@ export function CustomerCreate({
   }
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="customers" action="create">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}
@@ -58,7 +58,7 @@ export function CustomerCreate({
         submitLabel="Crear Cliente"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <CustomerForm mode="create" />
       </FormSheet>

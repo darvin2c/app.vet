@@ -70,7 +70,7 @@ export function UserInviteCreate({
   })
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="users" action="invite">
       <FormSheet
         open={isOpen}
         onOpenChange={setOpen as any}

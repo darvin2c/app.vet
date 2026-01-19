@@ -68,7 +68,7 @@ export function AppointmentEdit({
   }
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="appointments" action="update">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

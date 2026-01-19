@@ -42,7 +42,7 @@ export function CustomerEdit({
 
   // Cargar datos del cliente cuando se obtienen
   useEffect(() => {
-    if (customer) {
+    if (customer && !form.formState.isDirty) {
       form.reset({
         first_name: customer.first_name || '',
         last_name: customer.last_name || '',
@@ -64,7 +64,7 @@ export function CustomerEdit({
   }
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="customers" action="update">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}
@@ -76,7 +76,7 @@ export function CustomerEdit({
         submitLabel="Actualizar Cliente"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <CustomerForm mode="edit" />
       </FormSheet>

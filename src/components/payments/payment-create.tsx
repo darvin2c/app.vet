@@ -39,7 +39,7 @@ export function PaymentCreate({ open, onOpenChange }: PaymentCreateProps) {
   }
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="payments" action="create">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

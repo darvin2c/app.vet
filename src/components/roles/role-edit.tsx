@@ -36,7 +36,7 @@ export function RoleEdit({ role, open, onOpenChange }: RoleEditProps) {
   }
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="roles" action="update">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

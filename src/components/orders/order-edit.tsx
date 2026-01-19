@@ -53,7 +53,7 @@ export function OrderEdit({ order, open, onOpenChange }: OrderEditProps) {
         side={isMobile ? 'bottom' : 'right'}
         className="!h-screen !max-w-full !w-full p-0 border-0"
       >
-        <CanAccess resource="products" action="update">
+        <CanAccess resource="orders" action="update">
           <SheetHeader className="sr-only">
             <SheetTitle>Editar Orden</SheetTitle>
           </SheetHeader>

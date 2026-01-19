@@ -61,7 +61,7 @@ export function OrderPosCreate({ open, onOpenChange }: OrderPosCreateProps) {
         side={isMobile ? 'bottom' : 'right'}
         className="!h-screen !max-w-full !w-full p-0 border-0"
       >
-        <CanAccess resource="products" action="create">
+        <CanAccess resource="orders" action="create">
           <SheetHeader className="sr-only">
             <SheetTitle>Punto de Venta</SheetTitle>
           </SheetHeader>

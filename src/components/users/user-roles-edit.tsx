@@ -58,7 +58,7 @@ export function UserRolesEdit({
       : {}
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="users" action="update">
       <FormSheet
         open={(sheetProps as any).open}
         onOpenChange={(sheetProps as any).onOpenChange}

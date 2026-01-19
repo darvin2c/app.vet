@@ -38,7 +38,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
   })
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="pets" action="create">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

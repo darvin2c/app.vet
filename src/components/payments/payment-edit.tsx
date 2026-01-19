@@ -42,7 +42,7 @@ export function PaymentEdit({ payment, open, onOpenChange }: PaymentEditProps) {
   }
 
   return (
-    <CanAccess resource="products" action="update">
+    <CanAccess resource="payments" action="update">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}

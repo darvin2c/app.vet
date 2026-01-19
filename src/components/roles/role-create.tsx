@@ -32,7 +32,7 @@ export function RoleCreate({ open, onOpenChange }: RoleCreateProps) {
   }
 
   return (
-    <CanAccess resource="products" action="create">
+    <CanAccess resource="roles" action="create">
       <FormSheet
         open={open}
         onOpenChange={onOpenChange}
