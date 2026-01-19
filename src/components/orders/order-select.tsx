@@ -1,190 +1,72 @@
 'use client'
 
-import { useState } from 'react'
-import { ShoppingCart, Check, ChevronsUpDown, X } from 'lucide-react'
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Badge } from '@/components/ui/badge'
-import { Tables } from '@/types/supabase.types'
+import { EntitySelect } from '@/components/ui/entity-select'
 import useOrderList from '@/hooks/orders/use-order-list'
-import { usePagination } from '../ui/pagination'
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '../ui/empty'
-import { Spinner } from '../ui/spinner'
+import { Tables } from '@/types/supabase.types'
+import { Badge } from '@/components/ui/badge'
+import { ShoppingCart } from 'lucide-react'
 
 type Order = Tables<'orders'>
 
 interface OrderSelectProps {
   value?: string
   onValueChange?: (value: string) => void
-  placeholder?: string
   disabled?: boolean
   className?: string
+  placeholder?: string
 }
-
-const orderStatusLabels = {
-  pending: 'Pendiente',
-  confirmed: 'Confirmado',
-  in_progress: 'En Progreso',
-  completed: 'Completado',
-  cancelled: 'Cancelado',
-} as const
-
-const orderStatusColors = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  confirmed: 'bg-blue-100 text-blue-800',
-  in_progress: 'bg-orange-100 text-orange-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-} as const
 
 export function OrderSelect({
   value,
   onValueChange,
-  placeholder = 'Seleccionar orden...',
-  disabled = false,
+  disabled,
   className,
+  placeholder = 'Seleccionar orden...',
 }: OrderSelectProps) {
-  const [open, setOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const { appliedPagination } = usePagination()
-  const { data, isLoading } = useOrderList({
-    search: searchTerm,
-    filters: [],
-    pagination: appliedPagination,
-  })
-  const orders = data?.data || []
-  const selectedOrder = orders.find((order: Order) => order.id === value)
-
-  const handleSelect = (orderId: string) => {
-    if (!onValueChange) return
-    onValueChange(value === orderId ? '' : orderId)
-    setOpen(false)
-  }
+  const { orders, isLoading, searchTerm, setSearchTerm } = useOrderList()
 
   return (
-    <InputGroup className={className}>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <InputGroupButton
-            variant="ghost"
-            role="combobox"
-            aria-expanded={open}
-            className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
-            disabled={disabled}
-          >
-            {selectedOrder ? (
-              <div className="flex items-center gap-2">
-                <ShoppingCart className="h-4 w-4" />
-                <span>
-                  {selectedOrder.order_number ||
-                    `Orden #${selectedOrder.id.slice(0, 8)}`}
-                </span>
-                <Badge
-                  className={
-                    orderStatusColors[
-                      selectedOrder.status as keyof typeof orderStatusColors
-                    ]
-                  }
-                >
-                  {
-                    orderStatusLabels[
-                      selectedOrder.status as keyof typeof orderStatusLabels
-                    ]
-                  }
-                </Badge>
-              </div>
-            ) : (
-              <span className="text-muted-foreground">{placeholder}</span>
+    <EntitySelect<Order>
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      className={className}
+      placeholder={placeholder}
+      items={orders}
+      isPending={isLoading}
+      searchTerm={searchTerm}
+      onSearchTermChange={setSearchTerm}
+      renderItem={(order) => (
+        <div className="flex items-center gap-2 w-full">
+          <ShoppingCart className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-medium truncate">
+                Orden #{order.order_number}
+              </span>
+              <Badge variant="outline" className="text-xs shrink-0">
+                {order.status}
+              </Badge>
+            </div>
+            {order.total_amount && (
+              <span className="text-sm text-muted-foreground">
+                ${order.total_amount.toFixed(2)}
+              </span>
             )}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </InputGroupButton>
-        </PopoverTrigger>
-        <PopoverContent
-          className="w-[--radix-popover-trigger-width] p-0"
-          align="start"
-        >
-          <Command>
-            <CommandInput
-              placeholder="Buscar orden..."
-              value={searchTerm}
-              onValueChange={setSearchTerm}
-            />
-            <CommandList>
-              <CommandEmpty>
-                {isLoading ? (
-                  <div className="min-h-[100px]">
-                    <Spinner />
-                  </div>
-                ) : (
-                  <Empty>
-                    <EmptyHeader>
-                      <EmptyMedia>
-                        <ShoppingCart className="h-8 w-8 text-muted-foreground" />
-                      </EmptyMedia>
-                      <EmptyTitle>No se encontraron órdenes</EmptyTitle>
-                      <EmptyDescription>
-                        Intenta buscar con otra palabra clave.
-                      </EmptyDescription>
-                    </EmptyHeader>
-                  </Empty>
-                )}
-              </CommandEmpty>
-              <CommandGroup>
-                {orders.map((order: Order) => (
-                  <CommandItem
-                    key={order.id}
-                    value={order.id}
-                    onSelect={() => handleSelect(order.id)}
-                  >
-                    <div className="flex items-center gap-2">
-                      <ShoppingCart className="h-4 w-4" />
-                      <span>
-                        {order.order_number || `Orden #${order.id.slice(0, 8)}`}
-                      </span>
-                      <Badge
-                        className={
-                          orderStatusColors[
-                            order.status as keyof typeof orderStatusColors
-                          ]
-                        }
-                      >
-                        {
-                          orderStatusLabels[
-                            order.status as keyof typeof orderStatusLabels
-                          ]
-                        }
-                      </Badge>
-                    </div>
-                    {value === order.id ? (
-                      <Check className="ml-auto h-4 w-4" />
-                    ) : (
-                      <X className="ml-auto h-4 w-4" />
-                    )}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
-    </InputGroup>
+          </div>
+        </div>
+      )}
+      renderSelected={(order) => (
+        <div className="flex items-center gap-2">
+          <ShoppingCart className="w-4 h-4 text-muted-foreground" />
+          <div className="flex items-center gap-2">
+            <span className="font-medium">Orden #{order.order_number}</span>
+            <Badge variant="outline" className="text-xs">
+              {order.status}
+            </Badge>
+          </div>
+        </div>
+      )}
+    />
   )
 }
