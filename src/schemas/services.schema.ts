@@ -8,7 +8,6 @@ export const serviceBaseSchema = z.object({
   barcode: z.string().optional(),
   sku: z.string().optional(),
   notes: z.string().optional(),
-  brand_id: z.string().uuid('ID de marca inválido').optional(),
   category_id: z.string().uuid('ID de categoría inválido').optional(),
   unit_id: z.string().uuid('ID de unidad inválido').optional(),
 })

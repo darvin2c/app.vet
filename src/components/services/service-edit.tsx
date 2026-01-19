@@ -30,7 +30,6 @@ export function ServiceEdit({ open, onOpenChange, service }: ServiceEditProps) {
       cost: service.cost || undefined,
       barcode: service.barcode || undefined,
       notes: service.notes || undefined,
-      brand_id: service.brand_id || undefined,
     },
   })
 

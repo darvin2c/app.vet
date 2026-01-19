@@ -1,4 +1,5 @@
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
+import { ProductUnitSelect } from '@/components/product-units/product-unit-select'
 import { ServiceImportButton } from '@/components/services/service-import-button'
 import { ServiceCreateButton } from '@/components/services/service-create-button'
 import { ServicesList } from '@/components/services/services-list'
@@ -19,6 +20,18 @@ export default function ServicesPage() {
       operator: 'eq',
     },
     {
+      field: 'category_id',
+      label: 'Categoría',
+      operator: 'eq',
+      component: ProductCategorySelect,
+    },
+    {
+      field: 'unit_id',
+      label: 'Unidad',
+      operator: 'eq',
+      component: ProductUnitSelect,
+    },
+    {
       field: 'created_at',
       label: 'Fecha de creación',
       placeholder: 'Selecciona rango de fechas',
@@ -35,6 +48,9 @@ export default function ServicesPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
+      { field: 'price', label: 'Precio', sortable: true },
+      { field: 'category_id', label: 'Categoría', sortable: true },
+      { field: 'unit_id', label: 'Unidad', sortable: true },
       { field: 'created_at', label: 'Fecha de creación', sortable: true },
       { field: 'is_active', label: 'Estado', sortable: true },
     ],

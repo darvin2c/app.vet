@@ -108,7 +108,6 @@ export function ServicesList({
               <span>{service.name}</span>
               <div className="text-xs text-muted-foreground space-x-2">
                 {service.sku && <span>SKU: {service.sku}</span>}
-                {service.barcode && <span>Código: {service.barcode}</span>}
               </div>
             </div>
           </div>
@@ -116,9 +115,22 @@ export function ServicesList({
       },
     },
     {
+      accessorKey: 'barcode',
+      header: ({ header }) => (
+        <OrderByTableHeader field="barcode" orderByHook={orderByHook}>
+          Código
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Service> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.getValue('barcode') || '-'}
+        </div>
+      ),
+    },
+    {
       accessorKey: 'category',
       header: ({ header }) => (
-        <OrderByTableHeader field="category.name" orderByHook={orderByHook}>
+        <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
           Categoría
         </OrderByTableHeader>
       ),
@@ -127,6 +139,36 @@ export function ServicesList({
           {row.original.category?.name || '-'}
         </div>
       ),
+    },
+    {
+      accessorKey: 'unit_id',
+      header: ({ header }) => (
+        <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
+          Unidad
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Service> }) => (
+        <div className="text-sm text-muted-foreground">
+          {row.original.unit?.name || '-'}
+        </div>
+      ),
+    },
+    {
+      accessorKey: 'price',
+      header: ({ header }) => (
+        <OrderByTableHeader field="price" orderByHook={orderByHook}>
+          Precio
+        </OrderByTableHeader>
+      ),
+      cell: ({ row }: { row: Row<Service> }) => {
+        const price = row.getValue('price') as number
+        const formatted = new Intl.NumberFormat('es-PE', {
+          style: 'currency',
+          currency: 'PEN',
+          minimumFractionDigits: 2,
+        }).format(price)
+        return <div className="text-sm">{formatted}</div>
+      },
     },
     {
       accessorKey: 'is_active',
@@ -207,6 +249,26 @@ export function ServicesList({
                 {service.category.name}
               </div>
             )}
+            {service.unit && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Unidad:</span>{' '}
+                {service.unit.name}
+              </div>
+            )}
+            {service.brand && (
+              <div className="text-sm">
+                <span className="text-muted-foreground">Marca:</span>{' '}
+                {service.brand.name}
+              </div>
+            )}
+            <div className="text-sm">
+              <span className="text-muted-foreground">Precio:</span>{' '}
+              {new Intl.NumberFormat('es-PE', {
+                style: 'currency',
+                currency: 'PEN',
+                minimumFractionDigits: 2,
+              }).format(service.price)}
+            </div>
 
             <div className="flex justify-between items-center">
               <IsActiveDisplay value={service.is_active} />
@@ -231,6 +293,15 @@ export function ServicesList({
               {service.category?.name && (
                 <span>Categoría: {service.category.name}</span>
               )}
+              {service.unit && <span>Unidad: {service.unit.name}</span>}
+              <span>
+                Precio:{' '}
+                {new Intl.NumberFormat('es-PE', {
+                  style: 'currency',
+                  currency: 'PEN',
+                  minimumFractionDigits: 2,
+                }).format(service.price)}
+              </span>
               <IsActiveDisplay value={service.is_active} />
             </div>
           </ItemContent>
