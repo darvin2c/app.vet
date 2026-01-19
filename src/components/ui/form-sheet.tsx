@@ -97,6 +97,7 @@ export function FormSheet<T extends FieldValues>({
       // Si es Ctrl + Enter, enviar formulario
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault()
+        e.stopPropagation()
         form.handleSubmit(onSubmit)()
         return
       }
