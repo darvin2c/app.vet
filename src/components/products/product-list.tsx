@@ -101,7 +101,7 @@ export function ProductList({
         </OrderByTableHeader>
       ),
       cell: ({ row }: { row: Row<Product> }) => (
-        <div className="font-medium">{row.getValue('name')}</div>
+        <div>{row.getValue('name')}</div>
       ),
     },
     {
@@ -257,10 +257,10 @@ export function ProductList({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {products.map((product) => (
         <Card key={product.id} className="hover:shadow-md transition-shadow">
-          <CardContent className="p-6 space-y-3">
+          <CardContent className="space-y-3">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-medium">{product.name}</h3>
+                <h3 className="font-medium text-sm">{product.name}</h3>
                 {product.sku && (
                   <p className="text-sm text-muted-foreground">
                     SKU: {product.sku}
