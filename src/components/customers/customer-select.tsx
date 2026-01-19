@@ -48,9 +48,8 @@ export function CustomerSelect({
       )}
       renderItem={(customer) => (
         <div className="flex items-center gap-2">
-          <User className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">
+            <span className="text-sm">
               {customer.first_name} {customer.last_name}
             </span>
             {customer.email && (
@@ -63,9 +62,8 @@ export function CustomerSelect({
       )}
       renderSelected={(customer) => (
         <div className="flex items-center gap-2">
-          <User className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">
+            <span className="text-sm">
               {customer.first_name} {customer.last_name}
             </span>
             {customer.email && (

@@ -57,7 +57,6 @@ export function BreedSelect({
       }}
       renderItem={(breed) => (
         <div className="flex items-center gap-2">
-          <Dog className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span>{breed.name}</span>
             {breed.species && (
@@ -70,7 +69,6 @@ export function BreedSelect({
       )}
       renderSelected={(breed) => (
         <div className="flex items-center gap-2">
-          <Dog className="w-4 h-4 text-muted-foreground" />
           <span>{breed.name}</span>
         </div>
       )}

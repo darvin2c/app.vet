@@ -45,13 +45,11 @@ export function SpeciesSelect({
       multiple={multiple}
       renderItem={(specie) => (
         <div className="flex items-center gap-2">
-          <PawPrint className="w-4 h-4 text-muted-foreground" />
           <span>{specie.name}</span>
         </div>
       )}
       renderSelected={(specie) => (
         <div className="flex items-center gap-2">
-          <PawPrint className="w-4 h-4 text-muted-foreground" />
           <span>{specie.name}</span>
         </div>
       )}
