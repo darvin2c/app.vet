@@ -205,20 +205,6 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
 
         {/* Fila horizontal para checkbox y estado activo */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field>
-            <FieldContent className="flex flex-row items-start space-x-3 space-y-0">
-              <Checkbox id="is_service" {...register('is_service')} />
-              <div className="space-y-1 leading-none">
-                <FieldLabel htmlFor="is_service">Es un servicio</FieldLabel>
-                <p className="text-sm text-muted-foreground">
-                  Marcar si este producto es un servicio (no requiere
-                  inventario)
-                </p>
-              </div>
-            </FieldContent>
-            <FieldError errors={[errors.is_service]} />
-          </Field>
-
           <IsActiveFormField />
         </div>
 
