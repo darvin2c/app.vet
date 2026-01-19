@@ -6,8 +6,11 @@ import { BreedCreate } from './breed-create'
 import { BreedEdit } from './breed-edit'
 import { Tables } from '@/types/supabase.types'
 import { Dog } from 'lucide-react'
+import { useState } from 'react'
 
-type Breed = Tables<'breeds'> & { species?: Tables<'species'> | null }
+type Breed = Tables<'breeds'> & {
+  species?: { id: string; name: string } | null
+}
 
 interface BreedSelectProps {
   value?: string
@@ -26,7 +29,8 @@ export function BreedSelect({
   className,
   speciesId,
 }: BreedSelectProps) {
-  const { data, isLoading, searchTerm, setSearchTerm } = useBreedsList({
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useBreedsList({
     search: searchTerm,
     species_id: speciesId,
   })

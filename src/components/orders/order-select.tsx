@@ -5,6 +5,7 @@ import useOrderList from '@/hooks/orders/use-order-list'
 import { Tables } from '@/types/supabase.types'
 import { Badge } from '@/components/ui/badge'
 import { ShoppingCart } from 'lucide-react'
+import { useState } from 'react'
 
 type Order = Tables<'orders'>
 
@@ -23,7 +24,11 @@ export function OrderSelect({
   className,
   placeholder = 'Seleccionar orden...',
 }: OrderSelectProps) {
-  const { orders, isLoading, searchTerm, setSearchTerm } = useOrderList()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useOrderList({
+    search: searchTerm,
+  })
+  const orders = data?.data || []
 
   return (
     <EntitySelect<Order>
@@ -48,9 +53,9 @@ export function OrderSelect({
                 {order.status}
               </Badge>
             </div>
-            {order.total_amount && (
+            {order.total && (
               <span className="text-sm text-muted-foreground">
-                ${order.total_amount.toFixed(2)}
+                ${order.total.toFixed(2)}
               </span>
             )}
           </div>

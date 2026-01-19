@@ -4,10 +4,11 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import useSuppliers from '@/hooks/suppliers/use-supplier-list'
 import { SupplierCreate } from './supplier-create'
 import { SupplierEdit } from './supplier-edit'
-import { Database } from '@/types/supabase.types'
+import { Database, Tables } from '@/types/supabase.types'
 import { Building } from 'lucide-react'
+import { useState } from 'react'
 
-type Supplier = Database['public']['Tables']['suppliers']['Row']
+type Supplier = Tables<'suppliers'>
 
 interface SupplierSelectProps {
   value?: string
@@ -24,13 +25,10 @@ export function SupplierSelect({
   className,
   placeholder = 'Seleccionar proveedor...',
 }: SupplierSelectProps) {
-  const {
-    suppliers,
-    isLoading,
-    searchTerm,
-    setSearchTerm,
-    appliedPagination,
-  } = useSuppliers()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data: suppliers = [], isLoading } = useSuppliers({
+    search: searchTerm,
+  })
 
   return (
     <EntitySelect<Supplier>
@@ -44,7 +42,11 @@ export function SupplierSelect({
       searchTerm={searchTerm}
       onSearchTermChange={setSearchTerm}
       renderCreate={(props) => <SupplierCreate {...props} />}
-      renderEdit={(props) => <SupplierEdit {...props} />}
+      renderEdit={(props) => {
+        const supplier = suppliers.find((s) => s.id === props.id)
+        if (!supplier) return null
+        return <SupplierEdit {...props} supplier={supplier} />
+      }}
       renderItem={(supplier) => (
         <div className="flex items-center gap-2">
           <Building className="w-4 h-4 text-muted-foreground" />

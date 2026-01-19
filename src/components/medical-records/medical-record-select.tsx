@@ -23,10 +23,10 @@ type MedicalRecord = Tables<'clinical_records'> & {
     id: string
     note: string
   }[]
-  clinical_pars: {
+  clinical_parameters: {
     id: string
     params: any
-    schema_version: string
+    schema_version: number
     measured_at: string
   }[]
 }
@@ -66,9 +66,7 @@ export function MedicalRecordSelect({
       isPending={isLoading}
       searchTerm={searchTerm}
       onSearchTermChange={setSearchTerm}
-      renderCreate={(props) => (
-        <MedicalRecordCreate {...props} petId={petId} />
-      )}
+      renderCreate={(props) => <MedicalRecordCreate {...props} petId={petId} />}
       renderEdit={(props) => {
         const record = medicalRecords.find((r) => r.id === props.id)
         if (!record) return null

@@ -6,8 +6,12 @@ import { PetCreate } from './pet-create'
 import { PetEdit } from './pet-edit'
 import { Tables } from '@/types/supabase.types'
 import { Heart } from 'lucide-react'
+import { useState } from 'react'
 
-type Pet = Tables<'pets'> & { breeds: Tables<'breeds'> | null }
+type Pet = Tables<'pets'> & {
+  breeds: { id: string; name: string } | null
+  species: { id: string; name: string } | null
+}
 
 interface PetSelectProps {
   value?: string
@@ -26,11 +30,13 @@ export function PetSelect({
   className,
   customerId,
 }: PetSelectProps) {
-  const { data, isLoading, searchTerm, setSearchTerm } = usePetList({
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = usePetList({
+    search: searchTerm,
     filters: customerId
       ? [
           {
-            field: 'customer_id',
+            field: 'client_id',
             operator: 'eq',
             value: customerId,
           },
@@ -55,12 +61,12 @@ export function PetSelect({
       isPending={isLoading}
       searchTerm={searchTerm}
       onSearchTermChange={setSearchTerm}
-      renderCreate={(props) => (
-        <PetCreate {...props} clientId={customerId} />
-      )}
-      renderEdit={(props) => (
-        <PetEdit {...props} pet={pets.find((p) => p.id === props.id)} />
-      )}
+      renderCreate={(props) => <PetCreate {...props} clientId={customerId} />}
+      renderEdit={(props) => {
+        const pet = pets.find((p) => p.id === props.id)
+        if (!pet) return null
+        return <PetEdit {...props} pet={pet} />
+      }}
       renderItem={(pet) => (
         <div className="flex items-center gap-2">
           <Heart className="w-4 h-4 text-muted-foreground" />

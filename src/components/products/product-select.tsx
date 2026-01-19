@@ -1,13 +1,11 @@
 'use client'
 
 import { EntitySelect } from '@/components/ui/entity-select'
-import useProductList from '@/hooks/products/use-products-list'
-import { Tables } from '@/types/supabase.types'
+import useProductList, { Product } from '@/hooks/products/use-products-list'
 import { ProductCreate } from './product-create'
 import { ProductEdit } from './product-edit'
 import { Package } from 'lucide-react'
-
-type Product = Tables<'products'>
+import { useState } from 'react'
 
 interface ProductSelectProps {
   value?: string
@@ -24,7 +22,11 @@ export function ProductSelect({
   className,
   placeholder = 'Seleccionar producto...',
 }: ProductSelectProps) {
-  const { products, isLoading, searchTerm, setSearchTerm } = useProductList()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useProductList({
+    search: searchTerm,
+  })
+  const products = data?.data || []
 
   return (
     <EntitySelect<Product>
@@ -38,7 +40,11 @@ export function ProductSelect({
       searchTerm={searchTerm}
       onSearchTermChange={setSearchTerm}
       renderCreate={(props) => <ProductCreate {...props} />}
-      renderEdit={(props) => <ProductEdit {...props} />}
+      renderEdit={(props) => {
+        const product = products.find((p) => p.id === props.id)
+        if (!product) return null
+        return <ProductEdit {...props} product={product} />
+      }}
       renderItem={(product) => (
         <div className="flex items-center gap-2">
           <Package className="w-4 h-4 text-muted-foreground" />

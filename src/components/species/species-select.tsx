@@ -4,6 +4,7 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
 import { Tables } from '@/types/supabase.types'
 import { PawPrint } from 'lucide-react'
+import { useState } from 'react'
 
 type Species = Tables<'species'>
 
@@ -24,7 +25,11 @@ export function SpeciesSelect({
   className,
   multiple = false,
 }: SpeciesSelectProps) {
-  const { species, isLoading, searchTerm, setSearchTerm } = useSpeciesList()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useSpeciesList({
+    search: searchTerm,
+  })
+  const species = data?.data || []
 
   return (
     <EntitySelect<Species>

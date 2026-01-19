@@ -6,6 +6,7 @@ import { CustomerCreate } from './customer-create'
 import { CustomerEdit } from './customer-edit'
 import { Tables } from '@/types/supabase.types'
 import { User } from 'lucide-react'
+import { useState } from 'react'
 
 type Customer = Tables<'customers'>
 
@@ -24,7 +25,11 @@ export function CustomerSelect({
   disabled = false,
   className,
 }: CustomerSelectProps) {
-  const { customers, isLoading, searchTerm, setSearchTerm } = useCustomerList()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useCustomerList({
+    search: searchTerm,
+  })
+  const customers = data?.data || []
 
   return (
     <EntitySelect<Customer>
