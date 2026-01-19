@@ -74,7 +74,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
         side="right"
         className="!max-w-2xl"
       >
-        <PetForm mode="edit" pet={pet} />
+        <PetForm mode="edit" />
       </FormSheet>
     </CanAccess>
   )

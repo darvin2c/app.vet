@@ -5,7 +5,6 @@ import useCustomerList from '@/hooks/customers/use-customer-list'
 import { CustomerCreate } from './customer-create'
 import { CustomerEdit } from './customer-edit'
 import { Tables } from '@/types/supabase.types'
-import { User } from 'lucide-react'
 import { useState } from 'react'
 
 type Customer = Tables<'customers'>
