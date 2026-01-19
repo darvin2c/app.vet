@@ -38,7 +38,11 @@ export type ComboboxItem = {
   id: string
 } & Record<string, unknown>
 
-export interface EntitySelectProps<T extends ComboboxItem = ComboboxItem> {
+export interface EntitySelectProps<T extends ComboboxItem = ComboboxItem>
+  extends Omit<
+    React.ComponentPropsWithoutRef<typeof InputGroupButton>,
+    'value' | 'onChange'
+  > {
   value?: string | string[]
   onValueChange?: (value: any) => void
   placeholder?: string
@@ -83,6 +87,7 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
     renderCreate,
     renderEdit,
     renderSelected,
+    ...triggerProps
   } = props
 
   const [open, setOpen] = useState(false)
@@ -119,6 +124,9 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
     } else {
       onValueChange?.(selectedIds[0] === id ? '' : id)
       setOpen(false)
+      if (!onSearchTermChange) {
+        setInternalSearchTerm('')
+      }
     }
   }
 
@@ -155,6 +163,7 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
       aria-expanded={open}
       className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
       disabled={disabled}
+      {...triggerProps}
     >
       {selectedItems.length > 0 ? (
         multiple ? (
@@ -218,7 +227,7 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
   )
 
   const content = (
-    <Command>
+    <Command shouldFilter={!onSearchTermChange}>
       <div className="relative">
         <CommandInput
           placeholder="Buscar…"
