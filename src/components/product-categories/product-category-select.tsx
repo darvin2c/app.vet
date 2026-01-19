@@ -70,7 +70,6 @@ export function ProductCategorySelect({
       )}
       renderSelected={(category) => (
         <div className="flex items-center gap-2">
-          <Layers className="w-4 h-4 text-muted-foreground" />
           <span>{category.name}</span>
         </div>
       )}
