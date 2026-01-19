@@ -6,6 +6,7 @@ import { AppliedSort } from '@/components/ui/order-by'
 import { AppliedPagination } from '@/components/ui/pagination'
 import { applySupabaseSort } from '@/components/ui/order-by/generate-supabase-sort'
 import { applySupabasePagination } from '@/components/ui/pagination/generate-supabase-pagination'
+import { applySupabaseSearch } from '@/components/ui/search-input'
 
 export default function useStaffList({
   filters = [],
@@ -21,7 +22,7 @@ export default function useStaffList({
   filters?: AppliedFilter[]
   orders?: AppliedSort[]
   search?: string
-  pagination: AppliedPagination
+  pagination?: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -61,11 +62,11 @@ export default function useStaffList({
       query = applySupabasePagination(query, pagination)
 
       // Aplicar búsqueda global
-      if (search) {
-        query = query.or(
-          `full_name.ilike.%${search}%,email.ilike.%${search}%,last_name.ilike.%${search}%`
-        )
-      }
+      query = applySupabaseSearch(query, search, [
+        'first_name',
+        'last_name',
+        'email',
+      ])
 
       const { data, count, error } = await query
 

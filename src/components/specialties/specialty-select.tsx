@@ -1,28 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { Check, ChevronsUpDown, GraduationCap, X } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { useQuery } from '@tanstack/react-query'
+import { EntitySelect } from '@/components/ui/entity-select'
 import { supabase } from '@/lib/supabase/client'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { Tables } from '@/types/supabase.types'
-import { Spinner } from '../ui/spinner'
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { useQuery } from '@tanstack/react-query'
+import { GraduationCap } from 'lucide-react'
+import { useState } from 'react'
 
 type Specialty = Tables<'specialties'>
 
@@ -43,7 +27,6 @@ export function SpecialtySelect({
   multiple = true,
   className,
 }: SpecialtySelectProps) {
-  const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
   const { currentTenant } = useCurrentTenantStore()
 
@@ -74,133 +57,37 @@ export function SpecialtySelect({
     enabled: !!currentTenant?.id,
   })
 
-  const selectedSpecialties = specialties.filter((specialty: Specialty) =>
-    value.includes(specialty.id)
-  )
-
-  const handleSelect = (specialtyId: string) => {
-    if (!onValueChange) return
-    if (multiple) {
-      const newValue = value.includes(specialtyId)
-        ? value.filter((id) => id !== specialtyId)
-        : [...value, specialtyId]
-      onValueChange(newValue)
-    } else {
-      onValueChange(value.includes(specialtyId) ? [] : [specialtyId])
-    }
-    setOpen(false)
-  }
-
-  const displayText = () => {
-    if (selectedSpecialties.length === 0) {
-      return placeholder
-    }
-    if (selectedSpecialties.length === 1) {
-      return selectedSpecialties[0].name
-    }
-    return `${selectedSpecialties.length} especialidades seleccionadas`
-  }
-
   return (
-    <>
-      <InputGroup className={className}>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
-              role="combobox"
-              aria-expanded={open}
-              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
-              disabled={disabled}
-            >
-              {selectedSpecialties.length > 0 ? (
-                <div className="flex items-center gap-2">
-                  <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                  <span className="truncate">{displayText()}</span>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </InputGroupButton>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-          >
-            <Command>
-              <CommandInput
-                placeholder="Buscar especialidad..."
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandList>
-                <CommandEmpty>
-                  {isLoading ? (
-                    <div className="min-h-[100px]">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <>
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyMedia>
-                            <GraduationCap className="w-10 h-10 text-muted-foreground" />
-                          </EmptyMedia>
-                          <EmptyTitle>
-                            No se encontraron especialidades
-                          </EmptyTitle>
-                        </EmptyHeader>
-                      </Empty>
-                    </>
-                  )}
-                </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-auto">
-                  {specialties.map((specialty: Specialty) => (
-                    <CommandItem
-                      key={specialty.id}
-                      value={specialty.name}
-                      onSelect={() => handleSelect(specialty.id)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <GraduationCap className="w-4 h-4 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span>{specialty.name}</span>
-                          {specialty.description && (
-                            <span className="text-sm text-muted-foreground">
-                              {specialty.description}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <Check
-                        className={cn(
-                          'h-4 w-4',
-                          value.includes(specialty.id)
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        {selectedSpecialties.length > 0 && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => onValueChange?.([])}
-            disabled={disabled}
-            aria-label="Limpiar selección"
-            className="h-full"
-          >
-            <X className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-      </InputGroup>
-    </>
+    <EntitySelect<Specialty>
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      className={className}
+      placeholder={placeholder}
+      items={specialties}
+      isPending={isLoading}
+      searchTerm={searchTerm}
+      onSearchTermChange={setSearchTerm}
+      multiple={multiple}
+      renderItem={(specialty) => (
+        <div className="flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col">
+            <span>{specialty.name}</span>
+            {specialty.description && (
+              <span className="text-sm text-muted-foreground">
+                {specialty.description}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+      renderSelected={(specialty) => (
+        <div className="flex items-center gap-2">
+          <GraduationCap className="w-4 h-4 text-muted-foreground" />
+          <span className="truncate">{specialty.name}</span>
+        </div>
+      )}
+    />
   )
 }

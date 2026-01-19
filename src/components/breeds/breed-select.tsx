@@ -1,25 +1,16 @@
 'use client'
 
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import { Dog, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
+import { EntitySelect } from '@/components/ui/entity-select'
 import { useBreedsList } from '@/hooks/breeds/use-breed-list'
+import { BreedCreate } from './breed-create'
+import { BreedEdit } from './breed-edit'
+import { Tables } from '@/types/supabase.types'
+import { Dog } from 'lucide-react'
 import { useState } from 'react'
-import { cn } from '@/lib/utils'
-import { Spinner } from '../ui/spinner'
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+
+type Breed = Tables<'breeds'> & {
+  species?: { id: string; name: string } | null
+}
 
 interface BreedSelectProps {
   value?: string
@@ -38,143 +29,51 @@ export function BreedSelect({
   className,
   speciesId,
 }: BreedSelectProps) {
-  const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-
   const { data, isLoading } = useBreedsList({
     search: searchTerm,
     species_id: speciesId,
   })
   const breeds = data?.data || []
 
-  const selectedBreed = breeds.find((breed) => breed.id === value)
-
-  const handleSelect = (breedId: string) => {
-    if (!onValueChange) return
-    onValueChange(value === breedId ? '' : breedId)
-    setOpen(false)
-  }
-
   return (
-    <>
-      <InputGroup className={className}>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
-              role="combobox"
-              aria-expanded={open}
-              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
-              disabled={disabled}
-            >
-              {selectedBreed ? (
-                <div className="flex items-center gap-2">
-                  <Dog className="w-4 h-4 text-muted-foreground" />
-                  <span>{selectedBreed.name}</span>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </InputGroupButton>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-          >
-            <Command>
-              <CommandInput
-                placeholder="Buscar raza..."
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandList>
-                <CommandEmpty>
-                  {isLoading ? (
-                    <div className="min-h-[100px]">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <>
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyMedia>
-                            <Dog className="w-10 h-10 text-muted-foreground" />
-                          </EmptyMedia>
-                          <EmptyTitle>No se encontraron razas</EmptyTitle>
-                        </EmptyHeader>
-                      </Empty>
-                    </>
-                  )}
-                </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-auto">
-                  {breeds.map((breed) => (
-                    <CommandItem
-                      key={breed.id}
-                      value={breed.name}
-                      onSelect={() => handleSelect(breed.id)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Dog className="w-4 h-4 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span>{breed.name}</span>
-                          {breed.species && (
-                            <span className="text-sm text-muted-foreground">
-                              {breed.species.name}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <Check
-                        className={cn(
-                          'h-4 w-4',
-                          value === breed.id ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        {selectedBreed && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => onValueChange?.('')}
-            disabled={disabled}
-            aria-label="Limpiar selección"
-            className="h-full"
-          >
-            <X className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-
-        <InputGroupButton
-          variant="ghost"
-          onClick={() => setCreateOpen(true)}
-          disabled={disabled}
-          aria-label="Crear nueva raza"
-          className="h-full"
-        >
-          <Plus className="h-4 w-4" />
-        </InputGroupButton>
-
-        {selectedBreed && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => setEditOpen(true)}
-            disabled={disabled}
-            aria-label="Editar raza seleccionada"
-            className="h-full"
-          >
-            <Edit className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-      </InputGroup>
-    </>
+    <EntitySelect<Breed>
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      className={className}
+      placeholder={placeholder}
+      items={breeds}
+      isPending={isLoading}
+      searchTerm={searchTerm}
+      onSearchTermChange={setSearchTerm}
+      renderCreate={(props) => (
+        <BreedCreate {...props} selectedSpeciesId={speciesId} />
+      )}
+      renderEdit={(props) => {
+        const breed = breeds.find((b) => b.id === props.id)
+        if (!breed) return null
+        return <BreedEdit {...props} breed={breed} />
+      }}
+      renderItem={(breed) => (
+        <div className="flex items-center gap-2">
+          <Dog className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col">
+            <span>{breed.name}</span>
+            {breed.species && (
+              <span className="text-sm text-muted-foreground">
+                {breed.species.name}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+      renderSelected={(breed) => (
+        <div className="flex items-center gap-2">
+          <Dog className="w-4 h-4 text-muted-foreground" />
+          <span>{breed.name}</span>
+        </div>
+      )}
+    />
   )
 }

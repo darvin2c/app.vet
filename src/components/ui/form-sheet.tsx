@@ -224,7 +224,7 @@ export function FormSheet<T extends FieldValues>({
           className={cn(
             '!w-full p-0 gap-0',
             isMobile
-              ? 'max-h-[95vh] !max-w-full rounded-t-xl'
+              ? '[&_[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-200px)] !max-w-full rounded-t-xl'
               : 'sm:!max-w-xl h-full',
             className
           )}

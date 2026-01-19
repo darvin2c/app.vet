@@ -22,7 +22,7 @@ export function usePaymentMethodList({
   filters?: AppliedFilter[]
   search?: string
   orders?: AppliedSort[]
-  pagination: AppliedPagination
+  pagination?: AppliedPagination
 }) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -62,8 +62,8 @@ export function usePaymentMethodList({
 
       return {
         data: data || [],
-        page: pagination.page,
-        pageSize: pagination.pageSize,
+        page: pagination?.page,
+        pageSize: pagination?.pageSize,
         total: count || 0,
       }
     },

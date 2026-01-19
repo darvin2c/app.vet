@@ -1,28 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { Check, ChevronsUpDown, X, FileText, Plus, Edit } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { EntitySelect } from '@/components/ui/entity-select'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 import { Tables } from '@/types/supabase.types'
 import { MedicalRecordCreate } from './medical-record-create'
 import { MedicalRecordEdit } from './medical-record-edit'
-import { Spinner } from '../ui/spinner'
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { FileText } from 'lucide-react'
+import { useState } from 'react'
 
 type MedicalRecord = Tables<'clinical_records'> & {
   pets: {
@@ -39,10 +23,10 @@ type MedicalRecord = Tables<'clinical_records'> & {
     id: string
     note: string
   }[]
-  clinical_pars: {
+  clinical_parameters: {
     id: string
     params: any
-    schema_version: string
+    schema_version: number
     measured_at: string
   }[]
 }
@@ -64,198 +48,63 @@ export function MedicalRecordSelect({
   className,
   petId,
 }: MedicalRecordSelectProps) {
-  const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-
   const { data: medicalRecords = [], isPending: isLoading } =
     useMedicalRecordList({
       petId: petId,
       search: searchTerm,
     })
 
-  const selectedMedicalRecord = medicalRecords.find(
-    (medicalRecord) => medicalRecord.id === value
-  )
-
-  const handleSelect = (medicalRecordId: string) => {
-    onValueChange?.(medicalRecordId)
-    setOpen(false)
-  }
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        setOpen((open) => !open)
-      }
-    }
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
-  }, [])
-
   return (
-    <>
-      <InputGroup className={className}>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
-              role="combobox"
-              aria-expanded={open}
-              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
-              disabled={disabled}
-            >
-              {selectedMedicalRecord ? (
-                <div className="flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-muted-foreground" />
-                  <div className="flex items-center gap-1">
-                    <span>
-                      {selectedMedicalRecord?.reason || 'Registro médico'}
-                    </span>
-                    {selectedMedicalRecord?.record_date && (
-                      <span className="text-xs text-muted-foreground">
-                        (
-                        {new Date(
-                          selectedMedicalRecord.record_date
-                        ).toLocaleDateString()}
-                        )
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </InputGroupButton>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-          >
-            <Command>
-              <CommandInput
-                placeholder="Buscar registro médico..."
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandList>
-                <CommandEmpty>
-                  {isLoading ? (
-                    <div className="min-h-[100px]">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <>
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyMedia>
-                            <FileText className="w-10 h-10 text-muted-foreground" />
-                          </EmptyMedia>
-                          <EmptyTitle>
-                            No se encontraron registros médicos
-                          </EmptyTitle>
-                        </EmptyHeader>
-                      </Empty>
-                    </>
-                  )}
-                </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-auto">
-                  {medicalRecords.map((medicalRecord) => (
-                    <CommandItem
-                      key={medicalRecord.id}
-                      value={medicalRecord.reason || 'Registro médico'}
-                      onSelect={() => handleSelect(medicalRecord.id)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <FileText className="w-4 h-4 text-muted-foreground" />
-                        <div className="flex flex-col">
-                          <span className="font-medium">
-                            {medicalRecord.reason || 'Registro médico'}
-                          </span>
-                          {medicalRecord.record_date && (
-                            <span className="text-sm text-muted-foreground">
-                              Fecha:{' '}
-                              {new Date(
-                                medicalRecord.record_date
-                              ).toLocaleDateString()}
-                            </span>
-                          )}
-                          {medicalRecord.pets?.name && (
-                            <span className="text-sm text-muted-foreground">
-                              Mascota: {medicalRecord.pets.name}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <Check
-                        className={cn(
-                          'h-4 w-4',
-                          value === medicalRecord.id
-                            ? 'opacity-100'
-                            : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        {selectedMedicalRecord && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => onValueChange?.('')}
-            disabled={disabled}
-            aria-label="Limpiar selección"
-            className="h-full"
-          >
-            <X className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-
-        <InputGroupButton
-          variant="ghost"
-          onClick={() => setCreateOpen(true)}
-          disabled={disabled}
-          aria-label="Crear nuevo registro médico"
-          className="h-full"
-        >
-          <Plus className="h-4 w-4" />
-        </InputGroupButton>
-
-        {selectedMedicalRecord && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => setEditOpen(true)}
-            disabled={disabled}
-            aria-label="Editar registro médico seleccionado"
-            className="h-full"
-          >
-            <Edit className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-      </InputGroup>
-
-      {petId && (
-        <MedicalRecordCreate
-          open={createOpen}
-          onOpenChange={setCreateOpen}
-          petId={petId}
-        />
+    <EntitySelect<MedicalRecord>
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      className={className}
+      placeholder={placeholder}
+      items={medicalRecords}
+      isPending={isLoading}
+      searchTerm={searchTerm}
+      onSearchTermChange={setSearchTerm}
+      renderCreate={(props) => <MedicalRecordCreate {...props} petId={petId} />}
+      renderEdit={(props) => {
+        const record = medicalRecords.find((r) => r.id === props.id)
+        if (!record) return null
+        return <MedicalRecordEdit {...props} medicalRecord={record} />
+      }}
+      renderItem={(record) => (
+        <div className="flex items-center gap-2">
+          <FileText className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {record.reason || 'Registro médico'}
+            </span>
+            {record.record_date && (
+              <span className="text-sm text-muted-foreground">
+                Fecha: {new Date(record.record_date).toLocaleDateString()}
+              </span>
+            )}
+            {record.pets?.name && (
+              <span className="text-sm text-muted-foreground">
+                Mascota: {record.pets.name}
+              </span>
+            )}
+          </div>
+        </div>
       )}
-
-      {selectedMedicalRecord && (
-        <MedicalRecordEdit
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          medicalRecord={selectedMedicalRecord}
-        />
+      renderSelected={(record) => (
+        <div className="flex items-center gap-2">
+          <FileText className="w-4 h-4 text-muted-foreground" />
+          <div className="flex items-center gap-1">
+            <span>{record.reason || 'Registro médico'}</span>
+            {record.record_date && (
+              <span className="text-xs text-muted-foreground">
+                ({new Date(record.record_date).toLocaleDateString()})
+              </span>
+            )}
+          </div>
+        </div>
       )}
-    </>
+    />
   )
 }

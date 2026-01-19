@@ -1,30 +1,12 @@
 'use client'
 
-import { useState } from 'react'
-import { User, Check, ChevronsUpDown, Plus, X, Edit } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import { InputGroup, InputGroupButton } from '@/components/ui/input-group'
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { EntitySelect } from '@/components/ui/entity-select'
 import useCustomerList from '@/hooks/customers/use-customer-list'
 import { CustomerCreate } from './customer-create'
 import { CustomerEdit } from './customer-edit'
 import { Tables } from '@/types/supabase.types'
-import { usePagination } from '../ui/pagination'
-import { Spinner } from '../ui/spinner'
-import { Empty, EmptyHeader, EmptyMedia, EmptyTitle } from '../ui/empty'
+import { User } from 'lucide-react'
+import { useState } from 'react'
 
 type Customer = Tables<'customers'>
 
@@ -43,172 +25,57 @@ export function CustomerSelect({
   disabled = false,
   className,
 }: CustomerSelectProps) {
-  const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState('')
-  const [createOpen, setCreateOpen] = useState(false)
-  const [editOpen, setEditOpen] = useState(false)
-  const { appliedPagination } = usePagination()
-
   const { data, isLoading } = useCustomerList({
     search: searchTerm,
-    pagination: appliedPagination,
   })
   const customers = data?.data || []
 
-  const selectedCustomer = customers.find(
-    (customer: Customer) => customer.id === value
-  )
-
-  const handleSelect = (customerId: string) => {
-    if (!onValueChange) return
-    onValueChange(value === customerId ? '' : customerId)
-    setOpen(false)
-  }
-
   return (
-    <>
-      <InputGroup className={className}>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <InputGroupButton
-              variant="ghost"
-              role="combobox"
-              aria-expanded={open}
-              className="flex-1 justify-between h-full px-3 py-2 text-left font-normal"
-              disabled={disabled}
-            >
-              {selectedCustomer ? (
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-4 w-4">
-                    <AvatarImage src={''} />
-                    <AvatarFallback className="text-xs">
-                      {selectedCustomer.first_name?.[0]}
-                      {selectedCustomer.last_name?.[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span>
-                    {selectedCustomer.first_name} {selectedCustomer.last_name}
-                  </span>
-                </div>
-              ) : (
-                <span className="text-muted-foreground">{placeholder}</span>
-              )}
-              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-            </InputGroupButton>
-          </PopoverTrigger>
-          <PopoverContent
-            className="w-[--radix-popover-trigger-width] p-0"
-            align="start"
-          >
-            <Command>
-              <CommandInput
-                placeholder="Buscar cliente..."
-                value={searchTerm}
-                onValueChange={setSearchTerm}
-              />
-              <CommandList>
-                <CommandEmpty>
-                  {isLoading ? (
-                    <div className="min-h-[100px]">
-                      <Spinner />
-                    </div>
-                  ) : (
-                    <>
-                      <Empty>
-                        <EmptyHeader>
-                          <EmptyMedia>
-                            <User className="w-10 h-10 text-muted-foreground" />
-                          </EmptyMedia>
-                          <EmptyTitle>No se encontraron clientes</EmptyTitle>
-                        </EmptyHeader>
-                      </Empty>
-                    </>
-                  )}
-                </CommandEmpty>
-                <CommandGroup className="max-h-64 overflow-auto">
-                  {customers.map((customer: Customer) => (
-                    <CommandItem
-                      key={customer.id}
-                      value={`${customer.first_name} ${customer.last_name}`}
-                      onSelect={() => handleSelect(customer.id)}
-                    >
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-4 w-4">
-                          <AvatarImage src={''} />
-                          <AvatarFallback className="text-xs">
-                            {customer.first_name?.[0]}
-                            {customer.last_name?.[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex flex-col">
-                          <span>
-                            {customer.first_name} {customer.last_name}
-                          </span>
-                          {customer.email && (
-                            <span className="text-sm text-muted-foreground">
-                              {customer.email}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                      <Check
-                        className={cn(
-                          'h-4 w-4',
-                          value === customer.id ? 'opacity-100' : 'opacity-0'
-                        )}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-
-        {selectedCustomer && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => onValueChange?.('')}
-            disabled={disabled}
-            aria-label="Limpiar selección"
-            className="h-full"
-          >
-            <X className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-
-        <InputGroupButton
-          variant="ghost"
-          onClick={() => setCreateOpen(true)}
-          disabled={disabled}
-          aria-label="Crear nuevo cliente"
-          className="h-full"
-        >
-          <Plus className="h-4 w-4" />
-        </InputGroupButton>
-
-        {selectedCustomer && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => setEditOpen(true)}
-            disabled={disabled}
-            aria-label="Editar cliente seleccionado"
-            className="h-full"
-          >
-            <Edit className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-      </InputGroup>
-
-      <CustomerCreate open={createOpen} onOpenChange={setCreateOpen} />
-
-      {selectedCustomer && (
-        <CustomerEdit
-          open={editOpen}
-          onOpenChange={setEditOpen}
-          customerId={selectedCustomer.id}
-        />
+    <EntitySelect<Customer>
+      value={value}
+      onValueChange={onValueChange}
+      disabled={disabled}
+      className={className}
+      placeholder={placeholder}
+      items={customers}
+      isPending={isLoading}
+      searchTerm={searchTerm}
+      onSearchTermChange={setSearchTerm}
+      renderCreate={(props) => <CustomerCreate {...props} />}
+      renderEdit={(props) => (
+        <CustomerEdit {...props} customerId={props.id || ''} />
       )}
-    </>
+      renderItem={(customer) => (
+        <div className="flex items-center gap-2">
+          <User className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {customer.first_name} {customer.last_name}
+            </span>
+            {customer.email && (
+              <span className="text-sm text-muted-foreground">
+                {customer.email}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+      renderSelected={(customer) => (
+        <div className="flex items-center gap-2">
+          <User className="w-4 h-4 text-muted-foreground" />
+          <div className="flex flex-col">
+            <span className="font-medium">
+              {customer.first_name} {customer.last_name}
+            </span>
+            {customer.email && (
+              <span className="text-xs text-muted-foreground">
+                ({customer.email})
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+    />
   )
 }

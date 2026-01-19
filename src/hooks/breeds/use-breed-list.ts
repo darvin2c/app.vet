@@ -22,6 +22,7 @@ export function useBreedsList({
   search,
   orders = [],
   pagination,
+  species_id,
 }: UseBreedsParams) {
   const { currentTenant } = useCurrentTenantStore()
 
@@ -33,6 +34,7 @@ export function useBreedsList({
       search,
       orders,
       pagination,
+      species_id,
     ],
     queryFn: async () => {
       if (!currentTenant?.id) {
@@ -54,6 +56,10 @@ export function useBreedsList({
           }
         )
         .eq('tenant_id', currentTenant.id)
+
+      if (species_id) {
+        query = query.eq('species_id', species_id)
+      }
 
       // Filtro
       query = applySupabaseFilters(query, filters)
