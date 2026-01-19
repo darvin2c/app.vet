@@ -287,6 +287,44 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
     </Command>
   )
 
+  const actionButtons = (
+    <>
+      {selectedItems.length > 0 && clearable && (
+        <InputGroupButton
+          variant="ghost"
+          onClick={() => onValueChange?.(multiple ? [] : '')}
+          disabled={disabled}
+          aria-label="Limpiar selección"
+          className="h-full"
+        >
+          <X className="h-4 w-4" />
+        </InputGroupButton>
+      )}
+
+      <InputGroupButton
+        variant="ghost"
+        onClick={() => setCreateOpen(true)}
+        disabled={disabled}
+        aria-label="Crear nuevo recurso"
+        className="h-full"
+      >
+        <Plus className="h-4 w-4" />
+      </InputGroupButton>
+
+      {!multiple && selected && (
+        <InputGroupButton
+          variant="ghost"
+          onClick={() => setEditOpen(true)}
+          disabled={disabled}
+          aria-label="Editar recurso seleccionado"
+          className="h-full"
+        >
+          <Edit className="h-4 w-4" />
+        </InputGroupButton>
+      )}
+    </>
+  )
+
   if (isMobile) {
     return (
       <>
@@ -300,40 +338,7 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
               {content}
             </SheetContent>
           </Sheet>
-
-          {selectedItems.length > 0 && clearable && (
-            <InputGroupButton
-              variant="ghost"
-              onClick={() => onValueChange?.(multiple ? [] : '')}
-              disabled={disabled}
-              aria-label="Limpiar selección"
-              className="h-full"
-            >
-              <X className="h-4 w-4" />
-            </InputGroupButton>
-          )}
-
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => setCreateOpen(true)}
-            disabled={disabled}
-            aria-label="Crear nuevo recurso"
-            className="h-full"
-          >
-            <Plus className="h-4 w-4" />
-          </InputGroupButton>
-
-          {!multiple && selected && (
-            <InputGroupButton
-              variant="ghost"
-              onClick={() => setEditOpen(true)}
-              disabled={disabled}
-              aria-label="Editar recurso seleccionado"
-              className="h-full"
-            >
-              <Edit className="h-4 w-4" />
-            </InputGroupButton>
-          )}
+          {actionButtons}
         </InputGroup>
 
         {renderCreate?.({
@@ -362,40 +367,7 @@ export function EntitySelect<T extends ComboboxItem = ComboboxItem>(
             {content}
           </PopoverContent>
         </Popover>
-
-        {selectedItems.length > 0 && clearable && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => onValueChange?.(multiple ? [] : '')}
-            disabled={disabled}
-            aria-label="Limpiar selección"
-            className="h-full"
-          >
-            <X className="h-4 w-4" />
-          </InputGroupButton>
-        )}
-
-        <InputGroupButton
-          variant="ghost"
-          onClick={() => setCreateOpen(true)}
-          disabled={disabled}
-          aria-label="Crear nuevo recurso"
-          className="h-full"
-        >
-          <Plus className="h-4 w-4" />
-        </InputGroupButton>
-
-        {!multiple && selected && (
-          <InputGroupButton
-            variant="ghost"
-            onClick={() => setEditOpen(true)}
-            disabled={disabled}
-            aria-label="Editar recurso seleccionado"
-            className="h-full"
-          >
-            <Edit className="h-4 w-4" />
-          </InputGroupButton>
-        )}
+        {actionButtons}
       </InputGroup>
 
       {renderCreate?.({
