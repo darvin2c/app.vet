@@ -62,9 +62,9 @@ export function AppointmentTypeSelect({
       }}
       renderItem={(type) => (
         <div className="flex items-center gap-2">
-          <Circle
-            className="w-4 h-4 text-muted-foreground"
-            style={{ color: type.color || 'inherit' }}
+          <span
+            className="w-4 h-4 rounded-full"
+            style={{ background: type.color || 'inherit' }}
           />
           <div className="flex flex-col">
             <span>{type.name}</span>
@@ -78,9 +78,9 @@ export function AppointmentTypeSelect({
       )}
       renderSelected={(type) => (
         <div className="flex items-center gap-2">
-          <Circle
-            className="w-4 h-4 text-muted-foreground"
-            style={{ color: type.color || 'inherit' }}
+          <span
+            className="w-4 h-4 rounded-full"
+            style={{ background: type.color || 'inherit' }}
           />
           <span>{type.name}</span>
         </div>

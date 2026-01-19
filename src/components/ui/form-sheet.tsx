@@ -225,7 +225,7 @@ export function FormSheet<T extends FieldValues>({
             '!w-full p-0 gap-0',
             isMobile
               ? '[&_[data-radix-scroll-area-viewport]]:max-h-[calc(100vh-200px)] !max-w-full rounded-t-xl'
-              : 'sm:!max-w-xl h-full',
+              : 'h-full',
             className
           )}
           onInteractOutside={(e) => {

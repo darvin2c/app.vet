@@ -37,52 +37,44 @@ export function AppointmentForm({
   return (
     <div className="space-y-6">
       <FieldGroup>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.pet_id}>
-            <FieldLabel htmlFor="pet_id">Mascota *</FieldLabel>
-            <FieldContent>
-              <PetSelect
-                value={watch('pet_id') || ''}
-                onValueChange={(value) => setValue('pet_id', value)}
-                placeholder="Seleccionar mascota"
-                disabled={disablePetSelection}
-              />
-              <FieldError errors={[errors.pet_id]} />
-            </FieldContent>
-          </Field>
+        <Field data-invalid={!!errors.pet_id}>
+          <FieldLabel htmlFor="pet_id">Mascota *</FieldLabel>
+          <FieldContent>
+            <PetSelect
+              value={watch('pet_id') || ''}
+              onValueChange={(value) => setValue('pet_id', value)}
+              placeholder="Seleccionar mascota"
+              disabled={disablePetSelection}
+            />
+            <FieldError errors={[errors.pet_id]} />
+          </FieldContent>
+        </Field>
 
-          <Field data-invalid={!!errors.veterinarian_id}>
-            <FieldLabel htmlFor="veterinarian_id">Veterinario</FieldLabel>
-            <FieldContent>
-              <StaffSelect
-                value={watch('veterinarian_id') || ''}
-                onValueChange={(value) => setValue('veterinarian_id', value)}
-                placeholder="Seleccionar veterinario"
-              />
-              <FieldError errors={[errors.veterinarian_id]} />
-            </FieldContent>
-          </Field>
-        </div>
+        <Field data-invalid={!!errors.veterinarian_id}>
+          <FieldLabel htmlFor="veterinarian_id">Veterinario</FieldLabel>
+          <FieldContent>
+            <StaffSelect
+              value={watch('veterinarian_id') || ''}
+              onValueChange={(value) => setValue('veterinarian_id', value)}
+              placeholder="Seleccionar veterinario"
+            />
+            <FieldError errors={[errors.veterinarian_id]} />
+          </FieldContent>
+        </Field>
       </FieldGroup>
 
       <FieldGroup>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.appointment_type_id}>
-            <FieldLabel htmlFor="appointment_type_id">
-              Tipo de Cita *
-            </FieldLabel>
-            <FieldContent>
-              <AppointmentTypeSelect
-                value={watch('appointment_type_id') || ''}
-                onValueChange={(value) =>
-                  setValue('appointment_type_id', value)
-                }
-                placeholder="Seleccionar tipo"
-              />
-              <FieldError errors={[errors.appointment_type_id]} />
-            </FieldContent>
-          </Field>
-        </div>
+        <Field data-invalid={!!errors.appointment_type_id}>
+          <FieldLabel htmlFor="appointment_type_id">Tipo de Cita *</FieldLabel>
+          <FieldContent>
+            <AppointmentTypeSelect
+              value={watch('appointment_type_id') || ''}
+              onValueChange={(value) => setValue('appointment_type_id', value)}
+              placeholder="Seleccionar tipo"
+            />
+            <FieldError errors={[errors.appointment_type_id]} />
+          </FieldContent>
+        </Field>
       </FieldGroup>
 
       <FieldGroup>

@@ -69,7 +69,6 @@ export function PetSelect({
       }}
       renderItem={(pet) => (
         <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span>{pet.name}</span>
             {pet.breeds && (
@@ -81,9 +80,13 @@ export function PetSelect({
         </div>
       )}
       renderSelected={(pet) => (
-        <div className="flex items-center gap-2">
-          <Heart className="w-4 h-4 text-muted-foreground" />
+        <div className="flex flex-col items-center">
           <span>{pet.name}</span>
+          {pet.breeds && (
+            <span className="text-xs text-muted-foreground">
+              {pet.breeds.name}
+            </span>
+          )}
         </div>
       )}
     />

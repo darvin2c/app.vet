@@ -4,7 +4,7 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import useStaffList from '@/hooks/staff/use-staff-list'
 import { StaffCreate } from './staff-create'
 import { StaffEdit } from './staff-edit'
-import { Database, Tables } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { UserCheck } from 'lucide-react'
 import { useState } from 'react'
 
@@ -63,9 +63,8 @@ export function StaffSelect({
       }}
       renderItem={(member) => (
         <div className="flex items-center gap-2">
-          <UserCheck className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">{getStaffFullName(member)}</span>
+            <span>{getStaffFullName(member)}</span>
             {member.email && (
               <span className="text-sm text-muted-foreground">
                 {member.email}
@@ -76,9 +75,8 @@ export function StaffSelect({
       )}
       renderSelected={(member) => (
         <div className="flex items-center gap-2">
-          <UserCheck className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">{getStaffFullName(member)}</span>
+            <span>{getStaffFullName(member)}</span>
             {member.email && (
               <span className="text-xs text-muted-foreground">
                 {member.email}

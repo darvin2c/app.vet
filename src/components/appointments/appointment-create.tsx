@@ -92,7 +92,7 @@ export function AppointmentCreate({
         submitLabel="Crear Cita"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-3xl"
+        className="!max-w-2xl"
       >
         <AppointmentForm disablePetSelection={!!defaultPetId} />
       </FormSheet>
