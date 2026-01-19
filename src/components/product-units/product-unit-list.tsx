@@ -24,6 +24,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Tables } from '@/types/supabase.types'
 import { ProductUnitActions } from './product-unit-actions'
 import { ProductUnitCreateButton } from './product-unit-create-button'
+import { ProductUnitImportButton } from './product-unit-import-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
 import { useOrderBy } from '@/components/ui/order-by'
@@ -246,19 +247,9 @@ export function ProductUnitList({
           <EmptyContent>
             <div className="flex gap-2">
               <ProductUnitCreateButton>Crear Unidad</ProductUnitCreateButton>
-              <Button variant="outline">Importar Unidad</Button>
+              <ProductUnitImportButton>Importar Unidad</ProductUnitImportButton>
             </div>
           </EmptyContent>
-          <Button
-            variant="link"
-            asChild
-            className="text-muted-foreground"
-            size="sm"
-          >
-            <a href="#">
-              Saber Más <ArrowUpRightIcon />
-            </a>
-          </Button>
         </Empty>
       </div>
     )

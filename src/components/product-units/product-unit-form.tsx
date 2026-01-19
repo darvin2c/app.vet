@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import {
   Field,
   FieldContent,
+  FieldDescription,
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
@@ -27,6 +28,9 @@ export function ProductUnitForm() {
               placeholder="Ingresa el nombre de la unidad"
               {...form.register('name')}
             />
+            <FieldDescription>
+              El nombre completo de la unidad (ej. Kilogramo, Litro).
+            </FieldDescription>
             <FieldError errors={[errors.name]} />
           </FieldContent>
         </Field>
@@ -39,6 +43,10 @@ export function ProductUnitForm() {
               placeholder="Ingresa la abreviación de la unidad"
               {...form.register('abbreviation')}
             />
+            <FieldDescription>
+              La abreviación usada para mostrar precios y cantidades (ej. kg,
+              m).
+            </FieldDescription>
             <FieldError errors={[errors.abbreviation]} />
           </FieldContent>
         </Field>

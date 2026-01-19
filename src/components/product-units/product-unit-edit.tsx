@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -34,23 +33,13 @@ export function ProductUnitEdit({
     },
   })
 
-  useEffect(() => {
-    if (unit) {
-      form.reset({
-        name: unit.name,
-        abbreviation: unit.abbreviation,
-        is_active: unit.is_active,
-      })
-    }
-  }, [unit, form])
-
-  const onSubmit = form.handleSubmit(async (data) => {
+  const onSubmit = async (data: any) => {
     await mutation.mutateAsync({
       id: unit.id,
       ...data,
     })
     onOpenChange(false)
-  })
+  }
 
   return (
     <CanAccess resource="products" action="update">
@@ -60,12 +49,12 @@ export function ProductUnitEdit({
         title="Editar Unidad de Producto"
         description="Modifica los datos de la unidad de producto."
         form={form as any}
-        onSubmit={onSubmit as any}
+        onSubmit={onSubmit}
         isPending={mutation.isPending}
         submitLabel="Actualizar Unidad"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-lg"
       >
         <ProductUnitForm />
       </FormSheet>

@@ -56,7 +56,7 @@ export function ProductEdit({ product, open, onOpenChange }: ProductEditProps) {
         submitLabel="Actualizar Producto"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <ProductForm mode="edit" product={product} />
       </FormSheet>
