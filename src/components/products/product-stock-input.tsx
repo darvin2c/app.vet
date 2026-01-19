@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Package } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import {
   InputGroup,
@@ -65,10 +65,11 @@ export function ProductStockInput({
           onClick={handleOpenMovementModal}
           variant="ghost"
           aria-label="Gestionar movimientos de stock"
-          className="h-9 w-9"
+          className="h-9"
           disabled={disabled}
         >
-          <Package className="h-4 w-4" />
+          <Plus className="h-4 w-4" />
+          Agregar Stock
         </InputGroupButton>
       </InputGroup>
 

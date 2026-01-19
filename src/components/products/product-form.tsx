@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea'
 import {
   Field,
   FieldContent,
+  FieldDescription,
   FieldError,
   FieldLabel,
   FieldSet,
@@ -15,7 +16,6 @@ import { IsActiveFormField } from '@/components/ui/is-active-field'
 import { ProductCategorySelect } from '@/components/product-categories/product-category-select'
 import { ProductUnitSelect } from '@/components/product-units/product-unit-select'
 import { ProductBrandSelect } from '@/components/product-brands/product-brand-select'
-import { DatePicker } from '@/components/ui/date-picker'
 import { Tables } from '@/types/supabase.types'
 import { ProductStockInput } from './product-stock-input'
 import { Input } from '../ui/input'
@@ -45,7 +45,10 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                 id="name"
                 placeholder="Ingresa el nombre del producto"
                 {...register('name')}
-              />
+              />{' '}
+              <FieldDescription>
+                El nombre comercial del producto o servicio.
+              </FieldDescription>
               <FieldError errors={[errors.name]} />
             </FieldContent>
           </Field>
@@ -59,6 +62,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                   placeholder="Código del producto"
                   {...register('sku')}
                 />
+                <FieldDescription>
+                  Código único de identificación de inventario.
+                </FieldDescription>
                 <FieldError errors={[errors.sku]} />
               </FieldContent>
             </Field>
@@ -71,6 +77,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                   placeholder="Código de barras"
                   {...register('barcode')}
                 />
+                <FieldDescription>
+                  Código EAN/UPC escaneable del producto.
+                </FieldDescription>
                 <FieldError errors={[errors.barcode]} />
               </FieldContent>
             </Field>
@@ -83,6 +92,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                   onValueChange={(value) => setValue('brand_id', value)}
                   placeholder="Seleccionar marca..."
                 />
+                <FieldDescription>
+                  La marca o fabricante del producto.
+                </FieldDescription>
                 <FieldError errors={[errors.brand_id]} />
               </FieldContent>
             </Field>
@@ -102,6 +114,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                   onValueChange={(value) => setValue('category_id', value)}
                   placeholder="Seleccionar categoría..."
                 />
+                <FieldDescription>
+                  Agrupa el producto para facilitar búsquedas.
+                </FieldDescription>
                 <FieldError errors={[errors.category_id]} />
               </FieldContent>
             </Field>
@@ -114,6 +129,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                   onValueChange={(value) => setValue('unit_id', value)}
                   placeholder="Seleccionar unidad..."
                 />
+                <FieldDescription>
+                  Unidad de medida (ej. unidad, caja, kg).
+                </FieldDescription>
                 <FieldError errors={[errors.unit_id]} />
               </FieldContent>
             </Field>
@@ -139,6 +157,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                       value ? parseFloat(value) : undefined,
                   })}
                 />
+                <FieldDescription>
+                  Costo de adquisición del producto (sin impuestos).
+                </FieldDescription>
                 <FieldError errors={[errors.cost]} />
               </FieldContent>
             </Field>
@@ -156,6 +177,9 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
                     setValueAs: (value) => (value ? parseFloat(value) : 0),
                   })}
                 />
+                <FieldDescription>
+                  Precio final de venta al público.
+                </FieldDescription>
                 <FieldError errors={[errors.price]} />
               </FieldContent>
             </Field>
@@ -166,6 +190,10 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
               <FieldLabel htmlFor="stock">Inventario</FieldLabel>
               <FieldContent>
                 <ProductStockInput mode={mode} product={product} />
+                <FieldDescription>
+                  Cantidad actual disponible. Para agregar stock, haz clic en el
+                  botón.
+                </FieldDescription>
               </FieldContent>
             </Field>
           </div>
