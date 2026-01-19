@@ -4,8 +4,6 @@ import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Package, DollarSign, Hash } from 'lucide-react'
 import { useMedicalRecordItemListByPet } from '@/hooks/medical-record-items/use-medical-record-item-list-by-pet'
-import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
 import { MedicalRecordItemActions } from '@/components/medical-record-items/medical-record-item-actions'
 
 interface PetMedicalRecordItemsProps {
@@ -122,19 +120,6 @@ export function PetMedicalRecordItems({ petId }: PetMedicalRecordItemsProps) {
                       <div>
                         <strong>Código de barras:</strong>{' '}
                         {item.products.barcode}
-                      </div>
-                    )}
-                    {item.products.batch_number && (
-                      <div>
-                        <strong>Lote:</strong> {item.products.batch_number}
-                      </div>
-                    )}
-                    {item.products.expiry_date && (
-                      <div>
-                        <strong>Fecha de vencimiento:</strong>{' '}
-                        {format(new Date(item.products.expiry_date), 'PPP', {
-                          locale: es,
-                        })}
                       </div>
                     )}
                     <div>
