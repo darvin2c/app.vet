@@ -72,7 +72,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
         submitLabel="Actualizar Mascota"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <PetForm mode="edit" pet={pet} />
       </FormSheet>

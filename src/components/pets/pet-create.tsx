@@ -50,7 +50,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
         submitLabel="Crear Mascota"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <PetForm />
       </FormSheet>
