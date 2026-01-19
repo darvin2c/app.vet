@@ -1,11 +1,12 @@
 'use client'
 
 import { EntitySelect } from '@/components/ui/entity-select'
-import useAppointmentTypes from '@/hooks/appointment-types/use-appointment-type-list'
+import { useAppointmentTypeList } from '@/hooks/appointment-types/use-appointment-type-list'
 import { AppointmentTypeCreate } from './appointment-type-create'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { Database } from '@/types/supabase.types'
 import { Circle } from 'lucide-react'
+import { useState } from 'react'
 
 type AppointmentType = Database['public']['Tables']['appointment_types']['Row']
 
@@ -24,8 +25,23 @@ export function AppointmentTypeSelect({
   className,
   placeholder = 'Seleccionar tipo de cita...',
 }: AppointmentTypeSelectProps) {
-  const { appointmentTypes, isLoading, searchTerm, setSearchTerm } =
-    useAppointmentTypes()
+  const [searchTerm, setSearchTerm] = useState('')
+  const { data, isLoading } = useAppointmentTypeList({
+    search: searchTerm,
+    pagination: {
+      page: 1,
+      pageSize: 50,
+    },
+    filters: [
+      {
+        field: 'is_active',
+        operator: 'eq',
+        value: true,
+      },
+    ],
+  })
+
+  const appointmentTypes = data?.data || []
 
   return (
     <EntitySelect<AppointmentType>
@@ -39,7 +55,11 @@ export function AppointmentTypeSelect({
       searchTerm={searchTerm}
       onSearchTermChange={setSearchTerm}
       renderCreate={(props) => <AppointmentTypeCreate {...props} />}
-      renderEdit={(props) => <AppointmentTypeEdit {...props} />}
+      renderEdit={(props) => {
+        const type = appointmentTypes.find((t) => t.id === props.id)
+        if (!type) return null
+        return <AppointmentTypeEdit {...props} appointmentType={type} />
+      }}
       renderItem={(type) => (
         <div className="flex items-center gap-2">
           <Circle
