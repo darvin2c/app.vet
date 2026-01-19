@@ -53,7 +53,9 @@ export function PaymentMethodSelect({
               <span>{method.name}</span>
               <div className="flex items-center gap-2">
                 <Badge
-                  className={typeInfo?.badgeClass ?? 'bg-gray-100 text-gray-800'}
+                  className={
+                    typeInfo?.badgeClass ?? 'bg-gray-100 text-gray-800'
+                  }
                 >
                   {typeInfo?.label ?? 'Otros'}
                 </Badge>
