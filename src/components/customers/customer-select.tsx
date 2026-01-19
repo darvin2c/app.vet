@@ -29,7 +29,6 @@ export function CustomerSelect({
     search: searchTerm,
   })
   const customers = data?.data || []
-
   return (
     <EntitySelect<Customer>
       value={value}

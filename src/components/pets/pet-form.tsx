@@ -52,14 +52,14 @@ export function PetForm({ mode = 'create' }: PetFormProps) {
         </Field>
 
         <Field>
-          <FieldLabel htmlFor="client_id">Cliente *</FieldLabel>
+          <FieldLabel htmlFor="customer_id">Cliente *</FieldLabel>
           <FieldContent>
             <CustomerSelect
-              value={watch('client_id') || ''}
-              onValueChange={(value) => setValue('client_id', value || '')}
+              value={watch('customer_id') || ''}
+              onValueChange={(value) => setValue('customer_id', value || '')}
               placeholder="Seleccionar cliente..."
             />
-            <FieldError errors={[errors.client_id]} />
+            <FieldError errors={[errors.customer_id]} />
           </FieldContent>
         </Field>
 

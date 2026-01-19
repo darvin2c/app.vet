@@ -21,7 +21,7 @@ export default function PetsPage() {
       operator: 'eq',
     },
     {
-      field: 'client_id',
+      field: 'customer_id',
       label: 'Cliente',
       operator: 'eq',
       component: CustomerSelect,
@@ -47,7 +47,7 @@ export default function PetsPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'name', label: 'Nombre', sortable: true },
-      { field: 'client_id', label: 'Cliente', sortable: true },
+      { field: 'customer_id', label: 'Cliente', sortable: true },
       { field: 'species_id', label: 'Especie', sortable: true },
       { field: 'sex', label: 'Género', sortable: true },
       { field: 'birth_date', label: 'Fecha de nacimiento', sortable: true },

@@ -21,7 +21,7 @@ export function PetCreate({ open, onOpenChange, clientId }: PetCreateProps) {
     defaultValues: {
       name: '',
       species_id: '',
-      client_id: clientId || '',
+      customer_id: clientId || '',
       sex: 'M',
       birth_date: '',
       weight: undefined,

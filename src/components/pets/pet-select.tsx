@@ -36,7 +36,7 @@ export function PetSelect({
     filters: customerId
       ? [
           {
-            field: 'client_id',
+            field: 'customer_id',
             operator: 'eq',
             value: customerId,
           },

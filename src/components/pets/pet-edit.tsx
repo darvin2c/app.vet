@@ -40,6 +40,7 @@ export function PetEdit({ pet, open, onOpenChange }: PetEditProps) {
         name: pet.name,
         species_id: pet.species_id,
         breed_id: pet.breed_id || '',
+        customer_id: pet.customer_id,
         sex: pet.sex,
         birth_date: pet.birth_date || '',
         weight: pet.weight || undefined,

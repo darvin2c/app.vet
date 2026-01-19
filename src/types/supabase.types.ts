@@ -965,10 +965,10 @@ export type Database = {
         Row: {
           birth_date: string | null
           breed_id: string | null
-          client_id: string
           color: string | null
           created_at: string
           created_by: string | null
+          customer_id: string
           id: string
           is_active: boolean | null
           microchip: string | null
@@ -984,10 +984,10 @@ export type Database = {
         Insert: {
           birth_date?: string | null
           breed_id?: string | null
-          client_id: string
           color?: string | null
           created_at?: string
           created_by?: string | null
+          customer_id: string
           id?: string
           is_active?: boolean | null
           microchip?: string | null
@@ -1003,10 +1003,10 @@ export type Database = {
         Update: {
           birth_date?: string | null
           breed_id?: string | null
-          client_id?: string
           color?: string | null
           created_at?: string
           created_by?: string | null
+          customer_id?: string
           id?: string
           is_active?: boolean | null
           microchip?: string | null
@@ -1028,8 +1028,8 @@ export type Database = {
             referencedColumns: ['id']
           },
           {
-            foreignKeyName: 'pets_client_id_fkey'
-            columns: ['client_id']
+            foreignKeyName: 'pets_customer_id_fkey'
+            columns: ['customer_id']
             isOneToOne: false
             referencedRelation: 'customers'
             referencedColumns: ['id']

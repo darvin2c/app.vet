@@ -8,7 +8,7 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 type Appointment = Tables<'appointments'> & {
-  pets?: { name: string; client_id: string } | null
+  pets?: { name: string; customer_id: string } | null
 }
 
 interface AppointmentDeleteProps {

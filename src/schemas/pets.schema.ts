@@ -14,7 +14,7 @@ export const petBaseSchema = z.object({
 
   breed_id: z.string().uuid('ID de raza inválido').optional(),
 
-  client_id: z.string().nonempty('El cliente es requerido'),
+  customer_id: z.string().nonempty('El cliente es requerido'),
 
   sex: z.enum(['M', 'F'], {
     message: 'Sexo debe ser M (Macho) o F (Hembra)',

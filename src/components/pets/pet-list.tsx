@@ -102,7 +102,7 @@ export function PetList({
     {
       accessorKey: 'customers',
       header: ({ header }) => (
-        <OrderByTableHeader field="client_id" orderByHook={orderByHook}>
+        <OrderByTableHeader field="customer_id" orderByHook={orderByHook}>
           Cliente
         </OrderByTableHeader>
       ),

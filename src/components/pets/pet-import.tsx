@@ -42,7 +42,7 @@ export function PetImport({ open, onOpenChange }: PetImportProps) {
             isLoading={createPetBulk.isPending}
             templateName="mascotas_template.csv"
             title="Importar Mascotas"
-            description="Importa mascotas desde un archivo CSV o Excel. Los campos requeridos son: name, species_id, client_id, sex."
+            description="Importa mascotas desde un archivo CSV o Excel. Los campos requeridos son: name, species_id, customer_id, sex."
             error={createPetBulk.error?.message || null}
           />
         </ScrollArea>
