@@ -115,7 +115,10 @@ export function FormSheet<T extends FieldValues>({
   const FormContent = (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={(e) => {
+          e.stopPropagation()
+          form.handleSubmit(onSubmit)(e)
+        }}
         onKeyDown={handleKeyDown}
         className="flex h-full flex-col overflow-hidden"
       >
