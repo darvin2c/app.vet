@@ -33,7 +33,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
       </Sidebar>
       <SidebarInset>
         <TenantIsInactive />
-        <div>{children}</div>
+        <main>{children}</main>
       </SidebarInset>
     </SidebarProvider>
   )
