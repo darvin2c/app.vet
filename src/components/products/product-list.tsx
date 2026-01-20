@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import {
   ColumnDef,
   flexRender,
@@ -25,6 +25,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { ProductActions } from './product-actions'
+import { ProductEdit } from './product-edit'
+import { ProductDelete } from './product-delete'
+import { ProductMovementCreate } from '@/components/product-movements/product-movement-create'
 import { ProductCreateButton } from './product-create-button'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { OrderByTableHeader } from '@/components/ui/order-by'
@@ -80,6 +83,11 @@ export function ProductList({
   const { appliedSearch } = useSearch()
   const { appliedPagination, paginationProps } = usePagination()
 
+  // Estados para modales
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null)
+  const [deletingProduct, setDeletingProduct] = useState<Product | null>(null)
+  const [stockingProduct, setStockingProduct] = useState<Product | null>(null)
+
   const productFilters: AppliedFilter[] = [
     ...appliedFilters,
     { field: 'is_service', operator: 'eq', value: false },
@@ -92,122 +100,131 @@ export function ProductList({
   })
   const products = data?.data || []
 
-  const columns: ColumnDef<Product>[] = [
-    {
-      accessorKey: 'name',
-      header: ({ header }) => (
-        <OrderByTableHeader field="name" orderByHook={orderByHook}>
-          Nombre
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div>{row.getValue('name')}</div>
-      ),
-    },
-    {
-      accessorKey: 'sku',
-      header: ({ header }) => (
-        <OrderByTableHeader field="sku" orderByHook={orderByHook}>
-          SKU
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.getValue('sku') || '-'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'category_id',
-      header: ({ header }) => (
-        <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
-          Categoría
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.original.category?.name || '-'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'unit_id',
-      header: ({ header }) => (
-        <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
-          Unidad
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.original.unit?.name || '-'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'brand_id',
-      header: ({ header }) => (
-        <OrderByTableHeader field="brand_id" orderByHook={orderByHook}>
-          Marca
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm text-muted-foreground">
-          {row.original.brand?.name || '-'}
-        </div>
-      ),
-    },
-    {
-      accessorKey: 'price',
-      header: ({ header }) => (
-        <OrderByTableHeader field="price" orderByHook={orderByHook}>
-          Precio
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => {
-        const price = row.getValue('price') as number
-        const formatted = new Intl.NumberFormat('es-PE', {
-          style: 'currency',
-          currency: 'PEN',
-          minimumFractionDigits: 2,
-        }).format(price)
-        return <div className="text-sm">{formatted}</div>
+  const columns = useMemo<ColumnDef<Product>[]>(
+    () => [
+      {
+        accessorKey: 'name',
+        header: () => (
+          <OrderByTableHeader field="name" orderByHook={orderByHook}>
+            Nombre
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div>{row.getValue('name')}</div>
+        ),
       },
-    },
-    {
-      accessorKey: 'stock',
-      header: ({ header }) => (
-        <OrderByTableHeader field="stock" orderByHook={orderByHook}>
-          Stock
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <div className="text-sm">{row.getValue('stock')}</div>
-      ),
-    },
-    {
-      accessorKey: 'is_active',
-      header: ({ header }) => (
-        <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
-          Estado
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Product> }) => (
-        <IsActiveDisplay value={row.getValue('is_active')} />
-      ),
-    },
-    {
-      id: 'actions',
-      cell: ({ row }: { row: Row<Product> }) => (
-        <ProductActions product={row.original} />
-      ),
-    },
-  ]
+      {
+        accessorKey: 'sku',
+        header: () => (
+          <OrderByTableHeader field="sku" orderByHook={orderByHook}>
+            SKU
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div className="text-sm text-muted-foreground">
+            {row.getValue('sku') || '-'}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'category_id',
+        header: () => (
+          <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
+            Categoría
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div className="text-sm text-muted-foreground">
+            {row.original.category?.name || '-'}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'unit_id',
+        header: () => (
+          <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
+            Unidad
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div className="text-sm text-muted-foreground">
+            {row.original.unit?.name || '-'}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'brand_id',
+        header: () => (
+          <OrderByTableHeader field="brand_id" orderByHook={orderByHook}>
+            Marca
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div className="text-sm text-muted-foreground">
+            {row.original.brand?.name || '-'}
+          </div>
+        ),
+      },
+      {
+        accessorKey: 'price',
+        header: () => (
+          <OrderByTableHeader field="price" orderByHook={orderByHook}>
+            Precio
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => {
+          const price = row.getValue('price') as number
+          const formatted = new Intl.NumberFormat('es-PE', {
+            style: 'currency',
+            currency: 'PEN',
+            minimumFractionDigits: 2,
+          }).format(price)
+          return <div className="text-sm">{formatted}</div>
+        },
+      },
+      {
+        accessorKey: 'stock',
+        header: () => (
+          <OrderByTableHeader field="stock" orderByHook={orderByHook}>
+            Stock
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <div className="text-sm">{row.getValue('stock')}</div>
+        ),
+      },
+      {
+        accessorKey: 'is_active',
+        header: () => (
+          <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
+            Estado
+          </OrderByTableHeader>
+        ),
+        cell: ({ row }: { row: Row<Product> }) => (
+          <IsActiveDisplay value={row.getValue('is_active')} />
+        ),
+      },
+      {
+        id: 'actions',
+        cell: ({ row }: { row: Row<Product> }) => (
+          <ProductActions
+            product={row.original}
+            onEdit={setEditingProduct}
+            onDelete={setDeletingProduct}
+            onAddStock={setStockingProduct}
+          />
+        ),
+      },
+    ],
+    [orderByHook]
+  )
 
   const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
     data: products,
     columns,
+    getRowId: (row) => row.id,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -267,7 +284,12 @@ export function ProductList({
                   </p>
                 )}
               </div>
-              <ProductActions product={product} />
+              <ProductActions
+                product={product}
+                onEdit={setEditingProduct}
+                onDelete={setDeletingProduct}
+                onAddStock={setStockingProduct}
+              />
             </div>
 
             <div className="space-y-2">
@@ -341,7 +363,12 @@ export function ProductList({
             </div>
           </ItemContent>
           <ItemActions>
-            <ProductActions product={product} />
+            <ProductActions
+              product={product}
+              onEdit={setEditingProduct}
+              onDelete={setDeletingProduct}
+              onAddStock={setStockingProduct}
+            />
           </ItemActions>
         </Item>
       ))}
@@ -477,6 +504,30 @@ export function ProductList({
       <div>
         <Pagination {...paginationProps} totalItems={data.total} />
       </div>
+
+      {editingProduct && (
+        <ProductEdit
+          product={editingProduct}
+          open={!!editingProduct}
+          onOpenChange={(open) => !open && setEditingProduct(null)}
+        />
+      )}
+
+      {deletingProduct && (
+        <ProductDelete
+          product={deletingProduct}
+          open={!!deletingProduct}
+          onOpenChange={(open) => !open && setDeletingProduct(null)}
+        />
+      )}
+
+      {stockingProduct && (
+        <ProductMovementCreate
+          open={!!stockingProduct}
+          onOpenChange={(open) => !open && setStockingProduct(null)}
+          productId={stockingProduct.id}
+        />
+      )}
     </div>
   )
 }
