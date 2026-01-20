@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, PackagePlus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -12,6 +12,7 @@ import {
 import { Database } from '@/types/supabase.types'
 import { ProductEdit } from './product-edit'
 import { ProductDelete } from './product-delete'
+import { ProductMovementCreate } from '@/components/product-movements/product-movement-create'
 
 type Product = Database['public']['Tables']['products']['Row']
 
@@ -22,6 +23,7 @@ interface ProductActionsProps {
 export function ProductActions({ product }: ProductActionsProps) {
   const [showEditDialog, setShowEditDialog] = useState(false)
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showStockDialog, setShowStockDialog] = useState(false)
 
   return (
     <>
@@ -33,6 +35,10 @@ export function ProductActions({ product }: ProductActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem onClick={() => setShowStockDialog(true)}>
+            <PackagePlus className="mr-2 h-4 w-4" />
+            Agregar Stock
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
             <Edit className="mr-2 h-4 w-4" />
             Editar
@@ -47,6 +53,12 @@ export function ProductActions({ product }: ProductActionsProps) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      <ProductMovementCreate
+        open={showStockDialog}
+        onOpenChange={setShowStockDialog}
+        productId={product.id}
+      />
 
       <ProductEdit
         product={product}

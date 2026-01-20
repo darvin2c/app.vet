@@ -47,11 +47,10 @@ export function ProductSelect({
       }}
       renderItem={(product) => (
         <div className="flex items-center gap-2">
-          <Package className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">{product.name}</span>
+            <span className="text-sm">{product.name}</span>
             {product.sku && (
-              <span className="text-sm text-muted-foreground">
+              <span className="text-xs text-muted-foreground">
                 SKU: {product.sku}
               </span>
             )}
@@ -62,7 +61,7 @@ export function ProductSelect({
         <div className="flex items-center gap-2">
           <Package className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
-            <span className="font-medium">{product.name}</span>
+            <span>{product.name}</span>
             {product.sku && (
               <span className="text-xs text-muted-foreground">
                 ({product.sku})
