@@ -54,11 +54,9 @@ export function ProductMovementCreate({
         submitLabel="Crear Movimiento"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-2xl"
+        className="!max-w-xl"
       >
-        <div className="px-6">
-          <ProductMovementForm mode="create" productId={productId} />
-        </div>
+        <ProductMovementForm mode="create" productId={productId} />
       </FormSheet>
     </CanAccess>
   )

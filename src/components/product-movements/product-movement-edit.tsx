@@ -56,11 +56,9 @@ export function ProductMovementEdit({
       submitLabel="Actualizar Movimiento"
       cancelLabel="Cancelar"
       side="right"
-      className="!max-w-2xl"
+      className="!max-w-xl"
     >
-      <div className="px-6">
-        <ProductMovementForm mode="update" productMovement={movement} />
-      </div>
+      <ProductMovementForm mode="update" productMovement={movement} />
     </FormSheet>
   )
 }
