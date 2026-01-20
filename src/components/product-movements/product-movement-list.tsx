@@ -286,9 +286,19 @@ export function ProductMovementList({
               <div className="text-sm">
                 <span className="text-muted-foreground">Tipo:</span>{' '}
                 <Badge
-                  variant={movement.quantity >= 0 ? 'default' : 'destructive'}
+                  variant={
+                    movement.quantity > 0
+                      ? 'default'
+                      : movement.quantity < 0
+                        ? 'destructive'
+                        : 'secondary'
+                  }
                 >
-                  {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'}
+                  {movement.quantity > 0
+                    ? 'ENTRADA'
+                    : movement.quantity < 0
+                      ? 'SALIDA'
+                      : 'AJUSTE'}
                 </Badge>
               </div>
               <div className="text-sm">
@@ -336,8 +346,12 @@ export function ProductMovementList({
               {movement.products?.name || 'Producto no encontrado'}
             </ItemTitle>
             <ItemDescription>
-              {movement.quantity >= 0 ? 'ENTRADA' : 'SALIDA'} - Cantidad:{' '}
-              {movement.quantity}
+              {movement.quantity > 0
+                ? 'ENTRADA'
+                : movement.quantity < 0
+                  ? 'SALIDA'
+                  : 'AJUSTE'}{' '}
+              - Cantidad: {movement.quantity}
             </ItemDescription>
             <div className="flex gap-4 text-sm text-muted-foreground mt-2">
               <span>
