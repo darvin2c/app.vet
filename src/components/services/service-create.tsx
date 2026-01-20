@@ -46,7 +46,7 @@ export function ServiceCreate({ open, onOpenChange }: ServiceCreateProps) {
         submitLabel="Crear Servicio"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <ServiceForm mode="create" />
       </FormSheet>

@@ -54,7 +54,7 @@ export function ServiceEdit({ open, onOpenChange, service }: ServiceEditProps) {
         submitLabel="Actualizar Servicio"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-4xl"
+        className="!max-w-2xl"
       >
         <ServiceForm mode="edit" />
       </FormSheet>
