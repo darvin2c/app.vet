@@ -2095,7 +2095,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_triggers_for_all_tables: { Args: never; Returns: undefined }
+      [_ in never]: never
     }
     Enums: {
       appointment_status:
@@ -2106,6 +2106,7 @@ export type Database = {
         | "cancelled"
         | "no_show"
       invitation_status: "pending" | "accepted" | "expired" | "revoked"
+      movement_type: "in" | "out" | "adjustment"
       order_status:
         | "partial_payment"
         | "confirmed"
@@ -2256,6 +2257,7 @@ export const Constants = {
         "no_show",
       ],
       invitation_status: ["pending", "accepted", "expired", "revoked"],
+      movement_type: ["in", "out", "adjustment"],
       order_status: [
         "partial_payment",
         "confirmed",

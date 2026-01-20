@@ -125,29 +125,24 @@ export function ProductMovementList({
       },
     },
     {
-      accessorKey: 'source',
-      header: ({ header }) => (
-        <OrderByTableHeader field="source" orderByHook={orderByHook}>
-          Tipo
-        </OrderByTableHeader>
-      ),
+      id: 'type',
+      header: 'Tipo',
       cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const type = row.getValue('source') as string
         const quantity = row.original.quantity
 
         let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
           'default'
-        let displayType = type || 'MOVIMIENTO'
+        let displayType = 'MOVIMIENTO'
 
         if (quantity > 0) {
           variant = 'default' // Verde para entradas
-          displayType = type || 'ENTRADA'
+          displayType = 'ENTRADA'
         } else if (quantity < 0) {
           variant = 'destructive' // Rojo para salidas
-          displayType = type || 'SALIDA'
+          displayType = 'SALIDA'
         } else {
           variant = 'secondary' // Gris para ajustes
-          displayType = type || 'AJUSTE'
+          displayType = 'AJUSTE'
         }
 
         return <Badge variant={variant}>{displayType}</Badge>
