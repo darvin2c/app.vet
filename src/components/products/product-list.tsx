@@ -507,7 +507,7 @@ export function ProductList({
 
       {editingProduct && (
         <ProductEdit
-          product={editingProduct}
+          productId={editingProduct.id}
           open={!!editingProduct}
           onOpenChange={(open) => !open && setEditingProduct(null)}
         />

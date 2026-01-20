@@ -41,9 +41,8 @@ export function ProductSelect({
       onSearchTermChange={setSearchTerm}
       renderCreate={(props) => <ProductCreate {...props} />}
       renderEdit={(props) => {
-        const product = products.find((p) => p.id === props.id)
-        if (!product) return null
-        return <ProductEdit {...props} product={product} />
+        if (!props.id) return null
+        return <ProductEdit {...props} productId={props.id} />
       }}
       renderItem={(product) => (
         <div className="flex items-center gap-2">
