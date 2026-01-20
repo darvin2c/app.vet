@@ -125,7 +125,6 @@ export function ProductMovementForm({
                     : undefined
                 }
                 {...register('unit_cost', {
-                  valueAsNumber: true,
                   setValueAs: (value) =>
                     value === '' || value === null ? null : Number(value),
                 })}
