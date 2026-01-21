@@ -123,8 +123,12 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
 
           return paymentMethod ? (
             <div className="flex items-center gap-2">
-              {paymentType?.icon && <paymentType.icon />}
               <span>{paymentMethod.name}</span>
+              {paymentType?.label && (
+                <span className="text-xs text-muted-foreground">
+                  ({paymentType?.label ?? 'Otros'})
+                </span>
+              )}
             </div>
           ) : (
             '-'

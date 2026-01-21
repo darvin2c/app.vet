@@ -52,13 +52,9 @@ export function PaymentMethodSelect({
             <div className="flex flex-col">
               <span>{method.name}</span>
               <div className="flex items-center gap-2">
-                <Badge
-                  className={
-                    typeInfo?.badgeClass ?? 'bg-gray-100 text-gray-800'
-                  }
-                >
+                <span className="text-xs text-muted-foreground">
                   {typeInfo?.label ?? 'Otros'}
-                </Badge>
+                </span>
               </div>
             </div>
           </div>
@@ -68,13 +64,15 @@ export function PaymentMethodSelect({
         const typeInfo = getPaymentType(method.payment_type)
         return (
           <div className="flex items-center gap-2">
-            <CreditCard className="w-4 h-4 text-muted-foreground" />
+            {typeInfo?.icon && (
+              <typeInfo.icon className="w-4 h-4 text-muted-foreground" />
+            )}
             <span>{method.name}</span>
-            <Badge
-              className={typeInfo?.badgeClass ?? 'bg-gray-100 text-gray-800'}
-            >
-              {typeInfo?.label ?? 'Otros'}
-            </Badge>
+            {typeInfo?.label && (
+              <span className="text-xs text-muted-foreground">
+                ({typeInfo?.label ?? 'Otros'})
+              </span>
+            )}
           </div>
         )
       }}

@@ -43,6 +43,51 @@ export function PaymentForm({
   return (
     <div className="space-y-8">
       <FieldSet>
+        <FieldGroup>
+          <Field>
+            <FieldLabel htmlFor="customer_id">Cliente</FieldLabel>
+            <FieldContent>
+              <CustomerSelect
+                value={
+                  mode === 'update' && payment
+                    ? payment.customer_id || ''
+                    : watch('customer_id') || ''
+                }
+                onValueChange={(value) =>
+                  setValue('customer_id', value || null)
+                }
+                placeholder="Seleccionar cliente..."
+                disabled={mode === 'update'}
+              />
+              <FieldDescription>
+                Cliente asociado al pago (opcional).
+              </FieldDescription>
+              <FieldError errors={[errors.customer_id]} />
+            </FieldContent>
+          </Field>
+
+          <Field>
+            <FieldLabel htmlFor="order_id">Orden Relacionada</FieldLabel>
+            <FieldContent>
+              <OrderSelect
+                value={
+                  mode === 'update' && payment
+                    ? payment.order_id || ''
+                    : watch('order_id') || ''
+                }
+                onValueChange={(value) => setValue('order_id', value || null)}
+                placeholder="Seleccionar orden..."
+                disabled={mode === 'update'}
+              />
+              <FieldDescription>
+                Orden de venta relacionada (opcional).
+              </FieldDescription>
+              <FieldError errors={[errors.order_id]} />
+            </FieldContent>
+          </Field>
+        </FieldGroup>
+      </FieldSet>
+      <FieldSet>
         <FieldLegend>Detalles del Pago</FieldLegend>
         <FieldGroup>
           <Field>
@@ -94,56 +139,8 @@ export function PaymentForm({
                 }
                 onValueChange={(value) => setValue('payment_method_id', value)}
                 placeholder="Seleccionar método..."
-                disabled={mode === 'update'}
               />
               <FieldError errors={[errors.payment_method_id]} />
-            </FieldContent>
-          </Field>
-        </FieldGroup>
-      </FieldSet>
-
-      <FieldSet>
-        <FieldLegend>Asociaciones</FieldLegend>
-        <FieldGroup>
-          <Field>
-            <FieldLabel htmlFor="customer_id">Cliente</FieldLabel>
-            <FieldContent>
-              <CustomerSelect
-                value={
-                  mode === 'update' && payment
-                    ? payment.customer_id || ''
-                    : watch('customer_id') || ''
-                }
-                onValueChange={(value) =>
-                  setValue('customer_id', value || null)
-                }
-                placeholder="Seleccionar cliente..."
-                disabled={mode === 'update'}
-              />
-              <FieldDescription>
-                Cliente asociado al pago (opcional).
-              </FieldDescription>
-              <FieldError errors={[errors.customer_id]} />
-            </FieldContent>
-          </Field>
-
-          <Field>
-            <FieldLabel htmlFor="order_id">Orden Relacionada</FieldLabel>
-            <FieldContent>
-              <OrderSelect
-                value={
-                  mode === 'update' && payment
-                    ? payment.order_id || ''
-                    : watch('order_id') || ''
-                }
-                onValueChange={(value) => setValue('order_id', value || null)}
-                placeholder="Seleccionar orden..."
-                disabled={mode === 'update'}
-              />
-              <FieldDescription>
-                Orden de venta relacionada (opcional).
-              </FieldDescription>
-              <FieldError errors={[errors.order_id]} />
             </FieldContent>
           </Field>
         </FieldGroup>
