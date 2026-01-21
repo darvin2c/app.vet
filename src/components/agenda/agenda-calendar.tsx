@@ -35,6 +35,37 @@ interface AgendaCalendarProps {
 
 type View = 'month' | 'week' | 'day' | 'year'
 
+const parseTimeToDecimal = (timeStr?: string) => {
+  if (!timeStr) return 0
+
+  const normalized = timeStr.trim().toUpperCase()
+  // Matches "HH:MM", "H:MM", "HH:MM AM", "HH:MM PM", etc.
+  const match = normalized.match(/^(\d{1,2}):(\d{1,2})(?:\s*(AM|PM))?$/)
+
+  if (!match) {
+    // Fallback to simple split if regex fails (legacy behavior compatibility)
+    const [h, m] = normalized.split(':').map((v) => parseInt(v, 10))
+    if (!isNaN(h)) {
+      return h + (isNaN(m) ? 0 : m) / 60
+    }
+    return 0
+  }
+
+  let hours = parseInt(match[1], 10)
+  const minutes = parseInt(match[2], 10)
+  const meridiem = match[3]
+
+  if (meridiem) {
+    if (meridiem === 'PM' && hours < 12) {
+      hours += 12
+    } else if (meridiem === 'AM' && hours === 12) {
+      hours = 0
+    }
+  }
+
+  return hours + minutes / 60
+}
+
 export function AgendaCalendar({ className }: AgendaCalendarProps) {
   const [currentDate, setCurrentDate] = useState(dayjs())
   const { currentTenant } = useCurrentTenantStore()
@@ -91,80 +122,38 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
     }, 0)
   }, [])
 
-  const businessHoursCss = useMemo(() => {
-    const bh = (currentTenant as any)?.business_hours
-    if (!bh?.enabled) return ''
-    const toMinutes = (t?: string) => {
-      if (!t) return 0
-      const [h, m] = t.split(':').map(Number)
-      return h * 60 + (m || 0)
-    }
-    const dayKey = (d: dayjs.Dayjs) => {
-      const i = d.day()
-      return [
-        'sunday',
-        'monday',
-        'tuesday',
-        'wednesday',
-        'thursday',
-        'friday',
-        'saturday',
-      ][i]
-    }
-    const startOf = currentDate.startOf('week')
-    const rules: string[] = []
-    if (view === 'week') {
-      for (let i = 0; i < 7; i++) {
-        const d = startOf.add(i, 'day')
-        const key = dayKey(d)
-        const cfg = bh?.[key]
-        const enabled = !!cfg?.enabled
-        const sMin = toMinutes(cfg?.start)
-        const eMin = toMinutes(cfg?.end)
-        for (let h = 0; h < 24; h++) {
-          const cellMinStart = h * 60
-          const cellMinEnd = (h + 1) * 60
-          const mark =
-            !enabled ||
-            eMin <= sMin ||
-            cellMinEnd <= sMin ||
-            cellMinStart >= eMin
-          if (mark) {
-            const ds = d.format('YYYY-MM-DD')
-            const hh = String(h).padStart(2, '0')
-            rules.push(
-              `[data-testid="week-time-cell-${ds}-${hh}"]{background-image:repeating-linear-gradient(135deg, rgba(107,114,128,0.25) 0px, rgba(107,114,128,0.25) 2px, transparent 2px, transparent 6px);opacity:.5;}`
-            )
-          }
-        }
-      }
-    } else if (view === 'day') {
-      const key = dayKey(currentDate)
-      const cfg = bh?.[key]
-      const enabled = !!cfg?.enabled
-      const sMin = toMinutes(cfg?.start)
-      const eMin = toMinutes(cfg?.end)
-      for (let h = 0; h < 24; h++) {
-        for (const mm of [0, 15, 30, 45]) {
-          const cellMinStart = h * 60 + mm
-          const cellMinEnd = cellMinStart + 15
-          const mark =
-            !enabled ||
-            eMin <= sMin ||
-            cellMinEnd <= sMin ||
-            cellMinStart >= eMin
-          if (mark) {
-            const hh = String(h).padStart(2, '0')
-            const mms = String(mm).padStart(2, '0')
-            rules.push(
-              `[data-testid="day-time-cell-${hh}-${mms}"]{background-image:repeating-linear-gradient(135deg, rgba(107,114,128,0.25) 0px, rgba(107,114,128,0.25) 2px, transparent 2px, transparent 6px);opacity:.5;}`
-            )
-          }
-        }
+  const businessHours = useMemo(() => {
+    const bh = currentTenant?.business_hours
+
+    if (!bh?.enabled) return undefined
+
+    const daysMap = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday',
+    ] as const
+
+    const hours = []
+
+    for (let i = 0; i < 7; i++) {
+      const dayName = daysMap[i]
+      const dayConfig = bh[dayName]
+
+      if (dayConfig?.enabled) {
+        hours.push({
+          daysOfWeek: [dayName],
+          startTime: parseTimeToDecimal(dayConfig.start),
+          endTime: parseTimeToDecimal(dayConfig.end),
+        })
       }
     }
-    return rules.join('\n')
-  }, [view, currentDate, currentTenant])
+
+    return hours
+  }, [currentTenant])
 
   /**
    * ⚠️ WARNING: Bloqueo de clics en los encabezados de la vista semanal
@@ -227,6 +216,7 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
         }
         onDateChange={handleDateChange}
         disableDragAndDrop={true}
+        businessHours={businessHours}
         renderEventForm={(props) => <AgendaEventForm {...props} />}
         renderCurrentTimeIndicator={({ progress, currentTime }) => (
           <div
@@ -240,8 +230,6 @@ export function AgendaCalendar({ className }: AgendaCalendarProps) {
           </div>
         )}
       />
-
-      {businessHoursCss && <style>{businessHoursCss}</style>}
     </div>
   )
 }
