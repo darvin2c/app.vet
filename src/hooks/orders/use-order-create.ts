@@ -42,9 +42,10 @@ export default function useOrderCreate() {
         order_id: createdOrder.id,
         tenant_id: currentTenant?.id,
       }))
-      const { error: itemsError } = await supabase
+      const { data: createdItems, error: itemsError } = await supabase
         .from('order_items')
         .insert(orderItems)
+        .select()
 
       if (itemsError) {
         // Eliminar la orden si hay error en los ítems
@@ -52,6 +53,35 @@ export default function useOrderCreate() {
         throw new Error(
           `Error al crear ítems de la orden: ${itemsError.message}`
         )
+      }
+
+      // Crear movimientos de producto
+      if (createdItems && createdItems.length > 0) {
+        // Usamos any para evitar errores de tipo hasta que se actualicen los tipos de Supabase
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const movements: any[] = createdItems.map((item) => ({
+          product_id: item.product_id,
+          quantity: -item.quantity,
+          tenant_id: currentTenant.id,
+          order_item_id: item.id,
+          note: 'Venta',
+          reference: `Orden #${createdOrder.order_number || createdOrder.id}`,
+        }))
+
+        const { error: movementsError } = await supabase
+          .from('product_movements')
+          .insert(movements)
+
+        if (movementsError) {
+          console.error(
+            'Error al crear movimientos de producto:',
+            movementsError
+          )
+          // No lanzamos error para no bloquear la creación de la orden, pero notificamos.
+          toast.error(
+            'La orden se creó pero hubo un error al actualizar el inventario.'
+          )
+        }
       }
       // Insertar los pagos de la orden
       const paymentsData: TablesInsert<'payments'>[] = payments.map(

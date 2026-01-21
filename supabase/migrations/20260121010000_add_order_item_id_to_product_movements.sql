@@ -1,0 +1,2 @@
+ALTER TABLE product_movements
+ADD COLUMN order_item_id UUID REFERENCES order_items(id) ON DELETE CASCADE NULL;
