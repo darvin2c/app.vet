@@ -41,17 +41,6 @@ export function OrderActions({ order }: OrderActionsProps) {
 
   const [isDownloading, setIsDownloading] = useState(false)
 
-  // Verificar si la orden puede ser editada
-  const isEditable = false
-  const getEditTooltipMessage = () => {
-    if (order.status === 'paid') return 'No se puede editar una orden pagada'
-    if (order.status === 'cancelled')
-      return 'No se puede editar una orden cancelada'
-    if (order.status === 'refunded')
-      return 'No se puede editar una orden reembolsada'
-    return ''
-  }
-
   // Handler para imprimir directamente
   const handleDirectPrint = () => {
     // Abrir la página de impresión y usar la función de impresión del navegador
@@ -91,26 +80,10 @@ export function OrderActions({ order }: OrderActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {isEditable ? (
-            <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
-              <Edit className="mr-2 h-4 w-4" />
-              Editar
-            </DropdownMenuItem>
-          ) : (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DropdownMenuItem disabled>
-                    <Edit className="mr-2 h-4 w-4" />
-                    Editar
-                  </DropdownMenuItem>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>{getEditTooltipMessage()}</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
+          <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
+            <Edit className="mr-2 h-4 w-4" />
+            Editar
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setShowPaymentSheet(true)}>
             <CreditCard className="mr-2 h-4 w-4" />
             Pagar

@@ -1,6 +1,8 @@
 'use client'
 
 import { useFormContext } from 'react-hook-form'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase/client'
 import { PaymentFormData } from '@/schemas/payments.schema'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'

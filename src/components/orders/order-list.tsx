@@ -53,7 +53,6 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { DateDisplay } from '../ui/date-picker'
 import { CurrencyDisplay } from '../ui/currency-input'
-import useOrderStatus from '@/hooks/orders/use-order-status'
 import { Pagination, usePagination } from '../ui/pagination'
 import { Alert, AlertDescription } from '../ui/alert'
 import { OrderIcon } from '../icons'
@@ -107,7 +106,6 @@ export function OrderList({
     pagination: appliedPagination,
   })
   const orders = data?.data || []
-  const { getOrderStatus } = useOrderStatus()
   console.log(orders)
 
   const columns: ColumnDef<Order>[] = [
@@ -139,25 +137,6 @@ export function OrderList({
       },
     },
 
-    {
-      accessorKey: 'status',
-      header: ({ header }) => (
-        <OrderByTableHeader field="status" orderByHook={orderByHook}>
-          Estado
-        </OrderByTableHeader>
-      ),
-      cell: ({ row }: { row: Row<Order> }) => {
-        const status = getOrderStatus(row.getValue('status'))
-        return (
-          <Badge className={status.className}>
-            <div className="flex items-center gap-1">
-              <Clock className="w-4 h-4" />
-              {status.label}
-            </div>
-          </Badge>
-        )
-      },
-    },
     {
       accessorKey: 'total',
       header: ({ header }) => (
@@ -260,7 +239,6 @@ export function OrderList({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {orders.map((order) => {
         const customer = order.customer
-        const status = getOrderStatus(order.status)
         const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
         const paid = order.paid_amount || 0
         const balance = (order.total || 0) - paid
@@ -279,12 +257,6 @@ export function OrderList({
                       : 'Sin cliente'}
                   </p>
                 </div>
-                <Badge variant={getStatusBadgeVariant(order.status)}>
-                  <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    {status.label}
-                  </div>
-                </Badge>
               </div>
 
               <div className="flex items-center justify-between text-sm">
@@ -335,7 +307,6 @@ export function OrderList({
     <ItemGroup className="space-y-2">
       {orders.map((order) => {
         const customer = order.customer
-        const status = getOrderStatus(order.status)
         const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
         const paid = order.paid_amount || 0
         const balance = (order.total || 0) - paid
@@ -356,12 +327,6 @@ export function OrderList({
                   </ItemDescription>
                 </div>
                 <div className="flex items-center gap-3">
-                  <Badge className={status.className}>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-4 h-4" />
-                      {status.label}
-                    </div>
-                  </Badge>
                   <div className="text-right">
                     <div className="font-medium">
                       <CurrencyDisplay

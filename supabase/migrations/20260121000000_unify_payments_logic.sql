@@ -31,6 +31,11 @@ DECLARE
   v_old_amount    numeric := 0;
   v_delta         numeric := 0;
 BEGIN
+  -- Prevent changing order_id if already set
+  IF TG_OP = 'UPDATE' AND OLD.order_id IS NOT NULL AND NEW.order_id IS DISTINCT FROM OLD.order_id THEN
+    RAISE EXCEPTION 'No se puede mover un pago a otra orden ni desvincularlo.';
+  END IF;
+
   -- Determine Order ID
   IF TG_OP = 'DELETE' THEN
     v_order_id := OLD.order_id;
