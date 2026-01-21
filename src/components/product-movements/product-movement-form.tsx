@@ -24,10 +24,12 @@ export function ProductMovementForm({
   mode,
   productId,
   productMovement,
+  product,
 }: {
   mode: 'create' | 'update'
   productId?: string
   productMovement?: ProductMovement
+  product?: Tables<'products'>
 }) {
   const form = useFormContext()
   const {
@@ -37,12 +39,34 @@ export function ProductMovementForm({
     register,
   } = form
 
-  // Observar la cantidad para determinar si es entrada o salida
   const quantity =
     mode === 'update' && productMovement
       ? productMovement.quantity
       : watch('quantity')
+  
+  const unitCost = watch('unit_cost')
+
   const isEntry = (quantity ?? 0) >= 0
+
+  // Cálculos de proyección
+  const currentStock = product?.stock ?? 0
+  const currentCost = product?.cost ?? 0
+  
+  const inputQty = Number(quantity || 0)
+  const inputCost = Number(unitCost || 0)
+
+  const projectedStock = currentStock + inputQty
+
+  let projectedCost = currentCost
+  if (inputQty > 0 && inputCost > 0) {
+    const totalValue = (currentStock * currentCost) + (inputQty * inputCost)
+    const totalQty = currentStock + inputQty
+    if (totalQty !== 0) {
+      projectedCost = totalValue / totalQty
+    } else {
+        projectedCost = inputCost // Fallback if stock is 0
+    }
+  }
 
   // Sincronizar el valor del formulario cuando se pasa productId (modo create)
   useEffect(() => {
@@ -152,6 +176,32 @@ export function ProductMovementForm({
           </Field>
         </FieldGroup>
       </FieldSet>
+
+      {product && mode === 'create' && (
+        <div className="rounded-lg border bg-muted/50 p-4">
+          <h4 className="mb-2 font-medium">Proyección de Inventario y Costos</h4>
+          <div className="grid grid-cols-2 gap-4 text-sm">
+            <div>
+              <span className="text-muted-foreground">Stock Actual:</span>
+              <div className="font-mono">{currentStock}</div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Nuevo Stock Estimado:</span>
+              <div className="font-mono font-bold">{projectedStock}</div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Costo Actual:</span>
+              <div className="font-mono">{currentCost.toFixed(2)}</div>
+            </div>
+            <div>
+              <span className="text-muted-foreground">Nuevo Costo Promedio:</span>
+              <div className="font-mono font-bold text-blue-600">
+                {projectedCost.toFixed(2)}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <FieldSet>
         <FieldLegend>Otros</FieldLegend>

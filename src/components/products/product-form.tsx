@@ -18,6 +18,7 @@ import { ProductUnitSelect } from '@/components/product-units/product-unit-selec
 import { ProductBrandSelect } from '@/components/product-brands/product-brand-select'
 import { Tables } from '@/types/supabase.types'
 import { ProductStockInput } from './product-stock-input'
+import { ProductCostInput } from './product-cost-input'
 import { Input } from '../ui/input'
 
 interface ProductFormProps {
@@ -31,6 +32,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
     formState: { errors },
     setValue,
     watch,
+    control,
   } = useFormContext()
 
   return (
@@ -146,16 +148,17 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
             <Field>
               <FieldLabel htmlFor="cost">Costo</FieldLabel>
               <FieldContent>
-                <Input
-                  id="cost"
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  placeholder="0.00"
-                  {...register('cost', {
-                    setValueAs: (value) =>
-                      value ? parseFloat(value) : undefined,
-                  })}
+                <Controller
+                  control={control}
+                  name="cost"
+                  render={({ field: { value, onChange } }) => (
+                    <ProductCostInput
+                      mode={mode}
+                      value={value}
+                      onChange={onChange}
+                      product={product}
+                    />
+                  )}
                 />
                 <FieldDescription>
                   Costo de adquisición del producto (sin impuestos).
@@ -189,7 +192,18 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
             <Field>
               <FieldLabel htmlFor="stock">Inventario</FieldLabel>
               <FieldContent>
-                <ProductStockInput mode={mode} product={product} />
+                <Controller
+                  control={control}
+                  name="stock"
+                  render={({ field: { value, onChange } }) => (
+                    <ProductStockInput
+                      mode={mode}
+                      value={value}
+                      onChange={onChange}
+                      product={product}
+                    />
+                  )}
+                />
                 <FieldDescription>
                   Cantidad actual disponible. Para agregar stock, haz clic en el
                   botón.

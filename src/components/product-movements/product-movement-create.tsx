@@ -10,17 +10,20 @@ import {
 } from '@/schemas/product-movements.schema'
 import useProductMovementCreate from '@/hooks/product-movements/use-product-movement-create'
 import CanAccess from '@/components/ui/can-access'
+import { Tables } from '@/types/supabase.types'
 
 interface ProductMovementCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   productId?: string
+  product?: Tables<'products'>
 }
 
 export function ProductMovementCreate({
   open,
   onOpenChange,
   productId,
+  product,
 }: ProductMovementCreateProps) {
   const createProductMovement = useProductMovementCreate()
 
@@ -56,7 +59,11 @@ export function ProductMovementCreate({
         side="right"
         className="!max-w-xl"
       >
-        <ProductMovementForm mode="create" productId={productId} />
+        <ProductMovementForm
+          mode="create"
+          productId={productId}
+          product={product}
+        />
       </FormSheet>
     </CanAccess>
   )

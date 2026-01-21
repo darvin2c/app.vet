@@ -77,6 +77,7 @@ export function ProductStockInput({
         open={showMovementModal}
         onOpenChange={setShowMovementModal}
         productId={product?.id}
+        product={product}
       />
     </>
   )
