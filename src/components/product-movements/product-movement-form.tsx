@@ -14,6 +14,11 @@ import {
   FieldGroup,
   FieldDescription,
 } from '@/components/ui/field'
+import {
+  InputGroup,
+  InputGroupInput,
+  InputGroupText,
+} from '@/components/ui/input-group'
 
 import { ProductSelect } from '@/components/products/product-select'
 import { Tables } from '@/types/supabase.types'
@@ -43,7 +48,7 @@ export function ProductMovementForm({
     mode === 'update' && productMovement
       ? productMovement.quantity
       : watch('quantity')
-  
+
   const unitCost = watch('unit_cost')
 
   const isEntry = (quantity ?? 0) >= 0
@@ -51,7 +56,7 @@ export function ProductMovementForm({
   // Cálculos de proyección
   const currentStock = product?.stock ?? 0
   const currentCost = product?.cost ?? 0
-  
+
   const inputQty = Number(quantity || 0)
   const inputCost = Number(unitCost || 0)
 
@@ -59,12 +64,12 @@ export function ProductMovementForm({
 
   let projectedCost = currentCost
   if (inputQty > 0 && inputCost > 0) {
-    const totalValue = (currentStock * currentCost) + (inputQty * inputCost)
+    const totalValue = currentStock * currentCost + inputQty * inputCost
     const totalQty = currentStock + inputQty
     if (totalQty !== 0) {
       projectedCost = totalValue / totalQty
     } else {
-        projectedCost = inputCost // Fallback if stock is 0
+      projectedCost = inputCost // Fallback if stock is 0
     }
   }
 
@@ -106,24 +111,50 @@ export function ProductMovementForm({
               Cantidad * {isEntry ? '(Entrada +)' : '(Salida -)'}
             </FieldLabel>
             <FieldContent>
-              <Input
-                id="quantity"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                disabled={mode === 'update'}
-                value={
-                  mode === 'update' && productMovement
-                    ? productMovement.quantity
-                    : undefined
-                }
-                {...register('quantity', {
-                  valueAsNumber: true,
-                  setValueAs: (value) => (value === '' ? 0 : Number(value)),
-                })}
-              />
+              {product && mode === 'create' ? (
+                <InputGroup>
+                  <InputGroupInput
+                    id="quantity"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    disabled={false}
+                    {...register('quantity', {
+                      valueAsNumber: true,
+                      setValueAs: (value) => (value === '' ? 0 : Number(value)),
+                    })}
+                  />
+                  <InputGroupText title="Stock Estimado">
+                    ➝ {projectedStock}
+                  </InputGroupText>
+                </InputGroup>
+              ) : (
+                <Input
+                  id="quantity"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  disabled={mode === 'update'}
+                  value={
+                    mode === 'update' && productMovement
+                      ? productMovement.quantity
+                      : undefined
+                  }
+                  {...register('quantity', {
+                    valueAsNumber: true,
+                    setValueAs: (value) => (value === '' ? 0 : Number(value)),
+                  })}
+                />
+              )}
+
               <FieldDescription>
                 Use valores positivos para entradas y negativos para salidas.
+                {product && mode === 'create' && (
+                  <span className="block mt-1 text-xs text-muted-foreground">
+                    Stock actual: {currentStock}. Se calculará: {currentStock}{' '}
+                    {inputQty >= 0 ? '+' : ''} {inputQty} = {projectedStock}
+                  </span>
+                )}
               </FieldDescription>
               <FieldError errors={[errors.quantity]} />
             </FieldContent>
@@ -137,24 +168,60 @@ export function ProductMovementForm({
           <Field>
             <FieldLabel htmlFor="unit_cost">Costo Unitario</FieldLabel>
             <FieldContent>
-              <Input
-                id="unit_cost"
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                disabled={mode === 'update'}
-                value={
-                  mode === 'update' && productMovement
-                    ? (productMovement.unit_cost ?? '')
-                    : undefined
-                }
-                {...register('unit_cost', {
-                  setValueAs: (value) =>
-                    value === '' || value === null ? null : Number(value),
-                })}
-              />
+              {product && mode === 'create' ? (
+                <InputGroup>
+                  <InputGroupInput
+                    id="unit_cost"
+                    type="number"
+                    step="0.01"
+                    placeholder="0.00"
+                    disabled={false}
+                    {...register('unit_cost', {
+                      setValueAs: (value) =>
+                        value === '' || value === null ? null : Number(value),
+                    })}
+                  />
+                  <InputGroupText
+                    className={
+                      projectedCost !== currentCost
+                        ? 'text-blue-600 font-medium'
+                        : ''
+                    }
+                    title="Nuevo Costo Promedio"
+                  >
+                    ➝ {projectedCost.toFixed(2)}
+                  </InputGroupText>
+                </InputGroup>
+              ) : (
+                <Input
+                  id="unit_cost"
+                  type="number"
+                  step="0.01"
+                  placeholder="0.00"
+                  disabled={mode === 'update'}
+                  value={
+                    mode === 'update' && productMovement
+                      ? (productMovement.unit_cost ?? '')
+                      : undefined
+                  }
+                  {...register('unit_cost', {
+                    setValueAs: (value) =>
+                      value === '' || value === null ? null : Number(value),
+                  })}
+                />
+              )}
+
               <FieldDescription>
                 El costo por unidad de este movimiento.
+                {product &&
+                  mode === 'create' &&
+                  inputQty > 0 &&
+                  inputCost > 0 && (
+                    <span className="block mt-1 text-xs text-muted-foreground">
+                      Costo promedio ponderado: ((Stock Actual * Costo Actual) +
+                      (Cantidad * Costo Unitario)) / Total Stock
+                    </span>
+                  )}
               </FieldDescription>
               <FieldError errors={[errors.unit_cost]} />
             </FieldContent>
@@ -176,32 +243,6 @@ export function ProductMovementForm({
           </Field>
         </FieldGroup>
       </FieldSet>
-
-      {product && mode === 'create' && (
-        <div className="rounded-lg border bg-muted/50 p-4">
-          <h4 className="mb-2 font-medium">Proyección de Inventario y Costos</h4>
-          <div className="grid grid-cols-2 gap-4 text-sm">
-            <div>
-              <span className="text-muted-foreground">Stock Actual:</span>
-              <div className="font-mono">{currentStock}</div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Nuevo Stock Estimado:</span>
-              <div className="font-mono font-bold">{projectedStock}</div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Costo Actual:</span>
-              <div className="font-mono">{currentCost.toFixed(2)}</div>
-            </div>
-            <div>
-              <span className="text-muted-foreground">Nuevo Costo Promedio:</span>
-              <div className="font-mono font-bold text-blue-600">
-                {projectedCost.toFixed(2)}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <FieldSet>
         <FieldLegend>Otros</FieldLegend>
