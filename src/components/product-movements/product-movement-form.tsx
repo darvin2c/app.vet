@@ -28,7 +28,7 @@ import {
 import { ProductSelect } from '@/components/products/product-select'
 import useProduct from '@/hooks/products/use-product'
 import { Tables } from '@/types/supabase.types'
-import { CurrencyInput } from '@/components/ui/currency-input'
+import { CurrencyInput, CurrencyDisplay } from '@/components/ui/currency-input'
 
 type ProductMovement = Tables<'product_movements'>
 
@@ -206,13 +206,11 @@ export function ProductMovementForm({
                     <HoverCardTrigger asChild>
                       <InputGroupText
                         className={`cursor-help hover:bg-muted/80 transition-colors ${
-                          projectedCost !== currentCost
-                            ? 'text-blue-600 font-medium'
-                            : ''
+                          projectedCost !== currentCost ? 'font-medium' : ''
                         }`}
                         title="Nuevo Costo Promedio"
                       >
-                        ➝ {projectedCost.toFixed(2)}
+                        ➝ <CurrencyDisplay value={projectedCost} />
                       </InputGroupText>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-96">
@@ -227,8 +225,10 @@ export function ProductMovementForm({
                           </p>
                           <div className="rounded-md bg-muted p-2 font-mono text-xs mt-2 overflow-x-auto">
                             <div className="whitespace-nowrap">
-                              (({currentStock} × {currentCost.toFixed(2)}) + (
-                              {inputQty} × {inputCost.toFixed(2)}))
+                              (({currentStock} ×{' '}
+                              <CurrencyDisplay value={currentCost} />) + (
+                              {inputQty} × <CurrencyDisplay value={inputCost} />
+                              ))
                             </div>
                             <div className="border-t border-foreground/20 my-1 w-full"></div>
                             <div className="text-center w-full">
@@ -236,8 +236,8 @@ export function ProductMovementForm({
                             </div>
                             <div className="mt-2 text-right">
                               ={' '}
-                              <span className="font-bold text-blue-600">
-                                {projectedCost.toFixed(2)}
+                              <span className="font-bold">
+                                <CurrencyDisplay value={projectedCost} />
                               </span>
                             </div>
                           </div>
