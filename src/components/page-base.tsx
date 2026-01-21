@@ -15,13 +15,11 @@ export default function PageBase({
 }) {
   const isMobile = useIsMobile()
   return (
-    <div className="@container mx-auto px-4 flex flex-col gap-4">
-      <header className="flex h-16 shrink-0 items-center justify-between md:gap-16 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+    <div className="@container mx-auto flex flex-col gap-4">
+      <header className="flex border-b px-4 h-16 shrink-0 items-center justify-between md:gap-16 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
         {!isMobile && (
           <div className="flex flex-col items-start justify-center gap-1 ">
-            {title && (
-              <div className="text-xl font-bold md:text-2xl">{title}</div>
-            )}
+            {title && <div className="text-xl font-bold">{title}</div>}
             {subtitle && (
               <div className="text-sm text-muted-foreground hidden lg:block">
                 {subtitle}
@@ -31,7 +29,7 @@ export default function PageBase({
         )}
         <div className="grow">{search}</div>
       </header>
-      {children}
+      <div className="grow px-4">{children}</div>
     </div>
   )
 }

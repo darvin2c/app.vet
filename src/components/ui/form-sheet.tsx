@@ -123,22 +123,22 @@ export function FormSheet<T extends FieldValues>({
         onKeyDown={handleKeyDown}
         className="flex h-full flex-col overflow-hidden"
       >
-        <SheetHeader className={cn(isMobile ? 'text-left' : '')}>
+        <SheetHeader className={'border-b'}>
           <SheetTitle>{title}</SheetTitle>
           {description && <SheetDescription>{description}</SheetDescription>}
         </SheetHeader>
 
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden ">
           <ScrollArea className="h-full">
-            <div className="px-4 pb-4">{children}</div>
+            <div className="px-4 py-4">{children}</div>
           </ScrollArea>
         </div>
 
         <SheetFooter
           className={cn(
             isMobile
-              ? 'flex-col gap-2 px-4 pb-4'
-              : 'flex-row justify-between gap-2'
+              ? 'flex-col gap-2 px-4 pb-4 bg-muted'
+              : 'flex-row justify-between gap-2 bg-muted'
           )}
         >
           {isMobile ? (
