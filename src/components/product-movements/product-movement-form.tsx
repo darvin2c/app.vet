@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/hover-card'
 
 import { ProductSelect } from '@/components/products/product-select'
+import useProduct from '@/hooks/products/use-product'
 import { Tables } from '@/types/supabase.types'
 
 type ProductMovement = Tables<'product_movements'>
@@ -34,12 +35,10 @@ export function ProductMovementForm({
   mode,
   productId,
   productMovement,
-  product,
 }: {
   mode: 'create' | 'update'
   productId?: string
   productMovement?: ProductMovement
-  product?: Tables<'products'>
 }) {
   const form = useFormContext()
   const {
@@ -48,6 +47,13 @@ export function ProductMovementForm({
     setValue,
     register,
   } = form
+
+  const selectValue =
+    mode === 'update' && productMovement
+      ? productMovement.product_id
+      : (productId ?? watch('product_id') ?? '')
+
+  const { data: product } = useProduct(selectValue)
 
   const quantity =
     mode === 'update' && productMovement
@@ -84,11 +90,6 @@ export function ProductMovementForm({
       setValue('product_id', productId)
     }
   }, [productId, setValue])
-
-  const selectValue =
-    mode === 'update' && productMovement
-      ? productMovement.product_id
-      : (productId ?? watch('product_id') ?? '')
 
   return (
     <div className="space-y-8">
@@ -179,12 +180,6 @@ export function ProductMovementForm({
 
               <FieldDescription>
                 Use valores positivos para entradas y negativos para salidas.
-                {product && mode === 'create' && (
-                  <span className="block mt-1 text-xs text-muted-foreground">
-                    Stock actual: {currentStock}. Se calculará: {currentStock}{' '}
-                    {inputQty >= 0 ? '+' : ''} {inputQty} = {projectedStock}
-                  </span>
-                )}
               </FieldDescription>
               <FieldError errors={[errors.quantity]} />
             </FieldContent>
@@ -276,15 +271,6 @@ export function ProductMovementForm({
 
               <FieldDescription>
                 El costo por unidad de este movimiento.
-                {product &&
-                  mode === 'create' &&
-                  inputQty > 0 &&
-                  inputCost > 0 && (
-                    <span className="block mt-1 text-xs text-muted-foreground">
-                      Costo promedio ponderado: ((Stock Actual * Costo Actual) +
-                      (Cantidad * Costo Unitario)) / Total Stock
-                    </span>
-                  )}
               </FieldDescription>
               <FieldError errors={[errors.unit_cost]} />
             </FieldContent>

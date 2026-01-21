@@ -16,14 +16,12 @@ interface ProductMovementCreateProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   productId?: string
-  product?: Tables<'products'>
 }
 
 export function ProductMovementCreate({
   open,
   onOpenChange,
   productId,
-  product,
 }: ProductMovementCreateProps) {
   const createProductMovement = useProductMovementCreate()
 
@@ -59,11 +57,7 @@ export function ProductMovementCreate({
         side="right"
         className="!max-w-xl"
       >
-        <ProductMovementForm
-          mode="create"
-          productId={productId}
-          product={product}
-        />
+        <ProductMovementForm mode="create" productId={productId} />
       </FormSheet>
     </CanAccess>
   )
