@@ -1141,6 +1141,7 @@ export type Database = {
           created_by: string | null
           id: string
           note: string | null
+          order_item_id: string | null
           product_id: string
           quantity: number
           reference: string | null
@@ -1154,6 +1155,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           note?: string | null
+          order_item_id?: string | null
           product_id: string
           quantity: number
           reference?: string | null
@@ -1167,6 +1169,7 @@ export type Database = {
           created_by?: string | null
           id?: string
           note?: string | null
+          order_item_id?: string | null
           product_id?: string
           quantity?: number
           reference?: string | null
@@ -1176,6 +1179,13 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "product_movements_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "order_items"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "product_movements_product_id_fkey"
             columns: ["product_id"]
