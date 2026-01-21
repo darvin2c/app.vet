@@ -50,7 +50,6 @@ export function ProductBrandSelect({
       }}
       renderItem={(brand) => (
         <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span>{brand.name}</span>
             {brand.description && (
@@ -62,8 +61,7 @@ export function ProductBrandSelect({
         </div>
       )}
       renderSelected={(brand) => (
-        <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4 text-muted-foreground" />
+        <div className="flex gap-2">
           <span>{brand.name}</span>
         </div>
       )}

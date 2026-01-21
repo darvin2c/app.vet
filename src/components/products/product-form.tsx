@@ -190,7 +190,7 @@ export function ProductForm({ mode = 'create', product }: ProductFormProps) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Field>
-              <FieldLabel htmlFor="stock">Inventario</FieldLabel>
+              <FieldLabel htmlFor="stock">Stock</FieldLabel>
               <FieldContent>
                 <Controller
                   control={control}
