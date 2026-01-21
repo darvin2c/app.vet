@@ -3,7 +3,7 @@
 import { Tables } from '@/types/supabase.types'
 import { create } from 'zustand'
 
-type Tenant = Tables<'tenants'> & {
+export type Tenant = Tables<'tenants'> & {
   business_hours?: {
     enabled: boolean
     sunday?: { enabled: boolean; start: string; end: string }

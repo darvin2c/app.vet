@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase/client'
 import { TablesUpdate } from '@/types/supabase.types'
 import { toast } from 'sonner'
-import useCurrentTenantStore from './use-current-tenant-store'
+import useCurrentTenantStore, { Tenant } from './use-current-tenant-store'
 
 export function useTenantUpdate() {
   const queryClient = useQueryClient()
@@ -33,7 +33,7 @@ export function useTenantUpdate() {
     },
     onSuccess: (updatedTenant) => {
       // Update the current tenant in the store
-      setCurrentTenant(updatedTenant)
+      setCurrentTenant(updatedTenant as Tenant)
 
       // Invalidate related queries
       queryClient.invalidateQueries({

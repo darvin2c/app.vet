@@ -1,6 +1,8 @@
 'use client'
 
-import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
+import useCurrentTenantStore, {
+  Tenant,
+} from '@/hooks/tenants/use-current-tenant-store'
 import useProfileStore from '@/hooks/auth/use-profile-store'
 import useGetTenant from '@/hooks/tenants/use-get-tenant'
 import { useProfile } from '@/hooks/auth/use-user'
@@ -20,8 +22,7 @@ export default function TenantLoad({
   const { setProfile } = useProfileStore()
 
   useEffect(() => {
-    console.log('tenantDetail', tenantDetail)
-    setCurrentTenant(tenantDetail || null)
+    setCurrentTenant(tenantDetail as Tenant)
   }, [tenantDetail])
   useEffect(() => {
     console.log('profileData', profileData)
