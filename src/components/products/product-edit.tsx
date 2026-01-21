@@ -9,7 +9,6 @@ import useUpdateProduct from '@/hooks/products/use-product-update'
 import useProduct from '@/hooks/products/use-product'
 import { productUpdateSchema } from '@/schemas/products.schema'
 import CanAccess from '@/components/ui/can-access'
-import { Spinner } from '@/components/ui/spinner'
 
 interface ProductEditProps {
   productId: string

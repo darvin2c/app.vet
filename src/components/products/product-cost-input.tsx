@@ -81,7 +81,6 @@ export function ProductCostInput({
         open={showMovementModal}
         onOpenChange={setShowMovementModal}
         productId={product?.id}
-        product={product}
       />
     </>
   )
