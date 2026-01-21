@@ -51,7 +51,7 @@ export function PaymentCreate({ open, onOpenChange }: PaymentCreateProps) {
         submitLabel="Crear Pago"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-2xl"
+        className="!max-w-xl"
       >
         <PaymentForm mode="create" />
       </FormSheet>

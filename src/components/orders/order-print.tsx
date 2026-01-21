@@ -396,9 +396,6 @@ export function OrderPrint({
                     <div className="space-y-2 text-sm">
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">Estado</span>
-                        <span className="font-medium capitalize">
-                          {order.status}
-                        </span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-muted-foreground">

@@ -54,7 +54,7 @@ export function PaymentEdit({ payment, open, onOpenChange }: PaymentEditProps) {
         submitLabel="Actualizar Pago"
         cancelLabel="Cancelar"
         side="right"
-        className="!max-w-2xl"
+        className="!max-w-xl"
       >
         <PaymentForm mode="update" payment={payment} />
       </FormSheet>

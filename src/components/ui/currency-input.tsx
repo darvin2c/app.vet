@@ -10,7 +10,7 @@ import {
 import { InputGroup, InputGroupAddon, InputGroupInput } from './input-group'
 import { useCurrency } from './currency-select'
 
-type CurrencyInputProps = React.ComponentProps<'input'> & {
+type CurrencyInputProps = Omit<React.ComponentProps<'input'>, 'onChange'> & {
   children?: React.ReactNode
   format?: string
   value?: number | null

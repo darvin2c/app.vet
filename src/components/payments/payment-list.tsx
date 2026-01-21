@@ -145,9 +145,6 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
           return order ? (
             <div className="flex items-center gap-2">
               <span>#{order.order_number}</span>
-              <Badge variant="outline" className="text-xs">
-                ${order.total?.toFixed(2) || '0.00'}
-              </Badge>
             </div>
           ) : (
             '-'
