@@ -58,7 +58,6 @@ export function ProductSelect({
       )}
       renderSelected={(product) => (
         <div className="flex items-center gap-2">
-          <Package className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span>{product.name}</span>
             {product.sku && (
