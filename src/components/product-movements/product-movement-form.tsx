@@ -19,6 +19,11 @@ import {
   InputGroupInput,
   InputGroupText,
 } from '@/components/ui/input-group'
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '@/components/ui/hover-card'
 
 import { ProductSelect } from '@/components/products/product-select'
 import { Tables } from '@/types/supabase.types'
@@ -124,9 +129,34 @@ export function ProductMovementForm({
                       setValueAs: (value) => (value === '' ? 0 : Number(value)),
                     })}
                   />
-                  <InputGroupText title="Stock Estimado">
-                    ➝ {projectedStock}
-                  </InputGroupText>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <InputGroupText
+                        title="Stock Estimado"
+                        className="cursor-help hover:bg-muted/80 transition-colors"
+                      >
+                        ➝ {projectedStock}
+                      </InputGroupText>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80">
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-sm">
+                          Cálculo de Stock Estimado
+                        </h4>
+                        <div className="text-sm text-muted-foreground space-y-1">
+                          <p>
+                            Se suma la cantidad ingresada al stock actual del
+                            producto.
+                          </p>
+                          <div className="rounded-md bg-muted p-2 font-mono text-xs mt-2">
+                            {currentStock} {inputQty >= 0 ? '+' : '-'}
+                            {Math.abs(inputQty)} ={' '}
+                            <span className="font-bold">{projectedStock}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 </InputGroup>
               ) : (
                 <Input
@@ -181,16 +211,49 @@ export function ProductMovementForm({
                         value === '' || value === null ? null : Number(value),
                     })}
                   />
-                  <InputGroupText
-                    className={
-                      projectedCost !== currentCost
-                        ? 'text-blue-600 font-medium'
-                        : ''
-                    }
-                    title="Nuevo Costo Promedio"
-                  >
-                    ➝ {projectedCost.toFixed(2)}
-                  </InputGroupText>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <InputGroupText
+                        className={`cursor-help hover:bg-muted/80 transition-colors ${
+                          projectedCost !== currentCost
+                            ? 'text-blue-600 font-medium'
+                            : ''
+                        }`}
+                        title="Nuevo Costo Promedio"
+                      >
+                        ➝ {projectedCost.toFixed(2)}
+                      </InputGroupText>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-96">
+                      <div className="space-y-2">
+                        <h4 className="font-medium text-sm">
+                          Cálculo de Costo Promedio Ponderado
+                        </h4>
+                        <div className="text-sm text-muted-foreground space-y-1">
+                          <p>
+                            El nuevo costo se calcula ponderando el valor del
+                            stock actual con el valor del nuevo ingreso.
+                          </p>
+                          <div className="rounded-md bg-muted p-2 font-mono text-xs mt-2 overflow-x-auto">
+                            <div className="whitespace-nowrap">
+                              (({currentStock} × {currentCost.toFixed(2)}) + (
+                              {inputQty} × {inputCost.toFixed(2)}))
+                            </div>
+                            <div className="border-t border-foreground/20 my-1 w-full"></div>
+                            <div className="text-center w-full">
+                              {projectedStock} (Total Stock)
+                            </div>
+                            <div className="mt-2 text-right">
+                              ={' '}
+                              <span className="font-bold text-blue-600">
+                                {projectedCost.toFixed(2)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 </InputGroup>
               ) : (
                 <Input
