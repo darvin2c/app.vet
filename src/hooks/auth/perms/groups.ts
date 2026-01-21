@@ -21,4 +21,9 @@ export const GROUPS: Group[] = [
     label: 'Seguridad',
     description: 'Permisos para seguridad',
   },
+  {
+    value: 'references',
+    label: 'Referencias',
+    description: 'Permisos para referencias',
+  },
 ]
