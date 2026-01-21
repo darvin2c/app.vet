@@ -56,6 +56,7 @@ import { useSearch } from '@/components/ui/search-input/use-search'
 import { useOrderBy } from '@/components/ui/order-by/use-order-by'
 import type { FilterConfig } from '@/components/ui/filters'
 import type { OrderByConfig } from '@/components/ui/order-by'
+import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 
 interface PaymentListProps {
   filterConfig: FilterConfig[]
@@ -65,6 +66,7 @@ interface PaymentListProps {
 export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
   // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
+  const { getPaymentType } = usePaymentType()
 
   const { appliedFilters } = useFilters(filterConfig)
   const { appliedSearch } = useSearch()
@@ -117,12 +119,12 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
         header: 'Método de Pago',
         cell: ({ row }) => {
           const paymentMethod = row.original.payment_methods
+          const paymentType = getPaymentType(paymentMethod?.payment_type)
+
           return paymentMethod ? (
             <div className="flex items-center gap-2">
+              {paymentType?.icon && <paymentType.icon />}
               <span>{paymentMethod.name}</span>
-              <Badge variant="outline" className="text-xs">
-                {paymentMethod.payment_type}
-              </Badge>
             </div>
           ) : (
             '-'

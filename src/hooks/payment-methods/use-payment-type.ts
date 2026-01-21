@@ -59,7 +59,7 @@ export const usePaymentType = () => {
     []
   )
 
-  const getPaymentType = (value: Enums<'payment_type'>) =>
+  const getPaymentType = (value?: Enums<'payment_type'>) =>
     paymentTypes.find((type) => type.value === value)
 
   return { paymentTypes, getPaymentType }
