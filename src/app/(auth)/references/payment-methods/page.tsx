@@ -48,7 +48,7 @@ export default function PaymentMethodsPage() {
   }
 
   return (
-    <CanAccess resource="payment-methods" action="read">
+    <CanAccess resource="payment_methods" action="read">
       <PageBase
         title="Métodos de Pago"
         subtitle="Gestiona los métodos de pago disponibles"

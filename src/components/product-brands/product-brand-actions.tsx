@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { ProductBrandEdit } from './product-brand-edit'
 import { ProductBrandDelete } from './product-brand-delete'
+import CanAccess from '@/components/ui/can-access'
 
 interface ProductBrandActionsProps {
   brand: Tables<'product_brands'>
@@ -32,18 +33,22 @@ export function ProductBrandActions({ brand }: ProductBrandActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowEdit(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
+          <CanAccess resource="product_brands" action="update">
+            <DropdownMenuItem onClick={() => setShowEdit(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => setShowDelete(true)}
-            className="text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess resource="product_brands" action="delete">
+            <DropdownMenuItem
+              onClick={() => setShowDelete(true)}
+              className="text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

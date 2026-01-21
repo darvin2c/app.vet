@@ -24,6 +24,7 @@ import {
 import { PetDelete } from './pet-delete'
 import { PetEdit } from './pet-edit'
 import { AppointmentCreate } from '@/components/appointments/appointment-create'
+import CanAccess from '@/components/ui/can-access'
 
 interface PetActionsProps {
   pet: Tables<'pets'>
@@ -93,12 +94,12 @@ export function PetActions({
         <DropdownMenuContent align="end" className="w-56">
           {/* Acción Ver Perfil - solo para listas */}
           {variant === 'ghost' && (
-            <>
+            <CanAccess resource="pets" action="read">
               <DropdownMenuItem onClick={handleViewProfile}>
                 <Eye className="mr-2 h-4 w-4" />
                 Ver Perfil
               </DropdownMenuItem>
-            </>
+            </CanAccess>
           )}
 
           {/* Editar información básica */}

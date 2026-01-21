@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { AppointmentTypeCreate } from './appointment-type-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function AppointmentTypeCreateButton({
   children,
@@ -15,7 +16,7 @@ export function AppointmentTypeCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="appointment_types" action="create">
       <ResponsiveButton
         variant="default"
         onClick={() => setOpen(true)}
@@ -26,6 +27,6 @@ export function AppointmentTypeCreateButton({
       </ResponsiveButton>
 
       <AppointmentTypeCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

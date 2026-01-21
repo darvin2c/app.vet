@@ -13,6 +13,7 @@ import {
 import { CustomerEdit } from './customer-edit'
 import { CustomerDelete } from './customer-delete'
 import { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 type Customer = Tables<'customers'>
 
@@ -48,43 +49,51 @@ export function CustomerActions({ customer, onView }: CustomerActionsProps) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           {onView && (
-            <>
+            <CanAccess resource="customers" action="read">
               <DropdownMenuItem onClick={() => onView(customer)}>
                 <Eye className="mr-2 h-4 w-4" />
                 Ver detalles
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-            </>
+            </CanAccess>
           )}
 
-          <DropdownMenuItem onClick={() => setShowEdit(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
+          <CanAccess resource="customers" action="update">
+            <DropdownMenuItem onClick={() => setShowEdit(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
 
           {customer.phone && (
-            <DropdownMenuItem onClick={handleCall}>
-              <Phone className="mr-2 h-4 w-4" />
-              Llamar
-            </DropdownMenuItem>
+            <CanAccess resource="customers" action="read">
+              <DropdownMenuItem onClick={handleCall}>
+                <Phone className="mr-2 h-4 w-4" />
+                Llamar
+              </DropdownMenuItem>
+            </CanAccess>
           )}
 
           {customer.email && (
-            <DropdownMenuItem onClick={handleEmail}>
-              <Mail className="mr-2 h-4 w-4" />
-              Enviar email
-            </DropdownMenuItem>
+            <CanAccess resource="customers" action="read">
+              <DropdownMenuItem onClick={handleEmail}>
+                <Mail className="mr-2 h-4 w-4" />
+                Enviar email
+              </DropdownMenuItem>
+            </CanAccess>
           )}
 
           <DropdownMenuSeparator />
 
-          <DropdownMenuItem
-            onClick={() => setShowDelete(true)}
-            className="text-destructive focus:text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess resource="customers" action="delete">
+            <DropdownMenuItem
+              onClick={() => setShowDelete(true)}
+              className="text-destructive focus:text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

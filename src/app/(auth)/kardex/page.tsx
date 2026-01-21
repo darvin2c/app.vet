@@ -9,6 +9,7 @@ import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { ProductSelect } from '@/components/products/product-select'
 import { ProductMovementCreateButton } from '@/components/product-movements/product-movement-create-button'
+import CanAccess from '@/components/ui/can-access'
 
 export default function KardexPage() {
   // Configuración de filtros específicos para Kardex
@@ -36,34 +37,36 @@ export default function KardexPage() {
   }
 
   return (
-    <PageBase
-      title="Kardex"
-      subtitle="Control detallado de movimientos de inventario"
-      search={
-        <SearchInput
-          hasSidebarTriggerLeft
-          placeholder="Buscar por referencia o nota..."
-          size="lg"
-          suffix={
-            <>
-              <Filters
-                filters={filters}
-                triggerProps={{ variant: 'outline' }}
-              />
-              <OrderBy
-                config={orderByConfig}
-                triggerProps={{ variant: 'outline' }}
-              />
-              <ProductMovementCreateButton variant={'outline'} />
-            </>
-          }
+    <CanAccess resource="product_movements" action="read">
+      <PageBase
+        title="Kardex"
+        subtitle="Control detallado de movimientos de inventario"
+        search={
+          <SearchInput
+            hasSidebarTriggerLeft
+            placeholder="Buscar por referencia o nota..."
+            size="lg"
+            suffix={
+              <>
+                <Filters
+                  filters={filters}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <OrderBy
+                  config={orderByConfig}
+                  triggerProps={{ variant: 'outline' }}
+                />
+                <ProductMovementCreateButton variant={'outline'} />
+              </>
+            }
+          />
+        }
+      >
+        <ProductMovementList
+          filterConfig={filters}
+          orderByConfig={orderByConfig}
         />
-      }
-    >
-      <ProductMovementList
-        filterConfig={filters}
-        orderByConfig={orderByConfig}
-      />
-    </PageBase>
+      </PageBase>
+    </CanAccess>
   )
 }

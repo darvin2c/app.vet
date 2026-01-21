@@ -12,6 +12,7 @@ import {
 import { Database } from '@/types/supabase.types'
 import { StaffEdit } from './staff-edit'
 import { StaffDelete } from './staff-delete'
+import CanAccess from '@/components/ui/can-access'
 
 type Staff = Database['public']['Tables']['staff']['Row']
 

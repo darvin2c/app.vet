@@ -12,6 +12,7 @@ import {
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { AppointmentTypeDelete } from './appointment-type-delete'
 import type { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 interface AppointmentTypeActionsProps {
   appointmentType: Tables<'appointment_types'>
@@ -35,17 +36,21 @@ export function AppointmentTypeActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Pencil className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setDeleteOpen(true)}
-            className="text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess resource="appointment_types" action="update">
+            <DropdownMenuItem onClick={() => setEditOpen(true)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="appointment_types" action="delete">
+            <DropdownMenuItem
+              onClick={() => setDeleteOpen(true)}
+              className="text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

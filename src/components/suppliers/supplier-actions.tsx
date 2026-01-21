@@ -13,6 +13,7 @@ import { Tables } from '@/types/supabase.types'
 import { SupplierEdit } from './supplier-edit'
 import { SupplierDelete } from './supplier-delete'
 import Link from 'next/link'
+import CanAccess from '@/components/ui/can-access'
 
 type Supplier = Tables<'suppliers'>
 
@@ -34,26 +35,32 @@ export function SupplierActions({ supplier }: SupplierActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem asChild>
-            <Link
-              href={`/suppliers/${supplier.id}`}
-              className="flex items-center"
+          <CanAccess resource="suppliers" action="read">
+            <DropdownMenuItem asChild>
+              <Link
+                href={`/suppliers/${supplier.id}`}
+                className="flex items-center"
+              >
+                <IdCard className="mr-2 h-4 w-4" />
+                Ver perfil
+              </Link>
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="suppliers" action="update">
+            <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="suppliers" action="delete">
+            <DropdownMenuItem
+              onClick={() => setShowDeleteDialog(true)}
+              className="text-destructive"
             >
-              <IdCard className="mr-2 h-4 w-4" />
-              Ver perfil
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setShowDeleteDialog(true)}
-            className="text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

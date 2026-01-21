@@ -7,12 +7,13 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { PetCreate } from './pet-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function PetCreateButton({ children, ...props }: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="pets" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nueva Mascota"
@@ -23,6 +24,6 @@ export function PetCreateButton({ children, ...props }: ResponsiveButtonProps) {
       </ResponsiveButton>
 
       <PetCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

@@ -28,6 +28,7 @@ import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEdit } from './order-edit'
 import { OrderPaymentSheet } from './order-payment-sheet'
+import CanAccess from '@/components/ui/can-access'
 
 import { downloadPDF, previewDocument } from '@/lib/print-utils'
 interface OrderActionsProps {
@@ -80,23 +81,31 @@ export function OrderActions({ order }: OrderActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowPaymentSheet(true)}>
-            <CreditCard className="mr-2 h-4 w-4" />
-            Pagar
-          </DropdownMenuItem>
+          <CanAccess resource="orders" action="update">
+            <DropdownMenuItem onClick={() => setShowEditSheet(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="orders" action="update">
+            <DropdownMenuItem onClick={() => setShowPaymentSheet(true)}>
+              <CreditCard className="mr-2 h-4 w-4" />
+              Pagar
+            </DropdownMenuItem>
+          </CanAccess>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => previewDocument(order.id)}>
-            <Eye className="mr-2 h-4 w-4" />
-            Ver
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleDirectPrint}>
-            <Printer className="mr-2 h-4 w-4" />
-            Imprimir
-          </DropdownMenuItem>
+          <CanAccess resource="orders" action="read">
+            <DropdownMenuItem onClick={() => previewDocument(order.id)}>
+              <Eye className="mr-2 h-4 w-4" />
+              Ver
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="orders" action="read">
+            <DropdownMenuItem onClick={handleDirectPrint}>
+              <Printer className="mr-2 h-4 w-4" />
+              Imprimir
+            </DropdownMenuItem>
+          </CanAccess>
           <DropdownMenuItem
             onClick={handleDirectDownloadPDF}
             disabled={isDownloading}

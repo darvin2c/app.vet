@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { SupplierCreate } from './supplier-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function SupplierCreateButton({
   children,
@@ -15,7 +16,7 @@ export function SupplierCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="suppliers" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nuevo Proveedor"
@@ -26,6 +27,6 @@ export function SupplierCreateButton({
       </ResponsiveButton>
 
       <SupplierCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

@@ -7,6 +7,7 @@ import {
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { ProductMovementCreate } from './product-movement-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function ProductMovementCreateButton({
   children,
@@ -15,7 +16,7 @@ export function ProductMovementCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="product_movements" action="create">
       <ResponsiveButton
         icon={Plus}
         onClick={() => setOpen(true)}
@@ -25,6 +26,6 @@ export function ProductMovementCreateButton({
         {children || 'Nuevo'}
       </ResponsiveButton>
       <ProductMovementCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

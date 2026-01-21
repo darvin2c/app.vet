@@ -28,7 +28,7 @@ export default function AppointmentTypesPage() {
   }
 
   return (
-    <CanAccess resource="appointment-types" action="read">
+    <CanAccess resource="appointment_types" action="read">
       <PageBase
         title="Tipos de Citas"
         subtitle="Gestiona los tipos de citas disponibles"

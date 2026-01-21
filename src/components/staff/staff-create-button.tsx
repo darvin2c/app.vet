@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { StaffCreate } from './staff-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function StaffCreateButton({
   children,
@@ -15,7 +16,7 @@ export function StaffCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="staff" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nuevo Staff"
@@ -26,6 +27,6 @@ export function StaffCreateButton({
       </ResponsiveButton>
 
       <StaffCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { SpecialtyCreate } from './specialty-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function SpecialtyCreateButton({
   children,
@@ -15,7 +16,7 @@ export function SpecialtyCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="specialties" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nueva Especialidad"
@@ -26,6 +27,6 @@ export function SpecialtyCreateButton({
       </ResponsiveButton>
 
       <SpecialtyCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/responsive-button'
 import { AppointmentCreate } from './appointment-create'
 import { useState } from 'react'
+import CanAccess from '@/components/ui/can-access'
 
 type AppointmentCreateButtonProps = {
   onSuccess?: () => void
@@ -21,7 +22,7 @@ export function AppointmentCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="appointments" action="create">
       <ResponsiveButton
         icon={Plus}
         onClick={() => setOpen(true)}
@@ -38,6 +39,6 @@ export function AppointmentCreateButton({
         onSuccess={onSuccess}
         defaultPetId={petId}
       />
-    </>
+    </CanAccess>
   )
 }

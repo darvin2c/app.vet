@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { PaymentMethodCreate } from './payment-method-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function PaymentMethodCreateButton({
   children,
@@ -15,7 +16,7 @@ export function PaymentMethodCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="payment_methods" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nuevo Método de Pago"
@@ -26,6 +27,6 @@ export function PaymentMethodCreateButton({
       </ResponsiveButton>
 
       <PaymentMethodCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

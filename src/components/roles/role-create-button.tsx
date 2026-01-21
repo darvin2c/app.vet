@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { RoleCreate } from './role-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function RoleCreateButton({
   children,
@@ -15,7 +16,7 @@ export function RoleCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="roles" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nuevo Rol"
@@ -26,6 +27,6 @@ export function RoleCreateButton({
       </ResponsiveButton>
 
       <RoleCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

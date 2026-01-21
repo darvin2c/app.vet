@@ -27,7 +27,7 @@ export default function ProductCategoriesPage() {
   }
 
   return (
-    <CanAccess resource="product-categories" action="read">
+    <CanAccess resource="product_categories" action="read">
       <PageBase
         title="Categorías de Productos"
         subtitle="Gestiona las categorías de productos disponibles"

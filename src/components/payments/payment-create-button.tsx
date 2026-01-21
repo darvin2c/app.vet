@@ -7,6 +7,7 @@ import {
 import { Plus } from 'lucide-react'
 import { useState } from 'react'
 import { PaymentCreate } from './payment-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function PaymentCreateButton({
   children,
@@ -15,7 +16,7 @@ export function PaymentCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="payments" action="create">
       <ResponsiveButton
         icon={Plus}
         onClick={() => setOpen(true)}
@@ -25,6 +26,6 @@ export function PaymentCreateButton({
         {children || 'Nuevo'}
       </ResponsiveButton>
       <PaymentCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

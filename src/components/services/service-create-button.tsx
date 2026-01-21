@@ -7,6 +7,7 @@ import {
 } from '@/components/ui/responsive-button'
 import { useState } from 'react'
 import { ServiceCreate } from './service-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function ServiceCreateButton({
   children,
@@ -15,7 +16,7 @@ export function ServiceCreateButton({
   const [showCreateDialog, setShowCreateDialog] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="services" action="create">
       <ResponsiveButton
         icon={Plus}
         onClick={() => setShowCreateDialog(true)}
@@ -29,6 +30,6 @@ export function ServiceCreateButton({
         open={showCreateDialog}
         onOpenChange={setShowCreateDialog}
       />
-    </>
+    </CanAccess>
   )
 }

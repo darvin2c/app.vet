@@ -15,6 +15,7 @@ import { SpeciesEdit } from './species-edit'
 import { SpeciesDelete } from './species-delete'
 import { BreedCreate } from '../breeds/breed-create'
 import { BreedImport } from '../breeds/breed-import'
+import CanAccess from '@/components/ui/can-access'
 
 interface SpeciesActionsProps {
   species: Tables<'species'>
@@ -36,26 +37,32 @@ export function SpeciesActions({ species }: SpeciesActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => setShowDeleteDialog(true)}
-            className="text-destructive"
-          >
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess resource="species" action="update">
+            <DropdownMenuItem onClick={() => setShowEditDialog(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="species" action="delete">
+            <DropdownMenuItem
+              onClick={() => setShowDeleteDialog(true)}
+              className="text-destructive"
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
-            <Plus className="mr-2 h-4 w-4" />
-            Agregar Raza
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setShowBreedImportDialog(true)}>
-            <Upload className="mr-2 h-4 w-4" />
-            Importar Razas
-          </DropdownMenuItem>
+          <CanAccess resource="species" action="update">
+            <DropdownMenuItem onClick={() => setShowBreedCreateDialog(true)}>
+              <Plus className="mr-2 h-4 w-4" />
+              Agregar Raza
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setShowBreedImportDialog(true)}>
+              <Upload className="mr-2 h-4 w-4" />
+              Importar Razas
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

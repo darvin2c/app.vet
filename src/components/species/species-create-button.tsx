@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { SpeciesCreate } from './species-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function SpeciesCreateButton({
   children,
@@ -15,7 +16,7 @@ export function SpeciesCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="species" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nueva Especie"
@@ -30,6 +31,6 @@ export function SpeciesCreateButton({
         onOpenChange={setOpen}
         onSuccess={() => setOpen(false)}
       />
-    </>
+    </CanAccess>
   )
 }

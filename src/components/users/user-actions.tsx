@@ -13,6 +13,7 @@ import { UserWithRole } from '@/hooks/users/use-user-list'
 import { UserRolesEdit } from './user-roles-edit'
 import { UserDeactivate } from './user-deactivate'
 import { UserActivate } from './user-activate'
+import CanAccess from '@/components/ui/can-access'
 
 interface UserActionsProps {
   user: UserWithRole
@@ -40,24 +41,30 @@ export function UserActions({ user }: UserActionsProps) {
         <DropdownMenuContent align="end">
           {user.is_active ? (
             <>
-              <DropdownMenuItem onClick={() => setShowRolesDialog(true)}>
-                <UserCheck className="mr-2 h-4 w-4" />
-                Asignar rol
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setShowDeactivateDialog(true)}
-                className="text-destructive"
-                variant="destructive"
-              >
-                <UserX className="mr-2 h-4 w-4" />
-                Desactivar usuario
-              </DropdownMenuItem>
+              <CanAccess resource="users" action="update">
+                <DropdownMenuItem onClick={() => setShowRolesDialog(true)}>
+                  <UserCheck className="mr-2 h-4 w-4" />
+                  Asignar rol
+                </DropdownMenuItem>
+              </CanAccess>
+              <CanAccess resource="users" action="update">
+                <DropdownMenuItem
+                  onClick={() => setShowDeactivateDialog(true)}
+                  className="text-destructive"
+                  variant="destructive"
+                >
+                  <UserX className="mr-2 h-4 w-4" />
+                  Desactivar usuario
+                </DropdownMenuItem>
+              </CanAccess>
             </>
           ) : (
-            <DropdownMenuItem onClick={() => setShowActivateDialog(true)}>
-              <UserCheck className="mr-2 h-4 w-4" />
-              Activar usuario
-            </DropdownMenuItem>
+            <CanAccess resource="users" action="update">
+              <DropdownMenuItem onClick={() => setShowActivateDialog(true)}>
+                <UserCheck className="mr-2 h-4 w-4" />
+                Activar usuario
+              </DropdownMenuItem>
+            </CanAccess>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

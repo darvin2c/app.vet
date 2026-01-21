@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { OrderPosCreate } from './order-pos-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function OrderCreateButton({
   children,
@@ -15,7 +16,7 @@ export function OrderCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="orders" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nueva Orden"
@@ -26,6 +27,6 @@ export function OrderCreateButton({
       </ResponsiveButton>
 
       <OrderPosCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

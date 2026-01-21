@@ -27,7 +27,7 @@ export default function ProductBrandsPage() {
   }
 
   return (
-    <CanAccess resource="product-brands" action="read">
+    <CanAccess resource="product_brands" action="read">
       <PageBase
         title="Marcas de Productos"
         subtitle="Gestiona las marcas de productos disponibles"

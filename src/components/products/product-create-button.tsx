@@ -7,6 +7,7 @@ import {
   ResponsiveButtonProps,
 } from '@/components/ui/responsive-button'
 import { ProductCreate } from './product-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function ProductCreateButton({
   children,
@@ -15,7 +16,7 @@ export function ProductCreateButton({
   const [open, setOpen] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="products" action="create">
       <ResponsiveButton
         icon={Plus}
         tooltip="Nuevo Producto"
@@ -25,6 +26,6 @@ export function ProductCreateButton({
         {children || 'Nuevo'}
       </ResponsiveButton>
       <ProductCreate open={open} onOpenChange={setOpen} />
-    </>
+    </CanAccess>
   )
 }

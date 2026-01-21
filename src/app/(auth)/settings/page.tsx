@@ -10,7 +10,7 @@ import CanAccess from '@/components/ui/can-access'
 
 export default function SettingsPage() {
   return (
-    <CanAccess>
+    <CanAccess resource="settings" action="read">
       <PageBase
         title="Configuración"
         subtitle="Gestiona la configuración de tu organización"

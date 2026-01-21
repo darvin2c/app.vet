@@ -8,6 +8,7 @@ import {
 } from '@/components/ui/responsive-button'
 import { CustomerCreate } from './customer-create'
 import { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 export type CustomerCreateButtonProps = {
   onSuccess?: (customer: Tables<'customers'>) => void
@@ -22,7 +23,7 @@ export function CustomerCreateButton({
   const [showCreate, setShowCreate] = useState(false)
 
   return (
-    <>
+    <CanAccess resource="customers" action="create">
       <ResponsiveButton
         icon={Plus}
         onClick={() => setShowCreate(true)}
@@ -36,6 +37,6 @@ export function CustomerCreateButton({
         onOpenChange={setShowCreate}
         onCustomerCreated={onSuccess}
       />
-    </>
+    </CanAccess>
   )
 }

@@ -12,6 +12,7 @@ import {
 import { AppointmentEdit } from './appointment-edit'
 import { AppointmentDelete } from './appointment-delete'
 import type { Tables } from '@/types/supabase.types'
+import CanAccess from '@/components/ui/can-access'
 
 type Appointment = Tables<'appointments'> & {
   pets:
@@ -47,14 +48,18 @@ export function AppointmentActions({
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => setEditOpen(true)}>
-            <Edit className="mr-2 h-4 w-4" />
-            Editar
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
-            <Trash2 className="mr-2 h-4 w-4" />
-            Eliminar
-          </DropdownMenuItem>
+          <CanAccess resource="appointments" action="update">
+            <DropdownMenuItem onClick={() => setEditOpen(true)}>
+              <Edit className="mr-2 h-4 w-4" />
+              Editar
+            </DropdownMenuItem>
+          </CanAccess>
+          <CanAccess resource="appointments" action="delete">
+            <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+              <Trash2 className="mr-2 h-4 w-4" />
+              Eliminar
+            </DropdownMenuItem>
+          </CanAccess>
         </DropdownMenuContent>
       </DropdownMenu>
 

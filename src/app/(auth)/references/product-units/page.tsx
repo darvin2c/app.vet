@@ -27,7 +27,7 @@ export default function ProductUnitsPage() {
   }
 
   return (
-    <CanAccess resource="product-units" action="read">
+    <CanAccess resource="product_units" action="read">
       <PageBase
         title="Unidades de Productos"
         subtitle="Gestiona las unidades de medida para productos"

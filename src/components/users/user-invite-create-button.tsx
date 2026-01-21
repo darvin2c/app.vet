@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/responsive-button'
 import { useState } from 'react'
 import { UserInviteCreate } from './user-invite-create'
+import CanAccess from '@/components/ui/can-access'
 
 export function UserInviteCreateButton({
   children,
@@ -13,7 +14,7 @@ export function UserInviteCreateButton({
 }: ResponsiveButtonProps) {
   const [open, setOpen] = useState(false)
   return (
-    <>
+    <CanAccess resource="users" action="create">
       <ResponsiveButton
         onClick={() => setOpen(true)}
         variant="ghost"
@@ -22,6 +23,6 @@ export function UserInviteCreateButton({
         {children || 'Invitar Usuarios'}
       </ResponsiveButton>
       {open && <UserInviteCreate open={open} onOpenChange={setOpen} />}
-    </>
+    </CanAccess>
   )
 }
