@@ -250,7 +250,59 @@ function getMinutesArray(): number[] {
   return Array.from({ length: 60 }, (_, i) => i) // 0-59
 }
 
-// Parsear tiempo desde string
+// Parsear tiempo desde string (flexible para 12h y 24h)
+function parseFlexibleTimeString(timeString: string): {
+  hours: number
+  minutes: number
+} | null {
+  if (!timeString) return null
+  const clean = timeString.trim().toUpperCase()
+
+  // 24h format: HH:MM
+  const match24 = clean.match(/^(\d{1,2}):(\d{2})$/)
+  if (match24) {
+    const h = parseInt(match24[1], 10)
+    const m = parseInt(match24[2], 10)
+    if (h >= 0 && h <= 23 && m >= 0 && m <= 59) return { hours: h, minutes: m }
+  }
+
+  // 12h format: HH:MM AM/PM
+  const match12 = clean.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/)
+  if (match12) {
+    let h = parseInt(match12[1], 10)
+    const m = parseInt(match12[2], 10)
+    const period = match12[3]
+    if (h >= 1 && h <= 12 && m >= 0 && m <= 59) {
+      if (period === 'PM' && h < 12) h += 12
+      if (period === 'AM' && h === 12) h = 0
+      return { hours: h, minutes: m }
+    }
+  }
+
+  return null
+}
+
+// Convertir y formatear tiempo según el formato deseado
+function convertAndFormatTime(
+  hours: number,
+  minutes: number,
+  format: TimeFormat
+): string {
+  if (format === '24h') {
+    return `${hours.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')}`
+  } else {
+    const period = hours >= 12 ? 'PM' : 'AM'
+    let h = hours % 12
+    if (h === 0) h = 12
+    return `${h.toString().padStart(2, '0')}:${minutes
+      .toString()
+      .padStart(2, '0')} ${period}`
+  }
+}
+
+// Parsear tiempo desde string (Legacy/Strict wrapper)
 function parseTimeString(
   timeString: string,
   format: TimeFormat
@@ -259,31 +311,27 @@ function parseTimeString(
   minutes: number | null
   period: 'AM' | 'PM' | null
 } {
-  if (!timeString) {
-    return { hours: null, minutes: null, period: null }
-  }
+  const parsed = parseFlexibleTimeString(timeString)
+  if (!parsed) return { hours: null, minutes: null, period: null }
 
-  if (format === '24h') {
-    const match = timeString.match(/^(\d{1,2}):(\d{2})$/)
-    if (match) {
-      return {
-        hours: parseInt(match[1], 10),
-        minutes: parseInt(match[2], 10),
-        period: null,
-      }
-    }
-  } else {
-    const match = timeString.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i)
-    if (match) {
-      return {
-        hours: parseInt(match[1], 10),
-        minutes: parseInt(match[2], 10),
-        period: match[3].toUpperCase() as 'AM' | 'PM',
-      }
+  // Si el formato solicitado es 12h, devolvemos hours/minutes en formato 12h con period
+  if (format === '12h') {
+    const period = parsed.hours >= 12 ? 'PM' : 'AM'
+    let h = parsed.hours % 12
+    if (h === 0) h = 12
+    return {
+      hours: h,
+      minutes: parsed.minutes,
+      period,
     }
   }
 
-  return { hours: null, minutes: null, period: null }
+  // Si es 24h, devolvemos tal cual
+  return {
+    hours: parsed.hours,
+    minutes: parsed.minutes,
+    period: null,
+  }
 }
 
 // Formatear tiempo a string
@@ -627,12 +675,21 @@ export function TimePicker({
   const [tempValue, setTempValue] = useState(value)
   const isMobile = useIsMobile()
 
+  // Calcular valor a mostrar (convertir si es necesario)
+  const displayValue = React.useMemo(() => {
+    const parsed = parseFlexibleTimeString(value)
+    if (parsed) {
+      return convertAndFormatTime(parsed.hours, parsed.minutes, format)
+    }
+    return value
+  }, [value, format])
+
   // Sincronizar tempValue cuando se abre el picker
   React.useEffect(() => {
     if (open) {
-      setTempValue(value)
+      setTempValue(displayValue)
     }
-  }, [open, value])
+  }, [open, displayValue])
 
   // Determinar si hay error
   const hasError = error || !!inputError || !!errorMessage
@@ -667,7 +724,6 @@ export function TimePicker({
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const inputValue = e.target.value
-      const currentCursorPosition = e.target.selectionStart || 0
 
       // Aplicar máscara inteligente con validación
       const {
@@ -678,7 +734,7 @@ export function TimePicker({
       } = applyTimeMask(inputValue, format)
 
       // Solo actualizar si es válido o si estamos borrando
-      if (isValid || maskedValue.length < (value?.length || 0)) {
+      if (isValid || maskedValue.length < (displayValue?.length || 0)) {
         onChange?.(maskedValue)
 
         // Posicionar cursor después del próximo render
@@ -697,13 +753,13 @@ export function TimePicker({
         }
       }
     },
-    [onChange, format, value]
+    [onChange, format, displayValue]
   )
 
   // Handler para teclas especiales (A/P para AM/PM, Backspace inteligente)
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>) => {
-      const currentValue = value || ''
+      const currentValue = displayValue || ''
       const cursorPosition = e.currentTarget.selectionStart || 0
 
       // Manejo de teclas A/P para AM/PM en formato 12h
@@ -787,7 +843,7 @@ export function TimePicker({
         }
       }
     },
-    [value, format, onChange]
+    [displayValue, format, onChange]
   )
 
   // Handler para blur del input
@@ -864,7 +920,7 @@ export function TimePicker({
   const content = (
     <TimePickerContent
       format={format}
-      initialTime={isMobile ? tempValue : value}
+      initialTime={isMobile ? tempValue : displayValue}
       onTimeSelect={handleTimeSelect}
       onClose={isMobile ? undefined : handleClose}
     />
@@ -880,7 +936,7 @@ export function TimePicker({
         ref={inputRef}
         id={id}
         name={name}
-        value={value}
+        value={displayValue}
         placeholder={placeholder}
         disabled={disabled}
         onChange={handleInputChange}
@@ -900,7 +956,7 @@ export function TimePicker({
         className="absolute inset-0 flex items-center px-3 pointer-events-none font-mono text-sm z-0"
         aria-hidden="true"
       >
-        {!value || value.trim() === '' ? (
+        {!displayValue || displayValue.trim() === '' ? (
           // Mostrar máscara completa cuando no hay valor o está vacío
           <span className="text-muted-foreground/30">{maskFormat}</span>
         ) : (
@@ -908,22 +964,28 @@ export function TimePicker({
           <div className="flex">
             {/* Crear máscara que se ajuste al valor actual */}
             {(() => {
-              const cleanValue = value.replace(/[^\d\sAPMapm]/g, '')
+              const cleanValue = displayValue.replace(/[^\d\sAPMapm]/g, '')
               const expectedMask = getTimeMask(format)
 
               // Para formato 12h, detectar si ya hay AM/PM en el valor
               if (format === '12h') {
-                const hasAmPm = /\s*(AM|PM)$/i.test(value)
+                const hasAmPm = /\s*(AM|PM)$/i.test(displayValue)
 
                 if (hasAmPm) {
                   // Si ya tiene AM/PM, no mostrar máscara adicional
-                  return <span className="invisible select-none">{value}</span>
+                  return (
+                    <span className="invisible select-none">
+                      {displayValue}
+                    </span>
+                  )
                 } else {
                   // Si no tiene AM/PM, mostrar la parte restante de la máscara
-                  const remainingMask = expectedMask.slice(value.length)
+                  const remainingMask = expectedMask.slice(displayValue.length)
                   return (
                     <>
-                      <span className="invisible select-none">{value}</span>
+                      <span className="invisible select-none">
+                        {displayValue}
+                      </span>
                       {remainingMask && (
                         <span className="text-muted-foreground/30">
                           {remainingMask}
@@ -938,9 +1000,11 @@ export function TimePicker({
               if (cleanValue.length <= 1) {
                 return (
                   <>
-                    <span className="invisible select-none">{value}</span>
+                    <span className="invisible select-none">
+                      {displayValue}
+                    </span>
                     <span className="text-muted-foreground/30">
-                      {expectedMask.slice(value.length)}
+                      {expectedMask.slice(displayValue.length)}
                     </span>
                   </>
                 )
@@ -949,10 +1013,10 @@ export function TimePicker({
               // Para valores más largos en formato 24h
               return (
                 <>
-                  <span className="invisible select-none">{value}</span>
-                  {value.length < expectedMask.length && (
+                  <span className="invisible select-none">{displayValue}</span>
+                  {displayValue.length < expectedMask.length && (
                     <span className="text-muted-foreground/30">
-                      {expectedMask.slice(value.length)}
+                      {expectedMask.slice(displayValue.length)}
                     </span>
                   )}
                 </>
