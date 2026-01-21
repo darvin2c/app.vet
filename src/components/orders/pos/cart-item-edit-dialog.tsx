@@ -35,7 +35,7 @@ import {
   calculateCartItemTotal,
 } from '@/schemas/cart-item-edit.schema'
 import { TablesInsert, Tables } from '@/types/supabase.types'
-import { CurrencyInput } from '@/components/ui/current-input'
+import { CurrencyInput } from '@/components/ui/currency-input'
 import CanAccess from '@/components/ui/can-access'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {

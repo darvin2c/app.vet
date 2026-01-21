@@ -52,7 +52,7 @@ import {
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { DateDisplay } from '../ui/date-picker'
-import { CurrencyDisplay } from '../ui/current-input'
+import { CurrencyDisplay } from '../ui/currency-input'
 import useOrderStatus from '@/hooks/orders/use-order-status'
 import { Pagination, usePagination } from '../ui/pagination'
 import { Alert, AlertDescription } from '../ui/alert'

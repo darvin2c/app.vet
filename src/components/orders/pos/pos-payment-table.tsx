@@ -19,7 +19,7 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from '../../ui/empty'
-import { CurrencyDisplay } from '@/components/ui/current-input'
+import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { Enums } from '@/types/supabase.types'
 import { RemoveIcon } from '@/components/icons'

@@ -19,7 +19,7 @@ import useProductList from '@/hooks/products/use-products-list'
 import { usePOSStore } from '@/hooks/pos/use-pos-store'
 import { Tables } from '@/types/supabase.types'
 import { usePagination } from '@/components/ui/pagination'
-import { CurrencyDisplay } from '@/components/ui/current-input'
+import { CurrencyDisplay } from '@/components/ui/currency-input'
 
 type Product = Tables<'products'>
 

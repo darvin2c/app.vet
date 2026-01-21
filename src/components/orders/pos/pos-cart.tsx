@@ -20,7 +20,7 @@ import { ButtonGroup } from '@/components/ui/button-group'
 import { Separator } from '@/components/ui/separator'
 import { CartItemEditDialog } from '@/components/orders/pos/cart-item-edit-dialog'
 import { cn } from '@/lib/utils'
-import { CurrencyDisplay } from '@/components/ui/current-input'
+import { CurrencyDisplay } from '@/components/ui/currency-input'
 import { ProductIcon, RemoveIcon, ServiceIcon } from '@/components/icons'
 import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 

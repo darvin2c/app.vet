@@ -28,6 +28,7 @@ import {
 import { ProductSelect } from '@/components/products/product-select'
 import useProduct from '@/hooks/products/use-product'
 import { Tables } from '@/types/supabase.types'
+import { CurrencyInput } from '@/components/ui/currency-input'
 
 type ProductMovement = Tables<'product_movements'>
 
@@ -194,18 +195,13 @@ export function ProductMovementForm({
             <FieldLabel htmlFor="unit_cost">Costo Unitario</FieldLabel>
             <FieldContent>
               {product && mode === 'create' ? (
-                <InputGroup>
-                  <InputGroupInput
-                    id="unit_cost"
-                    type="number"
-                    step="0.01"
-                    placeholder="0.00"
-                    disabled={false}
-                    {...register('unit_cost', {
-                      setValueAs: (value) =>
-                        value === '' || value === null ? null : Number(value),
-                    })}
-                  />
+                <CurrencyInput
+                  id="unit_cost"
+                  placeholder="0.00"
+                  disabled={false}
+                  value={unitCost}
+                  onChange={(value) => setValue('unit_cost', value)}
+                >
                   <HoverCard>
                     <HoverCardTrigger asChild>
                       <InputGroupText
@@ -249,23 +245,18 @@ export function ProductMovementForm({
                       </div>
                     </HoverCardContent>
                   </HoverCard>
-                </InputGroup>
+                </CurrencyInput>
               ) : (
-                <Input
+                <CurrencyInput
                   id="unit_cost"
-                  type="number"
-                  step="0.01"
                   placeholder="0.00"
                   disabled={mode === 'update'}
                   value={
                     mode === 'update' && productMovement
-                      ? (productMovement.unit_cost ?? '')
-                      : undefined
+                      ? productMovement.unit_cost
+                      : unitCost
                   }
-                  {...register('unit_cost', {
-                    setValueAs: (value) =>
-                      value === '' || value === null ? null : Number(value),
-                  })}
+                  onChange={(value) => setValue('unit_cost', value)}
                 />
               )}
 

@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Tables } from '@/types/supabase.types'
 import { calculateOrderItemTotal } from '@/schemas/order-items.schema'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
-import { CurrencyDisplay } from '../ui/current-input'
+import { CurrencyDisplay } from '../ui/currency-input'
 
 type OrderItem = Tables<'order_items'> & {
   products: Tables<'products'> | null
