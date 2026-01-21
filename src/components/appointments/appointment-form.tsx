@@ -17,7 +17,7 @@ import { AppointmentStatusGrid } from '@/components/appointments/appointment-sta
 import type { CreateAppointmentSchema } from '@/schemas/appointments.schema'
 import DatePicker from '../ui/date-picker'
 import { InputGroup, InputGroupAddon, InputGroupInput } from '../ui/input-group'
-import { addMinutes } from 'date-fns'
+import { addMinutes, differenceInMinutes } from 'date-fns'
 
 interface AppointmentFormProps {
   disablePetSelection?: boolean
@@ -33,6 +33,14 @@ export function AppointmentForm({
     watch,
     setValue,
   } = useFormContext<CreateAppointmentSchema>()
+
+  const scheduledStart = watch('scheduled_start')
+  const scheduledEnd = watch('scheduled_end')
+
+  const durationValue =
+    scheduledStart && scheduledEnd
+      ? differenceInMinutes(new Date(scheduledEnd), new Date(scheduledStart))
+      : ''
 
   return (
     <div className="space-y-6">
@@ -83,20 +91,14 @@ export function AppointmentForm({
           <FieldContent>
             <div className="flex  gap-2">
               <DatePicker
-                value={watch('scheduled_start')}
+                value={scheduledStart}
                 hasTime
                 onChange={(value) => {
                   if (value) {
-                    console.log('value', value)
                     setValue('scheduled_start', value.toISOString())
-                    const duration = parseInt(
-                      (
-                        document.getElementById(
-                          'scheduled_duration'
-                        ) as HTMLInputElement
-                      )?.value || '60'
-                    )
-                    const endDate = addMinutes(value, duration)
+                    const currentDuration =
+                      typeof durationValue === 'number' ? durationValue : 60
+                    const endDate = addMinutes(value, currentDuration)
                     setValue('scheduled_end', endDate.toISOString())
                   }
                 }}
@@ -106,12 +108,13 @@ export function AppointmentForm({
                   id="scheduled_duration"
                   list="duration"
                   placeholder="duración"
-                  defaultValue="60"
+                  type="number"
+                  min="0"
+                  value={durationValue}
                   onChange={(e) => {
                     const duration = parseInt(e.target.value) || 0
-                    const startDate = watch('scheduled_start')
-                    if (startDate && duration > 0) {
-                      const start = new Date(startDate)
+                    if (scheduledStart && duration > 0) {
+                      const start = new Date(scheduledStart)
                       const end = addMinutes(start, duration)
                       setValue('scheduled_end', end.toISOString())
                     }
