@@ -1,6 +1,7 @@
 'use client'
 
 import { useCallback, useState } from 'react'
+import Link from 'next/link'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import {
@@ -125,30 +126,6 @@ export function ProductMovementList({
       },
     },
     {
-      id: 'type',
-      header: 'Tipo',
-      cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
-        const quantity = row.original.quantity
-
-        let variant: 'default' | 'secondary' | 'destructive' | 'outline' =
-          'default'
-        let displayType = 'MOVIMIENTO'
-
-        if (quantity > 0) {
-          variant = 'default' // Verde para entradas
-          displayType = 'ENTRADA'
-        } else if (quantity < 0) {
-          variant = 'destructive' // Rojo para salidas
-          displayType = 'SALIDA'
-        } else {
-          variant = 'secondary' // Gris para ajustes
-          displayType = 'AJUSTE'
-        }
-
-        return <Badge variant={variant}>{displayType}</Badge>
-      },
-    },
-    {
       accessorKey: 'quantity',
       header: ({ header }) => (
         <OrderByTableHeader field="quantity" orderByHook={orderByHook}>
@@ -191,6 +168,22 @@ export function ProductMovementList({
             ? movement.unit_cost * movement.quantity
             : null
         return totalCost ? `$${totalCost.toFixed(2)}` : '-'
+      },
+    },
+    {
+      id: 'order',
+      header: 'Orden',
+      cell: ({ row }: { row: Row<ProductMovementWithProduct> }) => {
+        const order = row.original.order_items?.orders
+        if (!order) return '-'
+        return (
+          <Link
+            href={`/orders/${order.id}`}
+            className="text-primary hover:underline font-medium"
+          >
+            #{order.order_number || 'S/N'}
+          </Link>
+        )
       },
     },
     {
@@ -317,6 +310,17 @@ export function ProductMovementList({
                   {movement.unit_cost.toFixed(2)}
                 </div>
               )}
+              {movement.order_items?.orders && (
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Orden:</span>{' '}
+                  <Link
+                    href={`/orders/${movement.order_items.orders.id}`}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    #{movement.order_items.orders.order_number || 'S/N'}
+                  </Link>
+                </div>
+              )}
               {movement.reference && (
                 <div className="text-sm">
                   <span className="text-muted-foreground">Referencia:</span>{' '}
@@ -361,6 +365,17 @@ export function ProductMovementList({
                 })}
               </span>
               {movement.note && <span>Nota: {movement.note}</span>}
+              {movement.order_items?.orders && (
+                <span>
+                  Orden:{' '}
+                  <Link
+                    href={`/orders/${movement.order_items.orders.id}`}
+                    className="text-primary hover:underline font-medium"
+                  >
+                    #{movement.order_items.orders.order_number || 'S/N'}
+                  </Link>
+                </span>
+              )}
               {movement.reference && (
                 <span>Referencia: {movement.reference}</span>
               )}

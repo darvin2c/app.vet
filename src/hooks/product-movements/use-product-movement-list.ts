@@ -8,6 +8,13 @@ import { AppliedSort } from '@/components/ui/order-by'
 type ProductMovement = Database['public']['Tables']['product_movements']['Row']
 
 export type ProductMovementWithProduct = ProductMovement & {
+  order_items?: {
+    id: string
+    orders?: {
+      id: string
+      order_number: string | null
+    } | null
+  } | null
   products?: {
     id: string
     name: string
@@ -54,6 +61,13 @@ export default function useProductMovementList({
         .select(
           `
           *,
+          order_items (
+            id,
+            orders (
+              id,
+              order_number
+            )
+          ),
           products (
             id,
             name,
