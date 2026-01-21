@@ -13,7 +13,6 @@ type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
 type Payment = Omit<TablesInsert<'payments'>, 'tenant_id' | 'order_id'> & {
   payment_method?: Tables<'payment_methods'>
 }
-type orderStatus = Enums<'order_status'>
 type Product = Tables<'products'>
 
 type OrderQueryType = Tables<'orders'> & {
@@ -115,18 +114,10 @@ const usePOSStore = create<POSState>()((set, get) => {
       balance: 0,
     }
 
-    const paymentStatus: orderStatus =
-      balance === 0
-        ? 'paid'
-        : balance > 0 && paid_amount > 0
-          ? 'partial_payment'
-          : 'confirmed'
-
     set({
       orderItems: updatedOrderItems,
       order: {
         ...currentOrder,
-        status: paymentStatus,
         total,
         paid_amount,
         balance,
@@ -264,7 +255,6 @@ const usePOSStore = create<POSState>()((set, get) => {
             total: 0,
             paid_amount: 0,
             balance: 0,
-            status: 'confirmed' as orderStatus,
           }
 
       // Remove fields that should not be sent to server
