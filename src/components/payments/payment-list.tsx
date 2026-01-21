@@ -75,8 +75,8 @@ export function PaymentList({ filterConfig, orderByConfig }: PaymentListProps) {
     isPending,
     error,
   } = usePaymentList({
-    filters: [],
-    search: '',
+    filters: appliedFilters,
+    search: appliedSearch,
     orders: [
       {
         field: 'payment_date',

@@ -24,7 +24,6 @@ export type PaymentWithRelations = Payment & {
     id: string
     order_number: string | null
     total: number | null
-    status: Enums<'order_status'>
   } | null
 }
 
@@ -71,8 +70,7 @@ export default function usePaymentList({
           orders (
             id,
             order_number,
-            total,
-            status
+            total
           )
         `
         )
