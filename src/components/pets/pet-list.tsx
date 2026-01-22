@@ -155,9 +155,9 @@ export function PetList({
       cell: ({ row }: { row: Row<PetRow> }) => {
         const sex = row.getValue('sex') as string
         return (
-          <Badge variant={sex === 'M' ? 'default' : 'secondary'}>
+          <span className="text-sm text-muted-foreground">
             {sex === 'M' ? 'Macho' : 'Hembra'}
-          </Badge>
+          </span>
         )
       },
     },
