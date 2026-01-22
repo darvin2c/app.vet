@@ -2,17 +2,8 @@
 import { Tables, TablesUpdate } from '@/types/supabase.types'
 import { useEffect, useState } from 'react'
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
-import {
-  Stethoscope,
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  Activity,
-  Syringe,
-  Package,
-} from 'lucide-react'
+import { Stethoscope, FileText, Activity, Syringe, Package } from 'lucide-react'
 import { format } from 'date-fns'
-import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { MedicalRecordActions } from '../medical-record-actions'
 import { es } from 'date-fns/locale'
@@ -22,11 +13,6 @@ import VaccinationItem from './vaccination-item'
 import RecordItemItem, {
   MedicalRecordItemWithProduct,
 } from './record-item-item'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
 
 type ClinicalRecord = Tables<'clinical_records'> & {
   clinical_parameters?: TablesUpdate<'clinical_parameters'>[]
@@ -48,7 +34,6 @@ export default function ClinicalRecordItem({
 }: {
   clinicalRecord: ClinicalRecord
 }) {
-  const [isExpanded, setIsExpanded] = useState(false)
   const [clinicalEntries, setClinicalEntries] = useState<CombinedRecord[]>([])
   const [billingItems, setBillingItems] = useState<CombinedRecord[]>([])
 
@@ -59,10 +44,10 @@ export default function ClinicalRecordItem({
     vaccinations: boolean
     items: boolean
   }>({
-    parameters: true,
-    notes: true,
-    vaccinations: true,
-    items: true,
+    parameters: false,
+    notes: false,
+    vaccinations: false,
+    items: false,
   })
 
   const toggleFilter = (
@@ -72,9 +57,6 @@ export default function ClinicalRecordItem({
       ...prev,
       [key]: !prev[key],
     }))
-    if (!isExpanded) {
-      setIsExpanded(true)
-    }
   }
 
   useEffect(() => {
@@ -138,24 +120,10 @@ export default function ClinicalRecordItem({
   ])
 
   return (
-    <Collapsible open={isExpanded}>
+    <>
       <Item variant="default" className="mb-2">
         <ItemContent>
           <ItemTitle className="flex items-center gap-2">
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="h-6 w-6 p-0"
-              >
-                {isExpanded ? (
-                  <ChevronDown className="h-4 w-4" />
-                ) : (
-                  <ChevronRight className="h-4 w-4" />
-                )}
-              </Button>
-            </CollapsibleTrigger>
             <Stethoscope className="h-4 w-4" />
             <span className="font-medium">
               {clinicalRecord.pets?.name || 'Mascota'} -{' '}
@@ -259,7 +227,7 @@ export default function ClinicalRecordItem({
         </ItemActions>
       </Item>
 
-      <CollapsibleContent className="ml-10 space-y-6 pt-2">
+      <div className="ml-10 space-y-6 pt-2">
         {/* Clinical Section */}
         {clinicalEntries.length > 0 && (
           <div className="space-y-3 border-l-2 border-blue-200 pl-4">
@@ -312,7 +280,7 @@ export default function ClinicalRecordItem({
             </div>
           </div>
         )}
-      </CollapsibleContent>
-    </Collapsible>
+      </div>
+    </>
   )
 }
