@@ -2,7 +2,7 @@ import { ProductCategorySelect } from '@/components/product-categories/product-c
 import { ProductUnitSelect } from '@/components/product-units/product-unit-select'
 import { ServiceImportButton } from '@/components/services/service-import-button'
 import { ServiceCreateButton } from '@/components/services/service-create-button'
-import { ServicesList } from '@/components/services/services-list'
+import { ServiceList } from '@/components/services/service-list'
 import { SearchInput } from '@/components/ui/search-input'
 import { OrderByConfig } from '@/components/ui/order-by'
 import { FilterConfig } from '@/components/ui/filters'
@@ -82,7 +82,7 @@ export default function ServicesPage() {
         />
       }
     >
-      <ServicesList filterConfig={filters} orderByConfig={orderByConfig} />
+      <ServiceList filterConfig={filters} orderByConfig={orderByConfig} />
     </PageBase>
   )
 }

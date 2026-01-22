@@ -61,7 +61,7 @@ import { Pagination, usePagination } from '../ui/pagination'
 
 type Service = Product
 
-export function ServicesList({
+export function ServiceList({
   filterConfig,
   orderByConfig,
 }: {
@@ -94,7 +94,7 @@ export function ServicesList({
   const columns: ColumnDef<Service>[] = [
     {
       accessorKey: 'name',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="name" orderByHook={orderByHook}>
           Servicio
         </OrderByTableHeader>
@@ -115,7 +115,7 @@ export function ServicesList({
     },
     {
       accessorKey: 'barcode',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="barcode" orderByHook={orderByHook}>
           Código
         </OrderByTableHeader>
@@ -128,7 +128,7 @@ export function ServicesList({
     },
     {
       accessorKey: 'category',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="category_id" orderByHook={orderByHook}>
           Categoría
         </OrderByTableHeader>
@@ -141,7 +141,7 @@ export function ServicesList({
     },
     {
       accessorKey: 'unit_id',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="unit_id" orderByHook={orderByHook}>
           Unidad
         </OrderByTableHeader>
@@ -154,7 +154,7 @@ export function ServicesList({
     },
     {
       accessorKey: 'price',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="price" orderByHook={orderByHook}>
           Precio
         </OrderByTableHeader>
@@ -171,7 +171,7 @@ export function ServicesList({
     },
     {
       accessorKey: 'is_active',
-      header: ({ header }) => (
+      header: ({ header: _header }) => (
         <OrderByTableHeader field="is_active" orderByHook={orderByHook}>
           Estado
         </OrderByTableHeader>
