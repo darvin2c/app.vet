@@ -114,14 +114,6 @@ export function PetActions({
             </span>
           </DropdownMenuItem>
 
-          {/* Acciones adicionales para el header */}
-          <DropdownMenuItem onClick={handleAddPhoto}>
-            <Camera className="mr-2 h-4 w-4" />
-            <span>Agregar foto</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuSeparator />
-
           <DropdownMenuItem onClick={handleViewHistory}>
             <FileText className="mr-2 h-4 w-4" />
             <span>Ver historial médico completo</span>
@@ -139,9 +131,7 @@ export function PetActions({
           {/* Eliminar */}
           <DropdownMenuItem onClick={handleDelete} className="text-destructive">
             <Trash2 className="mr-2 h-4 w-4" />
-            <span>
-              {variant === 'outline' ? 'Eliminar mascota' : 'Eliminar'}
-            </span>
+            <span>Eliminar</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
