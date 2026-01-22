@@ -1,28 +1,25 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { MoreHorizontal, Edit, Trash2 } from 'lucide-react'
+import { Tables } from '@/types/supabase.types'
 import { MedicalRecordItemEdit } from './medical-record-item-edit'
 import { MedicalRecordItemDelete } from './medical-record-item-delete'
-import type { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordItemActionsProps {
   medicalRecordItem: Tables<'record_items'>
-  onEdit?: (medicalRecordItem: Tables<'record_items'>) => void
-  onDelete?: (medicalRecordItem: Tables<'record_items'>) => void
 }
 
 export function MedicalRecordItemActions({
   medicalRecordItem,
-  onEdit,
-  onDelete,
 }: MedicalRecordItemActionsProps) {
   const [editOpen, setEditOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
@@ -31,7 +28,7 @@ export function MedicalRecordItemActions({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
+          <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
             <span className="sr-only">Abrir menú</span>
             <MoreHorizontal className="h-4 w-4" />
           </Button>
@@ -41,7 +38,11 @@ export function MedicalRecordItemActions({
             <Edit className="mr-2 h-4 w-4" />
             Editar
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => setDeleteOpen(true)}>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            variant="destructive"
+            onClick={() => setDeleteOpen(true)}
+          >
             <Trash2 className="mr-2 h-4 w-4" />
             Eliminar
           </DropdownMenuItem>

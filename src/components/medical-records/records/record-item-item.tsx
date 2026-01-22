@@ -1,11 +1,12 @@
 'use client'
 
-import { Item, ItemContent, ItemTitle } from '@/components/ui/item'
+import { Item, ItemContent, ItemTitle, ItemActions } from '@/components/ui/item'
 import { Tables } from '@/types/supabase.types'
 import { Package } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { MedicalRecordItemActions } from '@/components/medical-record-items/medical-record-item-actions'
 
 export type MedicalRecordItemWithProduct = Tables<'record_items'> & {
   products: Tables<'products'> | null
@@ -66,6 +67,9 @@ export default function RecordItemItem({
           </div>
         )}
       </ItemContent>
+      <ItemActions>
+        <MedicalRecordItemActions medicalRecordItem={recordItem} />
+      </ItemActions>
     </Item>
   )
 }

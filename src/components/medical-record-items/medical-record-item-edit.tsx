@@ -40,6 +40,7 @@ export function MedicalRecordItemEdit({
       product_id: medicalRecordItem.product_id,
       qty: medicalRecordItem.qty,
       unit_price: medicalRecordItem.unit_price,
+      discount: medicalRecordItem.discount || 0,
       notes: medicalRecordItem.notes || '',
     },
   })
@@ -52,6 +53,7 @@ export function MedicalRecordItemEdit({
         product_id: medicalRecordItem.product_id,
         qty: medicalRecordItem.qty,
         unit_price: medicalRecordItem.unit_price,
+        discount: medicalRecordItem.discount || 0,
         notes: medicalRecordItem.notes || '',
       })
     }
@@ -77,6 +79,7 @@ export function MedicalRecordItemEdit({
         product_id: medicalRecordItem.product_id,
         qty: medicalRecordItem.qty,
         unit_price: medicalRecordItem.unit_price,
+        discount: medicalRecordItem.discount || 0,
         notes: medicalRecordItem.notes || '',
       })
     }
