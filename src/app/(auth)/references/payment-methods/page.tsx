@@ -55,6 +55,7 @@ export default function PaymentMethodsPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar métodos de pago..."
             size="lg"
             suffix={

@@ -34,6 +34,7 @@ export default function ProductCategoriesPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar categorías..."
             size="lg"
             suffix={

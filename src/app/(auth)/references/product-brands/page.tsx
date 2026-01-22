@@ -34,6 +34,7 @@ export default function ProductBrandsPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar marcas..."
             size="lg"
             suffix={

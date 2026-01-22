@@ -34,6 +34,7 @@ export default function SpecialtiesPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar especialidades..."
             size="lg"
             suffix={

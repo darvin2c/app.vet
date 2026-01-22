@@ -34,6 +34,7 @@ export default function ProductUnitsPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar unidades..."
             size="lg"
             suffix={

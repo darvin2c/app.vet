@@ -34,6 +34,7 @@ export default function SpeciesPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar especies..."
             size="lg"
             suffix={

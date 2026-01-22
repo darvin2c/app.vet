@@ -35,6 +35,7 @@ export default function AppointmentTypesPage() {
         search={
           <SearchInput
             hasSidebarTriggerLeft
+            hasSidebarTriggerRight
             placeholder="Buscar tipos de citas..."
             size="lg"
             suffix={
