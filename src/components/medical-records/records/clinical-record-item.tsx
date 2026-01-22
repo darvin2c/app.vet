@@ -8,6 +8,7 @@ import {
   ChevronRight,
   FileText,
   Activity,
+  Syringe,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
@@ -16,6 +17,7 @@ import { MedicalRecordActions } from '../medical-record-actions'
 import { es } from 'date-fns/locale'
 import ClinicalParameterItem from './clinical-parameter-item'
 import ClinicalNoteItem from './clinical-note-item'
+import VaccinationItem from './vaccination-item'
 import {
   Collapsible,
   CollapsibleContent,
@@ -25,6 +27,7 @@ import {
 type ClinicalRecord = Tables<'clinical_records'> & {
   clinical_parameters?: TablesUpdate<'clinical_parameters'>[]
   clinical_notes?: TablesUpdate<'clinical_notes'>[] | null
+  vaccinations?: TablesUpdate<'vaccinations'>[] | null
   pets?: TablesUpdate<'pets'> | null
 }
 
@@ -32,6 +35,7 @@ type ClinicalRecord = Tables<'clinical_records'> & {
 type CombinedRecord =
   | (TablesUpdate<'clinical_parameters'> & { type?: 'clinical_parameters' })
   | (TablesUpdate<'clinical_notes'> & { type?: 'clinical_notes' })
+  | (TablesUpdate<'vaccinations'> & { type?: 'vaccinations' })
 
 export default function ClinicalRecordItem({
   clinicalRecord,
@@ -64,6 +68,15 @@ export default function ClinicalRecordItem({
       combined.push(...notesWithType)
     }
 
+    // Agregar vacunaciones
+    if (clinicalRecord.vaccinations) {
+      const vaccinationsWithType = clinicalRecord.vaccinations.map((vac) => ({
+        ...vac,
+        type: 'vaccinations' as const,
+      }))
+      combined.push(...vaccinationsWithType)
+    }
+
     // Ordenar por fecha de creación ascendente
     combined.sort(
       (a, b) =>
@@ -75,6 +88,7 @@ export default function ClinicalRecordItem({
   }, [
     clinicalRecord.clinical_parameters,
     clinicalRecord.clinical_notes,
+    clinicalRecord.vaccinations,
     // Removido 'records' para evitar bucle infinito
   ])
 
@@ -115,9 +129,7 @@ export default function ClinicalRecordItem({
           <div className="mt-2 space-y-1">
             {clinicalRecord.objective && (
               <div className="text-sm">
-                <span className="font-medium text-foreground">
-                  Objetivo:
-                </span>{' '}
+                <span className="font-medium text-foreground">Objetivo:</span>{' '}
                 {clinicalRecord.objective}
               </div>
             )}
@@ -150,6 +162,13 @@ export default function ClinicalRecordItem({
                     {clinicalRecord?.clinical_notes?.length} notas
                   </span>
                 )}
+              {clinicalRecord?.vaccinations &&
+                clinicalRecord.vaccinations.length > 0 && (
+                  <span className="flex items-center gap-1">
+                    <Syringe className="h-3 w-3" />
+                    {clinicalRecord?.vaccinations?.length} vacunas
+                  </span>
+                )}
             </div>
           </div>
         </ItemContent>
@@ -165,10 +184,12 @@ export default function ClinicalRecordItem({
               <ClinicalParameterItem
                 clinicalParameter={record as Tables<'clinical_parameters'>}
               />
-            ) : (
+            ) : record.type === 'clinical_notes' ? (
               <ClinicalNoteItem
                 clinicalNote={record as Tables<'clinical_notes'>}
               />
+            ) : (
+              <VaccinationItem vaccination={record as Tables<'vaccinations'>} />
             )}
           </div>
         ))}

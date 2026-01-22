@@ -48,6 +48,9 @@ export function useMedicalRecordList({
           ),
           clinical_notes (
             *
+          ),
+          vaccinations (
+            *
           )
         `
         )
