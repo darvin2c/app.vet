@@ -10,18 +10,18 @@ import {
   SidebarProvider,
   SidebarRail,
   SidebarTrigger,
-} from '@/components/ui/sidebar-left'
+} from '@/components/ui/multi-sidebar'
 import { TenantSwitcher } from '../tenants/tenant-switcher'
 import { UserNav } from '../auth/user-nav'
 import { MainNav } from './main-nav'
 import TenantIsInactive from '../settings/tenant-is-inactive'
 export function AppSidebar({ children }: { children: React.ReactNode }) {
   return (
-    <SidebarProvider>
+    <SidebarProvider id="left">
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex flex-row items-center justify-between">
           <TenantSwitcher />
-          <SidebarTrigger className="-ml-1 cursor-ew-resize" />
+          <SidebarTrigger sidebarId="left" className="-ml-1 cursor-ew-resize" />
         </SidebarHeader>
         <SidebarContent>
           <MainNav />

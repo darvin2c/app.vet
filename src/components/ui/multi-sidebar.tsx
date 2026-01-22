@@ -25,14 +25,16 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-const SIDEBAR_COOKIE_NAME = 'sidebar_state-left'
+const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = '16rem'
 const SIDEBAR_WIDTH_MOBILE = '18rem'
 const SIDEBAR_WIDTH_ICON = '3rem'
 const SIDEBAR_KEYBOARD_SHORTCUT = 'b'
+const DEFAULT_SIDEBAR_ID = 'default'
 
 type SidebarContextProps = {
+  id: string
   state: 'expanded' | 'collapsed'
   open: boolean
   setOpen: (open: boolean) => void
@@ -42,29 +44,126 @@ type SidebarContextProps = {
   toggleSidebar: () => void
 }
 
+// Registry to store multiple sidebar contexts
+const MultiSidebarRegistry = new Map<string, SidebarContextProps>()
+
+// Context for the nearest sidebar (used by child components)
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
-function useSidebar() {
+// Event emitter for sidebar updates
+const multiSidebarListeners = new Map<string, Set<() => void>>()
+
+function subscribeMultiSidebar(id: string, callback: () => void) {
+  if (!multiSidebarListeners.has(id)) {
+    multiSidebarListeners.set(id, new Set())
+  }
+  multiSidebarListeners.get(id)!.add(callback)
+  return () => {
+    multiSidebarListeners.get(id)?.delete(callback)
+  }
+}
+
+function notifyMultiSidebarUpdate(id: string) {
+  multiSidebarListeners.get(id)?.forEach((callback) => callback())
+}
+
+// Default placeholder context for when sidebar is not yet registered
+const createPlaceholderContext = (id: string): SidebarContextProps => ({
+  id,
+  state: 'expanded',
+  open: true,
+  setOpen: () => {},
+  openMobile: false,
+  setOpenMobile: () => {},
+  isMobile: false,
+  toggleSidebar: () => {},
+})
+
+/**
+ * Hook to access sidebar state.
+ * @param id - Optional sidebar ID. If not provided, uses the nearest SidebarProvider context.
+ * @returns The sidebar context for the specified or nearest sidebar.
+ * 
+ * @example
+ * // Access nearest sidebar (within a SidebarProvider)
+ * const { open, toggleSidebar } = useSidebar()
+ * 
+ * @example
+ * // Access a specific sidebar by ID (from anywhere)
+ * const { open, toggleSidebar } = useSidebar('left-sidebar')
+ * const { open: rightOpen } = useSidebar('right-sidebar')
+ */
+function useSidebar(id?: string) {
   const context = React.useContext(SidebarContext)
+  const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
+  
+  // If an ID is provided, get from registry
+  const targetId = id ?? context?.id
+  
+  React.useEffect(() => {
+    if (targetId) {
+      return subscribeMultiSidebar(targetId, forceUpdate)
+    }
+  }, [targetId])
+  
+  // If specific ID requested, try registry first
+  if (id) {
+    const registryContext = MultiSidebarRegistry.get(id)
+    if (registryContext) {
+      return registryContext
+    }
+    // Return placeholder while waiting for sidebar to register
+    // The useEffect subscription will trigger a re-render when it's ready
+    return createPlaceholderContext(id)
+  }
+  
+  // Fall back to nearest context
   if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider.')
+    throw new Error('useSidebar must be used within a SidebarProvider or with a valid sidebar id.')
   }
 
   return context
 }
 
+/**
+ * Provider component for sidebar state management.
+ * @param id - Unique identifier for this sidebar. Defaults to 'default'.
+ *             Use different IDs to manage multiple sidebars independently.
+ * @param keyboardShortcut - Keyboard shortcut to toggle (with Ctrl/Cmd). Set to false to disable.
+ * 
+ * @example
+ * // Single sidebar (default)
+ * <SidebarProvider>
+ *   <AppSidebar />
+ *   <main>{children}</main>
+ * </SidebarProvider>
+ * 
+ * @example
+ * // Multiple sidebars
+ * <SidebarProvider id="left-sidebar">
+ *   <LeftSidebar />
+ *   <SidebarProvider id="right-sidebar">
+ *     <main>{children}</main>
+ *     <RightSidebar />
+ *   </SidebarProvider>
+ * </SidebarProvider>
+ */
 function SidebarProvider({
+  id = DEFAULT_SIDEBAR_ID,
   defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
+  keyboardShortcut = SIDEBAR_KEYBOARD_SHORTCUT,
   className,
   style,
   children,
   ...props
 }: React.ComponentProps<'div'> & {
+  id?: string
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  keyboardShortcut?: string | false
 }) {
   const isMobile = useIsMobile()
   const [openMobile, setOpenMobile] = React.useState(false)
@@ -82,10 +181,10 @@ function SidebarProvider({
         _setOpen(openState)
       }
 
-      // This sets the cookie to keep the sidebar state.
-      document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+      // This sets the cookie to keep the sidebar state (with unique key per sidebar).
+      document.cookie = `${SIDEBAR_COOKIE_NAME}_${id}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
-    [setOpenProp, open]
+    [setOpenProp, open, id],
   )
 
   // Helper to toggle the sidebar.
@@ -95,9 +194,11 @@ function SidebarProvider({
 
   // Adds a keyboard shortcut to toggle the sidebar.
   React.useEffect(() => {
+    if (!keyboardShortcut) return
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (
-        event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
+        event.key === keyboardShortcut &&
         (event.metaKey || event.ctrlKey)
       ) {
         event.preventDefault()
@@ -107,7 +208,7 @@ function SidebarProvider({
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [toggleSidebar])
+  }, [toggleSidebar, keyboardShortcut])
 
   // We add a state so that we can do data-state="expanded" or "collapsed".
   // This makes it easier to style the sidebar with Tailwind classes.
@@ -115,6 +216,7 @@ function SidebarProvider({
 
   const contextValue = React.useMemo<SidebarContextProps>(
     () => ({
+      id,
       state,
       open,
       setOpen,
@@ -123,14 +225,24 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
     }),
-    [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+    [id, state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
   )
+
+  // Register/update in global registry and notify listeners
+  React.useEffect(() => {
+    MultiSidebarRegistry.set(id, contextValue)
+    notifyMultiSidebarUpdate(id)
+    return () => {
+      MultiSidebarRegistry.delete(id)
+    }
+  }, [id, contextValue])
 
   return (
     <SidebarContext.Provider value={contextValue}>
       <TooltipProvider delayDuration={0}>
         <div
           data-slot="sidebar-wrapper"
+          data-sidebar-id={id}
           style={
             {
               '--sidebar-width': SIDEBAR_WIDTH,
@@ -140,7 +252,7 @@ function SidebarProvider({
           }
           className={cn(
             'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
-            className
+            className,
           )}
           {...props}
         >
@@ -171,7 +283,7 @@ function Sidebar({
         data-slot="sidebar"
         className={cn(
           'bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
-          className
+          className,
         )}
         {...props}
       >
@@ -223,7 +335,7 @@ function Sidebar({
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
         )}
       />
       <div
@@ -237,7 +349,7 @@ function Sidebar({
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
-          className
+          className,
         )}
         {...props}
       >
@@ -253,12 +365,27 @@ function Sidebar({
   )
 }
 
+/**
+ * Button to toggle a sidebar open/closed.
+ * @param sidebarId - Optional ID of the sidebar to toggle. If not provided, toggles the nearest sidebar.
+ * 
+ * @example
+ * // Toggle nearest sidebar
+ * <SidebarTrigger />
+ * 
+ * @example
+ * // Toggle specific sidebar by ID
+ * <SidebarTrigger sidebarId="right-sidebar" />
+ */
 function SidebarTrigger({
   className,
   onClick,
+  sidebarId,
   ...props
-}: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar()
+}: React.ComponentProps<typeof Button> & {
+  sidebarId?: string
+}) {
+  const { toggleSidebar } = useSidebar(sidebarId)
 
   return (
     <Button
@@ -279,8 +406,18 @@ function SidebarTrigger({
   )
 }
 
-function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
-  const { toggleSidebar } = useSidebar()
+/**
+ * Draggable rail on the sidebar edge for toggling.
+ * @param sidebarId - Optional ID of the sidebar to toggle. If not provided, toggles the nearest sidebar.
+ */
+function SidebarRail({
+  className,
+  sidebarId,
+  ...props
+}: React.ComponentProps<'button'> & {
+  sidebarId?: string
+}) {
+  const { toggleSidebar } = useSidebar(sidebarId)
 
   return (
     <button
@@ -297,7 +434,7 @@ function SidebarRail({ className, ...props }: React.ComponentProps<'button'>) {
         'hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full',
         '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
         '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
-        className
+        className,
       )}
       {...props}
     />
@@ -311,7 +448,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
       className={cn(
         'bg-background relative flex w-full flex-1 flex-col',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
-        className
+        className,
       )}
       {...props}
     />
@@ -375,7 +512,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
       data-sidebar="content"
       className={cn(
         'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
-        className
+        className,
       )}
       {...props}
     />
@@ -407,7 +544,7 @@ function SidebarGroupLabel({
       className={cn(
         'text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
-        className
+        className,
       )}
       {...props}
     />
@@ -430,7 +567,7 @@ function SidebarGroupAction({
         // Increases the hit area of the button on mobile.
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
-        className
+        className,
       )}
       {...props}
     />
@@ -492,7 +629,7 @@ const sidebarMenuButtonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+  },
 )
 
 function SidebarMenuButton({
@@ -570,7 +707,7 @@ function SidebarMenuAction({
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
           'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
-        className
+        className,
       )}
       {...props}
     />
@@ -592,7 +729,7 @@ function SidebarMenuBadge({
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
-        className
+        className,
       )}
       {...props}
     />
@@ -637,7 +774,10 @@ function SidebarMenuSkeleton({
   )
 }
 
-function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
+function SidebarMenuSub({
+  className,
+  ...props
+}: React.ComponentProps<'ul'>) {
   return (
     <ul
       data-slot="sidebar-menu-sub"
@@ -645,7 +785,7 @@ function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
       className={cn(
         'border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5',
         'group-data-[collapsible=icon]:hidden',
-        className
+        className,
       )}
       {...props}
     />
@@ -691,7 +831,7 @@ function SidebarMenuSubButton({
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',
         'group-data-[collapsible=icon]:hidden',
-        className
+        className,
       )}
       {...props}
     />
@@ -720,6 +860,7 @@ export {
   SidebarMenuSubItem,
   SidebarProvider,
   SidebarRail,
+  MultiSidebarRegistry,
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,

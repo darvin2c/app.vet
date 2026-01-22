@@ -15,7 +15,7 @@ import dayjs, { Dayjs } from 'dayjs'
 import { useEffect } from 'react'
 import { ResponsiveButton } from '../ui/responsive-button'
 import { useIsMobile } from '@/hooks/use-mobile'
-import { SidebarTrigger } from '@/components/ui/sidebar-left'
+import { SidebarTrigger } from '@/components/ui/multi-sidebar'
 
 export default function AgendaHeader({
   initialDate,

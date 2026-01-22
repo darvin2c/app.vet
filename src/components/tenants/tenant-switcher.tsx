@@ -18,7 +18,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from '@/components/ui/sidebar-left'
+} from '@/components/ui/multi-sidebar'
 import useTenants from '@/hooks/tenants/use-tenants'
 import { Avatar, AvatarFallback } from '../ui/avatar'
 import { useGoTenant } from '@/hooks/tenants/use-go-tenant'

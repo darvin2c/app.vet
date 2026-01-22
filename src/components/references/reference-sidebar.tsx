@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarProvider,
   SidebarInset,
-} from '@/components/ui/sidebar-right'
+} from '@/components/ui/multi-sidebar'
 import { cn } from '@/lib/utils'
 import { navigationGroups } from './reference-navigation'
 
@@ -28,7 +28,7 @@ export function ReferenceSidebar({
   const pathname = usePathname()
 
   return (
-    <SidebarProvider className="items-start relative">
+    <SidebarProvider id="right" className="items-start relative">
       <Sidebar
         side="right"
         collapsible="icon"

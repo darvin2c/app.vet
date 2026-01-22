@@ -13,8 +13,7 @@ import {
   InputGroupText,
 } from '@/components/ui/input-group'
 import { Kbd } from '@/components/ui/kbd'
-import { SidebarTrigger as SidebarTriggerLeft } from '@/components/ui/sidebar-left'
-import { SidebarTrigger as SidebarTriggerRight } from '@/components/ui/sidebar-right'
+import { SidebarTrigger } from '@/components/ui/multi-sidebar'
 
 import { useIsMobile } from '@/hooks/use-mobile'
 import { useIsFetching } from '@tanstack/react-query'
@@ -93,13 +92,14 @@ const InternalSearchInput = React.forwardRef<
     const isFetching = useIsFetching()
 
     return (
-      <ButtonGroup className="w-full h-full *:h-auto">
+      <div className="flex gap-2">
         {hasSidebarTriggerLeft && isMobile && (
-          <SidebarTriggerLeft
-            variant="outline"
+          <SidebarTrigger
+            sidebarId="left"
             className="cursor-ew-resize h-auto w-10"
           />
         )}
+      <ButtonGroup className="w-full h-full *:h-auto">
         <InputGroup className={cn(sizeClasses[size], containerClassName)}>
           {/* Search icon - left side */}
           <InputGroupAddon align="inline-start">
@@ -155,10 +155,14 @@ const InternalSearchInput = React.forwardRef<
           {/* Search icon - right side */}
         </InputGroup>
         {showSuffix ? suffix : null}
-        {hasSidebarTriggerRight && isMobile && (
-          <SidebarTriggerRight className="cursor-ew-resize h-auto w-10" />
-        )}
       </ButtonGroup>
+        {hasSidebarTriggerRight && isMobile && (
+          <SidebarTrigger
+            sidebarId="right"
+            className="cursor-ew-resize h-auto w-10"
+          />
+        )}
+      </div>
     )
   }
 )
