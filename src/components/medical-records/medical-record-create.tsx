@@ -31,10 +31,10 @@ export function MedicalRecordCreate({
       pet_id: petId,
       record_type: 'consultation',
       record_date: new Date().toISOString().split('T')[0],
-      reason: '',
+      objective: '',
       diagnosis: '',
       vet_id: '',
-      notes: '',
+      plan: '',
     },
   })
 

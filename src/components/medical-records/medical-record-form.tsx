@@ -63,14 +63,14 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="reason">Motivo de la Consulta</FieldLabel>
+        <FieldLabel htmlFor="objective">Objetivo</FieldLabel>
         <FieldContent>
           <RichMinimalEditor
-            value={watch('reason') || ''}
-            onChange={(value) => setValue('reason', value)}
-            placeholder="Motivo de la consulta"
+            value={watch('objective') || ''}
+            onChange={(value) => setValue('objective', value)}
+            placeholder="Objetivo de la consulta"
           />
-          <FieldError errors={[errors.reason]} />
+          <FieldError errors={[errors.objective]} />
         </FieldContent>
       </Field>
 
@@ -87,14 +87,14 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="notes">Notas</FieldLabel>
+        <FieldLabel htmlFor="plan">Plan</FieldLabel>
         <FieldContent>
           <RichMinimalEditor
-            value={watch('notes') || ''}
-            onChange={(value) => setValue('notes', value)}
-            placeholder="Notas adicionales"
+            value={watch('plan') || ''}
+            onChange={(value) => setValue('plan', value)}
+            placeholder="Plan de tratamiento"
           />
-          <FieldError errors={[errors.notes]} />
+          <FieldError errors={[errors.plan]} />
         </FieldContent>
       </Field>
 

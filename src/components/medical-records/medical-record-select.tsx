@@ -77,7 +77,7 @@ export function MedicalRecordSelect({
           <FileText className="w-4 h-4 text-muted-foreground" />
           <div className="flex flex-col">
             <span className="font-medium">
-              {record.reason || 'Registro médico'}
+              {record.objective || 'Registro médico'}
             </span>
             {record.record_date && (
               <span className="text-sm text-muted-foreground">
@@ -96,7 +96,7 @@ export function MedicalRecordSelect({
         <div className="flex items-center gap-2">
           <FileText className="w-4 h-4 text-muted-foreground" />
           <div className="flex items-center gap-1">
-            <span>{record.reason || 'Registro médico'}</span>
+            <span>{record.objective || 'Registro médico'}</span>
             {record.record_date && (
               <span className="text-xs text-muted-foreground">
                 ({new Date(record.record_date).toLocaleDateString()})

@@ -33,10 +33,10 @@ export function MedicalRecordEdit({
       pet_id: medicalRecord.pet_id,
       record_type: medicalRecord.record_type,
       record_date: medicalRecord.record_date?.split('T')[0] || '',
-      reason: medicalRecord.reason || '',
+      objective: medicalRecord.objective || '',
       diagnosis: medicalRecord.diagnosis || '',
       vet_id: medicalRecord.vet_id || '',
-      notes: medicalRecord.notes || '',
+      plan: medicalRecord.plan || '',
     },
   })
 
@@ -46,10 +46,10 @@ export function MedicalRecordEdit({
         pet_id: medicalRecord.pet_id,
         record_type: medicalRecord.record_type,
         record_date: medicalRecord.record_date?.split('T')[0] || '',
-        reason: medicalRecord.reason || '',
+        objective: medicalRecord.objective || '',
         diagnosis: medicalRecord.diagnosis || '',
         vet_id: medicalRecord.vet_id || '',
-        notes: medicalRecord.notes || '',
+        plan: medicalRecord.plan || '',
       })
     }
   }, [medicalRecord, form])

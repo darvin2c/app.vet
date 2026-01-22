@@ -14,11 +14,11 @@ export const MedicalRecordSchema = z.object({
       message: 'El tipo de registro médico es requerido',
     }),
   record_date: z.string().nonempty('La fecha del registro es requerida'),
-  reason: z.string().optional(),
+  objective: z.string().optional(),
   diagnosis: z.string().optional(),
   vet_id: z.string().optional(),
   appointment_id: z.string().optional(),
-  notes: z.string().optional(),
+  plan: z.string().optional(),
 })
 
 export type MedicalRecordFormData = z.infer<typeof MedicalRecordSchema>

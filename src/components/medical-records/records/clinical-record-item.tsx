@@ -113,6 +113,14 @@ export default function ClinicalRecordItem({
             </Badge>
           </ItemTitle>
           <div className="mt-2 space-y-1">
+            {clinicalRecord.objective && (
+              <div className="text-sm">
+                <span className="font-medium text-foreground">
+                  Objetivo:
+                </span>{' '}
+                {clinicalRecord.objective}
+              </div>
+            )}
             {clinicalRecord.diagnosis && (
               <div className="text-sm">
                 <span className="font-medium text-foreground">
@@ -121,10 +129,10 @@ export default function ClinicalRecordItem({
                 {clinicalRecord.diagnosis}
               </div>
             )}
-            {clinicalRecord.notes && (
+            {clinicalRecord.plan && (
               <div className="text-sm">
-                <span className="font-medium text-foreground">Notas:</span>{' '}
-                {clinicalRecord.notes}
+                <span className="font-medium text-foreground">Plan:</span>{' '}
+                {clinicalRecord.plan}
               </div>
             )}
             <div className="flex items-center gap-2 text-xs text-muted-foreground">

@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowLeft, Calendar, Menu, User, Phone } from 'lucide-react'
+import { ArrowLeft, Calendar, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
@@ -9,13 +9,7 @@ import { Tables } from '@/types/supabase.types'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { PetActions } from './pet-actions'
 import { DateDisplay } from '@/components/ui/date-picker'
-import {
-  calculateAge,
-  formatSex,
-  formatDate,
-  formatWeight,
-  getCustomerFullName,
-} from '@/lib/pet-utils'
+import { calculateAge, formatSex, formatWeight } from '@/lib/pet-utils'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
