@@ -50,6 +50,12 @@ export function MedicalRecordActions({
             Nota Clínica
           </DropdownMenuItem>
           <DropdownMenuSeparator />
+
+          <DropdownMenuItem onClick={() => setClinicalNoteOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Vacunación
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             variant="destructive"
             onClick={() => setDeleteOpen(true)}
