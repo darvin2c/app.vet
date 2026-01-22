@@ -49,10 +49,12 @@ export default function ClinicalRecordItem({
   clinicalRecord: ClinicalRecord
 }) {
   const [isExpanded, setIsExpanded] = useState(false)
-  const [records, setRecords] = useState<CombinedRecord[]>([])
+  const [clinicalEntries, setClinicalEntries] = useState<CombinedRecord[]>([])
+  const [billingItems, setBillingItems] = useState<CombinedRecord[]>([])
 
   useEffect(() => {
-    const combined: CombinedRecord[] = []
+    const clinical: CombinedRecord[] = []
+    const billing: CombinedRecord[] = []
 
     // Agregar parámetros clínicos
     if (clinicalRecord.clinical_parameters) {
@@ -62,7 +64,7 @@ export default function ClinicalRecordItem({
           type: 'clinical_parameters' as const,
         })
       )
-      combined.push(...parametersWithType)
+      clinical.push(...parametersWithType)
     }
 
     // Agregar notas clínicas
@@ -71,7 +73,7 @@ export default function ClinicalRecordItem({
         ...note,
         type: 'clinical_notes' as const,
       }))
-      combined.push(...notesWithType)
+      clinical.push(...notesWithType)
     }
 
     // Agregar vacunaciones
@@ -80,7 +82,7 @@ export default function ClinicalRecordItem({
         ...vac,
         type: 'vaccinations' as const,
       }))
-      combined.push(...vaccinationsWithType)
+      clinical.push(...vaccinationsWithType)
     }
 
     // Agregar items
@@ -89,23 +91,24 @@ export default function ClinicalRecordItem({
         ...item,
         type: 'record_items' as const,
       }))
-      combined.push(...itemsWithType)
+      billing.push(...itemsWithType)
     }
 
     // Ordenar por fecha de creación ascendente
-    combined.sort(
-      (a, b) =>
-        new Date(a.created_at || 0).getTime() -
-        new Date(b.created_at || 0).getTime()
-    )
+    const sortByDate = (a: CombinedRecord, b: CombinedRecord) =>
+      new Date(a.created_at || 0).getTime() -
+      new Date(b.created_at || 0).getTime()
 
-    setRecords(combined)
+    clinical.sort(sortByDate)
+    billing.sort(sortByDate)
+
+    setClinicalEntries(clinical)
+    setBillingItems(billing)
   }, [
     clinicalRecord.clinical_parameters,
     clinicalRecord.clinical_notes,
     clinicalRecord.vaccinations,
     clinicalRecord.record_items,
-    // Removido 'records' para evitar bucle infinito
   ])
 
   return (
@@ -199,27 +202,48 @@ export default function ClinicalRecordItem({
           <MedicalRecordActions medicalRecord={clinicalRecord} />
         </ItemActions>
       </Item>
-      {/* Aquí se podría agregar la vista expandida si es necesario */}
-      <CollapsibleContent className="ml-10 border-l border-muted-foreground">
-        {records.map((record) => (
-          <div key={record.id}>
-            {record.type === 'clinical_parameters' ? (
-              <ClinicalParameterItem
-                clinicalParameter={record as Tables<'clinical_parameters'>}
-              />
-            ) : record.type === 'clinical_notes' ? (
-              <ClinicalNoteItem
-                clinicalNote={record as Tables<'clinical_notes'>}
-              />
-            ) : record.type === 'vaccinations' ? (
-              <VaccinationItem vaccination={record as Tables<'vaccinations'>} />
-            ) : (
+      
+      <CollapsibleContent className="ml-10 space-y-4">
+        {/* Clinical Section */}
+        {clinicalEntries.length > 0 && (
+          <div className="space-y-2 border-l border-blue-200 pl-4">
+            <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2 flex items-center gap-2">
+              <Activity className="h-3 w-3" />
+              Historial Clínico
+            </h4>
+            {clinicalEntries.map((record) => (
+              <div key={record.id}>
+                {record.type === 'clinical_parameters' ? (
+                  <ClinicalParameterItem
+                    clinicalParameter={record as Tables<'clinical_parameters'>}
+                  />
+                ) : record.type === 'clinical_notes' ? (
+                  <ClinicalNoteItem
+                    clinicalNote={record as Tables<'clinical_notes'>}
+                  />
+                ) : (
+                  <VaccinationItem vaccination={record as Tables<'vaccinations'>} />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Billing/Items Section */}
+        {billingItems.length > 0 && (
+          <div className="space-y-2 border-l border-purple-200 pl-4">
+            <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2 flex items-center gap-2">
+              <Package className="h-3 w-3" />
+              Items / Facturación
+            </h4>
+            {billingItems.map((record) => (
               <RecordItemItem
+                key={record.id}
                 recordItem={record as MedicalRecordItemWithProduct}
               />
-            )}
+            ))}
           </div>
-        ))}
+        )}
       </CollapsibleContent>
     </Collapsible>
   )

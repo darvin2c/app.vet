@@ -20,6 +20,9 @@ export function useMedicalRecordItemDelete() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
+        queryKey: [currentTenant?.id, 'clinical_records'],
+      })
+      queryClient.invalidateQueries({
         queryKey: [currentTenant?.id, 'medical_record_items'],
       })
       queryClient.invalidateQueries({
