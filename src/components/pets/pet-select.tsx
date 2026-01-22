@@ -79,12 +79,19 @@ export function PetSelect({
         </div>
       )}
       renderSelected={(pet) => (
-        <div className="flex flex-col items-center">
-          <span>{pet.name}</span>
-          {pet.breeds && (
-            <span className="text-xs text-muted-foreground">
-              {pet.breeds.name}
-            </span>
+        <div className="flex gap-x-2">
+          <span className="text-sm">{pet.name}</span>
+          {pet.species && (
+            <div>
+              <span className="text-xs text-muted-foreground">
+                {pet.species?.name}
+              </span>{' '}
+              {pet.breeds && (
+                <span className="text-xs text-muted-foreground">
+                  ({pet.breeds?.name})
+                </span>
+              )}
+            </div>
           )}
         </div>
       )}

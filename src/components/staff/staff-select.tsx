@@ -61,27 +61,23 @@ export function StaffSelect({
         return <StaffEdit {...props} staff={member} />
       }}
       renderItem={(member) => (
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <span>{getStaffFullName(member)}</span>
-            {member.email && (
-              <span className="text-sm text-muted-foreground">
-                {member.email}
-              </span>
-            )}
-          </div>
+        <div className="flex flex-col">
+          <span>{getStaffFullName(member)}</span>
+          {member.email && (
+            <span className="text-sm text-muted-foreground">
+              {member.email}
+            </span>
+          )}
         </div>
       )}
       renderSelected={(member) => (
-        <div className="flex items-center gap-2">
-          <div className="flex flex-col">
-            <span>{getStaffFullName(member)}</span>
-            {member.email && (
-              <span className="text-xs text-muted-foreground">
-                {member.email}
-              </span>
-            )}
-          </div>
+        <div className="flex flex-col gap-x-2">
+          <span className="text-sm">{getStaffFullName(member)}</span>
+          {member.email && (
+            <span className="text-xs text-muted-foreground">
+              {member.email}
+            </span>
+          )}
         </div>
       )}
     />

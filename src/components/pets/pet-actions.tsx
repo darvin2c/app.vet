@@ -2,23 +2,13 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  MoreHorizontal,
-  Edit,
-  Trash2,
-  Eye,
-  Camera,
-  FileText,
-  Calendar,
-  Download,
-} from 'lucide-react'
+import { MoreHorizontal, Edit, Trash2, Eye, Calendar } from 'lucide-react'
 import { Tables } from '@/types/supabase.types'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { PetDelete } from './pet-delete'
@@ -58,26 +48,6 @@ export function PetActions({
     setShowAppointmentCreate(true)
   }
 
-  const handleAddPhoto = () => {
-    console.log('Agregar foto para:', pet.name)
-    // TODO: Implementar funcionalidad de agregar foto
-  }
-
-  const handleChangeStatus = () => {
-    console.log('Cambiar estado para:', pet.name)
-    // TODO: Implementar funcionalidad de cambiar estado
-  }
-
-  const handleViewHistory = () => {
-    console.log('Ver historial médico completo para:', pet.name)
-    // TODO: Implementar funcionalidad de ver historial médico completo
-  }
-
-  const handleGenerateReport = () => {
-    console.log('Generar reporte para:', pet.name)
-    // TODO: Implementar funcionalidad de generar reporte
-  }
-
   return (
     <>
       <DropdownMenu>
@@ -101,7 +71,6 @@ export function PetActions({
               </DropdownMenuItem>
             </CanAccess>
           )}
-
           {/* Editar información básica */}
           <DropdownMenuItem
             onSelect={() => {
@@ -113,20 +82,9 @@ export function PetActions({
               {variant === 'outline' ? 'Editar información básica' : 'Editar'}
             </span>
           </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={handleViewHistory}>
-            <FileText className="mr-2 h-4 w-4" />
-            <span>Ver historial médico completo</span>
-          </DropdownMenuItem>
-
           <DropdownMenuItem onClick={handleScheduleAppointment}>
             <Calendar className="mr-2 h-4 w-4" />
             <span>Programar cita</span>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem onClick={handleGenerateReport}>
-            <Download className="mr-2 h-4 w-4" />
-            <span>Generar reporte</span>
           </DropdownMenuItem>
           {/* Eliminar */}
           <DropdownMenuItem onClick={handleDelete} className="text-destructive">
