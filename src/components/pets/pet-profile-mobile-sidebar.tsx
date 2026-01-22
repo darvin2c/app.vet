@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/drawer'
 import { Tables } from '@/types/supabase.types'
 import { formatDate } from '@/lib/pet-utils'
+import { DateDisplay } from '@/components/ui/date-picker'
 import Link from 'next/link'
 
 type PetDetail = Tables<'pets'> & {
@@ -149,7 +150,9 @@ export function PetProfileMobileSidebar({
                   {customer.address && (
                     <div className="flex items-start gap-2.5 text-sm text-muted-foreground">
                       <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                      <span className="leading-relaxed">{customer.address}</span>
+                      <span className="leading-relaxed">
+                        {customer.address}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -248,11 +251,11 @@ export function PetProfileMobileSidebar({
           <section className="space-y-2 text-xs text-muted-foreground pb-4">
             <div className="flex justify-between">
               <span>Registrado</span>
-              <span>{formatDate(pet.created_at, 'dd/MM/yyyy')}</span>
+              <DateDisplay value={pet.created_at} />
             </div>
             <div className="flex justify-between">
               <span>Actualizado</span>
-              <span>{formatDate(pet.updated_at, 'dd/MM/yyyy')}</span>
+              <DateDisplay value={pet.updated_at} />
             </div>
           </section>
         </div>

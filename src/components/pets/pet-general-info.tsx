@@ -5,6 +5,7 @@ import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
 import { formatSex, formatDate } from '@/lib/pet-utils'
 import { Dog, Tag, FileText, Clock } from 'lucide-react'
+import { DateDisplay } from '@/components/ui/date-picker'
 
 type PetDetail = Tables<'pets'> & {
   customers: Tables<'customers'> | null
@@ -39,7 +40,11 @@ function InfoItem({
       </dt>
       <dd className="text-sm font-medium">
         {children || (
-          <span className={value ? 'text-foreground' : 'text-muted-foreground italic'}>
+          <span
+            className={
+              value ? 'text-foreground' : 'text-muted-foreground italic'
+            }
+          >
             {value || 'No especificado'}
           </span>
         )}
@@ -73,10 +78,9 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
             label="Peso"
             value={pet.weight ? `${pet.weight} kg` : undefined}
           />
-          <InfoItem
-            label="Fecha de nacimiento"
-            value={formatDate(pet.birth_date)}
-          />
+          <InfoItem label="Fecha de nacimiento">
+            <DateDisplay value={pet.birth_date} />
+          </InfoItem>
         </dl>
       </section>
 

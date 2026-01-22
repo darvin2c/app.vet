@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
 import { PetStatusBadge } from './pet-status-badge'
 import { PetActions } from './pet-actions'
+import { DateDisplay } from '@/components/ui/date-picker'
 import {
   calculateAge,
   formatSex,
@@ -84,7 +85,7 @@ export function PetProfileHeader({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-lg font-bold truncate">{pet.name}</h1>
-              <Badge variant="secondary" className="text-xs flex-shrink-0">
+              <Badge variant="outline" className="text-xs flex-shrink-0 font-normal">
                 {formatSex(pet.sex)}
               </Badge>
             </div>
@@ -121,12 +122,17 @@ export function PetProfileHeader({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-2xl font-bold">{pet.name}</h1>
-              <Badge variant="secondary" className="text-sm px-2 py-1">
+              <Badge
+                variant="outline"
+                className="text-sm px-2 py-1 font-normal"
+              >
                 {formatSex(pet.sex)}
               </Badge>
               <PetStatusBadge status="active" />
               <span className="text-muted-foreground">
-                {pet.breeds?.name || pet.species?.name || 'Raza no especificada'}
+                {pet.breeds?.name ||
+                  pet.species?.name ||
+                  'Raza no especificada'}
               </span>
               {pet.breeds?.name && pet.species?.name && (
                 <>
@@ -139,52 +145,30 @@ export function PetProfileHeader({
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <Badge variant="outline" className="text-sm px-3 py-1">
+              <Badge
+                variant="outline"
+                className="text-sm px-3 py-1 font-normal"
+              >
                 <Calendar className="h-3 w-3 mr-1" />
                 {calculateAge(pet.birth_date)}
                 {pet.birth_date && (
-                  <span className="ml-1 text-xs opacity-70">
-                    ({formatDate(pet.birth_date)})
+                  <span className="ml-1 text-xs opacity-70 flex items-center gap-1">
+                    (<DateDisplay value={pet.birth_date} />)
                   </span>
                 )}
               </Badge>
 
               {pet.weight && (
-                <Badge variant="outline" className="text-sm px-3 py-1">
+                <Badge
+                  variant="outline"
+                  className="text-sm px-3 py-1 font-normal"
+                >
                   {formatWeight(pet.weight)}
-                </Badge>
-              )}
-
-              {pet.microchip && (
-                <Badge variant="outline" className="text-sm px-3 py-1 font-mono">
-                  Chip: {pet.microchip}
-                </Badge>
-              )}
-
-              {pet.customers && (
-                <Badge variant="outline" className="text-sm px-3 py-1">
-                  <User className="h-3 w-3 mr-1" />
-                  {getCustomerFullName(pet.customers)}
-                </Badge>
-              )}
-
-              {pet.customers?.phone && (
-                <Badge variant="outline" className="text-sm px-3 py-1">
-                  <Phone className="h-3 w-3 mr-1" />
-                  {pet.customers.phone}
                 </Badge>
               )}
             </div>
           </div>
         </div>
-
-        {pet.notes && (
-          <div className="mt-4 pt-4 border-t border-dashed">
-            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-              {pet.notes}
-            </p>
-          </div>
-        )}
       </div>
     </div>
   )
