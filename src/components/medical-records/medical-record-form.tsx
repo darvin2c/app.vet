@@ -63,7 +63,7 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="objective">Objetivo</FieldLabel>
+        <FieldLabel htmlFor="objective">Anamnesis y Exploración</FieldLabel>
         <FieldContent>
           <RichMinimalEditor
             value={watch('objective') || ''}
@@ -87,7 +87,7 @@ export function MedicalRecordForm() {
       </Field>
 
       <Field>
-        <FieldLabel htmlFor="plan">Plan</FieldLabel>
+        <FieldLabel htmlFor="plan">Tratamiento / Plan</FieldLabel>
         <FieldContent>
           <RichMinimalEditor
             value={watch('plan') || ''}
