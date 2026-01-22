@@ -23,8 +23,11 @@ export default function ClinicalNoteItem({
             })}
           </Badge>
         </ItemTitle>
-        <div className="mt-2">
-          <p className="text-sm">{clinicalNote.note}</p>
+        <div className="mt-2 flex flex-col sm:flex-row sm:gap-2 items-start sm:items-baseline">
+          <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
+            Nota:
+          </span>
+          <p className="text-sm whitespace-pre-wrap">{clinicalNote.note}</p>
         </div>
       </ItemContent>
       <ItemActions>

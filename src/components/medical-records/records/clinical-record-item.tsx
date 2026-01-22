@@ -259,47 +259,57 @@ export default function ClinicalRecordItem({
         </ItemActions>
       </Item>
 
-      <CollapsibleContent className="ml-10 space-y-4">
+      <CollapsibleContent className="ml-10 space-y-6 pt-2">
         {/* Clinical Section */}
         {clinicalEntries.length > 0 && (
-          <div className="space-y-2 border-l border-blue-200 pl-4">
-            <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2 flex items-center gap-2">
+          <div className="space-y-3 border-l-2 border-blue-200 pl-4">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
               <Activity className="h-3 w-3" />
-              Historial Clínico
-            </h4>
-            {clinicalEntries.map((record) => (
-              <div key={record.id}>
-                {record.type === 'clinical_parameters' ? (
-                  <ClinicalParameterItem
-                    clinicalParameter={record as Tables<'clinical_parameters'>}
-                  />
-                ) : record.type === 'clinical_notes' ? (
-                  <ClinicalNoteItem
-                    clinicalNote={record as Tables<'clinical_notes'>}
-                  />
-                ) : (
-                  <VaccinationItem
-                    vaccination={record as Tables<'vaccinations'>}
-                  />
-                )}
-              </div>
-            ))}
+              <h4 className="text-xs font-semibold uppercase tracking-wider">
+                Historial Clínico
+              </h4>
+            </div>
+            <div className="space-y-3">
+              {clinicalEntries.map((record) => (
+                <div key={record.id}>
+                  {record.type === 'clinical_parameters' ? (
+                    <ClinicalParameterItem
+                      clinicalParameter={
+                        record as Tables<'clinical_parameters'>
+                      }
+                    />
+                  ) : record.type === 'clinical_notes' ? (
+                    <ClinicalNoteItem
+                      clinicalNote={record as Tables<'clinical_notes'>}
+                    />
+                  ) : (
+                    <VaccinationItem
+                      vaccination={record as Tables<'vaccinations'>}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
         {/* Billing/Items Section */}
         {billingItems.length > 0 && (
-          <div className="space-y-2 border-l border-purple-200 pl-4">
-            <h4 className="text-xs font-semibold uppercase text-muted-foreground mb-2 flex items-center gap-2">
+          <div className="space-y-3 border-l-2 border-purple-200 pl-4">
+            <div className="flex items-center gap-2 text-muted-foreground mb-3">
               <Package className="h-3 w-3" />
-              Items / Facturación
-            </h4>
-            {billingItems.map((record) => (
-              <RecordItemItem
-                key={record.id}
-                recordItem={record as MedicalRecordItemWithProduct}
-              />
-            ))}
+              <h4 className="text-xs font-semibold uppercase tracking-wider">
+                Items / Facturación
+              </h4>
+            </div>
+            <div className="space-y-3">
+              {billingItems.map((record) => (
+                <RecordItemItem
+                  key={record.id}
+                  recordItem={record as MedicalRecordItemWithProduct}
+                />
+              ))}
+            </div>
           </div>
         )}
       </CollapsibleContent>

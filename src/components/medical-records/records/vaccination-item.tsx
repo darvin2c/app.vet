@@ -25,42 +25,48 @@ export default function VaccinationItem({
             })}
           </Badge>
         </ItemTitle>
-        <div className="mt-2 grid grid-cols-2 gap-4 text-sm">
+        <dl className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
           {vaccination.dose && (
-            <div>
-              <span className="font-medium text-muted-foreground">Dosis:</span>{' '}
-              {vaccination.dose}
+            <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
+              <dt className="text-xs font-medium text-muted-foreground">
+                Dosis:
+              </dt>
+              <dd className="text-sm font-medium">{vaccination.dose}</dd>
             </div>
           )}
           {vaccination.route && (
-            <div>
-              <span className="font-medium text-muted-foreground">Vía:</span>{' '}
-              {vaccination.route}
+            <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
+              <dt className="text-xs font-medium text-muted-foreground">Vía:</dt>
+              <dd className="text-sm font-medium">{vaccination.route}</dd>
             </div>
           )}
           {vaccination.site && (
-            <div>
-              <span className="font-medium text-muted-foreground">Sitio:</span>{' '}
-              {vaccination.site}
+            <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
+              <dt className="text-xs font-medium text-muted-foreground">
+                Sitio:
+              </dt>
+              <dd className="text-sm font-medium">{vaccination.site}</dd>
             </div>
           )}
           {vaccination.next_due_at && (
-            <div>
-              <span className="font-medium text-muted-foreground">
+            <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
+              <dt className="text-xs font-medium text-muted-foreground">
                 Próxima Dosis:
-              </span>{' '}
-              {format(new Date(vaccination.next_due_at), 'dd/MM/yyyy', {
-                locale: es,
-              })}
+              </dt>
+              <dd className="text-sm font-medium">
+                {format(new Date(vaccination.next_due_at), 'dd/MM/yyyy', {
+                  locale: es,
+                })}
+              </dd>
             </div>
           )}
-        </div>
+        </dl>
         {vaccination.adverse_event && (
-          <div className="mt-2 text-sm">
-            <span className="font-medium text-destructive">
+          <div className="mt-2 flex flex-col sm:flex-row sm:gap-2 items-start sm:items-baseline">
+            <span className="text-xs font-medium text-destructive whitespace-nowrap">
               Evento Adverso:
-            </span>{' '}
-            {vaccination.adverse_event}
+            </span>
+            <span className="text-sm">{vaccination.adverse_event}</span>
           </div>
         )}
       </ItemContent>

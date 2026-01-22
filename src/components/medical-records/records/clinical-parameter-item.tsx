@@ -15,9 +15,9 @@ export default function ClinicalParameterItem({
   const paramList = Object.keys(clinicalParameter.params || {})
 
   return (
-    <Item variant="muted" className="mb-2">
+    <Item variant="muted" size="sm" className="mb-2">
       <ItemContent>
-        <div>
+        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
           {paramList.map((param) => {
             const paramInfo = getParam(param)
             const params =
@@ -25,17 +25,20 @@ export default function ClinicalParameterItem({
             const value = params[param]
 
             return (
-              <div key={param}>
-                <span className="text-xs font-medium text-muted-foreground">
+              <div
+                key={param}
+                className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2"
+              >
+                <dt className="text-xs font-medium text-muted-foreground">
                   {(paramInfo as any)?.label || param}:
-                </span>
-                <Badge className="text-xs ml-1">
+                </dt>
+                <dd className="text-sm font-medium">
                   {String(value)} {(paramInfo as any)?.unit || ''}
-                </Badge>
+                </dd>
               </div>
             )
           })}
-        </div>
+        </dl>
       </ItemContent>
       <ItemActions>
         <ClinicalParameterActions clinicalParameter={clinicalParameter} />
