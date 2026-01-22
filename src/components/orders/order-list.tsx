@@ -76,11 +76,7 @@ function getStatusBadgeVariant(
 
 type Order = Tables<'orders'> & {
   customer: Tables<'customers'> | null
-  order_items?: Array<
-    Tables<'order_items'> & {
-      product: Tables<'products'> | null
-    }
-  >
+  order_items?: Array<{ id: string }>
 }
 
 export function OrderList({
@@ -238,7 +234,7 @@ export function OrderList({
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {orders.map((order) => {
         const customer = order.customer
-        const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
+        const itemCount = order.order_items?.length || 0
         const paid = order.paid_amount || 0
         const balance = (order.total || 0) - paid
         const balanceClass =
@@ -306,7 +302,7 @@ export function OrderList({
     <ItemGroup className="space-y-2">
       {orders.map((order) => {
         const customer = order.customer
-        const itemCount = 0 // TODO: Obtener el conteo de items desde la consulta
+        const itemCount = order.order_items?.length || 0
         const paid = order.paid_amount || 0
         const balance = (order.total || 0) - paid
         const balanceClass =

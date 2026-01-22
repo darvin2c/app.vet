@@ -41,7 +41,8 @@ export default function useOrderList({
         .select(
           `
           *,
-          customer:customer_id(*)
+          customer:customer_id(*),
+          order_items(id)
         `
         )
         .eq('tenant_id', currentTenant.id)
