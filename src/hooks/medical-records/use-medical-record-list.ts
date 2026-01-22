@@ -51,6 +51,12 @@ export function useMedicalRecordList({
           ),
           vaccinations (
             *
+          ),
+          record_items (
+            *,
+            products (
+              *
+            )
           )
         `
         )

@@ -14,6 +14,7 @@ import { ClinicalNoteCreate } from '@/components/clinical-notes/clinical-note-cr
 import { Tables } from '@/types/supabase.types'
 import { ClinicalParameterCreate } from '../clinical-parameters/clinical-parameter-create'
 import { VaccinationCreate } from './vaccination-create'
+import { MedicalRecordItemCreate } from '../medical-record-items/medical-record-item-create'
 
 interface MedicalRecordActionsProps {
   medicalRecord: Tables<'clinical_records'>
@@ -27,6 +28,7 @@ export function MedicalRecordActions({
   const [clinicalNoteOpen, setClinicalNoteOpen] = useState(false)
   const [clinicalParamsOpen, setClinicalParamsOpen] = useState(false)
   const [vaccinationOpen, setVaccinationOpen] = useState(false)
+  const [itemOpen, setItemOpen] = useState(false)
 
   return (
     <>
@@ -55,6 +57,11 @@ export function MedicalRecordActions({
           <DropdownMenuItem onClick={() => setVaccinationOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Vacunación
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => setItemOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Producto/Servicio
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
@@ -97,6 +104,11 @@ export function MedicalRecordActions({
         onOpenChange={setVaccinationOpen}
         medicalRecordId={medicalRecord.id}
         petId={medicalRecord.pet_id}
+      />
+      <MedicalRecordItemCreate
+        open={itemOpen}
+        onOpenChange={setItemOpen}
+        medicalRecordId={medicalRecord.id}
       />
     </>
   )

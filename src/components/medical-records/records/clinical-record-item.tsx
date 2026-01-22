@@ -9,6 +9,7 @@ import {
   FileText,
   Activity,
   Syringe,
+  Package,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,9 @@ import { es } from 'date-fns/locale'
 import ClinicalParameterItem from './clinical-parameter-item'
 import ClinicalNoteItem from './clinical-note-item'
 import VaccinationItem from './vaccination-item'
+import RecordItemItem, {
+  MedicalRecordItemWithProduct,
+} from './record-item-item'
 import {
   Collapsible,
   CollapsibleContent,
@@ -28,6 +32,7 @@ type ClinicalRecord = Tables<'clinical_records'> & {
   clinical_parameters?: TablesUpdate<'clinical_parameters'>[]
   clinical_notes?: TablesUpdate<'clinical_notes'>[] | null
   vaccinations?: TablesUpdate<'vaccinations'>[] | null
+  record_items?: MedicalRecordItemWithProduct[] | null
   pets?: TablesUpdate<'pets'> | null
 }
 
@@ -36,6 +41,7 @@ type CombinedRecord =
   | (TablesUpdate<'clinical_parameters'> & { type?: 'clinical_parameters' })
   | (TablesUpdate<'clinical_notes'> & { type?: 'clinical_notes' })
   | (TablesUpdate<'vaccinations'> & { type?: 'vaccinations' })
+  | (MedicalRecordItemWithProduct & { type?: 'record_items' })
 
 export default function ClinicalRecordItem({
   clinicalRecord,
@@ -77,6 +83,15 @@ export default function ClinicalRecordItem({
       combined.push(...vaccinationsWithType)
     }
 
+    // Agregar items
+    if (clinicalRecord.record_items) {
+      const itemsWithType = clinicalRecord.record_items.map((item) => ({
+        ...item,
+        type: 'record_items' as const,
+      }))
+      combined.push(...itemsWithType)
+    }
+
     // Ordenar por fecha de creación ascendente
     combined.sort(
       (a, b) =>
@@ -89,6 +104,7 @@ export default function ClinicalRecordItem({
     clinicalRecord.clinical_parameters,
     clinicalRecord.clinical_notes,
     clinicalRecord.vaccinations,
+    clinicalRecord.record_items,
     // Removido 'records' para evitar bucle infinito
   ])
 
@@ -169,6 +185,13 @@ export default function ClinicalRecordItem({
                     {clinicalRecord?.vaccinations?.length} vacunas
                   </span>
                 )}
+              {clinicalRecord?.record_items &&
+                clinicalRecord.record_items.length > 0 && (
+                  <span className="flex items-center gap-1">
+                    <Package className="h-3 w-3" />
+                    {clinicalRecord?.record_items?.length} items
+                  </span>
+                )}
             </div>
           </div>
         </ItemContent>
@@ -188,8 +211,12 @@ export default function ClinicalRecordItem({
               <ClinicalNoteItem
                 clinicalNote={record as Tables<'clinical_notes'>}
               />
-            ) : (
+            ) : record.type === 'vaccinations' ? (
               <VaccinationItem vaccination={record as Tables<'vaccinations'>} />
+            ) : (
+              <RecordItemItem
+                recordItem={record as MedicalRecordItemWithProduct}
+              />
             )}
           </div>
         ))}
