@@ -1,10 +1,23 @@
-# SaaS Application
+# VetManager 360 - Sistema de Gestión Veterinaria
 
-Una aplicación SaaS moderna construida con Next.js, TypeScript, Tailwind CSS y Supabase.
+Sistema integral de gestión para clínicas y hospitales veterinarios. Permite gestionar citas, historiales médicos, inventario, facturación, hospitalización y más en una plataforma unificada.
 
 ## 🚀 Características
 
-- **Frontend**: Next.js 14 con App Router
+### Módulos Principales
+
+- 📅 **Citas y Agenda**: Gestión completa de citas con calendario visual
+- 🐾 **Mascotas**: Registro y seguimiento de pacientes con historial médico
+- 👥 **Clientes**: Base de datos de propietarios con información de contacto
+- 💊 **Inventario**: Control de productos, medicamentos y movimientos de stock
+- 🏥 **Hospitalización**: Gestión de pacientes internados
+- 💰 **Facturación**: Órdenes de venta y control de pagos
+- 📋 **Servicios**: Catálogo de servicios veterinarios
+- 👨‍⚕️ **Personal**: Gestión de staff y especialidades
+
+### Stack Tecnológico
+
+- **Frontend**: Next.js 16 con App Router
 - **Lenguaje**: TypeScript para type safety
 - **Estilos**: Tailwind CSS + shadcn/ui components
 - **Base de datos**: Supabase (PostgreSQL)
