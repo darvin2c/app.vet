@@ -35,7 +35,7 @@ Visita `/demo` para ver ejemplos interactivos de todos los componentes.
 
 ```bash
 git clone <repository-url>
-cd app.saas
+cd app.vet
 ```
 
 ### 2. Instalar dependencias
@@ -52,16 +52,38 @@ Copia el archivo de ejemplo y configura tus variables:
 cp .env.example .env.local
 ```
 
-Edita `.env.local` con tus configuraciones:
+Edita `.env.local` con tus credenciales reales. Las variables necesarias son:
 
+#### Supabase (Requerido)
 ```env
-# Google Maps API (para AddressInput)
-NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=tu_api_key_aqui
-
-# Supabase
 NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
+```
+
+Obtén estas credenciales en [Supabase Dashboard](https://supabase.com/dashboard) > Settings > API
+
+#### Google Maps API (Requerido para AddressInput)
+```env
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=tu_google_maps_api_key
+```
+
+Ver instrucciones detalladas en la sección siguiente.
+
+#### Email SMTP (Opcional)
+```env
+SMTP_HOST=smtp.resend.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=resend
+SMTP_PASS=tu_smtp_password
+SMTP_FROM=no-reply@tudominio.com
+```
+
+#### Otras configuraciones
+```env
+NEXT_PUBLIC_DOMAIN=lvh.me
+NEXT_AUTH_URL=http://auth.lvh.me:3000
 ```
 
 ### 4. Configurar Google Maps API
@@ -70,7 +92,7 @@ Para usar el componente `AddressInput`:
 
 1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
 2. Crea un nuevo proyecto o selecciona uno existente
-3. Habilita la **Places API**
+3. Habilita la **Places API** y **Maps JavaScript API**
 4. Crea una API key en **Credentials**
 5. Agrega la API key a tu archivo `.env.local`
 
@@ -80,7 +102,7 @@ Para usar el componente `AddressInput`:
 pnpm run dev
 ```
 
-La aplicación estará disponible en `http://localhost:3001`
+La aplicación estará disponible en `http://localhost:3000`
 
 ## 📁 Estructura del Proyecto
 
