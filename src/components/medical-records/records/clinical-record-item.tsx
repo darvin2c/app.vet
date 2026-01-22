@@ -52,12 +52,37 @@ export default function ClinicalRecordItem({
   const [clinicalEntries, setClinicalEntries] = useState<CombinedRecord[]>([])
   const [billingItems, setBillingItems] = useState<CombinedRecord[]>([])
 
+  // Filter states
+  const [activeFilters, setActiveFilters] = useState<{
+    parameters: boolean
+    notes: boolean
+    vaccinations: boolean
+    items: boolean
+  }>({
+    parameters: true,
+    notes: true,
+    vaccinations: true,
+    items: true,
+  })
+
+  const toggleFilter = (
+    key: 'parameters' | 'notes' | 'vaccinations' | 'items'
+  ) => {
+    setActiveFilters((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }))
+    if (!isExpanded) {
+      setIsExpanded(true)
+    }
+  }
+
   useEffect(() => {
     const clinical: CombinedRecord[] = []
     const billing: CombinedRecord[] = []
 
     // Agregar parámetros clínicos
-    if (clinicalRecord.clinical_parameters) {
+    if (clinicalRecord.clinical_parameters && activeFilters.parameters) {
       const parametersWithType = clinicalRecord.clinical_parameters.map(
         (param) => ({
           ...param,
@@ -68,7 +93,7 @@ export default function ClinicalRecordItem({
     }
 
     // Agregar notas clínicas
-    if (clinicalRecord.clinical_notes) {
+    if (clinicalRecord.clinical_notes && activeFilters.notes) {
       const notesWithType = clinicalRecord.clinical_notes.map((note) => ({
         ...note,
         type: 'clinical_notes' as const,
@@ -77,7 +102,7 @@ export default function ClinicalRecordItem({
     }
 
     // Agregar vacunaciones
-    if (clinicalRecord.vaccinations) {
+    if (clinicalRecord.vaccinations && activeFilters.vaccinations) {
       const vaccinationsWithType = clinicalRecord.vaccinations.map((vac) => ({
         ...vac,
         type: 'vaccinations' as const,
@@ -86,7 +111,7 @@ export default function ClinicalRecordItem({
     }
 
     // Agregar items
-    if (clinicalRecord.record_items) {
+    if (clinicalRecord.record_items && activeFilters.items) {
       const itemsWithType = clinicalRecord.record_items.map((item) => ({
         ...item,
         type: 'record_items' as const,
@@ -109,6 +134,7 @@ export default function ClinicalRecordItem({
     clinicalRecord.clinical_notes,
     clinicalRecord.vaccinations,
     clinicalRecord.record_items,
+    activeFilters,
   ])
 
   return (
@@ -166,34 +192,64 @@ export default function ClinicalRecordItem({
                 {clinicalRecord.plan}
               </div>
             )}
-            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground flex-wrap">
               {clinicalRecord?.clinical_parameters &&
                 clinicalRecord.clinical_parameters.length > 0 && (
-                  <span className="flex items-center gap-1">
+                  <Badge
+                    variant={activeFilters.parameters ? 'secondary' : 'outline'}
+                    className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFilter('parameters')
+                    }}
+                  >
                     <Activity className="h-3 w-3" />
                     {clinicalRecord?.clinical_parameters?.length} parámetros
-                  </span>
+                  </Badge>
                 )}
               {clinicalRecord?.clinical_notes &&
                 clinicalRecord.clinical_notes.length > 0 && (
-                  <span className="flex items-center gap-1">
+                  <Badge
+                    variant={activeFilters.notes ? 'secondary' : 'outline'}
+                    className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFilter('notes')
+                    }}
+                  >
                     <FileText className="h-3 w-3" />
                     {clinicalRecord?.clinical_notes?.length} notas
-                  </span>
+                  </Badge>
                 )}
               {clinicalRecord?.vaccinations &&
                 clinicalRecord.vaccinations.length > 0 && (
-                  <span className="flex items-center gap-1">
+                  <Badge
+                    variant={
+                      activeFilters.vaccinations ? 'secondary' : 'outline'
+                    }
+                    className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFilter('vaccinations')
+                    }}
+                  >
                     <Syringe className="h-3 w-3" />
                     {clinicalRecord?.vaccinations?.length} vacunas
-                  </span>
+                  </Badge>
                 )}
               {clinicalRecord?.record_items &&
                 clinicalRecord.record_items.length > 0 && (
-                  <span className="flex items-center gap-1">
+                  <Badge
+                    variant={activeFilters.items ? 'secondary' : 'outline'}
+                    className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFilter('items')
+                    }}
+                  >
                     <Package className="h-3 w-3" />
                     {clinicalRecord?.record_items?.length} items
-                  </span>
+                  </Badge>
                 )}
             </div>
           </div>
@@ -202,7 +258,7 @@ export default function ClinicalRecordItem({
           <MedicalRecordActions medicalRecord={clinicalRecord} />
         </ItemActions>
       </Item>
-      
+
       <CollapsibleContent className="ml-10 space-y-4">
         {/* Clinical Section */}
         {clinicalEntries.length > 0 && (
@@ -222,7 +278,9 @@ export default function ClinicalRecordItem({
                     clinicalNote={record as Tables<'clinical_notes'>}
                   />
                 ) : (
-                  <VaccinationItem vaccination={record as Tables<'vaccinations'>} />
+                  <VaccinationItem
+                    vaccination={record as Tables<'vaccinations'>}
+                  />
                 )}
               </div>
             ))}
