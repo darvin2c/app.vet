@@ -1,8 +1,9 @@
+'use client'
+
 import { useState, useRef, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { Card } from '../ui/card'
 
 interface TabItem {
   value: string
@@ -75,13 +76,13 @@ export function PetProfileMobileTabs({
   }, [activeTab])
 
   return (
-    <Card className={cn('relative px-4 py-2 md:px-6 md:py-3', className)}>
+    <div className={cn('relative py-2 mb-4 border-b', className)}>
       {/* Left scroll button */}
       {showLeftArrow && (
         <Button
           variant="ghost"
           size="sm"
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm border shadow-sm"
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm"
           onClick={scrollLeft}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -104,6 +105,7 @@ export function PetProfileMobileTabs({
             data-value={tab.value}
             onClick={() => onTabChange(tab.value)}
             variant={activeTab === tab.value ? 'default' : 'ghost'}
+            size="sm"
           >
             {tab.label}
             {tab.count !== undefined && (
@@ -118,7 +120,7 @@ export function PetProfileMobileTabs({
         <Button
           variant="ghost"
           size="sm"
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm border shadow-sm"
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 h-8 w-8 p-0 bg-background/80 backdrop-blur-sm"
           onClick={scrollRight}
         >
           <ChevronRight className="h-4 w-4" />
@@ -130,6 +132,6 @@ export function PetProfileMobileTabs({
           display: none;
         }
       `}</style>
-    </Card>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
+'use client'
+
 import { ArrowLeft, Calendar, Menu, User, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
@@ -10,7 +11,6 @@ import { PetActions } from './pet-actions'
 import {
   calculateAge,
   formatSex,
-  getSexColor,
   formatDate,
   formatWeight,
   getCustomerFullName,
@@ -44,175 +44,148 @@ export function PetProfileHeader({
   const router = useRouter()
 
   return (
-    <Card className="mb-3 md:mb-4">
-      <CardContent className="p-3 md:p-4">
-        {/* Header Actions */}
-        <div className="flex items-center justify-between mb-3 md:mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="p-2 md:px-3"
-          >
-            <ArrowLeft className="h-4 w-4 md:mr-2" />
-            <span className="hidden md:inline">Volver</span>
-          </Button>
+    <div className="pb-4 md:pb-6 border-b mb-4 md:mb-6">
+      {/* Header Actions */}
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => router.back()}
+          className="p-2 md:px-3 -ml-2"
+        >
+          <ArrowLeft className="h-4 w-4 md:mr-2" />
+          <span className="hidden md:inline">Volver</span>
+        </Button>
 
-          <div className="flex items-center gap-2">
-            <PetActions pet={pet} size="sm" />
-            {onMenuClick && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={onMenuClick}
-                className="p-2 md:hidden"
-              >
-                <Menu className="h-4 w-4" />
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Mobile Layout - Más compacto */}
-        <div className="block md:hidden">
-          <div className="flex items-center space-x-3">
-            {/* Avatar más pequeño */}
-            <Avatar className="h-14 w-14 flex-shrink-0">
-              <AvatarFallback className="text-lg">
-                {pet.name?.charAt(0)?.toUpperCase() || 'M'}
-              </AvatarFallback>
-            </Avatar>
-
-            {/* Info principal */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h1 className="text-lg font-bold truncate">{pet.name}</h1>
-                <Badge
-                  variant="outline"
-                  className={`text-xs flex-shrink-0 ${getSexColor(pet.sex)}`}
-                >
-                  {formatSex(pet.sex)}
-                </Badge>
-              </div>
-
-              <div className="text-sm text-muted-foreground mb-2 truncate">
-                {pet.breeds?.name ||
-                  pet.species?.name ||
-                  'Raza no especificada'}
-              </div>
-
-              {/* Badges horizontales compactos */}
-              <div className="flex flex-wrap gap-1">
-                <Badge variant="outline" className="text-xs px-2 py-0.5">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {calculateAge(pet.birth_date)}
-                </Badge>
-                {pet.weight && (
-                  <Badge variant="outline" className="text-xs px-2 py-0.5">
-                    {formatWeight(pet.weight)}
-                  </Badge>
-                )}
-                <PetStatusBadge
-                  status="active"
-                  className="text-xs px-2 py-0.5"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Desktop Layout - Horizontal y compacto */}
-        <div className="hidden md:block">
-          <div className="flex items-center gap-4">
-            {/* Avatar más pequeño */}
-            <div className="flex-shrink-0">
-              <Avatar className="h-16 w-16">
-                <AvatarFallback className="text-xl">
-                  {pet.name?.charAt(0)?.toUpperCase() || 'M'}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-
-            {/* Información principal en una línea */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-2">
-                <h1 className="text-2xl font-bold">{pet.name}</h1>
-                <Badge
-                  variant="outline"
-                  className={`text-sm px-2 py-1 ${getSexColor(pet.sex)}`}
-                >
-                  {formatSex(pet.sex)}
-                </Badge>
-                <PetStatusBadge status="active" />
-                <span className="text-muted-foreground">
-                  {pet.breeds?.name ||
-                    pet.species?.name ||
-                    'Raza no especificada'}
-                </span>
-                {pet.breeds?.name && pet.species?.name && (
-                  <>
-                    <span className="text-muted-foreground">•</span>
-                    <span className="text-muted-foreground">
-                      {pet.species.name}
-                    </span>
-                  </>
-                )}
-              </div>
-
-              {/* Información secundaria en badges horizontales */}
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="text-sm px-3 py-1">
-                  <Calendar className="h-3 w-3 mr-1" />
-                  {calculateAge(pet.birth_date)}
-                  {pet.birth_date && (
-                    <span className="ml-1 text-xs opacity-70">
-                      ({formatDate(pet.birth_date)})
-                    </span>
-                  )}
-                </Badge>
-
-                {pet.weight && (
-                  <Badge variant="outline" className="text-sm px-3 py-1">
-                    {formatWeight(pet.weight)}
-                  </Badge>
-                )}
-
-                {pet.microchip && (
-                  <Badge
-                    variant="outline"
-                    className="text-sm px-3 py-1 font-mono"
-                  >
-                    Chip: {pet.microchip}
-                  </Badge>
-                )}
-
-                {pet.customers && (
-                  <Badge variant="outline" className="text-sm px-3 py-1">
-                    <User className="h-3 w-3 mr-1" />
-                    {getCustomerFullName(pet.customers)}
-                  </Badge>
-                )}
-
-                {pet.customers?.phone && (
-                  <Badge variant="outline" className="text-sm px-3 py-1">
-                    <Phone className="h-3 w-3 mr-1" />
-                    {pet.customers.phone}
-                  </Badge>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Notas compactas si existen */}
-          {pet.notes && (
-            <div className="mt-3 pt-3 border-t">
-              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                {pet.notes}
-              </p>
-            </div>
+        <div className="flex items-center gap-2">
+          <PetActions pet={pet} size="sm" />
+          {onMenuClick && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onMenuClick}
+              className="p-2 md:hidden"
+            >
+              <Menu className="h-4 w-4" />
+            </Button>
           )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {/* Mobile Layout */}
+      <div className="block md:hidden">
+        <div className="flex items-center space-x-3">
+          <Avatar className="h-14 w-14 flex-shrink-0">
+            <AvatarFallback className="text-lg">
+              {pet.name?.charAt(0)?.toUpperCase() || 'M'}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h1 className="text-lg font-bold truncate">{pet.name}</h1>
+              <Badge variant="secondary" className="text-xs flex-shrink-0">
+                {formatSex(pet.sex)}
+              </Badge>
+            </div>
+
+            <div className="text-sm text-muted-foreground mb-2 truncate">
+              {pet.breeds?.name || pet.species?.name || 'Raza no especificada'}
+            </div>
+
+            <div className="flex flex-wrap gap-1">
+              <Badge variant="outline" className="text-xs px-2 py-0.5">
+                <Calendar className="h-3 w-3 mr-1" />
+                {calculateAge(pet.birth_date)}
+              </Badge>
+              {pet.weight && (
+                <Badge variant="outline" className="text-xs px-2 py-0.5">
+                  {formatWeight(pet.weight)}
+                </Badge>
+              )}
+              <PetStatusBadge status="active" className="text-xs px-2 py-0.5" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Desktop Layout */}
+      <div className="hidden md:block">
+        <div className="flex items-center gap-4">
+          <Avatar className="h-16 w-16 flex-shrink-0">
+            <AvatarFallback className="text-xl">
+              {pet.name?.charAt(0)?.toUpperCase() || 'M'}
+            </AvatarFallback>
+          </Avatar>
+
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-2">
+              <h1 className="text-2xl font-bold">{pet.name}</h1>
+              <Badge variant="secondary" className="text-sm px-2 py-1">
+                {formatSex(pet.sex)}
+              </Badge>
+              <PetStatusBadge status="active" />
+              <span className="text-muted-foreground">
+                {pet.breeds?.name || pet.species?.name || 'Raza no especificada'}
+              </span>
+              {pet.breeds?.name && pet.species?.name && (
+                <>
+                  <span className="text-muted-foreground">•</span>
+                  <span className="text-muted-foreground">
+                    {pet.species.name}
+                  </span>
+                </>
+              )}
+            </div>
+
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge variant="outline" className="text-sm px-3 py-1">
+                <Calendar className="h-3 w-3 mr-1" />
+                {calculateAge(pet.birth_date)}
+                {pet.birth_date && (
+                  <span className="ml-1 text-xs opacity-70">
+                    ({formatDate(pet.birth_date)})
+                  </span>
+                )}
+              </Badge>
+
+              {pet.weight && (
+                <Badge variant="outline" className="text-sm px-3 py-1">
+                  {formatWeight(pet.weight)}
+                </Badge>
+              )}
+
+              {pet.microchip && (
+                <Badge variant="outline" className="text-sm px-3 py-1 font-mono">
+                  Chip: {pet.microchip}
+                </Badge>
+              )}
+
+              {pet.customers && (
+                <Badge variant="outline" className="text-sm px-3 py-1">
+                  <User className="h-3 w-3 mr-1" />
+                  {getCustomerFullName(pet.customers)}
+                </Badge>
+              )}
+
+              {pet.customers?.phone && (
+                <Badge variant="outline" className="text-sm px-3 py-1">
+                  <Phone className="h-3 w-3 mr-1" />
+                  {pet.customers.phone}
+                </Badge>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {pet.notes && (
+          <div className="mt-4 pt-4 border-t border-dashed">
+            <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+              {pet.notes}
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
