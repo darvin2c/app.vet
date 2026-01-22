@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { useRouter } from 'next/navigation'
 import { Tables } from '@/types/supabase.types'
-import { PetStatusBadge } from './pet-status-badge'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { PetActions } from './pet-actions'
 import { DateDisplay } from '@/components/ui/date-picker'
 import {
@@ -85,7 +85,10 @@ export function PetProfileHeader({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               <h1 className="text-lg font-bold truncate">{pet.name}</h1>
-              <Badge variant="outline" className="text-xs flex-shrink-0 font-normal">
+              <Badge
+                variant="outline"
+                className="text-xs flex-shrink-0 font-normal"
+              >
                 {formatSex(pet.sex)}
               </Badge>
             </div>
@@ -104,7 +107,10 @@ export function PetProfileHeader({
                   {formatWeight(pet.weight)}
                 </Badge>
               )}
-              <PetStatusBadge status="active" className="text-xs px-2 py-0.5" />
+              <IsActiveDisplay
+                value={pet.is_active ?? true}
+                className="scale-90 origin-left"
+              />
             </div>
           </div>
         </div>
@@ -128,7 +134,7 @@ export function PetProfileHeader({
               >
                 {formatSex(pet.sex)}
               </Badge>
-              <PetStatusBadge status="active" />
+              <IsActiveDisplay value={pet.is_active ?? true} />
               <span className="text-muted-foreground">
                 {pet.breeds?.name ||
                   pet.species?.name ||

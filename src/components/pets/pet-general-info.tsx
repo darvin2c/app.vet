@@ -2,7 +2,7 @@
 
 import { Separator } from '@/components/ui/separator'
 import { Tables } from '@/types/supabase.types'
-import { PetStatusBadge } from './pet-status-badge'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { formatSex, formatDate } from '@/lib/pet-utils'
 import { Dog, Tag, FileText, Clock } from 'lucide-react'
 import { DateDisplay } from '@/components/ui/date-picker'
@@ -68,7 +68,7 @@ export function PetGeneralInfo({ pet }: PetGeneralInfoProps) {
         <dl className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:gap-6">
           <InfoItem label="Nombre" value={pet.name} />
           <InfoItem label="Estado">
-            <PetStatusBadge status="active" />
+            <IsActiveDisplay value={pet.is_active ?? true} />
           </InfoItem>
           <InfoItem label="Especie" value={pet.species?.name} />
           <InfoItem label="Raza" value={pet.breeds?.name} />
