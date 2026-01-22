@@ -6,6 +6,7 @@ import { Syringe } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { VaccinationActions } from '../vaccination-actions'
 
 export default function VaccinationItem({
   vaccination,
@@ -63,7 +64,9 @@ export default function VaccinationItem({
           </div>
         )}
       </ItemContent>
-      {/* TODO: Add VaccinationActions if needed for edit/delete */}
+      <ItemActions>
+        <VaccinationActions vaccination={vaccination} />
+      </ItemActions>
     </Item>
   )
 }
