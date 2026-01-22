@@ -1,7 +1,7 @@
 'use client'
 
 import { useIlamyCalendarContext, type CalendarEvent } from '@ilamy/calendar'
-import { Calendar, Clock, User, UserCheck } from 'lucide-react'
+import { Clock, User, UserCheck } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'

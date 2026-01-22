@@ -5,7 +5,6 @@ import useProductUnitList from '@/hooks/product-units/use-product-unit-list'
 import { Tables } from '@/types/supabase.types'
 import { ProductUnitCreate } from './product-unit-create'
 import { ProductUnitEdit } from './product-unit-edit'
-import { Package } from 'lucide-react'
 import { useState } from 'react'
 
 type ProductUnit = Tables<'product_units'>

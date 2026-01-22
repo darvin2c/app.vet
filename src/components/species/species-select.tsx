@@ -3,7 +3,6 @@
 import { EntitySelect } from '@/components/ui/entity-select'
 import { useSpeciesList } from '@/hooks/species/use-species-list'
 import { Tables } from '@/types/supabase.types'
-import { PawPrint } from 'lucide-react'
 import { useState } from 'react'
 
 type Species = Tables<'species'>

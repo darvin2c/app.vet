@@ -4,7 +4,6 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import { usePaymentMethodList } from '@/hooks/payment-methods/use-payment-method-list'
 import { usePaymentType } from '@/hooks/payment-methods/use-payment-type'
 import { Tables } from '@/types/supabase.types'
-import { Badge } from '@/components/ui/badge'
 import { CreditCard } from 'lucide-react'
 import { useState } from 'react'
 

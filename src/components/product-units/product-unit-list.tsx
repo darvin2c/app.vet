@@ -19,7 +19,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Tables } from '@/types/supabase.types'
 import { ProductUnitActions } from './product-unit-actions'
@@ -38,7 +37,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { AlertCircle, ArrowUpRightIcon, Scale } from 'lucide-react'
+import { AlertCircle, Scale } from 'lucide-react'
 import useProductUnits from '@/hooks/product-units/use-product-unit-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'

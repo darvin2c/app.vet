@@ -20,7 +20,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { Tables } from '@/types/supabase.types'
 import { OrderActions } from './order-actions'
 import { OrderCreateButton } from './order-create-button'
@@ -36,7 +35,7 @@ import {
   EmptyContent,
 } from '@/components/ui/empty'
 import { TableSkeleton } from '@/components/ui/table-skeleton'
-import { Clock, Package, DollarSign } from 'lucide-react'
+import { Package, DollarSign } from 'lucide-react'
 import useOrderList from '@/hooks/orders/use-order-list'
 import { useFilters, FilterConfig } from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'

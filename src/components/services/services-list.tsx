@@ -58,7 +58,6 @@ import {
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
 import { Pagination, usePagination } from '../ui/pagination'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 
 type Service = Product
 

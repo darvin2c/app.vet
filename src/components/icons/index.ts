@@ -1,5 +1,4 @@
 import {
-  Heart,
   LayoutDashboard,
   MinusCircle,
   Package,

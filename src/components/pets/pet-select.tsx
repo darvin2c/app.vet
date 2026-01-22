@@ -5,7 +5,6 @@ import { usePetList } from '@/hooks/pets/use-pet-list'
 import { PetCreate } from './pet-create'
 import { PetEdit } from './pet-edit'
 import { Tables } from '@/types/supabase.types'
-import { Heart } from 'lucide-react'
 import { useState } from 'react'
 
 type Pet = Tables<'pets'> & {

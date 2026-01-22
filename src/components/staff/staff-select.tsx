@@ -5,7 +5,6 @@ import useStaffList from '@/hooks/staff/use-staff-list'
 import { StaffCreate } from './staff-create'
 import { StaffEdit } from './staff-edit'
 import { Tables } from '@/types/supabase.types'
-import { UserCheck } from 'lucide-react'
 import { useState } from 'react'
 
 type Staff = Tables<'staff'> & {

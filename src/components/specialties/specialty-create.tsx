@@ -3,7 +3,6 @@
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormSheet } from '@/components/ui/form-sheet'
-import { ResponsiveButton } from '@/components/ui/responsive-button'
 import { SpecialtyForm } from './specialty-form'
 import {
   SpecialtyCreateSchema,

@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { useEffect } from 'react'
@@ -14,7 +14,6 @@ import {
 } from '@/schemas/hospitalization.schema'
 import { Tables } from '@/types/supabase.types'
 import { format } from 'date-fns'
-import CanAccess from '@/components/ui/can-access'
 
 // Tipo para hospitalization (sin pet_id por ahora, se agregará después)
 type Hospitalization = Tables<'hospitalizations'>

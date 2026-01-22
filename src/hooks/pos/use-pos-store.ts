@@ -1,6 +1,6 @@
 'use client'
 
-import { Enums, Tables, TablesInsert } from '@/types/supabase.types'
+import { Tables, TablesInsert } from '@/types/supabase.types'
 import { create } from 'zustand'
 
 type Customer = Tables<'customers'>

@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Layers } from 'lucide-react'
 import { EntitySelect } from '@/components/ui/entity-select'
 import useProductCategoryList from '@/hooks/product-categories/use-product-category-list'
 import { ProductCategoryCreate } from './product-category-create'

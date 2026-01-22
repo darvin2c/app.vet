@@ -2,7 +2,6 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Plus } from 'lucide-react'
 import { FormSheet } from '@/components/ui/form-sheet'
 import { BreedForm } from './breed-form'
 import { useBreedCreate } from '@/hooks/breeds/use-breed-create'

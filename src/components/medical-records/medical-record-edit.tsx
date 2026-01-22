@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { FormSheet } from '@/components/ui/form-sheet'
@@ -12,7 +12,6 @@ import {
   MedicalRecordSchema,
   MedicalRecordFormData,
 } from '@/schemas/medical-record.schema'
-import CanAccess from '@/components/ui/can-access'
 import { Tables } from '@/types/supabase.types'
 
 interface MedicalRecordEditProps {

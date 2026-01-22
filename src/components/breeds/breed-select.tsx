@@ -5,7 +5,6 @@ import { useBreedsList } from '@/hooks/breeds/use-breed-list'
 import { BreedCreate } from './breed-create'
 import { BreedEdit } from './breed-edit'
 import { Tables } from '@/types/supabase.types'
-import { Dog } from 'lucide-react'
 import { useState } from 'react'
 
 type Breed = Tables<'breeds'> & {

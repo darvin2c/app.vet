@@ -58,7 +58,7 @@ export default function useOrderCreate() {
       // Crear movimientos de producto
       if (createdItems && createdItems.length > 0) {
         // Usamos any para evitar errores de tipo hasta que se actualicen los tipos de Supabase
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         const movements: any[] = createdItems.map((item) => ({
           product_id: item.product_id,
           quantity: -item.quantity,

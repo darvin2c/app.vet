@@ -4,7 +4,6 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import useProductList, { Product } from '@/hooks/products/use-products-list'
 import { ProductCreate } from './product-create'
 import { ProductEdit } from './product-edit'
-import { Package } from 'lucide-react'
 import { useState } from 'react'
 
 interface ProductSelectProps {

@@ -4,7 +4,7 @@ import { EntitySelect } from '@/components/ui/entity-select'
 import useSuppliers from '@/hooks/suppliers/use-supplier-list'
 import { SupplierCreate } from './supplier-create'
 import { SupplierEdit } from './supplier-edit'
-import { Database, Tables } from '@/types/supabase.types'
+import { Tables } from '@/types/supabase.types'
 import { Building } from 'lucide-react'
 import { useState } from 'react'
 

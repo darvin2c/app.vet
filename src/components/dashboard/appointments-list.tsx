@@ -6,7 +6,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useAppointmentList } from '@/hooks/appointments/use-appointment-list'
 import {
-  Clock,
   MoreHorizontal,
   Plus,
   Calendar as CalendarIcon,
@@ -19,7 +18,6 @@ import useAppointmentStatus from '@/hooks/appointments/use-appointment-status'
 import { EventCard } from '../agenda/event-card'
 import {
   Item,
-  ItemActions,
   ItemContent,
   ItemDescription,
   ItemGroup,

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Enums, Constants } from '@/types/supabase.types'
+import { Constants } from '@/types/supabase.types'
 
 // Schema para crear una cita
 export const createAppointmentSchema = z

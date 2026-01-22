@@ -4,8 +4,6 @@ import { useQuery } from '@tanstack/react-query'
 import { MetricCard } from './metric-card'
 import { supabase } from '@/lib/supabase/client'
 import {
-  subDays,
-  differenceInDays,
   parseISO,
   format,
   eachDayOfInterval,

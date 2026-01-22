@@ -10,7 +10,6 @@ import {
 } from '@/schemas/product-movements.schema'
 import useProductMovementCreate from '@/hooks/product-movements/use-product-movement-create'
 import CanAccess from '@/components/ui/can-access'
-import { Tables } from '@/types/supabase.types'
 
 interface ProductMovementCreateProps {
   open: boolean

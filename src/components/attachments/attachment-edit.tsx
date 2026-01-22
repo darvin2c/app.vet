@@ -1,6 +1,6 @@
 'use client'
 
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useAttachmentUpdate } from '@/hooks/attachments/use-attachment-update'
 import {
@@ -12,7 +12,6 @@ import {
 import { AttachmentForm } from './attachment-form'
 import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
-import CanAccess from '@/components/ui/can-access'
 
 interface AttachmentEditProps {
   attachment: {

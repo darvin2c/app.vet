@@ -18,12 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+
+
 import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEdit } from './order-edit'

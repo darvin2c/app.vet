@@ -5,7 +5,6 @@ import { useAppointmentTypeList } from '@/hooks/appointment-types/use-appointmen
 import { AppointmentTypeCreate } from './appointment-type-create'
 import { AppointmentTypeEdit } from './appointment-type-edit'
 import { Database } from '@/types/supabase.types'
-import { Circle } from 'lucide-react'
 import { useState } from 'react'
 
 type AppointmentType = Database['public']['Tables']['appointment_types']['Row']

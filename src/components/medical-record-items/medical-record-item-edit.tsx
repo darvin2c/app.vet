@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useForm, FormProvider } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
 import { FormSheet } from '@/components/ui/form-sheet'
@@ -13,7 +13,6 @@ import {
 } from '@/schemas/medical-record-items.schema'
 import { useMedicalRecordItemUpdate } from '@/hooks/medical-record-items/use-medical-record-item-update'
 import { Tables } from '@/types/supabase.types'
-import CanAccess from '@/components/ui/can-access'
 
 interface MedicalRecordItemEditProps {
   medicalRecordItem: Tables<'record_items'>

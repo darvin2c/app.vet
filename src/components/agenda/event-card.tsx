@@ -6,7 +6,6 @@ import { es } from 'date-fns/locale'
 import {
   Calendar,
   Clock,
-  User,
   UserCheck,
   FileText,
   Edit,

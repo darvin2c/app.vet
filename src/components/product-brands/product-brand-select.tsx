@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { Tag } from 'lucide-react'
 import { EntitySelect } from '@/components/ui/entity-select'
 import useProductBrandList from '@/hooks/product-brands/use-product-brand-list'
 import { ProductBrandCreate } from './product-brand-create'

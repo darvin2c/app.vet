@@ -1,6 +1,6 @@
 'use client'
 
-import { FormProvider, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormSheet } from '@/components/ui/form-sheet'
 import { ResponsiveButton } from '@/components/ui/responsive-button'
@@ -11,7 +11,6 @@ import {
 } from '@/schemas/clinical-parameters.schema'
 import { useClinicalParameterUpdate } from '@/hooks/clinical-parameters/use-clinical-parameter-update'
 import { Json, Tables } from '@/types/supabase.types'
-import CanAccess from '@/components/ui/can-access'
 
 interface ClinicalParameterEditProps {
   clinicalParameter: Tables<'clinical_parameters'>
