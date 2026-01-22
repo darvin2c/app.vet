@@ -153,85 +153,67 @@ export default function Event({ event }: { event: CalendarEvent }) {
       )
     }
 
-    // Vista Día - Diseño tipo lista horizontal con fondo de color suave
+    // Vista Día - Diseño vertical adaptativo
     if (view === 'day') {
       return (
         <div
           className={cn(
-            'px-4 py-1 rounded-lg border-1 shadow-sm',
+            'px-2 py-1.5 rounded-md border-l-4 shadow-sm',
             'hover:shadow-md transition-all duration-200 cursor-pointer',
-            'min-h-[120px] bg-opacity-10',
-            'flex flex-col justify-between',
+            'h-full w-full bg-opacity-20',
+            'flex flex-col gap-1',
             'relative overflow-hidden'
           )}
           style={{
-            borderColor: statusColor,
-            backgroundColor: `${typeColor}30`,
+            borderLeftColor: typeColor,
+            backgroundColor: `${typeColor}20`,
           }}
         >
-          {/* Título del evento (tipo de cita) */}
-          <div className="flex items-start justify-between">
-            <h3 className="text-sm font-semibold text-gray-900 leading-tight">
+          {/* Cabecera: Tipo y Estado */}
+          <div className="flex items-center justify-between gap-2 min-h-0 shrink-0">
+            <span className="font-semibold text-xs text-gray-900 truncate flex-1">
               {typeName}
-            </h3>
-            <Badge
-              className="text-xs"
+            </span>
+            <span
+              className="text-[10px] px-1.5 py-0.5 rounded-full font-medium truncate max-w-[80px] shrink-0"
               style={{ backgroundColor: statusColor, color: '#fff' }}
             >
               {statusLabel}
-            </Badge>
+            </span>
           </div>
 
-          {/* Información de la mascota y cliente */}
-          <div className="flex items-center gap-2">
-            <User className="w-3 h-3 text-gray-600" />
-            <span className="font-medium text-sm text-gray-800">{petName}</span>
-            <span className="text-xs text-gray-500">({clientName})</span>
-          </div>
-
-          {/* Fecha y Horario */}
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">
-                {format(event.start.toDate(), "EEEE, d 'de' MMMM", {
-                  locale: es,
-                })}
+          {/* Información principal */}
+          <div className="flex flex-col min-h-0 gap-0.5 shrink-0">
+            <div className="flex items-center gap-1 text-xs font-medium text-gray-800 truncate">
+              <User className="w-3 h-3 flex-shrink-0 text-gray-500" />
+              <span className="truncate">{petName}</span>
+              <span className="text-gray-500 font-normal truncate">
+                ({clientName})
               </span>
             </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-gray-600" />
-              <span className="text-sm font-medium text-gray-700">
-                {timeRange}
-              </span>
+
+            <div className="flex items-center gap-1 text-[10px] text-gray-600 truncate">
+              <Clock className="w-3 h-3 flex-shrink-0" />
+              <span>{timeRange}</span>
             </div>
+
+            {staffName && (
+              <div className="flex items-center gap-1 text-[10px] text-gray-600 truncate">
+                <UserCheck className="w-3 h-3 flex-shrink-0" />
+                <span>{staffName}</span>
+              </div>
+            )}
           </div>
 
-          {/* Personal médico si existe */}
-          {staffName && (
-            <div className="flex items-center gap-2">
-              <UserCheck className="w-4 h-4 text-gray-600" />
-              <span className="text-sm text-gray-700">{staffName}</span>
-            </div>
-          )}
-
-          {/* Motivo de la cita si existe */}
+          {/* Motivo - solo si hay espacio */}
           {appointment?.reason && (
-            <div className="pt-2 border-t border-gray-200">
-              <p className="text-xs text-gray-600 leading-relaxed font-medium">
-                Motivo: {appointment.reason}
+            <div className="mt-1 pt-1 border-t border-gray-200/50 shrink-0">
+              <p className="text-[10px] text-gray-600 truncate">
+                {appointment.reason}
               </p>
             </div>
           )}
 
-          {/* Notas/descripción si existen */}
-          {appointment?.notes && (
-            <div className="pt-2 border-t border-gray-200">
-              <p className="text-xs text-gray-600 leading-relaxed">
-                {appointment.notes}
-              </p>
-            </div>
-          )}
           {isPast && (
             <div
               className="absolute inset-0 pointer-events-none"
