@@ -35,9 +35,10 @@ export function VaccinationEdit({
   const setOpen = onOpenChange ?? setInternalOpen
 
   const form = useForm<VaccinationFormData>({
-    resolver: zodResolver(VaccinationSchema),
+    resolver: zodResolver(VaccinationSchema) as any,
     defaultValues: {
       clinical_record_id: vaccination.clinical_record_id,
+      product_id: vaccination.product_id || '',
       dose: vaccination.dose || '',
       route: vaccination.route || '',
       site: vaccination.site || '',
@@ -51,6 +52,7 @@ export function VaccinationEdit({
     if (!newOpen) {
       form.reset({
         clinical_record_id: vaccination.clinical_record_id,
+        product_id: vaccination.product_id || '',
         dose: vaccination.dose || '',
         route: vaccination.route || '',
         site: vaccination.site || '',
@@ -62,9 +64,10 @@ export function VaccinationEdit({
 
   const onSubmit = async (data: VaccinationFormData) => {
     try {
+      const { items, ...vaccinationData } = data
       await updateVaccination.mutateAsync({
         id: vaccination.id,
-        data,
+        data: vaccinationData,
       })
       handleOpenChange(false)
     } catch (error) {
@@ -76,6 +79,7 @@ export function VaccinationEdit({
     if (isOpen) {
       form.reset({
         clinical_record_id: vaccination.clinical_record_id,
+        product_id: vaccination.product_id || '',
         dose: vaccination.dose || '',
         route: vaccination.route || '',
         site: vaccination.site || '',

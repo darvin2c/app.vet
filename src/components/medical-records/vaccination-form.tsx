@@ -11,6 +11,8 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
+import { VaccinationItemsManager } from './vaccination-items-manager'
+import { ProductSelect } from '@/components/products/product-select'
 
 export function VaccinationForm() {
   const {
@@ -28,6 +30,32 @@ export function VaccinationForm() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <Field>
+          <FieldLabel htmlFor="product_id">Producto</FieldLabel>
+          <FieldContent>
+            <ProductSelect
+              value={watch('product_id')}
+              onValueChange={(value) => setValue('product_id', value)}
+              placeholder="Seleccionar producto..."
+              onSelectProduct={(product) => {
+                const currentItems = watch('items') || []
+                // Solo agregar si no hay items
+                if (currentItems.length === 0) {
+                  setValue('items', [
+                    {
+                      product_id: product.id,
+                      qty: 1,
+                      unit_price: product.price,
+                      product_name: product.name,
+                    },
+                  ])
+                }
+              }}
+            />
+            <FieldError errors={[errors.product_id]} />
+          </FieldContent>
+        </Field>
+
         <Field>
           <FieldLabel htmlFor="dose">Dosis</FieldLabel>
           <FieldContent>
@@ -91,6 +119,8 @@ export function VaccinationForm() {
           <FieldError errors={[errors.adverse_event]} />
         </FieldContent>
       </Field>
+
+      <VaccinationItemsManager />
     </div>
   )
 }

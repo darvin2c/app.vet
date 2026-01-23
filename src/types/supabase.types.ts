@@ -2110,6 +2110,7 @@ export type Database = {
           dose: string | null
           id: string
           next_due_at: string | null
+          product_id: string | null
           route: string | null
           site: string | null
           tenant_id: string
@@ -2124,6 +2125,7 @@ export type Database = {
           dose?: string | null
           id?: string
           next_due_at?: string | null
+          product_id?: string | null
           route?: string | null
           site?: string | null
           tenant_id: string
@@ -2138,6 +2140,7 @@ export type Database = {
           dose?: string | null
           id?: string
           next_due_at?: string | null
+          product_id?: string | null
           route?: string | null
           site?: string | null
           tenant_id?: string
@@ -2145,6 +2148,13 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: 'pet_vaccinations_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'vaccinations_clinical_record_id_fkey'
             columns: ['clinical_record_id']

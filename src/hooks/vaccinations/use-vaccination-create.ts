@@ -11,16 +11,26 @@ export function useVaccinationCreate() {
 
   return useMutation({
     mutationFn: async (
-      data: Omit<TablesInsert<'pet_vaccinations'>, 'tenant_id'>
+      data: Omit<TablesInsert<'pet_vaccinations'>, 'tenant_id'> & {
+        items?: {
+          product_id: string
+          qty: number
+          unit_price?: number
+          discount?: number
+          notes?: string
+        }[]
+      }
     ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
+      const { items, ...vaccinationData } = data
+
       const { data: vaccination, error } = await supabase
         .from('pet_vaccinations')
         .insert({
-          ...data,
+          ...vaccinationData,
           tenant_id: currentTenant.id,
         })
         .select()
@@ -28,6 +38,24 @@ export function useVaccinationCreate() {
 
       if (error) {
         throw error
+      }
+
+      if (items && items.length > 0) {
+        const itemsToInsert = items.map((item) => ({
+          record_id: vaccinationData.clinical_record_id,
+          product_id: item.product_id,
+          qty: item.qty,
+          unit_price: item.unit_price || 0,
+          discount: item.discount || 0,
+          notes: item.notes,
+          tenant_id: currentTenant.id,
+        }))
+
+        const { error: itemsError } = await supabase
+          .from('record_items')
+          .insert(itemsToInsert)
+
+        if (itemsError) throw itemsError
       }
 
       return vaccination
