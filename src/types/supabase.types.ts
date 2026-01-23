@@ -2034,6 +2034,66 @@ export type Database = {
           },
         ]
       }
+      pet_dewormings: {
+        Row: {
+          adverse_event: string | null
+          clinical_record_id: string
+          created_at: string
+          created_by: string | null
+          dose: string | null
+          id: string
+          next_due_at: string | null
+          product: string | null
+          route: string | null
+          tenant_id: string
+          updated_at: string | null
+          updated_by: string | null
+        }
+        Insert: {
+          adverse_event?: string | null
+          clinical_record_id: string
+          created_at?: string
+          created_by?: string | null
+          dose?: string | null
+          id?: string
+          next_due_at?: string | null
+          product?: string | null
+          route?: string | null
+          tenant_id: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Update: {
+          adverse_event?: string | null
+          clinical_record_id?: string
+          created_at?: string
+          created_by?: string | null
+          dose?: string | null
+          id?: string
+          next_due_at?: string | null
+          product?: string | null
+          route?: string | null
+          tenant_id?: string
+          updated_at?: string | null
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: 'pet_dewormings_clinical_record_id_fkey'
+            columns: ['clinical_record_id']
+            isOneToOne: false
+            referencedRelation: 'clinical_records'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'pet_dewormings_tenant_id_fkey'
+            columns: ['tenant_id']
+            isOneToOne: false
+            referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+        ]
+      }
       pet_vaccinations: {
         Row: {
           adverse_event: string | null

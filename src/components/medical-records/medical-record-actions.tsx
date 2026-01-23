@@ -14,6 +14,7 @@ import { ClinicalNoteCreate } from '@/components/clinical-notes/clinical-note-cr
 import { Tables } from '@/types/supabase.types'
 import { ClinicalParameterCreate } from '../clinical-parameters/clinical-parameter-create'
 import { VaccinationCreate } from './vaccination-create'
+import { DewormingCreate } from './deworming-create'
 import { MedicalRecordItemCreate } from '../medical-record-items/medical-record-item-create'
 
 interface MedicalRecordActionsProps {
@@ -28,6 +29,7 @@ export function MedicalRecordActions({
   const [clinicalNoteOpen, setClinicalNoteOpen] = useState(false)
   const [clinicalParamsOpen, setClinicalParamsOpen] = useState(false)
   const [vaccinationOpen, setVaccinationOpen] = useState(false)
+  const [dewormingOpen, setDewormingOpen] = useState(false)
   const [itemOpen, setItemOpen] = useState(false)
 
   return (
@@ -57,6 +59,11 @@ export function MedicalRecordActions({
           <DropdownMenuItem onClick={() => setVaccinationOpen(true)}>
             <Plus className="mr-2 h-4 w-4" />
             Vacunación
+          </DropdownMenuItem>
+
+          <DropdownMenuItem onClick={() => setDewormingOpen(true)}>
+            <Plus className="mr-2 h-4 w-4" />
+            Desparasitación
           </DropdownMenuItem>
 
           <DropdownMenuItem onClick={() => setItemOpen(true)}>
@@ -102,6 +109,12 @@ export function MedicalRecordActions({
       <VaccinationCreate
         open={vaccinationOpen}
         onOpenChange={setVaccinationOpen}
+        medicalRecordId={medicalRecord.id}
+        petId={medicalRecord.pet_id}
+      />
+      <DewormingCreate
+        open={dewormingOpen}
+        onOpenChange={setDewormingOpen}
         medicalRecordId={medicalRecord.id}
         petId={medicalRecord.pet_id}
       />

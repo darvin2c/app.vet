@@ -51,7 +51,10 @@ export function useMedicalRecordList({
           ),
           pet_vaccinations (
             *
-          ),  
+          ),
+          pet_dewormings (
+            *
+          ),
           record_items (
             *,
             products (

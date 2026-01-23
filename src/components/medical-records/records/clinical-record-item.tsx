@@ -2,7 +2,14 @@
 import { Tables, TablesUpdate } from '@/types/supabase.types'
 import { useEffect, useState } from 'react'
 import { Item, ItemActions, ItemContent, ItemTitle } from '@/components/ui/item'
-import { Stethoscope, FileText, Activity, Syringe, Package } from 'lucide-react'
+import {
+  Stethoscope,
+  FileText,
+  Activity,
+  Syringe,
+  Package,
+  Pill,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { MedicalRecordActions } from '../medical-record-actions'
@@ -10,6 +17,7 @@ import { es } from 'date-fns/locale'
 import ClinicalParameterItem from './clinical-parameter-item'
 import ClinicalNoteItem from './clinical-note-item'
 import VaccinationItem from './vaccination-item'
+import DewormingItem from './deworming-item'
 import RecordItemItem, {
   MedicalRecordItemWithProduct,
 } from './record-item-item'
@@ -18,6 +26,7 @@ type ClinicalRecord = Tables<'clinical_records'> & {
   clinical_parameters?: TablesUpdate<'clinical_parameters'>[]
   clinical_notes?: TablesUpdate<'clinical_notes'>[] | null
   pet_vaccinations?: TablesUpdate<'pet_vaccinations'>[] | null
+  pet_dewormings?: TablesUpdate<'pet_dewormings'>[] | null
   record_items?: MedicalRecordItemWithProduct[] | null
   pets?: TablesUpdate<'pets'> | null
 }
@@ -27,6 +36,7 @@ type CombinedRecord =
   | (TablesUpdate<'clinical_parameters'> & { type?: 'clinical_parameters' })
   | (TablesUpdate<'clinical_notes'> & { type?: 'clinical_notes' })
   | (TablesUpdate<'pet_vaccinations'> & { type?: 'pet_vaccinations' })
+  | (TablesUpdate<'pet_dewormings'> & { type?: 'pet_dewormings' })
   | (MedicalRecordItemWithProduct & { type?: 'record_items' })
 
 export default function ClinicalRecordItem({
@@ -42,16 +52,23 @@ export default function ClinicalRecordItem({
     parameters: boolean
     notes: boolean
     pet_vaccinations: boolean
+    pet_dewormings: boolean
     items: boolean
   }>({
     parameters: false,
     notes: false,
     pet_vaccinations: false,
+    pet_dewormings: false,
     items: false,
   })
 
   const toggleFilter = (
-    key: 'parameters' | 'notes' | 'pet_vaccinations' | 'items'
+    key:
+      | 'parameters'
+      | 'notes'
+      | 'pet_vaccinations'
+      | 'pet_dewormings'
+      | 'items'
   ) => {
     setActiveFilters((prev) => ({
       ...prev,
@@ -94,6 +111,15 @@ export default function ClinicalRecordItem({
       clinical.push(...vaccinationsWithType)
     }
 
+    // Agregar desparasitaciones
+    if (clinicalRecord.pet_dewormings && activeFilters.pet_dewormings) {
+      const dewormingsWithType = clinicalRecord.pet_dewormings.map((dew) => ({
+        ...dew,
+        type: 'pet_dewormings' as const,
+      }))
+      clinical.push(...dewormingsWithType)
+    }
+
     // Agregar items
     if (clinicalRecord.record_items && activeFilters.items) {
       const itemsWithType = clinicalRecord.record_items.map((item) => ({
@@ -117,6 +143,7 @@ export default function ClinicalRecordItem({
     clinicalRecord.clinical_parameters,
     clinicalRecord.clinical_notes,
     clinicalRecord.pet_vaccinations,
+    clinicalRecord.pet_dewormings,
     clinicalRecord.record_items,
     activeFilters,
   ])
@@ -203,6 +230,22 @@ export default function ClinicalRecordItem({
                     {clinicalRecord?.pet_vaccinations?.length} vacunas
                   </Badge>
                 )}
+              {clinicalRecord?.pet_dewormings &&
+                clinicalRecord.pet_dewormings.length > 0 && (
+                  <Badge
+                    variant={
+                      activeFilters.pet_dewormings ? 'secondary' : 'outline'
+                    }
+                    className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      toggleFilter('pet_dewormings')
+                    }}
+                  >
+                    <Pill className="h-3 w-3" />
+                    {clinicalRecord?.pet_dewormings?.length} desparasitaciones
+                  </Badge>
+                )}
               {clinicalRecord?.record_items &&
                 clinicalRecord.record_items.length > 0 && (
                   <Badge
@@ -248,9 +291,13 @@ export default function ClinicalRecordItem({
                     <ClinicalNoteItem
                       clinicalNote={record as Tables<'clinical_notes'>}
                     />
-                  ) : (
+                  ) : record.type === 'pet_vaccinations' ? (
                     <VaccinationItem
                       vaccination={record as Tables<'pet_vaccinations'>}
+                    />
+                  ) : (
+                    <DewormingItem
+                      deworming={record as Tables<'pet_dewormings'>}
                     />
                   )}
                 </div>
