@@ -54,7 +54,7 @@ export function useDewormingCreate() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ['clinical-records'],
+        queryKey: [currentTenant?.id!, 'pet_dewormings'],
       })
     },
   })
