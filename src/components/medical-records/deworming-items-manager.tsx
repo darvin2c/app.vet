@@ -81,7 +81,7 @@ export function DewormingItemsManager() {
   }
 
   return (
-    <div className="space-y-4 border rounded-md p-4">
+    <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 font-medium">
           <Package className="h-4 w-4" />
@@ -119,59 +119,76 @@ export function DewormingItemsManager() {
       </div>
 
       {fields.length > 0 && (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Producto</TableHead>
-              <TableHead className="w-24 text-center">Cant.</TableHead>
-              <TableHead className="w-32 text-right">Precio U.</TableHead>
-              <TableHead className="w-12"></TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {fields.map((field: any, index) => (
-              <TableRow key={field.id}>
-                <TableCell>
-                  <div className="flex flex-col">
-                    <span>{field.product_name}</span>
-                    {field.notes && (
-                      <span className="text-xs text-muted-foreground">
-                        {field.notes}
-                      </span>
-                    )}
-                  </div>
-                </TableCell>
-                <TableCell className="text-center">{field.qty}</TableCell>
-                <TableCell className="text-right">
-                  {new Intl.NumberFormat('es-PE', {
-                    style: 'currency',
-                    currency: 'PEN',
-                  }).format(field.unit_price)}
-                  {field.discount > 0 && (
-                    <div className="text-xs text-destructive">
-                      -
-                      {new Intl.NumberFormat('es-PE', {
-                        style: 'currency',
-                        currency: 'PEN',
-                      }).format(field.discount)}
-                    </div>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-destructive"
-                    onClick={() => remove(index)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </TableCell>
+        <div className="space-y-4">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Producto</TableHead>
+                <TableHead className="w-24 text-center">Cant.</TableHead>
+                <TableHead className="w-32 text-right">Precio U.</TableHead>
+                <TableHead className="w-12"></TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {fields.map((field: any, index) => (
+                <TableRow key={field.id}>
+                  <TableCell>
+                    <div className="flex flex-col">
+                      <span>{field.product_name}</span>
+                      {field.notes && (
+                        <span className="text-xs text-muted-foreground">
+                          {field.notes}
+                        </span>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-center">{field.qty}</TableCell>
+                  <TableCell className="text-right">
+                    {new Intl.NumberFormat('es-PE', {
+                      style: 'currency',
+                      currency: 'PEN',
+                    }).format(field.unit_price)}
+                    {field.discount > 0 && (
+                      <div className="text-xs text-destructive">
+                        -
+                        {new Intl.NumberFormat('es-PE', {
+                          style: 'currency',
+                          currency: 'PEN',
+                        }).format(field.discount)}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-destructive"
+                      onClick={() => remove(index)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          <div className="flex justify-end pr-4 text-sm font-medium">
+            <span>
+              Total:{' '}
+              {new Intl.NumberFormat('es-PE', {
+                style: 'currency',
+                currency: 'PEN',
+              }).format(
+                fields.reduce(
+                  (acc, item: any) =>
+                    acc + item.qty * item.unit_price - (item.discount || 0),
+                  0
+                )
+              )}
+            </span>
+          </div>
+        </div>
       )}
     </div>
   )
