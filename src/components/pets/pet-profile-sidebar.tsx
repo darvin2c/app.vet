@@ -1,194 +1,156 @@
 'use client'
 
 import {
-  Phone,
-  Mail,
-  MapPin,
-  Calendar,
-  ExternalLink,
-  Plus,
+  User,
   FileText,
+  Calendar,
+  ShoppingBag
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarFooter,
+  SidebarRail,
+  SidebarSeparator
+} from '@/components/ui/multi-sidebar'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Separator } from '@/components/ui/separator'
-import { Tables } from '@/types/supabase.types'
-import Link from 'next/link'
-import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
-
-type PetDetail = Tables<'pets'> & {
-  customers: Tables<'customers'> | null
-  breeds:
-    | (Tables<'breeds'> & {
-        species: Tables<'species'> | null
-      })
-    | null
-  species: Tables<'species'> | null
-}
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useRouter } from 'next/navigation'
+import { usePetDetail } from '@/hooks/pets/use-pet-detail'
+import { calculateAge, formatSex } from '@/lib/pet-utils'
+import { IsActiveDisplay } from '@/components/ui/is-active-field'
+import { PetActions } from './pet-actions'
 
 interface PetProfileSidebarProps {
-  pet: PetDetail
-  appointmentsCount?: number
-  medicalRecordsCount?: number
+  petId: string
+  activeTab: string
+  onTabChange: (tab: string) => void
 }
 
 export function PetProfileSidebar({
-  pet,
-  appointmentsCount = 0,
-  medicalRecordsCount = 0,
+  petId,
+  activeTab,
+  onTabChange,
 }: PetProfileSidebarProps) {
-  const customer = pet.customers
+  const router = useRouter()
+  const { data: pet, isLoading } = usePetDetail(petId)
+
+  if (isLoading) {
+    return (
+       <Sidebar side="left" collapsible="offcanvas" className="border-r">
+          <SidebarHeader className="h-14 border-b flex flex-row items-center px-4">
+             <Skeleton className="h-8 w-8 rounded-full" />
+             <Skeleton className="h-4 w-20 ml-2" />
+          </SidebarHeader>
+          <SidebarContent className="p-4 space-y-6">
+             <div className="flex flex-col items-center space-y-3">
+               <Skeleton className="h-24 w-24 rounded-full" />
+               <Skeleton className="h-6 w-32" />
+               <Skeleton className="h-4 w-24" />
+             </div>
+             <div className="space-y-2">
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+                <Skeleton className="h-10 w-full" />
+             </div>
+          </SidebarContent>
+       </Sidebar>
+    )
+  }
+
+  if (!pet) return null
+
+  const menuItems = [
+    {
+      id: "general",
+      label: "Información General",
+      icon: User,
+    },
+    {
+      id: "clinical-records",
+      label: "Historial Médico",
+      icon: FileText,
+    },
+    {
+      id: "appointments",
+      label: "Citas",
+      icon: Calendar,
+    },
+    {
+      id: "orders",
+      label: "Ordenes",
+      icon: ShoppingBag,
+    },
+  ]
 
   return (
-    <div className="space-y-6 bg-muted p-6 rounded-lg">
-      {/* Estadísticas */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Resumen
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/5 border border-primary/10">
-            <Calendar className="h-5 w-5 text-primary mb-1" />
-            <div className="text-2xl font-bold text-primary">
-              {appointmentsCount}
-            </div>
-            <div className="text-xs text-muted-foreground">Citas</div>
-          </div>
-          <div className="flex flex-col items-center justify-center p-4 rounded-xl bg-primary/5 border border-primary/10">
-            <FileText className="h-5 w-5 text-primary mb-1" />
-            <div className="text-2xl font-bold text-primary">
-              {medicalRecordsCount}
-            </div>
-            <div className="text-xs text-muted-foreground">Registros</div>
-          </div>
-        </div>
-      </section>
+    <Sidebar side="right" collapsible="icon" className="absolute top-0 left-0  bg-sidebar h-full">
+  
 
-      <Separator />
-
-      {/* Propietario */}
-      <section className="space-y-4">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Propietario
-        </h3>
-        {customer ? (
-          <div className="space-y-4">
-            {/* Info del propietario */}
-            <div className="flex items-start gap-3">
-              <Avatar className="h-12 w-12 flex-shrink-0">
-                <AvatarFallback className="text-sm bg-primary/10 text-primary">
-                  {customer.first_name?.charAt(0)?.toUpperCase()}
-                  {customer.last_name?.charAt(0)?.toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
-              <div className="min-w-0 flex-1">
-                <p className="font-semibold text-sm truncate">
-                  {customer.first_name} {customer.last_name}
+      <SidebarContent className="pt-6">
+        <div className="flex flex-col items-center px-6 text-center mb-6">
+            <Avatar className="h-28 w-28 mb-4 border-4 border-sidebar-accent shadow-sm">
+               <AvatarFallback className="text-3xl bg-sidebar-accent text-sidebar-accent-foreground">
+                 {pet.name?.charAt(0)?.toUpperCase()}
+               </AvatarFallback>
+            </Avatar>
+            
+            <div className="space-y-1 mb-3">
+                <h2 className="text-xl font-bold tracking-tight">{pet.name}</h2>
+                <p className="text-sm text-sidebar-foreground/60 font-medium">
+                {pet.breeds?.name || pet.species?.name}
                 </p>
-                {customer.doc_id && (
-                  <p className="text-xs text-muted-foreground">
-                    Doc: {customer.doc_id}
-                  </p>
-                )}
-                <Link
-                  href={`/customers/${customer.id}`}
-                  className="text-xs text-primary hover:underline inline-flex items-center gap-1 mt-1"
-                >
-                  Ver perfil <ExternalLink className="h-3 w-3" />
-                </Link>
-              </div>
             </div>
 
-            {/* Datos de contacto */}
-            <div className="space-y-2.5 pl-1">
-              {customer.phone && (
-                <a
-                  href={`tel:${customer.phone}`}
-                  className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Phone className="h-4 w-4 flex-shrink-0" />
-                  <span>{customer.phone}</span>
-                </a>
-              )}
+             <div className="flex flex-wrap justify-center gap-2 mb-4">
+                <Badge variant="secondary" className="px-2 py-0.5 font-normal">
+                  {formatSex(pet.sex)}
+                </Badge>
+                 <Badge variant="outline" className="px-2 py-0.5 font-normal border-sidebar-border">
+                   {calculateAge(pet.birth_date)}
+                 </Badge>
+             </div>
 
-              {customer.email && (
-                <a
-                  href={`mailto:${customer.email}`}
-                  className="flex items-center gap-2.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <Mail className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{customer.email}</span>
-                </a>
-              )}
-
-              {customer.address && (
-                <div className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4 flex-shrink-0 mt-0.5" />
-                  <span className="leading-relaxed">{customer.address}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Botones de acción */}
-            <div className="flex gap-2 pt-2">
-              {customer.phone && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 h-9"
-                  asChild
-                >
-                  <a href={`tel:${customer.phone}`}>
-                    <Phone className="h-4 w-4 mr-2" />
-                    Llamar
-                  </a>
-                </Button>
-              )}
-              {customer.email && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 h-9"
-                  asChild
-                >
-                  <a href={`mailto:${customer.email}`}>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Email
-                  </a>
-                </Button>
-              )}
-            </div>
-          </div>
-        ) : (
-          <p className="text-sm text-muted-foreground italic">
-            No hay información del propietario disponible
-          </p>
-        )}
-      </section>
-
-      <Separator />
-
-      {/* Próximas Citas */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Próximas Citas
-          </h3>
-          <AppointmentCreateButton
-            petId={pet.id}
-            size="sm"
-            variant="ghost"
-            className="h-7 px-2 text-xs"
-          >
-            <Plus className="h-3.5 w-3.5 mr-1" />
-            Nueva
-          </AppointmentCreateButton>
+             <div className="w-full flex justify-center">
+                 <PetActions pet={pet} />
+             </div>
         </div>
-        <div className="text-center py-4 text-muted-foreground">
-          <Calendar className="h-6 w-6 mx-auto mb-2 opacity-50" />
-          <p className="text-xs">Ver pestaña de citas</p>
+
+        <div className="px-3">
+             <SidebarSeparator className="mb-4" />
         </div>
-      </section>
-    </div>
+
+        <SidebarMenu className="px-3">
+           {menuItems.map((item) => (
+             <SidebarMenuItem key={item.id}>
+               <SidebarMenuButton
+                 isActive={activeTab === item.id}
+                 onClick={() => onTabChange(item.id)}
+                 tooltip={item.label}
+                 size="default"
+                 className="font-medium"
+               >
+                 <item.icon className="h-4 w-4 opacity-70" />
+                 <span>{item.label}</span>
+               </SidebarMenuButton>
+             </SidebarMenuItem>
+           ))}
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter className="p-4 border-t border-sidebar-border">
+         <div className="flex items-center justify-between px-2">
+            <span className="text-xs text-sidebar-foreground/50 font-medium uppercase tracking-wider">Estado</span>
+            <IsActiveDisplay value={pet.is_active ?? true} />
+         </div>
+      </SidebarFooter>
+      <SidebarRail />
+    </Sidebar>
   )
 }
