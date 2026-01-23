@@ -175,7 +175,6 @@ export function PendingBillingItems({ petId }: PendingBillingItemsProps) {
                   </TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Descripción</TableHead>
-                  <TableHead>Tipo</TableHead>
                   <TableHead className="text-right">Cant.</TableHead>
                   <TableHead className="text-right">Precio</TableHead>
                   <TableHead className="text-right">Total</TableHead>
@@ -217,11 +216,6 @@ export function PendingBillingItems({ petId }: PendingBillingItemsProps) {
                           {item.notes}
                         </div>
                       )}
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="secondary" className="text-xs">
-                        {item.clinical_records?.record_type}
-                      </Badge>
                     </TableCell>
                     <TableCell className="text-right">{item.qty}</TableCell>
                     <TableCell className="text-right">
