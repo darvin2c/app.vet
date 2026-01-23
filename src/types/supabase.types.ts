@@ -378,9 +378,9 @@ export type Database = {
           created_by: string | null
           diagnosis: string | null
           id: string
-          plan: string | null
-          pet_id: string
           objective: string | null
+          pet_id: string
+          plan: string | null
           record_type: Database['public']['Enums']['record_type']
           tenant_id: string
           updated_at: string
@@ -393,9 +393,9 @@ export type Database = {
           created_by?: string | null
           diagnosis?: string | null
           id?: string
-          plan?: string | null
-          pet_id: string
           objective?: string | null
+          pet_id: string
+          plan?: string | null
           record_type: Database['public']['Enums']['record_type']
           tenant_id: string
           updated_at?: string
@@ -408,9 +408,9 @@ export type Database = {
           created_by?: string | null
           diagnosis?: string | null
           id?: string
-          plan?: string | null
-          pet_id?: string
           objective?: string | null
+          pet_id?: string
+          plan?: string | null
           record_type?: Database['public']['Enums']['record_type']
           tenant_id?: string
           updated_at?: string
