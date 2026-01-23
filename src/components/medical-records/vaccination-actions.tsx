@@ -15,7 +15,7 @@ import { VaccinationEdit } from './vaccination-edit'
 import { VaccinationDelete } from './vaccination-delete'
 
 interface VaccinationActionsProps {
-  vaccination: Tables<'vaccinations'>
+  vaccination: Tables<'pet_vaccinations'>
 }
 
 export function VaccinationActions({ vaccination }: VaccinationActionsProps) {

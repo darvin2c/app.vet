@@ -11,14 +11,14 @@ export function useVaccinationCreate() {
 
   return useMutation({
     mutationFn: async (
-      data: Omit<TablesInsert<'vaccinations'>, 'tenant_id'>
+      data: Omit<TablesInsert<'pet_vaccinations'>, 'tenant_id'>
     ) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const { data: vaccination, error } = await supabase
-        .from('vaccinations')
+        .from('pet_vaccinations')
         .insert({
           ...data,
           tenant_id: currentTenant.id,

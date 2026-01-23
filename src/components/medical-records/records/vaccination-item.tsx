@@ -11,7 +11,7 @@ import { VaccinationActions } from '../vaccination-actions'
 export default function VaccinationItem({
   vaccination,
 }: {
-  vaccination: Tables<'vaccinations'>
+  vaccination: Tables<'pet_vaccinations'>
 }) {
   return (
     <Item key={vaccination.id} variant="muted" size="sm">

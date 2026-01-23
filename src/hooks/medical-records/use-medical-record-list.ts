@@ -49,9 +49,9 @@ export function useMedicalRecordList({
           clinical_notes (
             *
           ),
-          vaccinations (
+          pet_vaccinations (
             *
-          ),
+          ),  
           record_items (
             *,
             products (

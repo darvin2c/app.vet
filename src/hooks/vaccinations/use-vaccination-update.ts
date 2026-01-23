@@ -15,14 +15,14 @@ export function useVaccinationUpdate() {
       data,
     }: {
       id: string
-      data: Omit<TablesUpdate<'vaccinations'>, 'tenant_id'>
+      data: Omit<TablesUpdate<'pet_vaccinations'>, 'tenant_id'>
     }) => {
       if (!currentTenant?.id) {
         throw new Error('No hay tenant seleccionado')
       }
 
       const { data: vaccination, error } = await supabase
-        .from('vaccinations')
+        .from('pet_vaccinations')
         .update(data)
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)

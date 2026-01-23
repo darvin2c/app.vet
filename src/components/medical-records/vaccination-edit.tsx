@@ -16,7 +16,7 @@ import { Tables } from '@/types/supabase.types'
 import { Form } from '@/components/ui/form'
 
 interface VaccinationEditProps {
-  vaccination: Tables<'vaccinations'>
+  vaccination: Tables<'pet_vaccinations'>
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void

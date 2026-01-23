@@ -6,7 +6,7 @@ import { useVaccinationDelete } from '@/hooks/vaccinations/use-vaccination-delet
 import { Tables } from '@/types/supabase.types'
 
 interface VaccinationDeleteProps {
-  vaccination: Tables<'vaccinations'>
+  vaccination: Tables<'pet_vaccinations'>
   trigger?: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void

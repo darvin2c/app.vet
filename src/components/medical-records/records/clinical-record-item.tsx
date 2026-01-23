@@ -17,7 +17,7 @@ import RecordItemItem, {
 type ClinicalRecord = Tables<'clinical_records'> & {
   clinical_parameters?: TablesUpdate<'clinical_parameters'>[]
   clinical_notes?: TablesUpdate<'clinical_notes'>[] | null
-  vaccinations?: TablesUpdate<'vaccinations'>[] | null
+  pet_vaccinations?: TablesUpdate<'pet_vaccinations'>[] | null
   record_items?: MedicalRecordItemWithProduct[] | null
   pets?: TablesUpdate<'pets'> | null
 }
@@ -26,7 +26,7 @@ type ClinicalRecord = Tables<'clinical_records'> & {
 type CombinedRecord =
   | (TablesUpdate<'clinical_parameters'> & { type?: 'clinical_parameters' })
   | (TablesUpdate<'clinical_notes'> & { type?: 'clinical_notes' })
-  | (TablesUpdate<'vaccinations'> & { type?: 'vaccinations' })
+  | (TablesUpdate<'pet_vaccinations'> & { type?: 'pet_vaccinations' })
   | (MedicalRecordItemWithProduct & { type?: 'record_items' })
 
 export default function ClinicalRecordItem({
@@ -41,17 +41,17 @@ export default function ClinicalRecordItem({
   const [activeFilters, setActiveFilters] = useState<{
     parameters: boolean
     notes: boolean
-    vaccinations: boolean
+    pet_vaccinations: boolean
     items: boolean
   }>({
     parameters: false,
     notes: false,
-    vaccinations: false,
+    pet_vaccinations: false,
     items: false,
   })
 
   const toggleFilter = (
-    key: 'parameters' | 'notes' | 'vaccinations' | 'items'
+    key: 'parameters' | 'notes' | 'pet_vaccinations' | 'items'
   ) => {
     setActiveFilters((prev) => ({
       ...prev,
@@ -84,11 +84,13 @@ export default function ClinicalRecordItem({
     }
 
     // Agregar vacunaciones
-    if (clinicalRecord.vaccinations && activeFilters.vaccinations) {
-      const vaccinationsWithType = clinicalRecord.vaccinations.map((vac) => ({
-        ...vac,
-        type: 'vaccinations' as const,
-      }))
+    if (clinicalRecord.pet_vaccinations && activeFilters.pet_vaccinations) {
+      const vaccinationsWithType = clinicalRecord.pet_vaccinations.map(
+        (vac) => ({
+          ...vac,
+          type: 'pet_vaccinations' as const,
+        })
+      )
       clinical.push(...vaccinationsWithType)
     }
 
@@ -114,7 +116,7 @@ export default function ClinicalRecordItem({
   }, [
     clinicalRecord.clinical_parameters,
     clinicalRecord.clinical_notes,
-    clinicalRecord.vaccinations,
+    clinicalRecord.pet_vaccinations,
     clinicalRecord.record_items,
     activeFilters,
   ])
@@ -185,20 +187,20 @@ export default function ClinicalRecordItem({
                     {clinicalRecord?.clinical_notes?.length} notas
                   </Badge>
                 )}
-              {clinicalRecord?.vaccinations &&
-                clinicalRecord.vaccinations.length > 0 && (
+              {clinicalRecord?.pet_vaccinations &&
+                clinicalRecord.pet_vaccinations.length > 0 && (
                   <Badge
                     variant={
-                      activeFilters.vaccinations ? 'secondary' : 'outline'
+                      activeFilters.pet_vaccinations ? 'secondary' : 'outline'
                     }
                     className="cursor-pointer hover:bg-secondary/80 transition-colors flex items-center gap-1"
                     onClick={(e) => {
                       e.stopPropagation()
-                      toggleFilter('vaccinations')
+                      toggleFilter('pet_vaccinations')
                     }}
                   >
                     <Syringe className="h-3 w-3" />
-                    {clinicalRecord?.vaccinations?.length} vacunas
+                    {clinicalRecord?.pet_vaccinations?.length} vacunas
                   </Badge>
                 )}
               {clinicalRecord?.record_items &&
@@ -248,7 +250,7 @@ export default function ClinicalRecordItem({
                     />
                   ) : (
                     <VaccinationItem
-                      vaccination={record as Tables<'vaccinations'>}
+                      vaccination={record as Tables<'pet_vaccinations'>}
                     />
                   )}
                 </div>

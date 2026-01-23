@@ -15,7 +15,7 @@ export function useVaccinationDelete() {
       }
 
       const { error } = await supabase
-        .from('vaccinations')
+        .from('pet_vaccinations')
         .delete()
         .eq('id', id)
         .eq('tenant_id', currentTenant.id)

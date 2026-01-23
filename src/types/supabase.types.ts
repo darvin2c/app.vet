@@ -2034,7 +2034,7 @@ export type Database = {
           },
         ]
       }
-      vaccinations: {
+      pet_vaccinations: {
         Row: {
           adverse_event: string | null
           clinical_record_id: string
