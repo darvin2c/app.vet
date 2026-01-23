@@ -2111,12 +2111,6 @@ export type Database = {
         | 'no_show'
       invitation_status: 'pending' | 'accepted' | 'expired' | 'revoked'
       movement_type: 'in' | 'out' | 'adjustment'
-      order_status:
-        | 'partial_payment'
-        | 'confirmed'
-        | 'paid'
-        | 'cancelled'
-        | 'refunded'
       payment_type: 'cash' | 'card' | 'transfer' | 'wallet' | 'other'
       pet_sex: 'M' | 'F'
       record_type:
@@ -2262,13 +2256,6 @@ export const Constants = {
       ],
       invitation_status: ['pending', 'accepted', 'expired', 'revoked'],
       movement_type: ['in', 'out', 'adjustment'],
-      order_status: [
-        'partial_payment',
-        'confirmed',
-        'paid',
-        'cancelled',
-        'refunded',
-      ],
       payment_type: ['cash', 'card', 'transfer', 'wallet', 'other'],
       pet_sex: ['M', 'F'],
       record_type: [

@@ -14,19 +14,6 @@ export default function OrdersPage() {
   // Configuración de filtros
   const filters: FilterConfig[] = [
     {
-      field: 'status',
-      label: 'Estado',
-      placeholder: 'Selecciona estado',
-      operator: 'eq',
-      options: [
-        { value: 'pending', label: 'Pendiente' },
-        { value: 'confirmed', label: 'Confirmada' },
-        { value: 'in_progress', label: 'En Proceso' },
-        { value: 'completed', label: 'Completada' },
-        { value: 'cancelled', label: 'Cancelada' },
-      ],
-    },
-    {
       field: 'customer_id',
       label: 'Cliente',
       operator: 'eq',
@@ -72,7 +59,6 @@ export default function OrdersPage() {
   const orderByConfig: OrderByConfig = {
     columns: [
       { field: 'order_number', label: 'Número de Orden', sortable: true },
-      { field: 'status', label: 'Estado', sortable: true },
       { field: 'total', label: 'Total', sortable: true },
       { field: 'created_at', label: 'Fecha de Creación', sortable: true },
       { field: 'updated_at', label: 'Última Actualización', sortable: true },

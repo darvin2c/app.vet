@@ -60,24 +60,6 @@ import { Pagination, usePagination } from '../ui/pagination'
 import { Alert, AlertDescription } from '../ui/alert'
 import { OrderIcon } from '../icons'
 
-// Función para obtener la variante del badge según el estado
-function getStatusBadgeVariant(
-  status: string
-): 'default' | 'secondary' | 'destructive' | 'outline' {
-  switch (status) {
-    case 'pending':
-      return 'outline'
-    case 'processing':
-      return 'secondary'
-    case 'completed':
-      return 'default'
-    case 'cancelled':
-      return 'destructive'
-    default:
-      return 'outline'
-  }
-}
-
 type Order = Tables<'orders'> & {
   customer: Tables<'customers'> | null
   order_items?: Array<{ id: string }>
