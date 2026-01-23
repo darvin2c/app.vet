@@ -64,8 +64,6 @@ export function MedicalRecordNavigation({
         return 'Desparasitación'
       case 'Hospedaje':
         return 'Hospedaje'
-      case 'Entrenamiento':
-        return 'Entrenamiento'
       default:
         return type || 'Sin tipo'
     }

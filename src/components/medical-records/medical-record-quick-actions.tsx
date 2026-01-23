@@ -76,8 +76,6 @@ export function MedicalRecordQuickActions({
         return 'Desparasitación'
       case 'boarding':
         return 'Hospedaje'
-      case 'training':
-        return 'Entrenamiento'
       case 'consultation':
         return 'Consulta'
       default:

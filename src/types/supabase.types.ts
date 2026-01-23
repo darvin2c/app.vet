@@ -1938,54 +1938,6 @@ export type Database = {
         }
         Relationships: []
       }
-      trainings: {
-        Row: {
-          goal: string | null
-          id: string
-          progress_notes: string | null
-          sessions_completed: number | null
-          sessions_planned: number | null
-          tenant_id: string
-          trainer_id: string | null
-          treatment_id: string
-        }
-        Insert: {
-          goal?: string | null
-          id?: string
-          progress_notes?: string | null
-          sessions_completed?: number | null
-          sessions_planned?: number | null
-          tenant_id: string
-          trainer_id?: string | null
-          treatment_id: string
-        }
-        Update: {
-          goal?: string | null
-          id?: string
-          progress_notes?: string | null
-          sessions_completed?: number | null
-          sessions_planned?: number | null
-          tenant_id?: string
-          trainer_id?: string | null
-          treatment_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'trainings_tenant_id_fkey'
-            columns: ['tenant_id']
-            isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'trainings_trainer_id_fkey'
-            columns: ['trainer_id']
-            isOneToOne: false
-            referencedRelation: 'staff'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       pet_dewormings: {
         Row: {
           adverse_event: string | null
