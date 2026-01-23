@@ -504,54 +504,6 @@ export type Database = {
           },
         ]
       }
-      hospitalizations: {
-        Row: {
-          admission_at: string
-          bed_id: string | null
-          daily_rate: number | null
-          discharge_at: string | null
-          id: string
-          notes: string | null
-          pet_id: string
-          tenant_id: string
-        }
-        Insert: {
-          admission_at: string
-          bed_id?: string | null
-          daily_rate?: number | null
-          discharge_at?: string | null
-          id?: string
-          notes?: string | null
-          pet_id: string
-          tenant_id: string
-        }
-        Update: {
-          admission_at?: string
-          bed_id?: string | null
-          daily_rate?: number | null
-          discharge_at?: string | null
-          id?: string
-          notes?: string | null
-          pet_id?: string
-          tenant_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: 'hospitalizations_pet_id_fkey'
-            columns: ['pet_id']
-            isOneToOne: false
-            referencedRelation: 'pets'
-            referencedColumns: ['id']
-          },
-          {
-            foreignKeyName: 'hospitalizations_tenant_id_fkey'
-            columns: ['tenant_id']
-            isOneToOne: false
-            referencedRelation: 'tenants'
-            referencedColumns: ['id']
-          },
-        ]
-      }
       invitations: {
         Row: {
           accepted_at: string | null

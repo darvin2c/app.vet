@@ -80,8 +80,6 @@ export function MedicalRecordQuickActions({
         return 'Entrenamiento'
       case 'consultation':
         return 'Consulta'
-      case 'hospitalization':
-        return 'Hospitalización'
       default:
         return type || 'Sin tipo'
     }

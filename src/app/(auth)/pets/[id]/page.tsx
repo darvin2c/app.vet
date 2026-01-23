@@ -15,8 +15,6 @@ import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { AppointmentList } from '@/components/appointments/appointment-list'
 import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
-import { HospitalizationList } from '@/components/hospitalizations/hospitalization-list'
-import { HospitalizationCreateButton } from '@/components/hospitalizations/hospitalization-create-button'
 import { FilterConfig } from '@/components/ui/filters'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 
@@ -165,25 +163,6 @@ export default function PetProfilePage() {
               className="space-y-4 md:space-y-6"
             >
               <PetMedicalRecords petId={petId} />
-            </TabsContent>
-
-            {/* Hospitalizations */}
-            <TabsContent
-              value="hospitalizations"
-              className="space-y-4 md:space-y-6"
-            >
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
-                <div>
-                  <h2 className="text-xl md:text-2xl font-bold">
-                    Hospitalizaciones
-                  </h2>
-                  <p className="text-sm md:text-base text-muted-foreground">
-                    Historial de hospitalizaciones de la mascota
-                  </p>
-                </div>
-                <HospitalizationCreateButton petId={petId} />
-              </div>
-              <HospitalizationList petId={petId} />
             </TabsContent>
           </Tabs>
         </div>

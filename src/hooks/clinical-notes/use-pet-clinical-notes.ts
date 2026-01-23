@@ -46,7 +46,6 @@ export function usePetClinicalNotes(petId: string) {
 
       return (data || []) as unknown as (Tables<'clinical_notes'> & {
         clinical_records: Tables<'clinical_records'> | null
-        hospitalizations: Tables<'hospitalizations'> | null
       })[]
     },
     enabled: !!currentTenant?.id && !!petId,

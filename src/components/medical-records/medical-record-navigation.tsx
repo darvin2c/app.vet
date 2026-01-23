@@ -60,8 +60,6 @@ export function MedicalRecordNavigation({
         return 'Cirugía'
       case 'Peluquería':
         return 'Peluquería'
-      case 'Hospitalización':
-        return 'Hospitalización'
       case 'Desparasitación':
         return 'Desparasitación'
       case 'Hospedaje':
