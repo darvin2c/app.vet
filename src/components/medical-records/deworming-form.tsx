@@ -11,6 +11,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
+import { DewormingItemsManager } from './deworming-items-manager'
 
 export function DewormingForm() {
   const {
@@ -71,7 +72,9 @@ export function DewormingForm() {
               id="next_due_at"
               name="next_due_at"
               value={watch('next_due_at')}
-              onChange={(value) => setValue('next_due_at', value?.toISOString())}
+              onChange={(value) =>
+                setValue('next_due_at', value?.toISOString())
+              }
               error={!!errors.next_due_at}
             />
             <FieldError errors={[errors.next_due_at]} />
@@ -91,6 +94,8 @@ export function DewormingForm() {
           <FieldError errors={[errors.adverse_event]} />
         </FieldContent>
       </Field>
+
+      <DewormingItemsManager />
     </div>
   )
 }

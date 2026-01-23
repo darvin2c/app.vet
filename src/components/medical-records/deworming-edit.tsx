@@ -5,10 +5,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormSheet } from '@/components/ui/form-sheet'
 import { DewormingForm } from './deworming-form'
-import {
-  DewormingSchema,
-  DewormingFormData,
-} from '@/schemas/deworming.schema'
+import { DewormingSchema, DewormingFormData } from '@/schemas/deworming.schema'
 import { useDewormingUpdate } from '@/hooks/dewormings/use-deworming-update'
 import { Tables } from '@/types/supabase.types'
 
@@ -32,7 +29,7 @@ export function DewormingEdit({
   const setOpen = onOpenChange ?? setInternalOpen
 
   const form = useForm<DewormingFormData>({
-    resolver: zodResolver(DewormingSchema),
+    resolver: zodResolver(DewormingSchema) as any,
     defaultValues: {
       clinical_record_id: deworming.clinical_record_id,
       product: deworming.product || '',
@@ -59,9 +56,10 @@ export function DewormingEdit({
 
   const onSubmit = async (data: DewormingFormData) => {
     try {
+      const { items, ...dewormingData } = data
       await updateDeworming.mutateAsync({
         id: deworming.id,
-        data,
+        data: dewormingData,
       })
       handleOpenChange(false)
     } catch (error) {

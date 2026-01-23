@@ -65,12 +65,7 @@ export function MedicalRecordItemCreate({
         side="right"
         className="!max-w-xl"
       >
-        <div className="px-4">
-          <MedicalRecordItemForm />
-          <ResponsiveButton type="submit" className="sr-only">
-            Agregar Item
-          </ResponsiveButton>
-        </div>
+        <MedicalRecordItemForm />
       </FormSheet>
     </CanAccess>
   )

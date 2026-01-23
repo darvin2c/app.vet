@@ -12,6 +12,7 @@ interface ProductSelectProps {
   disabled?: boolean
   className?: string
   placeholder?: string
+  onSelectProduct?: (product: Product) => void
 }
 
 export function ProductSelect({
@@ -20,6 +21,7 @@ export function ProductSelect({
   disabled,
   className,
   placeholder = 'Seleccionar producto...',
+  onSelectProduct,
 }: ProductSelectProps) {
   const [searchTerm, setSearchTerm] = useState('')
   const { data, isLoading } = useProductList({
@@ -30,7 +32,13 @@ export function ProductSelect({
   return (
     <EntitySelect<Product>
       value={value}
-      onValueChange={onValueChange}
+      onValueChange={(val) => {
+        onValueChange?.(val)
+        if (onSelectProduct && val) {
+          const product = products.find((p) => p.id === val)
+          if (product) onSelectProduct(product)
+        }
+      }}
       disabled={disabled}
       className={className}
       placeholder={placeholder}

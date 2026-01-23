@@ -28,7 +28,7 @@ export function DewormingCreate({
   const createDeworming = useDewormingCreate()
 
   const form = useForm<DewormingFormData>({
-    resolver: zodResolver(DewormingSchema),
+    resolver: zodResolver(DewormingSchema) as any,
     defaultValues: {
       clinical_record_id: medicalRecordId,
       product: '',
