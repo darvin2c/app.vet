@@ -63,24 +63,15 @@ export function VaccinationCreate({
         onOpenChange={onOpenChange}
         title="Registrar Vacunación"
         description="Agregue los detalles de la vacunación"
-        form={form as any}
-        onSubmit={onSubmit as any}
+        form={form}
+        onSubmit={onSubmit}
         isPending={createVaccination.isPending}
         submitLabel="Guardar Vacunación"
         cancelLabel="Cancelar"
         side="right"
         className="!max-w-2xl"
       >
-        <div className="px-4 pb-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <VaccinationForm />
-              <ResponsiveButton type="submit" className="sr-only">
-                Guardar Vacunación
-              </ResponsiveButton>
-            </form>
-          </Form>
-        </div>
+        <VaccinationForm />
       </FormSheet>
     </CanAccess>
   )

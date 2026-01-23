@@ -94,24 +94,15 @@ export function VaccinationEdit({
         onOpenChange={handleOpenChange}
         title="Editar Vacunación"
         description="Modifica los detalles de la vacunación"
-        form={form as any}
-        onSubmit={onSubmit as any}
+        form={form}
+        onSubmit={onSubmit}
         isPending={updateVaccination.isPending}
         submitLabel="Actualizar Vacunación"
         cancelLabel="Cancelar"
         side="right"
         className="!max-w-2xl"
       >
-        <div className="px-4 pb-4">
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <VaccinationForm />
-              <ResponsiveButton type="submit" className="sr-only">
-                Actualizar Vacunación
-              </ResponsiveButton>
-            </form>
-          </Form>
-        </div>
+        <VaccinationForm />
       </FormSheet>
     </>
   )
