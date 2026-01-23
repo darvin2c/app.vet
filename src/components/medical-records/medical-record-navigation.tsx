@@ -89,7 +89,7 @@ export function MedicalRecordNavigation({
                   <div className="flex items-center gap-4 text-sm text-muted-foreground mt-1">
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
-                      {format(new Date(medicalRecord.record_date), 'PPP', {
+                      {format(new Date(medicalRecord.created_at), 'PPP', {
                         locale: es,
                       })}
                     </div>
@@ -143,7 +143,7 @@ export function MedicalRecordNavigation({
                     Fecha del Registro
                   </label>
                   <p className="text-sm">
-                    {format(new Date(medicalRecord.record_date), 'PPP', {
+                    {format(new Date(medicalRecord.created_at), 'PPP', {
                       locale: es,
                     })}
                   </p>

@@ -128,7 +128,9 @@ export function PetForm({ mode = 'create' }: PetFormProps) {
                   id="birth_date"
                   name="birth_date"
                   value={watch('birth_date')}
-                  onChange={(value) => setValue('birth_date', value?.toISOString())}
+                  onChange={(value) =>
+                    setValue('birth_date', value?.toISOString())
+                  }
                   error={!!errors.birth_date}
                 />
                 <FieldError errors={[errors.birth_date]} />
@@ -152,7 +154,8 @@ export function PetForm({ mode = 'create' }: PetFormProps) {
                   min="0"
                   placeholder="0.0"
                   {...register('weight', {
-                    setValueAs: (value) => (value ? parseFloat(value) : undefined),
+                    setValueAs: (value) =>
+                      value ? parseFloat(value) : undefined,
                   })}
                 />
                 <FieldError errors={[errors.weight]} />

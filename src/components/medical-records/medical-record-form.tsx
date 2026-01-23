@@ -5,7 +5,6 @@ import {
   FieldError,
   FieldLabel,
 } from '@/components/ui/field'
-import { DatePicker } from '@/components/ui/date-picker'
 import { RichMinimalEditor } from '@/components/ui/rich-minimal-editor'
 import { StaffSelect } from '@/components/staff/staff-select'
 import { MedicalRecordFormData } from '@/schemas/medical-record.schema'
@@ -32,21 +31,6 @@ export function MedicalRecordForm() {
             onValueChange={(value) => setValue('record_type', value as any)}
           />
           <FieldError errors={[errors.record_type]} />
-        </FieldContent>
-      </Field>
-
-      <Field>
-        <FieldLabel htmlFor="record_date">Fecha del Registro</FieldLabel>
-        <FieldContent>
-          <DatePicker
-            id="record_date"
-            name="record_date"
-            value={watch('record_date')}
-            onChange={(value) =>
-              setValue('record_date', value?.toISOString() || '')
-            }
-          />
-          <FieldError errors={[errors.record_date]} />
         </FieldContent>
       </Field>
 

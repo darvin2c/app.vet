@@ -61,7 +61,9 @@ export default function RecordItemItem({
             </div>
           )}
           <div className="col-span-1 sm:col-span-2 flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
-            <dt className="text-xs font-medium text-muted-foreground">Total:</dt>
+            <dt className="text-xs font-medium text-muted-foreground">
+              Total:
+            </dt>
             <dd className="text-sm font-medium">
               {new Intl.NumberFormat('es-PE', {
                 style: 'currency',

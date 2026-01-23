@@ -106,7 +106,7 @@ export function MedicalRecordQuickActions({
               <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
-                  {format(new Date(medicalRecord.record_date), 'dd MMM yyyy', {
+                  {format(new Date(medicalRecord.created_at), 'dd MMM yyyy', {
                     locale: es,
                   })}
                 </span>
@@ -165,7 +165,7 @@ export function MedicalRecordQuickActions({
             <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
               <span className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {format(new Date(medicalRecord.record_date), 'dd MMM yyyy', {
+                {format(new Date(medicalRecord.created_at), 'dd MMM yyyy', {
                   locale: es,
                 })}
               </span>
@@ -192,7 +192,7 @@ export function MedicalRecordQuickActions({
               </p>
               <p>
                 <span className="font-medium">Fecha:</span>{' '}
-                {format(new Date(medicalRecord.record_date), 'dd/MM/yyyy', {
+                {format(new Date(medicalRecord.created_at), 'dd/MM/yyyy', {
                   locale: es,
                 })}
               </p>

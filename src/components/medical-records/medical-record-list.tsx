@@ -49,7 +49,7 @@ export function MedicalRecordList({
   const sortedMedicalRecords = useMemo(() => {
     return [...medicalRecords].sort(
       (a, b) =>
-        new Date(b.record_date).getTime() - new Date(a.record_date).getTime()
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     )
   }, [medicalRecords])
 

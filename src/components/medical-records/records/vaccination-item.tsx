@@ -36,7 +36,9 @@ export default function VaccinationItem({
           )}
           {vaccination.route && (
             <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
-              <dt className="text-xs font-medium text-muted-foreground">Vía:</dt>
+              <dt className="text-xs font-medium text-muted-foreground">
+                Vía:
+              </dt>
               <dd className="text-sm font-medium">{vaccination.route}</dd>
             </div>
           )}

@@ -79,9 +79,9 @@ export function MedicalRecordSelect({
             <span className="font-medium">
               {record.objective || 'Registro médico'}
             </span>
-            {record.record_date && (
+            {record.created_at && (
               <span className="text-sm text-muted-foreground">
-                Fecha: {new Date(record.record_date).toLocaleDateString()}
+                Fecha: {new Date(record.created_at).toLocaleDateString()}
               </span>
             )}
             {record.pets?.name && (
@@ -97,9 +97,9 @@ export function MedicalRecordSelect({
           <FileText className="w-4 h-4 text-muted-foreground" />
           <div className="flex items-center gap-1">
             <span>{record.objective || 'Registro médico'}</span>
-            {record.record_date && (
+            {record.created_at && (
               <span className="text-xs text-muted-foreground">
-                ({new Date(record.record_date).toLocaleDateString()})
+                ({new Date(record.created_at).toLocaleDateString()})
               </span>
             )}
           </div>

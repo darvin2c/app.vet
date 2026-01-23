@@ -51,7 +51,9 @@ export function VaccinationDelete({
         title="Eliminar Vacunación"
         description={
           <div className="space-y-2">
-            <p>Esta acción eliminará permanentemente el registro de vacunación.</p>
+            <p>
+              Esta acción eliminará permanentemente el registro de vacunación.
+            </p>
             <p className="text-sm text-muted-foreground">
               Esta acción no se puede deshacer.
             </p>

@@ -83,11 +83,11 @@ const createPlaceholderContext = (id: string): SidebarContextProps => ({
  * Hook to access sidebar state.
  * @param id - Optional sidebar ID. If not provided, uses the nearest SidebarProvider context.
  * @returns The sidebar context for the specified or nearest sidebar.
- * 
+ *
  * @example
  * // Access nearest sidebar (within a SidebarProvider)
  * const { open, toggleSidebar } = useSidebar()
- * 
+ *
  * @example
  * // Access a specific sidebar by ID (from anywhere)
  * const { open, toggleSidebar } = useSidebar('left-sidebar')
@@ -96,16 +96,16 @@ const createPlaceholderContext = (id: string): SidebarContextProps => ({
 function useSidebar(id?: string) {
   const context = React.useContext(SidebarContext)
   const [, forceUpdate] = React.useReducer((x) => x + 1, 0)
-  
+
   // If an ID is provided, get from registry
   const targetId = id ?? context?.id
-  
+
   React.useEffect(() => {
     if (targetId) {
       return subscribeMultiSidebar(targetId, forceUpdate)
     }
   }, [targetId])
-  
+
   // If specific ID requested, try registry first
   if (id) {
     const registryContext = MultiSidebarRegistry.get(id)
@@ -116,10 +116,12 @@ function useSidebar(id?: string) {
     // The useEffect subscription will trigger a re-render when it's ready
     return createPlaceholderContext(id)
   }
-  
+
   // Fall back to nearest context
   if (!context) {
-    throw new Error('useSidebar must be used within a SidebarProvider or with a valid sidebar id.')
+    throw new Error(
+      'useSidebar must be used within a SidebarProvider or with a valid sidebar id.'
+    )
   }
 
   return context
@@ -130,14 +132,14 @@ function useSidebar(id?: string) {
  * @param id - Unique identifier for this sidebar. Defaults to 'default'.
  *             Use different IDs to manage multiple sidebars independently.
  * @param keyboardShortcut - Keyboard shortcut to toggle (with Ctrl/Cmd). Set to false to disable.
- * 
+ *
  * @example
  * // Single sidebar (default)
  * <SidebarProvider>
  *   <AppSidebar />
  *   <main>{children}</main>
  * </SidebarProvider>
- * 
+ *
  * @example
  * // Multiple sidebars
  * <SidebarProvider id="left-sidebar">
@@ -184,7 +186,7 @@ function SidebarProvider({
       // This sets the cookie to keep the sidebar state (with unique key per sidebar).
       document.cookie = `${SIDEBAR_COOKIE_NAME}_${id}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
-    [setOpenProp, open, id],
+    [setOpenProp, open, id]
   )
 
   // Helper to toggle the sidebar.
@@ -197,10 +199,7 @@ function SidebarProvider({
     if (!keyboardShortcut) return
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (
-        event.key === keyboardShortcut &&
-        (event.metaKey || event.ctrlKey)
-      ) {
+      if (event.key === keyboardShortcut && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
         toggleSidebar()
       }
@@ -225,7 +224,16 @@ function SidebarProvider({
       setOpenMobile,
       toggleSidebar,
     }),
-    [id, state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar],
+    [
+      id,
+      state,
+      open,
+      setOpen,
+      isMobile,
+      openMobile,
+      setOpenMobile,
+      toggleSidebar,
+    ]
   )
 
   // Register/update in global registry and notify listeners
@@ -252,7 +260,7 @@ function SidebarProvider({
           }
           className={cn(
             'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
-            className,
+            className
           )}
           {...props}
         >
@@ -283,7 +291,7 @@ function Sidebar({
         data-slot="sidebar"
         className={cn(
           'bg-sidebar text-sidebar-foreground flex h-full w-(--sidebar-width) flex-col',
-          className,
+          className
         )}
         {...props}
       >
@@ -335,7 +343,7 @@ function Sidebar({
           'group-data-[side=right]:rotate-180',
           variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
-            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)',
+            : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)'
         )}
       />
       <div
@@ -349,7 +357,7 @@ function Sidebar({
           variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l',
-          className,
+          className
         )}
         {...props}
       >
@@ -368,11 +376,11 @@ function Sidebar({
 /**
  * Button to toggle a sidebar open/closed.
  * @param sidebarId - Optional ID of the sidebar to toggle. If not provided, toggles the nearest sidebar.
- * 
+ *
  * @example
  * // Toggle nearest sidebar
  * <SidebarTrigger />
- * 
+ *
  * @example
  * // Toggle specific sidebar by ID
  * <SidebarTrigger sidebarId="right-sidebar" />
@@ -434,7 +442,7 @@ function SidebarRail({
         'hover:group-data-[collapsible=offcanvas]:bg-sidebar group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full',
         '[[data-side=left][data-collapsible=offcanvas]_&]:-right-2',
         '[[data-side=right][data-collapsible=offcanvas]_&]:-left-2',
-        className,
+        className
       )}
       {...props}
     />
@@ -448,7 +456,7 @@ function SidebarInset({ className, ...props }: React.ComponentProps<'main'>) {
       className={cn(
         'bg-background relative flex w-full flex-1 flex-col',
         'md:peer-data-[variant=inset]:m-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow-sm md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-2',
-        className,
+        className
       )}
       {...props}
     />
@@ -512,7 +520,7 @@ function SidebarContent({ className, ...props }: React.ComponentProps<'div'>) {
       data-sidebar="content"
       className={cn(
         'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
-        className,
+        className
       )}
       {...props}
     />
@@ -544,7 +552,7 @@ function SidebarGroupLabel({
       className={cn(
         'text-sidebar-foreground/70 ring-sidebar-ring flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium outline-hidden transition-[margin,opacity] duration-200 ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
         'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
-        className,
+        className
       )}
       {...props}
     />
@@ -567,7 +575,7 @@ function SidebarGroupAction({
         // Increases the hit area of the button on mobile.
         'after:absolute after:-inset-2 md:after:hidden',
         'group-data-[collapsible=icon]:hidden',
-        className,
+        className
       )}
       {...props}
     />
@@ -629,7 +637,7 @@ const sidebarMenuButtonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  },
+  }
 )
 
 function SidebarMenuButton({
@@ -707,7 +715,7 @@ function SidebarMenuAction({
         'group-data-[collapsible=icon]:hidden',
         showOnHover &&
           'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0',
-        className,
+        className
       )}
       {...props}
     />
@@ -729,7 +737,7 @@ function SidebarMenuBadge({
         'peer-data-[size=default]/menu-button:top-1.5',
         'peer-data-[size=lg]/menu-button:top-2.5',
         'group-data-[collapsible=icon]:hidden',
-        className,
+        className
       )}
       {...props}
     />
@@ -774,10 +782,7 @@ function SidebarMenuSkeleton({
   )
 }
 
-function SidebarMenuSub({
-  className,
-  ...props
-}: React.ComponentProps<'ul'>) {
+function SidebarMenuSub({ className, ...props }: React.ComponentProps<'ul'>) {
   return (
     <ul
       data-slot="sidebar-menu-sub"
@@ -785,7 +790,7 @@ function SidebarMenuSub({
       className={cn(
         'border-sidebar-border mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l px-2.5 py-0.5',
         'group-data-[collapsible=icon]:hidden',
-        className,
+        className
       )}
       {...props}
     />
@@ -831,7 +836,7 @@ function SidebarMenuSubButton({
         size === 'sm' && 'text-xs',
         size === 'md' && 'text-sm',
         'group-data-[collapsible=icon]:hidden',
-        className,
+        className
       )}
       {...props}
     />

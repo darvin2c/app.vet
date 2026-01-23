@@ -381,7 +381,6 @@ export type Database = {
           plan: string | null
           pet_id: string
           objective: string | null
-          record_date: string
           record_type: Database['public']['Enums']['record_type']
           tenant_id: string
           updated_at: string
@@ -397,7 +396,6 @@ export type Database = {
           plan?: string | null
           pet_id: string
           objective?: string | null
-          record_date?: string
           record_type: Database['public']['Enums']['record_type']
           tenant_id: string
           updated_at?: string
@@ -413,7 +411,6 @@ export type Database = {
           plan?: string | null
           pet_id?: string
           objective?: string | null
-          record_date?: string
           record_type?: Database['public']['Enums']['record_type']
           tenant_id?: string
           updated_at?: string

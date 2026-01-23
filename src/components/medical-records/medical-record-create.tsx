@@ -30,7 +30,6 @@ export function MedicalRecordCreate({
     defaultValues: {
       pet_id: petId,
       record_type: 'consultation',
-      record_date: new Date().toISOString().split('T')[0],
       objective: '',
       diagnosis: '',
       vet_id: '',

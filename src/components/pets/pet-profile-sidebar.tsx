@@ -1,6 +1,14 @@
 'use client'
 
-import { Phone, Mail, MapPin, Calendar, ExternalLink, Plus, FileText } from 'lucide-react'
+import {
+  Phone,
+  Mail,
+  MapPin,
+  Calendar,
+  ExternalLink,
+  Plus,
+  FileText,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
@@ -33,7 +41,6 @@ export function PetProfileSidebar({
 
   return (
     <div className="space-y-6 bg-muted p-6 rounded-lg">
-
       {/* Estadísticas */}
       <section className="space-y-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
@@ -160,7 +167,6 @@ export function PetProfileSidebar({
       </section>
 
       <Separator />
-
 
       {/* Próximas Citas */}
       <section className="space-y-4">

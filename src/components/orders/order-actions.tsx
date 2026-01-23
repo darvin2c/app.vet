@@ -19,7 +19,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-
 import { Tables } from '@/types/supabase.types'
 import { OrderDelete } from './order-delete'
 import { OrderEdit } from './order-edit'

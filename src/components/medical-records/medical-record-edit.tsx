@@ -32,7 +32,6 @@ export function MedicalRecordEdit({
     defaultValues: {
       pet_id: medicalRecord.pet_id,
       record_type: medicalRecord.record_type,
-      record_date: medicalRecord.record_date?.split('T')[0] || '',
       objective: medicalRecord.objective || '',
       diagnosis: medicalRecord.diagnosis || '',
       vet_id: medicalRecord.vet_id || '',
@@ -45,7 +44,6 @@ export function MedicalRecordEdit({
       form.reset({
         pet_id: medicalRecord.pet_id,
         record_type: medicalRecord.record_type,
-        record_date: medicalRecord.record_date?.split('T')[0] || '',
         objective: medicalRecord.objective || '',
         diagnosis: medicalRecord.diagnosis || '',
         vet_id: medicalRecord.vet_id || '',

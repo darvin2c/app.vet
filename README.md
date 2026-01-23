@@ -68,6 +68,7 @@ cp .env.example .env.local
 Edita `.env.local` con tus credenciales reales. Las variables necesarias son:
 
 #### Supabase (Requerido)
+
 ```env
 NEXT_PUBLIC_SUPABASE_URL=tu_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_supabase_anon_key
@@ -77,6 +78,7 @@ SUPABASE_SERVICE_ROLE_KEY=tu_service_role_key
 Obtén estas credenciales en [Supabase Dashboard](https://supabase.com/dashboard) > Settings > API
 
 #### Google Maps API (Requerido para AddressInput)
+
 ```env
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=tu_google_maps_api_key
 ```
@@ -84,6 +86,7 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=tu_google_maps_api_key
 Ver instrucciones detalladas en la sección siguiente.
 
 #### Email SMTP (Opcional)
+
 ```env
 SMTP_HOST=smtp.resend.com
 SMTP_PORT=465
@@ -94,6 +97,7 @@ SMTP_FROM=no-reply@tudominio.com
 ```
 
 #### Otras configuraciones
+
 ```env
 NEXT_PUBLIC_DOMAIN=lvh.me
 NEXT_AUTH_URL=http://auth.lvh.me:3000

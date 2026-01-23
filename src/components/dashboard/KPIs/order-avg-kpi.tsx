@@ -3,12 +3,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { MetricCard } from './metric-card'
 import { supabase } from '@/lib/supabase/client'
-import {
-  parseISO,
-  format,
-  eachDayOfInterval,
-  isSameDay,
-} from 'date-fns'
+import { parseISO, format, eachDayOfInterval, isSameDay } from 'date-fns'
 
 export function OrderAvgKpi({
   dateRange,

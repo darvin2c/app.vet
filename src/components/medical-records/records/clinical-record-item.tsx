@@ -130,13 +130,9 @@ export default function ClinicalRecordItem({
               {clinicalRecord.record_type}
             </span>
             <Badge variant="secondary" className="text-xs">
-              {format(
-                new Date(clinicalRecord.record_date),
-                'dd/MM/yyyy HH:mm',
-                {
-                  locale: es,
-                }
-              )}
+              {format(new Date(clinicalRecord.created_at), 'dd/MM/yyyy HH:mm', {
+                locale: es,
+              })}
             </Badge>
           </ItemTitle>
           <div className="mt-2 space-y-1">
