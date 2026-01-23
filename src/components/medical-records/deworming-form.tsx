@@ -71,7 +71,7 @@ export function DewormingForm() {
               id="next_due_at"
               name="next_due_at"
               value={watch('next_due_at')}
-              onChange={(value) => setValue('next_due_at', value)}
+              onChange={(value) => setValue('next_due_at', value?.toISOString())}
               error={!!errors.next_due_at}
             />
             <FieldError errors={[errors.next_due_at]} />
