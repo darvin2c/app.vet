@@ -668,6 +668,7 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
+          pet_id?: string | null
           subtotal?: number | null
           tax?: number
           tax_amount?: number | null
@@ -1342,6 +1343,7 @@ export type Database = {
           discount: number | null
           id: string
           notes: string | null
+          order_item_id: string | null
           product_id: string
           qty: number
           record_id: string
@@ -1354,6 +1356,7 @@ export type Database = {
           discount?: number | null
           id?: string
           notes?: string | null
+          order_item_id?: string | null
           product_id: string
           qty: number
           record_id: string
@@ -1373,6 +1376,13 @@ export type Database = {
           unit_price?: number
         }
         Relationships: [
+          {
+            foreignKeyName: 'record_items_order_item_id_fkey'
+            columns: ['order_item_id']
+            isOneToOne: false
+            referencedRelation: 'order_items'
+            referencedColumns: ['id']
+          },
           {
             foreignKeyName: 'record_items_product_id_fkey'
             columns: ['product_id']

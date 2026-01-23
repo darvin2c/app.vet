@@ -16,6 +16,7 @@ import { AppointmentList } from '@/components/appointments/appointment-list'
 import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
 import { OrderList } from '@/components/orders/order-list'
 import { OrderCreateButton } from '@/components/orders/order-create-button'
+import { PendingBillingItems } from '@/components/orders/pending-billing-items'
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
 import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
@@ -186,6 +187,7 @@ export default function PetProfilePage() {
 
             {/* Orders */}
             <TabsContent value="orders" className="space-y-4 md:space-y-6">
+              <PendingBillingItems petId={petId} />
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
                 <div>
                   <h2 className="text-xl md:text-2xl font-bold">Ordenes</h2>
