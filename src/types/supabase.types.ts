@@ -632,6 +632,7 @@ export type Database = {
           notes: string | null
           order_number: string | null
           paid_amount: number
+          pet_id: string | null
           subtotal: number | null
           tax: number
           tax_amount: number | null
@@ -649,6 +650,7 @@ export type Database = {
           notes?: string | null
           order_number?: string | null
           paid_amount?: number
+          pet_id?: string | null
           subtotal?: number | null
           tax?: number
           tax_amount?: number | null
@@ -701,6 +703,13 @@ export type Database = {
             columns: ['updated_by']
             isOneToOne: false
             referencedRelation: 'profiles'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'orders_pet_id_fkey'
+            columns: ['pet_id']
+            isOneToOne: false
+            referencedRelation: 'pets'
             referencedColumns: ['id']
           },
         ]

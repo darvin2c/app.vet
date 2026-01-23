@@ -14,8 +14,11 @@ import { PetProfileMobileTabs } from '@/components/pets/pet-profile-mobile-tabs'
 import { PetGeneralInfo } from '@/components/pets/pet-general-info'
 import { AppointmentList } from '@/components/appointments/appointment-list'
 import { AppointmentCreateButton } from '@/components/appointments/appointment-create-button'
+import { OrderList } from '@/components/orders/order-list'
+import { OrderCreateButton } from '@/components/orders/order-create-button'
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
 import { FilterConfig } from '@/components/ui/filters'
+import { OrderByConfig } from '@/components/ui/order-by'
 import { useMedicalRecordList } from '@/hooks/medical-records/use-medical-record-list'
 
 export default function PetProfilePage() {
@@ -66,6 +69,30 @@ export default function PetProfilePage() {
     },
   ]
 
+  const orderFilterConfig: FilterConfig[] = [
+    {
+      field: 'status',
+      label: 'Estado',
+      placeholder: 'Selecciona estado',
+      operator: 'eq',
+      options: [
+        { value: 'pending', label: 'Pendiente' },
+        { value: 'confirmed', label: 'Confirmada' },
+        { value: 'in_progress', label: 'En Proceso' },
+        { value: 'completed', label: 'Completada' },
+        { value: 'cancelled', label: 'Cancelada' },
+      ],
+    },
+  ]
+
+  const orderOrderByConfig: OrderByConfig = {
+    columns: [
+      { field: 'order_number', label: 'Número de Orden', sortable: true },
+      { field: 'total', label: 'Total', sortable: true },
+      { field: 'created_at', label: 'Fecha de Creación', sortable: true },
+    ],
+  }
+
   // tabs configuration
   const mobileTabs = [
     { value: 'general', label: 'General' },
@@ -75,7 +102,7 @@ export default function PetProfilePage() {
       count: medicalRecords.length,
     },
     { value: 'appointments', label: 'Citas', count: appointments.length },
-    { value: 'hospitalizations', label: 'Hospitalizaciones' },
+    { value: 'orders', label: 'Ordenes' },
   ]
 
   if (petLoading || !pet) {
@@ -154,6 +181,26 @@ export default function PetProfilePage() {
               </div>
               <AppointmentList
                 filters={[{ field: 'pet_id', operator: 'eq', value: petId }]}
+              />
+            </TabsContent>
+
+            {/* Orders */}
+            <TabsContent value="orders" className="space-y-4 md:space-y-6">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold">Ordenes</h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Historial de compras de la mascota
+                  </p>
+                </div>
+                <OrderCreateButton />
+              </div>
+              <OrderList
+                filterConfig={orderFilterConfig}
+                orderByConfig={orderOrderByConfig}
+                additionalFilters={[
+                  { field: 'pet_id', operator: 'eq', value: petId },
+                ]}
               />
             </TabsContent>
 

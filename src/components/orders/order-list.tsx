@@ -37,7 +37,11 @@ import {
 import { TableSkeleton } from '@/components/ui/table-skeleton'
 import { Package, DollarSign } from 'lucide-react'
 import useOrderList from '@/hooks/orders/use-order-list'
-import { useFilters, FilterConfig } from '@/components/ui/filters'
+import {
+  useFilters,
+  FilterConfig,
+  AppliedFilter,
+} from '@/components/ui/filters'
 import { useSearch } from '@/components/ui/search-input/use-search'
 import { ViewModeToggle, ViewMode } from '@/components/ui/view-mode-toggle'
 import {
@@ -82,20 +86,23 @@ type Order = Tables<'orders'> & {
 export function OrderList({
   filterConfig,
   orderByConfig,
+  additionalFilters = [],
 }: {
   filterConfig: FilterConfig[]
   orderByConfig: OrderByConfig
+  additionalFilters?: AppliedFilter[]
 }) {
   // Estado para el modo de vista - inicializado con valor por defecto para evitar hydration mismatch
   const [viewMode, setViewMode] = useState<ViewMode>('table')
 
   // Usar el hook useFilters para obtener los filtros aplicados
   const { appliedFilters } = useFilters(filterConfig)
+  const filters = [...appliedFilters, ...additionalFilters]
   const orderByHook = useOrderBy(orderByConfig)
   const { appliedSearch } = useSearch()
   const { appliedPagination, paginationProps } = usePagination()
   const { data, isPending, error } = useOrderList({
-    filters: appliedFilters,
+    filters,
     search: appliedSearch,
     orders: orderByHook.appliedSorts,
     pagination: appliedPagination,
