@@ -11,7 +11,9 @@ import { DewormingActions } from '../deworming-actions'
 export default function DewormingItem({
   deworming,
 }: {
-  deworming: Tables<'pet_dewormings'>
+  deworming: Tables<'pet_dewormings'> & {
+    products?: Tables<'products'> | null
+  }
 }) {
   return (
     <Item key={deworming.id} variant="muted" size="sm">
@@ -26,12 +28,12 @@ export default function DewormingItem({
           </Badge>
         </ItemTitle>
         <dl className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-sm">
-          {deworming.product && (
+          {deworming.products && (
             <div className="flex flex-row items-baseline justify-between sm:justify-start sm:gap-2">
               <dt className="text-xs font-medium text-muted-foreground">
                 Producto:
               </dt>
-              <dd className="text-sm font-medium">{deworming.product}</dd>
+              <dd className="text-sm font-medium">{deworming.products.name}</dd>
             </div>
           )}
           {deworming.dose && (

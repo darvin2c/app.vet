@@ -12,6 +12,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { DatePicker } from '@/components/ui/date-picker'
 import { DewormingItemsManager } from './deworming-items-manager'
+import { ProductSelect } from '@/components/products/product-select'
 
 export function DewormingForm() {
   const {
@@ -30,14 +31,28 @@ export function DewormingForm() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Field>
-          <FieldLabel htmlFor="product">Producto</FieldLabel>
+          <FieldLabel htmlFor="product_id">Producto</FieldLabel>
           <FieldContent>
-            <Input
-              id="product"
-              placeholder="Ej: Drontal, NexGard"
-              {...register('product')}
+            <ProductSelect
+              value={watch('product_id')}
+              onValueChange={(value) => setValue('product_id', value)}
+              placeholder="Seleccionar producto..."
+              onSelectProduct={(product) => {
+                const currentItems = watch('items') || []
+                // Solo agregar si no hay items
+                if (currentItems.length === 0) {
+                  setValue('items', [
+                    {
+                      product_id: product.id,
+                      qty: 1,
+                      unit_price: product.price,
+                      product_name: product.name,
+                    },
+                  ])
+                }
+              }}
             />
-            <FieldError errors={[errors.product]} />
+            <FieldError errors={[errors.product_id]} />
           </FieldContent>
         </Field>
 

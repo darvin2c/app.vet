@@ -32,7 +32,7 @@ export function DewormingEdit({
     resolver: zodResolver(DewormingSchema) as any,
     defaultValues: {
       clinical_record_id: deworming.clinical_record_id,
-      product: deworming.product || '',
+      product_id: deworming.product_id || '',
       dose: deworming.dose || '',
       route: deworming.route || '',
       next_due_at: deworming.next_due_at || undefined,
@@ -45,7 +45,7 @@ export function DewormingEdit({
     if (!newOpen) {
       form.reset({
         clinical_record_id: deworming.clinical_record_id,
-        product: deworming.product || '',
+        product_id: deworming.product_id || '',
         dose: deworming.dose || '',
         route: deworming.route || '',
         next_due_at: deworming.next_due_at || undefined,
@@ -71,7 +71,7 @@ export function DewormingEdit({
     if (isOpen) {
       form.reset({
         clinical_record_id: deworming.clinical_record_id,
-        product: deworming.product || '',
+        product_id: deworming.product_id || '',
         dose: deworming.dose || '',
         route: deworming.route || '',
         next_due_at: deworming.next_due_at || undefined,

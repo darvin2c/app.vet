@@ -2043,7 +2043,7 @@ export type Database = {
           dose: string | null
           id: string
           next_due_at: string | null
-          product: string | null
+          product_id: string | null
           route: string | null
           tenant_id: string
           updated_at: string | null
@@ -2057,7 +2057,7 @@ export type Database = {
           dose?: string | null
           id?: string
           next_due_at?: string | null
-          product?: string | null
+          product_id?: string | null
           route?: string | null
           tenant_id: string
           updated_at?: string | null
@@ -2071,7 +2071,7 @@ export type Database = {
           dose?: string | null
           id?: string
           next_due_at?: string | null
-          product?: string | null
+          product_id?: string | null
           route?: string | null
           tenant_id?: string
           updated_at?: string | null
@@ -2090,6 +2090,13 @@ export type Database = {
             columns: ['tenant_id']
             isOneToOne: false
             referencedRelation: 'tenants'
+            referencedColumns: ['id']
+          },
+          {
+            foreignKeyName: 'pet_dewormings_product_id_fkey'
+            columns: ['product_id']
+            isOneToOne: false
+            referencedRelation: 'products'
             referencedColumns: ['id']
           },
         ]

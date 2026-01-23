@@ -31,7 +31,7 @@ export function DewormingCreate({
     resolver: zodResolver(DewormingSchema) as any,
     defaultValues: {
       clinical_record_id: medicalRecordId,
-      product: '',
+      product_id: '',
       dose: '',
       route: '',
       next_due_at: undefined,
