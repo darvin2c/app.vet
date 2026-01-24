@@ -9,7 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { SidebarTrigger } from "./ui/multi-sidebar"
+import { SidebarTrigger, useSidebar } from "./ui/multi-sidebar"
 import { Separator } from "./ui/separator"
 import { useIsMobile } from '@/hooks/use-mobile'
 
@@ -18,7 +18,7 @@ export interface BreadcrumbLinkItem {
   href?: string
 }
 
-export default function PageBase({
+const PageBaseContent = ({
   children,
   title,
   search,
@@ -31,8 +31,10 @@ export default function PageBase({
   search?: React.ReactNode
   breadcrumbs?: BreadcrumbLinkItem[]
   actions?: React.ReactNode
-}) {
+}) => {
   const isMobile = useIsMobile()
+  const { isMounted: isRightSidebarMounted } = useSidebar('right')
+
   return (
     <div className="@container mx-auto flex flex-col gap-4">
       <header className="flex border-b gap-3 px-4 h-16 shrink-0 items-center transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
@@ -70,11 +72,18 @@ export default function PageBase({
         <div className='max-w-xl !w-full'>{search}</div>
         <div className="flex items-center gap-2">{actions}</div>
           </div>
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <SidebarTrigger sidebarId="right"
-            className="cursor-ew-resize" /> 
+          {isRightSidebarMounted && (
+            <>
+              <Separator orientation="vertical" className="mr-2 h-4" />
+              <SidebarTrigger sidebarId="right" className="cursor-ew-resize" />
+            </>
+          )} 
       </header>
       <div className="grow">{children}</div>
     </div>
   )
+}
+
+export default function PageBase(props: any) {
+  return <PageBaseContent {...props} />
 }

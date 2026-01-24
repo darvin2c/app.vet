@@ -42,6 +42,7 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  isMounted?: boolean
 }
 
 // Registry to store multiple sidebar contexts
@@ -77,6 +78,7 @@ const createPlaceholderContext = (id: string): SidebarContextProps => ({
   setOpenMobile: () => {},
   isMobile: false,
   toggleSidebar: () => {},
+  isMounted: false,
 })
 
 /**
@@ -223,6 +225,7 @@ function SidebarProvider({
       openMobile,
       setOpenMobile,
       toggleSidebar,
+      isMounted: true,
     }),
     [
       id,
