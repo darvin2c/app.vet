@@ -14,10 +14,11 @@ import { OrderList } from '@/components/orders/order-list'
 import { OrderCreateButton } from '@/components/orders/order-create-button'
 import { PendingBillingItems } from '@/components/orders/pending-billing-items'
 import { PetMedicalRecords } from '@/components/pets/pet-medical-records'
+import { MedicalRecordCreateButton } from '@/components/medical-records/medical-record-create-button'
 import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
-import { SidebarProvider, SidebarInset, SidebarTrigger } from '@/components/ui/multi-sidebar'
-import { Separator } from '@/components/ui/separator'
+import { SidebarProvider, SidebarInset } from '@/components/ui/multi-sidebar'
+
 
 export default function PetProfilePage() {
   const params = useParams()
@@ -74,16 +75,18 @@ export default function PetProfilePage() {
       <PetProfileSidebar petId={petId} activeTab={activeTab} onTabChange={setActiveTab} />
       
       <SidebarInset className="overflow-hidden">
-        <header className="flex h-14 shrink-0 items-center gap-2 border-b bg-background px-4">
-          <SidebarTrigger />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <div className="font-semibold">Perfil de Mascota</div>
-        </header>
+
         
         <div className="flex-1 space-y-4 p-4 md:p-8 pt-6 overflow-auto h-[calc(100vh-8rem)]">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full space-y-6">
             {/* General Information */}
             <TabsContent value="general" className="space-y-4 md:space-y-6 m-0">
+               <div className="mb-4 md:mb-6">
+                  <h2 className="text-xl md:text-2xl font-bold">Información General</h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Detalles principales y configuración de la mascota
+                  </p>
+               </div>
                {petLoading ? (
                   <div>Cargando información...</div>
                ) : !pet ? (
@@ -98,6 +101,15 @@ export default function PetProfilePage() {
               value="clinical-records"
               className="space-y-4 md:space-y-6 m-0"
             >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 md:mb-6">
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold">Registros Médicos</h2>
+                  <p className="text-sm md:text-base text-muted-foreground">
+                    Historial completo de tratamientos y procedimientos médicos
+                  </p>
+                </div>
+                <MedicalRecordCreateButton petId={petId} />
+              </div>
               <PetMedicalRecords petId={petId} />
             </TabsContent>
 
