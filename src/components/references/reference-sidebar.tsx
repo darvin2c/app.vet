@@ -2,18 +2,17 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Settings } from 'lucide-react'
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupLabel,
-  SidebarHeader,
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
   SidebarProvider,
   SidebarInset,
+  SidebarRail,
 } from '@/components/ui/multi-sidebar'
 import { cn } from '@/lib/utils'
 import { navigationGroups } from './reference-navigation'
@@ -68,13 +67,7 @@ export function ReferenceSidebar({
             </SidebarGroup>
           ))}
         </SidebarContent>
-        <SidebarHeader className="flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2 data-[state=expanded]:bg-sidebar-accent data-[state=expanded]:text-sidebar-accent-foreground">
-            <Settings className="h-5 w-5 text-primary" />
-            <span className="font-semibold">Referencias</span>
-          </div>
-        </SidebarHeader>
-        
+        <SidebarRail />
       </Sidebar>
     </SidebarProvider>
   )
