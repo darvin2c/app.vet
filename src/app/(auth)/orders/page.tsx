@@ -84,10 +84,10 @@ export default function OrdersPage() {
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
-                  />
-                <OrderCreateButton variant={'outline'} />
+                />
               </>
             }
+            actions={<OrderCreateButton variant={'outline'} />}
           />
         }
       >

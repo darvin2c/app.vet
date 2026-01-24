@@ -25,6 +25,7 @@ export interface SearchProps
   onValueChange?: (value: string) => void
   debounceMs?: number
   suffix?: React.ReactNode
+  actions?: React.ReactNode
   enableShortcut?: boolean
   isLoading?: boolean
   showClear?: boolean
@@ -40,6 +41,7 @@ interface InternalSearchInputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
   onClear: () => void
   suffix?: React.ReactNode
+  actions?: React.ReactNode
   enableShortcut?: boolean
   isLoading?: boolean
   showClear?: boolean
@@ -61,6 +63,7 @@ const InternalSearchInput = React.forwardRef<
       onChange,
       onClear,
       suffix,
+      actions,
       enableShortcut = false,
       isLoading = false,
       showClear = true,
@@ -92,8 +95,8 @@ const InternalSearchInput = React.forwardRef<
     const isFetching = useIsFetching()
 
     return (
-      <div className="flex gap-2">
-        <ButtonGroup className="w-full h-full *:h-auto">
+      <div className="flex gap-2 items-center">
+        <ButtonGroup className="w-full">
           <InputGroup className={cn(sizeClasses[size], containerClassName)}>
             {/* Search icon - left side */}
             <InputGroupAddon align="inline-start">
@@ -150,6 +153,7 @@ const InternalSearchInput = React.forwardRef<
           </InputGroup>
           {showSuffix ? suffix : null}
         </ButtonGroup>
+        {actions && <div className="flex gap-2 items-center">{actions}</div>}
         {hasSidebarTriggerRight && isMobile && (
           <SidebarTrigger
             sidebarId="right"
@@ -172,6 +176,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchProps>(
       onValueChange,
       debounceMs = 300,
       suffix,
+      actions,
       enableShortcut = false,
       isLoading = false,
       showClear = true,
@@ -257,6 +262,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchProps>(
         className={className}
         containerClassName={containerClassName}
         suffix={suffix}
+        actions={actions}
         enableShortcut={enableShortcut}
         isLoading={isLoading}
         showClear={showClear}
