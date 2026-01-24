@@ -29,17 +29,14 @@ export function ReferenceSidebar({
 
   return (
     <SidebarProvider id="right" className="items-start relative">
+      <SidebarInset>
+        {/* Contenido principal */}
+        <main className="h-full">{children}</main>
+      </SidebarInset>
       <Sidebar
         side="right"
         collapsible="icon"
-        className="absolute top-0 left-0"
       >
-        <SidebarHeader className="flex flex-row items-center justify-between">
-          <div className="flex items-center gap-2 data-[state=expanded]:bg-sidebar-accent data-[state=expanded]:text-sidebar-accent-foreground">
-            <Settings className="h-5 w-5 text-primary" />
-            <span className="font-semibold">Referencias</span>
-          </div>
-        </SidebarHeader>
         <SidebarContent>
           {navigationGroups.map((group) => (
             <SidebarGroup key={group.label} className="">
@@ -71,11 +68,14 @@ export function ReferenceSidebar({
             </SidebarGroup>
           ))}
         </SidebarContent>
+        <SidebarHeader className="flex flex-row items-center justify-between">
+          <div className="flex items-center gap-2 data-[state=expanded]:bg-sidebar-accent data-[state=expanded]:text-sidebar-accent-foreground">
+            <Settings className="h-5 w-5 text-primary" />
+            <span className="font-semibold">Referencias</span>
+          </div>
+        </SidebarHeader>
+        
       </Sidebar>
-      <SidebarInset>
-        {/* Contenido principal */}
-        <main className="h-full">{children}</main>
-      </SidebarInset>
     </SidebarProvider>
   )
 }

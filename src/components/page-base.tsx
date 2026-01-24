@@ -70,6 +70,9 @@ export default function PageBase({
         <div className='max-w-xl !w-full'>{search}</div>
         <div className="flex items-center gap-2">{actions}</div>
           </div>
+          <Separator orientation="vertical" className="mr-2 h-4" />
+          <SidebarTrigger sidebarId="right"
+            className="cursor-ew-resize" />
       </header>
       <div className="grow">{children}</div>
     </div>
