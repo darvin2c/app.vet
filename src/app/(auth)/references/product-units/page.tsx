@@ -34,7 +34,6 @@ export default function ProductUnitsPage() {
         search={
           <SearchInput
             placeholder="Buscar unidades..."
-            size="lg"
             suffix={
               <>
                 <Filters

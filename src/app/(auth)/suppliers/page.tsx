@@ -51,7 +51,6 @@ export default function SuppliersPage() {
         search={
           <SearchInput
             placeholder="Buscar proveedores..."
-            size="lg"
             suffix={
               <>
                 <Filters

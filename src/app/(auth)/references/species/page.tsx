@@ -34,7 +34,6 @@ export default function SpeciesPage() {
         search={
           <SearchInput
             placeholder="Buscar especies..."
-            size="lg"
             suffix={
               <>
                 <Filters

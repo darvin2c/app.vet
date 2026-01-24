@@ -34,7 +34,6 @@ export default function ProductBrandsPage() {
         search={
           <SearchInput
             placeholder="Buscar marcas..."
-            size="lg"
             suffix={
               <>
                 <Filters

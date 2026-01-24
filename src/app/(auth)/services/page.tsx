@@ -63,7 +63,6 @@ export default function ServicesPage() {
       search={
         <SearchInput
           placeholder="Buscar servicio"
-          size="lg"
           suffix={
             <>
               <Filters

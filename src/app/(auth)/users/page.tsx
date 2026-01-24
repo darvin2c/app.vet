@@ -51,7 +51,6 @@ export default function UsersPage() {
         search={
           <SearchInput
             placeholder="Buscar usuario por nombre o email"
-            size="lg"
             suffix={
               <>
                 <Filters

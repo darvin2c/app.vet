@@ -34,7 +34,6 @@ export default function SpecialtiesPage() {
         search={
           <SearchInput
             placeholder="Buscar especialidades..."
-            size="lg"
             suffix={
               <>
                 <Filters

@@ -43,7 +43,6 @@ export default function CustomersPage() {
         search={
           <SearchInput
             placeholder="Buscar cliente"
-            size="lg"
             suffix={
               <>
                 <Filters

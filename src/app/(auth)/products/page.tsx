@@ -64,7 +64,6 @@ export default function ProductsPage() {
         search={
           <SearchInput
             placeholder="Buscar producto"
-            size="lg"
             suffix={
               <>
                 <Filters

@@ -36,7 +36,6 @@ export default function StaffPage() {
         search={
           <SearchInput
             placeholder="Buscar personal..."
-            size="lg"
             suffix={
               <>
                 <Filters

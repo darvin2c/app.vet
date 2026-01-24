@@ -55,7 +55,6 @@ export default function PaymentsPage() {
         search={
           <SearchInput
             placeholder="Buscar pago por referencia, notas o cliente"
-            size="lg"
             suffix={
               <>
                 <Filters

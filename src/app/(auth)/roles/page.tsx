@@ -43,7 +43,6 @@ export default function RolesPage() {
         search={
           <SearchInput
             placeholder="Buscar rol"
-            size="lg"
           />
         }
         actions={

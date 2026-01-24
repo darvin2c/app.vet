@@ -55,7 +55,6 @@ export default function PaymentMethodsPage() {
         search={
           <SearchInput
             placeholder="Buscar métodos de pago..."
-            size="lg"
             suffix={
               <>
                 <Filters

@@ -44,7 +44,6 @@ export default function KardexPage() {
         search={
           <SearchInput
             placeholder="Buscar por referencia o nota..."
-            size="lg"
             suffix={
               <>
                 <Filters

@@ -35,7 +35,6 @@ export default function AppointmentTypesPage() {
         search={
           <SearchInput
             placeholder="Buscar tipos de citas..."
-            size="lg"
             suffix={
               <>
                 <Filters

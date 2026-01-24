@@ -34,7 +34,6 @@ export default function ProductCategoriesPage() {
         search={
           <SearchInput
             placeholder="Buscar categorías..."
-            size="lg"
             suffix={
               <>
                 <Filters

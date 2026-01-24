@@ -64,7 +64,6 @@ export default function PetsPage() {
         search={
           <SearchInput
             placeholder="Buscar por nombre o microchip"
-            size="lg"
             suffix={
               <>
                 <Filters
