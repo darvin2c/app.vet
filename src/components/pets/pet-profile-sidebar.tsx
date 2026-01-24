@@ -101,21 +101,21 @@ export function PetProfileSidebar({
   
 
       <SidebarContent className="pt-6">
-        <div className="flex flex-col items-center px-6 text-center mb-6">
-            <Avatar className="h-28 w-28 mb-4 border-4 border-sidebar-accent shadow-sm">
-               <AvatarFallback className="text-3xl bg-sidebar-accent text-sidebar-accent-foreground">
+        <div className="flex flex-col items-center px-6 group-data-[collapsible=icon]:px-0 text-center mb-6">
+            <Avatar className="h-28 w-28 mb-4 border-4 border-sidebar-accent shadow-sm transition-[width,height,margin] group-data-[collapsible=icon]:h-10 group-data-[collapsible=icon]:w-10 group-data-[collapsible=icon]:mb-0 group-data-[collapsible=icon]:border-2">
+               <AvatarFallback className="text-3xl group-data-[collapsible=icon]:text-lg bg-sidebar-accent text-sidebar-accent-foreground">
                  {pet.name?.charAt(0)?.toUpperCase()}
                </AvatarFallback>
             </Avatar>
             
-            <div className="space-y-1 mb-3">
+            <div className="space-y-1 mb-3 group-data-[collapsible=icon]:hidden">
                 <h2 className="text-xl font-bold tracking-tight">{pet.name}</h2>
                 <p className="text-sm text-sidebar-foreground/60 font-medium">
                 {pet.breeds?.name || pet.species?.name}
                 </p>
             </div>
 
-             <div className="flex flex-wrap justify-center gap-2 mb-4">
+             <div className="flex flex-wrap justify-center gap-2 mb-4 group-data-[collapsible=icon]:hidden">
                 <Badge variant="secondary" className="px-2 py-0.5 font-normal">
                   {formatSex(pet.sex)}
                 </Badge>
@@ -124,12 +124,12 @@ export function PetProfileSidebar({
                  </Badge>
              </div>
 
-             <div className="w-full flex justify-center">
+             <div className="w-full flex justify-center group-data-[collapsible=icon]:hidden">
                  <PetActions pet={pet} />
              </div>
         </div>
 
-        <div className="px-3">
+        <div className="px-3 group-data-[collapsible=icon]:hidden">
              <SidebarSeparator className="mb-4" />
         </div>
 

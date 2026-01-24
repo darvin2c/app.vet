@@ -13,7 +13,7 @@ export default function PetProfileLayout({
   const petId = params.id as string
 
   return (
-    <SidebarProvider id="right" className="relative h-[calc(100vh-4rem)] w-full">
+    <SidebarProvider id="right" className="relative h-[calc(100vh-4rem)]">
       <SidebarInset className="overflow-hidden">
         <main className="h-full">
           {children}
