@@ -17,8 +17,10 @@ export default function SupplierPage({ params }: SupplierPageProps) {
 
   return (
     <PageBase
-      title="Detalles del Proveedor"
-      subtitle="Información completa del proveedor y gestión de marcas"
+      breadcrumbs={[
+        { label: 'Proveedores', href: '/suppliers' },
+        { label: 'Detalle' },
+      ]}
     >
       <Suspense fallback={<TableSkeleton />}>
         <SupplierDetailsClient id={params.id} />

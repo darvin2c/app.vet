@@ -58,8 +58,7 @@ export default function ServicesPage() {
 
   return (
     <PageBase
-      title="Servicios"
-      subtitle="Gestiona el catálogo de servicios"
+      breadcrumbs={[{ label: 'Servicios' }]}
       search={
         <SearchInput
           placeholder="Buscar servicio"

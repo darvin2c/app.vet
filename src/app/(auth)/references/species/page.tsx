@@ -29,8 +29,10 @@ export default function SpeciesPage() {
   return (
     <CanAccess resource="species" action="read">
       <PageBase
-        title="Especies"
-        subtitle="Gestiona las especies de animales"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Especies' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar especies..."

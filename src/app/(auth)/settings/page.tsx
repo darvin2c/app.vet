@@ -12,8 +12,7 @@ export default function SettingsPage() {
   return (
     <CanAccess resource="settings" action="read">
       <PageBase
-        title="Configuración"
-        subtitle="Gestiona la configuración de tu organización"
+        breadcrumbs={[{ label: 'Configuración' }]}
       >
         <div className="space-y-6 max-w-5xl w-full mx-auto">
           <TenantGeneralInfoCard />

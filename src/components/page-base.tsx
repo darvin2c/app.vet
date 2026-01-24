@@ -20,14 +20,11 @@ export interface BreadcrumbLinkItem {
 
 const PageBaseContent = ({
   children,
-  title,
   search,
   breadcrumbs,
   actions,
 }: {
   children: React.ReactNode
-  title?: React.ReactNode
-  subtitle?: React.ReactNode
   search?: React.ReactNode
   breadcrumbs?: BreadcrumbLinkItem[]
   actions?: React.ReactNode
@@ -41,9 +38,9 @@ const PageBaseContent = ({
           <SidebarTrigger sidebarId="left"
             className="cursor-ew-resize" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-          {isMobile ? null : <Breadcrumb>
+          {isMobile && <Breadcrumb>
             <BreadcrumbList>
-              {breadcrumbs && breadcrumbs.length > 0 ? (
+              {(breadcrumbs && breadcrumbs.length > 0) && (
                 breadcrumbs.map((item, index) => (
                   <Fragment key={index}>
                     <BreadcrumbItem className="hidden md:block">
@@ -60,10 +57,6 @@ const PageBaseContent = ({
                     )}
                   </Fragment>
                 ))
-              ) : (
-                <BreadcrumbItem>
-                  <BreadcrumbPage>{title}</BreadcrumbPage>
-                </BreadcrumbItem>
               )}
             </BreadcrumbList>
           </Breadcrumb>}

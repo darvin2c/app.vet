@@ -29,8 +29,10 @@ export default function ProductUnitsPage() {
   return (
     <CanAccess resource="product_units" action="read">
       <PageBase
-        title="Unidades de Productos"
-        subtitle="Gestiona las unidades de medida para productos"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Unidades de Productos' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar unidades..."

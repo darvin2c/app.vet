@@ -46,8 +46,7 @@ export default function UsersPage() {
   return (
     <CanAccess resource="users" action="read">
       <PageBase
-        title="Usuarios"
-        subtitle="Gestiona los usuarios y sus roles en el sistema"
+        breadcrumbs={[{ label: 'Usuarios' }]}
         search={
           <SearchInput
             placeholder="Buscar usuario por nombre o email"

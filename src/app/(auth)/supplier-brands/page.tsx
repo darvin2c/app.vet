@@ -6,8 +6,7 @@ export default function SupplierBrandsPage() {
   return (
     <CanAccess resource="supplier-brands" action="read">
       <PageBase
-        title="Marcas de Proveedores"
-        subtitle="Gestiona las asignaciones de marcas a proveedores"
+        breadcrumbs={[{ label: 'Marcas de Proveedores' }]}
       >
         <SupplierBrandList />
       </PageBase>

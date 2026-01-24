@@ -7,8 +7,7 @@ export default function ReferencesPage() {
   return (
     <CanAccess resource="references" action="read">
       <PageBase
-        title="Referencias del Sistema"
-        subtitle="Gestiona las referencias y configuraciones básicas del sistema"
+        breadcrumbs={[{ label: 'Referencias del Sistema' }]}
       >
         <ReferenceList />
       </PageBase>

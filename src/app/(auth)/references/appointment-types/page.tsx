@@ -30,8 +30,10 @@ export default function AppointmentTypesPage() {
   return (
     <CanAccess resource="appointment_types" action="read">
       <PageBase
-        title="Tipos de Citas"
-        subtitle="Gestiona los tipos de citas disponibles"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Tipos de Citas' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar tipos de citas..."

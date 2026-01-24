@@ -38,8 +38,7 @@ export default function CustomersPage() {
   return (
     <CanAccess resource="customers" action="read">
       <PageBase
-        title="Clientes"
-        subtitle="Gestiona la información de tus clientes"
+        breadcrumbs={[{ label: 'Clientes' }]}
         search={
           <SearchInput
             placeholder="Buscar cliente"

@@ -50,8 +50,7 @@ export default function PaymentsPage() {
   return (
     <CanAccess resource="payments" action="read">
       <PageBase
-        title="Pagos"
-        subtitle="Gestiona los pagos de tus clientes"
+        breadcrumbs={[{ label: 'Pagos' }]}
         search={
           <SearchInput
             placeholder="Buscar pago por referencia, notas o cliente"

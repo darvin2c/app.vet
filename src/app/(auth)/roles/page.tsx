@@ -38,8 +38,7 @@ export default function RolesPage() {
   return (
     <CanAccess resource="roles" action="read">
       <PageBase
-        title="Roles"
-        subtitle="Gestiona los roles y permisos del sistema"
+        breadcrumbs={[{ label: 'Roles y Permisos' }]}
         search={
           <SearchInput
             placeholder="Buscar rol"

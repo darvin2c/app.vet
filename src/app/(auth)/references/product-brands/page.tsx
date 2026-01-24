@@ -29,8 +29,10 @@ export default function ProductBrandsPage() {
   return (
     <CanAccess resource="product_brands" action="read">
       <PageBase
-        title="Marcas de Productos"
-        subtitle="Gestiona las marcas de productos disponibles"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Marcas de Productos' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar marcas..."

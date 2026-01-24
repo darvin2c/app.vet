@@ -59,8 +59,7 @@ export default function ProductsPage() {
   return (
     <CanAccess resource="products" action="read">
       <PageBase
-        title="Productos"
-        subtitle="Gestiona el catálogo de productos"
+        breadcrumbs={[{ label: 'Productos' }]}
         search={
           <SearchInput
             placeholder="Buscar producto"

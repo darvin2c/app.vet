@@ -29,8 +29,10 @@ export default function SpecialtiesPage() {
   return (
     <CanAccess resource="specialties" action="read">
       <PageBase
-        title="Especialidades"
-        subtitle="Gestiona las especialidades médicas disponibles"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Especialidades' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar especialidades..."

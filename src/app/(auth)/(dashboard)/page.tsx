@@ -12,7 +12,7 @@ import {
 
 export default function DashboardPage() {
   return (
-    <PageBase title="Dashboard" subtitle="Resumen general de operaciones">
+    <PageBase breadcrumbs={[{ label: 'Dashboard' }]}>
       <div className="space-y-6 pb-10">
         {/* KPI Cards Row */}
         <KpiGrid />

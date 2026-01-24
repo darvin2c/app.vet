@@ -68,8 +68,7 @@ export default function OrdersPage() {
   return (
     <CanAccess resource="orders" action="read">
       <PageBase
-        title="Órdenes de Venta"
-        subtitle="Gestiona las órdenes de venta y facturación"
+        breadcrumbs={[{ label: 'Órdenes de Venta' }]}
         search={
           <SearchInput
             placeholder="Buscar órdenes"

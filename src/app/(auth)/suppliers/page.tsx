@@ -46,8 +46,7 @@ export default function SuppliersPage() {
   return (
     <CanAccess resource="suppliers" action="read">
       <PageBase
-        title="Proveedores"
-        subtitle="Gestiona los proveedores de tu clínica veterinaria"
+        breadcrumbs={[{ label: 'Proveedores' }]}
         search={
           <SearchInput
             placeholder="Buscar proveedores..."

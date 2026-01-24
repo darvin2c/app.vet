@@ -39,8 +39,7 @@ export default function KardexPage() {
   return (
     <CanAccess resource="product_movements" action="read">
       <PageBase
-        title="Kardex"
-        subtitle="Control detallado de movimientos de inventario"
+        breadcrumbs={[{ label: 'Kardex' }]}
         search={
           <SearchInput
             placeholder="Buscar por referencia o nota..."

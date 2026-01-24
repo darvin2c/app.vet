@@ -7,6 +7,7 @@ import { PendingBillingItems } from '@/components/orders/pending-billing-items'
 import { FilterConfig } from '@/components/ui/filters'
 import { OrderByConfig } from '@/components/ui/order-by'
 import PageBase from '@/components/page-base'
+import { usePetDetail } from '@/hooks/pets/use-pet-detail'
 
 export default function PetOrdersPage() {
   const params = useParams()
@@ -36,10 +37,18 @@ export default function PetOrdersPage() {
     ],
   }
 
+  const { data: pet } = usePetDetail(petId)
+  const petName = pet?.name || 'Mascota'
+
   return (
     <PageBase
       title="Ordenes"
       subtitle="Historial de compras de la mascota"
+      breadcrumbs={[
+        { label: 'Mascotas', href: '/pets' },
+        { label: petName, href: `/pets/${petId}` },
+        { label: 'Ordenes' },
+      ]}
       actions={<OrderCreateButton />}
     >
       <PendingBillingItems petId={petId} />

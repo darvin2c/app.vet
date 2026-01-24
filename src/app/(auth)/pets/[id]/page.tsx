@@ -15,6 +15,8 @@ export default function PetProfilePage() {
     error: petError,
   } = usePetDetail(petId)
 
+  const petDetailName = pet?.name || 'Mascota'
+
   if (petError) {
     return (
       <div className="container mx-auto p-4 md:p-6">
@@ -32,6 +34,11 @@ export default function PetProfilePage() {
     <PageBase
       title="Información General"
       subtitle="Detalles principales y configuración de la mascota"
+      breadcrumbs={[
+        { label: 'Mascotas', href: '/pets' },
+        { label: petDetailName, href: `/pets/${petId}` },
+        { label: 'Información General' },
+      ]}
     >
        {petLoading ? (
           <div>Cargando información...</div>

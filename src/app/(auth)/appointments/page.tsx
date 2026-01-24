@@ -5,7 +5,7 @@ import CanAccess from '@/components/ui/can-access'
 export default function AppointmentsPage() {
   return (
     <CanAccess resource="appointments" action="read">
-      <PageBase title="Citas" subtitle="Gestiona las citas médicas programadas">
+      <PageBase breadcrumbs={[{ label: 'Citas' }]}>
         <AppointmentList />
       </PageBase>
     </CanAccess>

@@ -50,8 +50,10 @@ export default function PaymentMethodsPage() {
   return (
     <CanAccess resource="payment_methods" action="read">
       <PageBase
-        title="Métodos de Pago"
-        subtitle="Gestiona los métodos de pago disponibles"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Métodos de Pago' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar métodos de pago..."

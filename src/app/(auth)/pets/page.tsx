@@ -59,8 +59,7 @@ export default function PetsPage() {
   return (
     <CanAccess resource="pets" action="read">
       <PageBase
-        title="Mascotas"
-        subtitle="Gestiona las mascotas registradas en el sistema"
+        breadcrumbs={[{ label: 'Mascotas' }]}
         search={
           <SearchInput
             placeholder="Buscar por nombre o microchip"

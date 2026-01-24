@@ -31,8 +31,10 @@ export default function StaffPage() {
   return (
     <CanAccess resource="staff" action="read">
       <PageBase
-        title="Personal"
-        subtitle="Gestiona el personal de la clínica veterinaria"
+        breadcrumbs={[
+          { label: 'Referencias', href: '/references' },
+          { label: 'Personal' },
+        ]}
         search={
           <SearchInput
             placeholder="Buscar personal..."
