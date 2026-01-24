@@ -32,7 +32,6 @@ export function TenantSwitcher() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        {state !== 'collapsed' && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
@@ -98,7 +97,6 @@ export function TenantSwitcher() {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-        )}
       </SidebarMenuItem>
     </SidebarMenu>
   )

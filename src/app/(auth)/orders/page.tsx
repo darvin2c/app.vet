@@ -74,7 +74,7 @@ export default function OrdersPage() {
           <SearchInput
             hasSidebarTriggerLeft
             placeholder="Buscar por número de orden, cliente o mascota"
-            size="lg"
+            
             suffix={
               <>
                 <Filters
@@ -84,7 +84,7 @@ export default function OrdersPage() {
                 <OrderBy
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
-                />
+                  />
                 <OrderCreateButton variant={'outline'} />
               </>
             }

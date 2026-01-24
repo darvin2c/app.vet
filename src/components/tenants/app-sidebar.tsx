@@ -9,7 +9,6 @@ import {
   SidebarInset,
   SidebarProvider,
   SidebarRail,
-  SidebarTrigger,
 } from '@/components/ui/multi-sidebar'
 import { TenantSwitcher } from '../tenants/tenant-switcher'
 import { UserNav } from '../auth/user-nav'
@@ -21,7 +20,6 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
       <Sidebar collapsible="icon">
         <SidebarHeader className="flex flex-row items-center justify-between">
           <TenantSwitcher />
-          <SidebarTrigger sidebarId="left" className="-ml-1 cursor-ew-resize" />
         </SidebarHeader>
         <SidebarContent>
           <MainNav />

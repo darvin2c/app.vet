@@ -93,12 +93,6 @@ const InternalSearchInput = React.forwardRef<
 
     return (
       <div className="flex gap-2">
-        {hasSidebarTriggerLeft && isMobile && (
-          <SidebarTrigger
-            sidebarId="left"
-            className="cursor-ew-resize h-auto w-10"
-          />
-        )}
         <ButtonGroup className="w-full h-full *:h-auto">
           <InputGroup className={cn(sizeClasses[size], containerClassName)}>
             {/* Search icon - left side */}
