@@ -54,7 +54,6 @@ export default function PaymentsPage() {
         subtitle="Gestiona los pagos de tus clientes"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar pago por referencia, notas o cliente"
             size="lg"
             suffix={
@@ -67,11 +66,15 @@ export default function PaymentsPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <PaymentImportButton variant="outline" />
-                <PaymentCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <PaymentImportButton variant="outline" />
+            <PaymentCreateButton variant="default" />
+          </>
         }
       >
         <PaymentList filterConfig={filters} orderByConfig={orderByConfig} />

@@ -43,7 +43,6 @@ export default function KardexPage() {
         subtitle="Control detallado de movimientos de inventario"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar por referencia o nota..."
             size="lg"
             suffix={
@@ -56,10 +55,14 @@ export default function KardexPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <ProductMovementCreateButton variant={'outline'} />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <ProductMovementCreateButton variant={'default'} />
+          </>
         }
       >
         <ProductMovementList
