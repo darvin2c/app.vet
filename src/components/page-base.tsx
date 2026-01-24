@@ -22,12 +22,14 @@ export default function PageBase({
   title,
   search,
   breadcrumbs,
+  actions,
 }: {
   children: React.ReactNode
   title?: React.ReactNode
   subtitle?: React.ReactNode
   search?: React.ReactNode
   breadcrumbs?: BreadcrumbLinkItem[]
+  actions?: React.ReactNode
 }) {
   return (
     <div className="@container mx-auto flex flex-col gap-4">
@@ -62,6 +64,7 @@ export default function PageBase({
             </BreadcrumbList>
           </Breadcrumb>
         <div className="grow">{search}</div>
+        <div className="flex items-center gap-2">{actions}</div>
       </header>
       <div className="grow px-4">{children}</div>
     </div>

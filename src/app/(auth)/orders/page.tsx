@@ -87,9 +87,9 @@ export default function OrdersPage() {
                 />
               </>
             }
-            actions={<OrderCreateButton variant={'outline'} />}
           />
         }
+        actions={<OrderCreateButton variant={'outline'} />}
       >
         <OrderList filterConfig={filters} orderByConfig={orderByConfig} />
       </PageBase>
