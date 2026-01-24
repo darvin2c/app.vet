@@ -42,7 +42,6 @@ export default function CustomersPage() {
         subtitle="Gestiona la información de tus clientes"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar cliente"
             size="lg"
             suffix={
@@ -55,11 +54,15 @@ export default function CustomersPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <CustomerImportButton variant="outline" />
-                <CustomerCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <CustomerImportButton variant="outline" />
+            <CustomerCreateButton variant="default" />
+          </>
         }
       >
         <CustomerList filterConfig={filters} orderByConfig={orderByConfig} />

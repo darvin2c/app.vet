@@ -42,23 +42,22 @@ export default function RolesPage() {
         subtitle="Gestiona los roles y permisos del sistema"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar rol"
             size="lg"
-            suffix={
-              <>
-                <Filters
-                  filters={filters}
-                  triggerProps={{ variant: 'outline' }}
-                />
-                <OrderBy
-                  config={orderByConfig}
-                  triggerProps={{ variant: 'outline' }}
-                />
-                <RoleCreateButton variant={'outline'} />
-              </>
-            }
           />
+        }
+        actions={
+          <>
+            <Filters
+              filters={filters}
+              triggerProps={{ variant: 'outline' }}
+            />
+            <OrderBy
+              config={orderByConfig}
+              triggerProps={{ variant: 'outline' }}
+            />
+            <RoleCreateButton variant={'default'} />
+          </>
         }
       >
         <RoleList filterConfig={filters} orderByConfig={orderByConfig} />

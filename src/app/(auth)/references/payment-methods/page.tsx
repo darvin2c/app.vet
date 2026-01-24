@@ -54,8 +54,6 @@ export default function PaymentMethodsPage() {
         subtitle="Gestiona los métodos de pago disponibles"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar métodos de pago..."
             size="lg"
             suffix={
@@ -68,11 +66,15 @@ export default function PaymentMethodsPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <PaymentMethodImportButton variant="outline" />
-                <PaymentMethodCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <PaymentMethodImportButton variant="outline" />
+            <PaymentMethodCreateButton variant="default" />
+          </>
         }
       >
         <PaymentMethodList

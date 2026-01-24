@@ -63,7 +63,6 @@ export default function ProductsPage() {
         subtitle="Gestiona el catálogo de productos"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar producto"
             size="lg"
             suffix={
@@ -76,11 +75,15 @@ export default function ProductsPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <ProductImportButton variant={'outline'} />
-                <ProductCreateButton variant={'outline'} />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <ProductImportButton variant={'outline'} />
+            <ProductCreateButton variant={'default'} />
+          </>
         }
       >
         <ProductList filterConfig={filters} orderByConfig={orderByConfig} />

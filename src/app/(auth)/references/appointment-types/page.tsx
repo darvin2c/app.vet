@@ -34,8 +34,6 @@ export default function AppointmentTypesPage() {
         subtitle="Gestiona los tipos de citas disponibles"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar tipos de citas..."
             size="lg"
             suffix={
@@ -52,11 +50,15 @@ export default function AppointmentTypesPage() {
                     variant: 'outline',
                   }}
                 />
-                <AppointmentTypeImportButton variant="outline" />
-                <AppointmentTypeCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <AppointmentTypeImportButton variant="outline" />
+            <AppointmentTypeCreateButton variant="default" />
+          </>
         }
       >
         <AppointmentTypeList

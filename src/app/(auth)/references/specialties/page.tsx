@@ -33,8 +33,6 @@ export default function SpecialtiesPage() {
         subtitle="Gestiona las especialidades médicas disponibles"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar especialidades..."
             size="lg"
             suffix={
@@ -51,11 +49,15 @@ export default function SpecialtiesPage() {
                     variant: 'outline',
                   }}
                 />
-                <SpecialtyImportButton variant="outline" />
-                <SpecialtyCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <SpecialtyImportButton variant="outline" />
+            <SpecialtyCreateButton variant="default" />
+          </>
         }
       >
         <SpecialtyList filterConfig={filters} orderByConfig={orderByConfig} />

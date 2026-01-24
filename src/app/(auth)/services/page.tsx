@@ -62,7 +62,6 @@ export default function ServicesPage() {
       subtitle="Gestiona el catálogo de servicios"
       search={
         <SearchInput
-          hasSidebarTriggerLeft
           placeholder="Buscar servicio"
           size="lg"
           suffix={
@@ -75,11 +74,15 @@ export default function ServicesPage() {
                 config={orderByConfig}
                 triggerProps={{ variant: 'outline' }}
               />
-              <ServiceImportButton variant={'outline'} />
-              <ServiceCreateButton variant={'outline'} />
             </>
           }
         />
+      }
+      actions={
+        <>
+          <ServiceImportButton variant={'outline'} />
+          <ServiceCreateButton variant={'default'} />
+        </>
       }
     >
       <ServiceList filterConfig={filters} orderByConfig={orderByConfig} />

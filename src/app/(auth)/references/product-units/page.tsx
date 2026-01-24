@@ -33,8 +33,6 @@ export default function ProductUnitsPage() {
         subtitle="Gestiona las unidades de medida para productos"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar unidades..."
             size="lg"
             suffix={
@@ -49,11 +47,15 @@ export default function ProductUnitsPage() {
                     variant: 'outline',
                   }}
                 />
-                <ProductUnitImportButton variant="outline" />
-                <ProductUnitCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <ProductUnitImportButton variant="outline" />
+            <ProductUnitCreateButton variant="default" />
+          </>
         }
       >
         <ProductUnitList filterConfig={filters} orderByConfig={orderByConfig} />

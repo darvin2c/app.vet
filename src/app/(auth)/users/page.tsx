@@ -50,7 +50,6 @@ export default function UsersPage() {
         subtitle="Gestiona los usuarios y sus roles en el sistema"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar usuario por nombre o email"
             size="lg"
             suffix={
@@ -63,11 +62,11 @@ export default function UsersPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <UserInviteCreateButton variant="outline" />
               </>
             }
           />
         }
+        actions={<UserInviteCreateButton variant="default" />}
       >
         <UserList filterConfig={filters} orderByConfig={orderByConfig} />
       </PageBase>

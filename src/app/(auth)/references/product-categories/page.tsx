@@ -33,8 +33,6 @@ export default function ProductCategoriesPage() {
         subtitle="Gestiona las categorías de productos disponibles"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar categorías..."
             size="lg"
             suffix={
@@ -47,11 +45,15 @@ export default function ProductCategoriesPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <ProductCategoryImportButton variant={'outline'} />
-                <ProductCategoryCreateButton variant={'outline'} />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <ProductCategoryImportButton variant={'outline'} />
+            <ProductCategoryCreateButton variant={'default'} />
+          </>
         }
       >
         <ProductCategoryList

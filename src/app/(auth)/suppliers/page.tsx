@@ -50,7 +50,6 @@ export default function SuppliersPage() {
         subtitle="Gestiona los proveedores de tu clínica veterinaria"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar proveedores..."
             size="lg"
             suffix={
@@ -63,11 +62,15 @@ export default function SuppliersPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <SupplierImportButton variant="outline" />
-                <SupplierCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <SupplierImportButton variant="outline" />
+            <SupplierCreateButton variant="default" />
+          </>
         }
       >
         <SupplierList filterConfig={filters} orderByConfig={orderByConfig} />

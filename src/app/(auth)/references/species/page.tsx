@@ -33,8 +33,6 @@ export default function SpeciesPage() {
         subtitle="Gestiona las especies de animales"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar especies..."
             size="lg"
             suffix={
@@ -51,11 +49,15 @@ export default function SpeciesPage() {
                     variant: 'outline',
                   }}
                 />
-                <SpeciesImportButton variant="outline" />
-                <SpeciesCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <SpeciesImportButton variant="outline" />
+            <SpeciesCreateButton variant="default" />
+          </>
         }
       >
         <SpeciesList filterConfig={filters} orderByConfig={orderByConfig} />

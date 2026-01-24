@@ -33,8 +33,6 @@ export default function ProductBrandsPage() {
         subtitle="Gestiona las marcas de productos disponibles"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar marcas..."
             size="lg"
             suffix={
@@ -47,11 +45,15 @@ export default function ProductBrandsPage() {
                   config={orderByConfig}
                   triggerProps={{ variant: 'outline' }}
                 />
-                <ProductBrandImportButton variant="outline" />
-                <ProductBrandCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <ProductBrandImportButton variant="outline" />
+            <ProductBrandCreateButton variant="default" />
+          </>
         }
       >
         <ProductBrandList

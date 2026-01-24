@@ -35,8 +35,6 @@ export default function StaffPage() {
         subtitle="Gestiona el personal de la clínica veterinaria"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            hasSidebarTriggerRight
             placeholder="Buscar personal..."
             size="lg"
             suffix={
@@ -53,11 +51,15 @@ export default function StaffPage() {
                     variant: 'outline',
                   }}
                 />
-                <StaffImportButton variant="outline" />
-                <StaffCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <StaffImportButton variant="outline" />
+            <StaffCreateButton variant="default" />
+          </>
         }
       >
         <StaffList filterConfig={filters} orderByConfig={orderByConfig} />

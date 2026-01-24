@@ -63,7 +63,6 @@ export default function PetsPage() {
         subtitle="Gestiona las mascotas registradas en el sistema"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
             placeholder="Buscar por nombre o microchip"
             size="lg"
             suffix={
@@ -80,11 +79,15 @@ export default function PetsPage() {
                     variant: 'outline',
                   }}
                 />
-                <PetImportButton variant="outline" />
-                <PetCreateButton variant="outline" />
               </>
             }
           />
+        }
+        actions={
+          <>
+            <PetImportButton variant="outline" />
+            <PetCreateButton variant="default" />
+          </>
         }
       >
         <PetList filterConfig={filters} orderByConfig={orderByConfig} />
