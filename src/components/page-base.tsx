@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/breadcrumb"
 import { SidebarTrigger } from "./ui/multi-sidebar"
 import { Separator } from "./ui/separator"
+import { useIsMobile } from '@/hooks/use-mobile'
 
 export interface BreadcrumbLinkItem {
   label: React.ReactNode
@@ -31,13 +32,14 @@ export default function PageBase({
   breadcrumbs?: BreadcrumbLinkItem[]
   actions?: React.ReactNode
 }) {
+  const isMobile = useIsMobile()
   return (
     <div className="@container mx-auto flex flex-col gap-4">
-      <header className="flex border-b gap-3 px-4 h-16 shrink-0 items-center justify-between transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
+      <header className="flex border-b gap-3 px-4 h-16 shrink-0 items-center transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12">
           <SidebarTrigger sidebarId="left"
             className="cursor-ew-resize" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-          <Breadcrumb>
+          {isMobile ? null : <Breadcrumb>
             <BreadcrumbList>
               {breadcrumbs && breadcrumbs.length > 0 ? (
                 breadcrumbs.map((item, index) => (
@@ -62,11 +64,14 @@ export default function PageBase({
                 </BreadcrumbItem>
               )}
             </BreadcrumbList>
-          </Breadcrumb>
-        <div className="grow">{search}</div>
+          </Breadcrumb>}
+          <div className='grow flex items-center justify-end gap-2'>
+
+        <div className='max-w-xl !w-full'>{search}</div>
         <div className="flex items-center gap-2">{actions}</div>
+          </div>
       </header>
-      <div className="grow px-4">{children}</div>
+      <div className="grow">{children}</div>
     </div>
   )
 }

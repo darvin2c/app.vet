@@ -72,9 +72,7 @@ export default function OrdersPage() {
         subtitle="Gestiona las órdenes de venta y facturación"
         search={
           <SearchInput
-            hasSidebarTriggerLeft
-            placeholder="Buscar por número de orden, cliente o mascota"
-            
+            placeholder="Buscar órdenes"
             suffix={
               <>
                 <Filters
@@ -89,7 +87,7 @@ export default function OrdersPage() {
             }
           />
         }
-        actions={<OrderCreateButton variant={'outline'} />}
+        actions={<OrderCreateButton variant={'default'} />}
       >
         <OrderList filterConfig={filters} orderByConfig={orderByConfig} />
       </PageBase>
