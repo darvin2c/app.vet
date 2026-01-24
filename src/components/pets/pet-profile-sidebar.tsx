@@ -20,7 +20,8 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { useRouter, usePathname } from 'next/navigation'
 import { usePetDetail } from '@/hooks/pets/use-pet-detail'
 import { calculateAge, formatSex } from '@/lib/pet-utils'
 import { IsActiveDisplay } from '@/components/ui/is-active-field'
@@ -28,16 +29,13 @@ import { PetActions } from './pet-actions'
 
 interface PetProfileSidebarProps {
   petId: string
-  activeTab: string
-  onTabChange: (tab: string) => void
 }
 
 export function PetProfileSidebar({
   petId,
-  activeTab,
-  onTabChange,
 }: PetProfileSidebarProps) {
   const router = useRouter()
+  const pathname = usePathname()
   const { data: pet, isLoading } = usePetDetail(petId)
 
   if (isLoading) {
@@ -66,31 +64,40 @@ export function PetProfileSidebar({
 
   if (!pet) return null
 
+   
   const menuItems = [
     {
       id: "general",
       label: "Información General",
+      href: `/pets/${petId}`,
       icon: User,
+      exact: true,
     },
     {
       id: "clinical-records",
       label: "Historial Médico",
+      href: `/pets/${petId}/medical-history`,
       icon: FileText,
     },
     {
       id: "appointments",
       label: "Citas",
+      href: `/pets/${petId}/appointments`,
       icon: Calendar,
     },
     {
       id: "orders",
       label: "Ordenes",
+      href: `/pets/${petId}/orders`,
       icon: ShoppingBag,
     },
   ]
+   
+
+   
 
   return (
-    <Sidebar side="right" collapsible="icon" className="absolute top-0 left-0  bg-sidebar h-full">
+    <Sidebar side="right" collapsible="icon" className="bg-sidebar h-full border-l">
   
 
       <SidebarContent className="pt-6">
@@ -127,20 +134,31 @@ export function PetProfileSidebar({
         </div>
 
         <SidebarMenu className="px-3">
-           {menuItems.map((item) => (
+           {menuItems.map((item) => {
+             // Simple active check logic
+             // For general (root), exact match usually wanted, but simplified here:
+             // If item.exact is true, strict match.
+             // Else startswith
+             const isActive = item.exact 
+                ? pathname === item.href
+                : pathname?.startsWith(item.href)
+
+             return (
              <SidebarMenuItem key={item.id}>
                <SidebarMenuButton
-                 isActive={activeTab === item.id}
-                 onClick={() => onTabChange(item.id)}
+                 isActive={isActive}
+                 asChild
                  tooltip={item.label}
                  size="default"
                  className="font-medium"
                >
-                 <item.icon className="h-4 w-4 opacity-70" />
-                 <span>{item.label}</span>
+                 <Link href={item.href}>
+                    <item.icon className="h-4 w-4 opacity-70" />
+                    <span>{item.label}</span>
+                 </Link>
                </SidebarMenuButton>
              </SidebarMenuItem>
-           ))}
+           )})}
         </SidebarMenu>
       </SidebarContent>
 
