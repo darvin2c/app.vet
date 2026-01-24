@@ -72,7 +72,7 @@ export default function PageBase({
           </div>
           <Separator orientation="vertical" className="mr-2 h-4" />
           <SidebarTrigger sidebarId="right"
-            className="cursor-ew-resize" />
+            className="cursor-ew-resize" /> 
       </header>
       <div className="grow">{children}</div>
     </div>
