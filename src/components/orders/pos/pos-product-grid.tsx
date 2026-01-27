@@ -132,9 +132,9 @@ function ProductListItem({ product }: { product: Product }) {
       {/* Product Image/Icon */}
       <ItemMedia variant="icon">
         {product.is_service ? (
-          <Package className="h-6 w-6 text-muted-foreground" />
-        ) : (
           <Stethoscope className="h-6 w-6 text-muted-foreground" />
+        ) : (
+          <Package className="h-6 w-6 text-muted-foreground" />
         )}
       </ItemMedia>
 

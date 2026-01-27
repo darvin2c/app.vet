@@ -8,12 +8,11 @@ import {
 } from '@/components/ui/chart'
 import { Pie, PieChart, Cell, Legend } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase/client'
-import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '../ui/skeleton'
-import { subDays, format, startOfToday } from 'date-fns'
+import { subDays, startOfToday } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { useDashboardSalesDistribution } from '@/hooks/dashboard/use-dashboard-sales-distribution'
 
 export function SalesDistributionChart() {
   const today = startOfToday()
@@ -25,30 +24,12 @@ export function SalesDistributionChart() {
     to: defaultTo,
   })
 
-  const startDate = dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''
-  const endDate = dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : ''
+  const safeDateRange =
+    dateRange?.from && dateRange?.to
+      ? { from: dateRange.from, to: dateRange.to }
+      : undefined
 
-  const query = useQuery({
-    queryKey: ['sales-distribution', startDate, endDate],
-    queryFn: async () => {
-      if (!startDate || !endDate) return []
-      const { data, error } = await supabase
-        .from('order_items')
-        .select(
-          `
-          total,
-          orders!inner(created_at),
-          products(is_service)
-        `
-        )
-        .gte('orders.created_at', startDate)
-        .lte('orders.created_at', endDate)
-
-      if (error) throw error
-      return data
-    },
-    enabled: !!startDate && !!endDate,
-  })
+  const query = useDashboardSalesDistribution({ dateRange: safeDateRange })
 
   const chartData = useMemo(() => {
     if (!query.data) return []

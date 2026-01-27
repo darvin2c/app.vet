@@ -1,9 +1,8 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { MetricCard } from './metric-card'
-import { supabase } from '@/lib/supabase/client'
-import { parseISO, format, eachDayOfInterval, isSameDay } from 'date-fns'
+import { parseISO, eachDayOfInterval, isSameDay } from 'date-fns'
+import { useDashboardAppointments } from '@/hooks/dashboard/use-dashboard-appointments'
 
 export function AppointmentKpi({
   dateRange,
@@ -12,36 +11,8 @@ export function AppointmentKpi({
   dateRange: { from: Date; to: Date }
   prevRange: { from: Date; to: Date }
 }) {
-  const startDate = format(dateRange.from, 'yyyy-MM-dd')
-  const endDate = format(dateRange.to, 'yyyy-MM-dd')
-  const prevStartDate = format(prevRange.from, 'yyyy-MM-dd')
-  const prevEndDate = format(prevRange.to, 'yyyy-MM-dd')
-
-  const selectRangeQuery = useQuery({
-    queryKey: ['appointments', startDate, endDate],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('*')
-        .gte('scheduled_start', startDate)
-        .lte('scheduled_start', endDate)
-      if (error) throw error
-      return data
-    },
-  })
-
-  const prevRangeQuery = useQuery({
-    queryKey: ['appointments', prevStartDate, prevEndDate],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('appointments')
-        .select('*')
-        .gte('scheduled_start', prevStartDate)
-        .lte('scheduled_start', prevEndDate)
-      if (error) throw error
-      return data
-    },
-  })
+  const { currentQuery: selectRangeQuery, prevQuery: prevRangeQuery } =
+    useDashboardAppointments({ dateRange, prevRange })
 
   const isPending = selectRangeQuery.isPending || prevRangeQuery.isPending
 

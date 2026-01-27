@@ -9,7 +9,13 @@ export default function useSupplierDelete() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('suppliers').delete().eq('id', id)
+      if (!currentTenant?.id) throw new Error('No tenant selected')
+
+      const { error } = await supabase
+        .from('suppliers')
+        .delete()
+        .eq('id', id)
+        .eq('tenant_id', currentTenant.id)
 
       if (error) {
         throw new Error(`Error al eliminar proveedor: ${error.message}`)

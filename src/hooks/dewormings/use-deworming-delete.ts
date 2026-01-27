@@ -1,13 +1,21 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createClient } from '@/lib/supabase/client'
+import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 
 export function useDewormingDelete() {
   const queryClient = useQueryClient()
   const supabase = createClient()
+  const { currentTenant } = useCurrentTenantStore()
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from('pet_dewormings').delete().eq('id', id)
+      if (!currentTenant?.id) throw new Error('No tenant selected')
+
+      const { error } = await supabase
+        .from('pet_dewormings')
+        .delete()
+        .eq('id', id)
+        .eq('tenant_id', currentTenant.id)
 
       if (error) throw error
     },

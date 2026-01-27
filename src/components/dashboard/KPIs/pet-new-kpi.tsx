@@ -1,9 +1,8 @@
 'use client'
 
-import { useQuery } from '@tanstack/react-query'
 import { MetricCard } from './metric-card'
-import { supabase } from '@/lib/supabase/client'
-import { parseISO, format, eachDayOfInterval, isSameDay } from 'date-fns'
+import { parseISO, eachDayOfInterval, isSameDay } from 'date-fns'
+import { useDashboardPets } from '@/hooks/dashboard/use-dashboard-pets'
 
 export function PetNewKpi({
   dateRange,
@@ -12,36 +11,8 @@ export function PetNewKpi({
   dateRange: { from: Date; to: Date }
   prevRange: { from: Date; to: Date }
 }) {
-  const startDate = format(dateRange.from, 'yyyy-MM-dd')
-  const endDate = format(dateRange.to, 'yyyy-MM-dd')
-  const prevStartDate = format(prevRange.from, 'yyyy-MM-dd')
-  const prevEndDate = format(prevRange.to, 'yyyy-MM-dd')
-
-  const selectRangeQuery = useQuery({
-    queryKey: ['pets', startDate, endDate],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pets')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate)
-      if (error) throw error
-      return data
-    },
-  })
-
-  const prevRangeQuery = useQuery({
-    queryKey: ['pets', prevStartDate, prevEndDate],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('pets')
-        .select('*')
-        .gte('created_at', prevStartDate)
-        .lte('created_at', prevEndDate)
-      if (error) throw error
-      return data
-    },
-  })
+  const { currentQuery: selectRangeQuery, prevQuery: prevRangeQuery } =
+    useDashboardPets({ dateRange, prevRange })
 
   const isPending = selectRangeQuery.isPending || prevRangeQuery.isPending
 

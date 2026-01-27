@@ -8,12 +8,11 @@ import {
 } from '@/components/ui/chart'
 import { Pie, PieChart, Cell } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase/client'
-import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '../ui/skeleton'
-import { subDays, format, startOfToday } from 'date-fns'
+import { subDays, startOfToday } from 'date-fns'
 import { DateRange } from 'react-day-picker'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { useDashboardPaymentMethods } from '@/hooks/dashboard/use-dashboard-payment-methods'
 
 export function SalesByPaymentMethodChart() {
   const today = startOfToday()
@@ -25,32 +24,12 @@ export function SalesByPaymentMethodChart() {
     to: defaultTo,
   })
 
-  const startDate = dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''
-  const endDate = dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : ''
+  const safeDateRange =
+    dateRange?.from && dateRange?.to
+      ? { from: dateRange.from, to: dateRange.to }
+      : undefined
 
-  const query = useQuery({
-    queryKey: ['sales-by-payment-method', startDate, endDate],
-    queryFn: async () => {
-      if (!startDate || !endDate) return []
-      const { data, error } = await supabase
-        .from('payments')
-        .select(
-          `
-          amount,
-          payment_methods (
-            name,
-            payment_type
-          )
-        `
-        )
-        .gte('payment_date', startDate)
-        .lte('payment_date', endDate)
-
-      if (error) throw error
-      return data
-    },
-    enabled: !!startDate && !!endDate,
-  })
+  const query = useDashboardPaymentMethods({ dateRange: safeDateRange })
 
   const { typesData, methodsData, totalSales } = useMemo(() => {
     if (!query.data) return { typesData: [], methodsData: [], totalSales: 0 }

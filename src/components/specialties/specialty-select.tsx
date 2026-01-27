@@ -1,12 +1,10 @@
 'use client'
 
 import { EntitySelect } from '@/components/ui/entity-select'
-import { supabase } from '@/lib/supabase/client'
-import useCurrentTenantStore from '@/hooks/tenants/use-current-tenant-store'
 import { Tables } from '@/types/supabase.types'
-import { useQuery } from '@tanstack/react-query'
 import { GraduationCap } from 'lucide-react'
 import { useState } from 'react'
+import { useSpecialtyList } from '@/hooks/specialties/use-specialty-list'
 
 type Specialty = Tables<'specialties'>
 
@@ -28,34 +26,16 @@ export function SpecialtySelect({
   className,
 }: SpecialtySelectProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const { currentTenant } = useCurrentTenantStore()
 
-  const { data: specialties = [], isLoading } = useQuery({
-    queryKey: ['specialties', currentTenant?.id, searchTerm],
-    queryFn: async () => {
-      if (!currentTenant?.id) return []
-
-      let query = supabase
-        .from('specialties')
-        .select('*')
-        .eq('tenant_id', currentTenant.id)
-        .eq('is_active', true)
-        .order('name')
-
-      if (searchTerm) {
-        query = query.ilike('name', `%${searchTerm}%`)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        throw new Error(`Error al obtener especialidades: ${error.message}`)
-      }
-
-      return data || []
+  const { data: result, isLoading } = useSpecialtyList({
+    search: searchTerm,
+    pagination: {
+      page: 1,
+      pageSize: 1000, // Load enough items
     },
-    enabled: !!currentTenant?.id,
   })
+
+  const specialties = result?.data || []
 
   return (
     <EntitySelect<Specialty>

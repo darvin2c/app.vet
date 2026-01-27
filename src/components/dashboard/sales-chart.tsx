@@ -8,8 +8,6 @@ import {
 } from '@/components/ui/chart'
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { supabase } from '@/lib/supabase/client'
-import { useQuery } from '@tanstack/react-query'
 import { Skeleton } from '../ui/skeleton'
 import {
   subDays,
@@ -24,6 +22,7 @@ import {
 import { DateRange } from 'react-day-picker'
 import { DateRangePicker } from '@/components/ui/date-range-picker'
 import { es } from 'date-fns/locale'
+import { useDashboardOrders } from '@/hooks/dashboard/use-dashboard-orders'
 
 export function SalesChart() {
   const today = startOfToday()
@@ -52,41 +51,20 @@ export function SalesChart() {
     }
   }, [dateRange])
 
-  const startDate = dateRange?.from ? format(dateRange.from, 'yyyy-MM-dd') : ''
-  const endDate = dateRange?.to ? format(dateRange.to, 'yyyy-MM-dd') : ''
-  const prevStartDate = prevRange?.from
-    ? format(prevRange.from, 'yyyy-MM-dd')
-    : ''
-  const prevEndDate = prevRange?.to ? format(prevRange.to, 'yyyy-MM-dd') : ''
+  // Cast dateRange and prevRange to required interface (ensure from/to are not undefined when passed)
+  // The hook handles undefined checks internally, but we need to pass the objects.
+  const safeDateRange =
+    dateRange?.from && dateRange?.to
+      ? { from: dateRange.from, to: dateRange.to }
+      : undefined
+  const safePrevRange =
+    prevRange?.from && prevRange?.to
+      ? { from: prevRange.from, to: prevRange.to }
+      : undefined
 
-  const query = useQuery({
-    queryKey: ['sales', startDate, endDate],
-    queryFn: async () => {
-      if (!startDate || !endDate) return []
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .gte('created_at', startDate)
-        .lte('created_at', endDate)
-      if (error) throw error
-      return data
-    },
-    enabled: !!startDate && !!endDate,
-  })
-
-  const prevQuery = useQuery({
-    queryKey: ['sales', prevStartDate, prevEndDate],
-    queryFn: async () => {
-      if (!prevStartDate || !prevEndDate) return []
-      const { data, error } = await supabase
-        .from('orders')
-        .select('*')
-        .gte('created_at', prevStartDate)
-        .lte('created_at', prevEndDate)
-      if (error) throw error
-      return data
-    },
-    enabled: !!prevStartDate && !!prevEndDate,
+  const { currentQuery: query, prevQuery } = useDashboardOrders({
+    dateRange: safeDateRange,
+    prevRange: safePrevRange,
   })
 
   const currentTotal =

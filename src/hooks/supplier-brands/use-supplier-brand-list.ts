@@ -13,7 +13,10 @@ export default function useSupplierBrands(filters?: SupplierBrandFilters) {
         return []
       }
 
-      let query = supabase.from('supplier_brands').select(`
+      let query = supabase
+        .from('supplier_brands')
+        .select(
+          `
           *,
           suppliers (
             id,
@@ -28,7 +31,9 @@ export default function useSupplierBrands(filters?: SupplierBrandFilters) {
             description,
             is_active
           )
-        `)
+        `
+        )
+        .eq('tenant_id', currentTenant.id)
 
       // Aplicar filtros
       if (filters?.supplier_id) {

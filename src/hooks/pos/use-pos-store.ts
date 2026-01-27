@@ -4,6 +4,7 @@ import { Tables, TablesInsert } from '@/types/supabase.types'
 import { create } from 'zustand'
 
 type Customer = Tables<'customers'>
+type Pet = Tables<'pets'>
 type Order = Omit<TablesInsert<'orders'>, 'tenant_id'> & {
   payments?: Payment[]
 }
@@ -19,6 +20,7 @@ type OrderQueryType = Tables<'orders'> & {
   order_items: Tables<'order_items'>[]
   payments: Tables<'payments'>[]
   customer?: Tables<'customers'> | null
+  pet?: Tables<'pets'> | null
 }
 
 interface POSState {
@@ -31,6 +33,7 @@ interface POSState {
 
   // Customer
   customer: Customer | null
+  pet: Pet | null
 
   // UI State
   currentView: 'catalog' | 'payment' | 'receipt'
@@ -45,6 +48,7 @@ interface POSState {
 
   //setCustomer
   setCustomer: (customer: Customer | null) => void
+  setPet: (pet: Pet | null) => void
   setTenant: (tenant: Tables<'tenants'> | null) => void
   // items
   addProductToOrder: (product: Product) => void
@@ -135,6 +139,7 @@ const usePOSStore = create<POSState>()((set, get) => {
 
     // Customer
     customer: null,
+    pet: null,
 
     // UI State
     currentView: 'catalog' as POSState['currentView'],
@@ -148,7 +153,8 @@ const usePOSStore = create<POSState>()((set, get) => {
     setOpenCartMobile: (open) => set({ openCartMobile: open }),
 
     //setCustomer
-    setCustomer: (customer) => set({ customer }),
+    setCustomer: (customer) => set({ customer, pet: null }),
+    setPet: (pet: Pet | null) => set({ pet }),
 
     // items
     addProductToOrder: (product) => {
