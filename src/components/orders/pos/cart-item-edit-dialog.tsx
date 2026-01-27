@@ -200,10 +200,16 @@ export function CartItemEditDialog({
   // Update form when item changes
   useEffect(() => {
     if (item && open) {
+      const priceBase = item.price_base || 0
+      const discountAmount = item.discount || 0
+      // Convert discount amount to percentage for the UI
+      const discountPercentage =
+        priceBase > 0 ? (discountAmount / priceBase) * 100 : 0
+
       form.reset({
         quantity: item.quantity || 1,
-        unit_price: item.unit_price || item.price_base || 0,
-        discount: item.discount || 0,
+        unit_price: priceBase, // In the form, unit_price represents the base price
+        discount: Math.round(discountPercentage * 100) / 100, // Round to 2 decimals
         description: item.description || '',
       })
     }
@@ -212,16 +218,21 @@ export function CartItemEditDialog({
   const handleSave = (data: CartItemEditSchema) => {
     if (!item?.product_id) return
 
-    // Calculate the new total
-    const calculations = calculateCartItemTotal(data)
-
+    // Calculate discount amount from percentage
+    const priceBase = data.unit_price
+    const discountPercentage = data.discount
+    const discountAmount = priceBase * (discountPercentage / 100)
+    
+    // Calculate totals for local state update (store will also calculate, but we need to pass correct values)
+    // Note: The store expects 'discount' to be the amount, not percentage
+    
     // Update the item in the POS store
     updateOrderItem(item.product_id, {
       quantity: data.quantity,
-      unit_price: data.unit_price,
-      discount: data.discount,
+      price_base: priceBase, // Update base price if changed
+      discount: discountAmount, // Store expects amount
       description: data.description,
-      total: calculations.total,
+      // unit_price and total are calculated by the store based on price_base - discount
     })
 
     // Close dialog
