@@ -18,7 +18,7 @@ export function AppSidebar({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider id="left">
       <Sidebar collapsible="icon">
-        <SidebarHeader className="flex flex-row items-center justify-between">
+        <SidebarHeader className="flex flex-row items-center justify-between border-b border-border">
           <TenantSwitcher />
         </SidebarHeader>
         <SidebarContent>
