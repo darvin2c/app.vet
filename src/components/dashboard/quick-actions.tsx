@@ -54,7 +54,7 @@ export function QuickActions() {
             onClick={() => setIsPosOpen(true)}
           >
             <ShoppingBag className="h-6 w-6 text-primary" />
-            <span>Venta Mostrador</span>
+            <span>Crea Orden</span>
           </Button>
         </CardContent>
       </Card>

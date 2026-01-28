@@ -13,7 +13,7 @@ import {
 export default function DashboardPage() {
   return (
     <PageBase breadcrumbs={[{ label: 'Dashboard' }]}>
-      <div className="space-y-6 pb-10">
+      <div className="space-y-6 pb-10 px-4">
         {/* KPI Cards Row */}
         <KpiGrid />
 
