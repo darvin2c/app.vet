@@ -14,6 +14,7 @@ import {
 } from '@/components/ui/table'
 import { ProductSelect } from '@/components/products/product-select'
 import { Input } from '@/components/ui/input'
+import { DiscountInput } from '@/components/ui/discount-input'
 import { Tables } from '@/types/supabase.types'
 import { calculateOrderItemTotal } from '@/schemas/order-items.schema'
 import { useTenantDetail } from '@/hooks/tenants/use-tenant-detail'
@@ -248,19 +249,16 @@ export function OrderItemsManager({
                     />
                   </TableCell>
                   <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      max="100"
-                      step="0.01"
+                    <DiscountInput
                       value={newItem.discount}
-                      onChange={(e) =>
+                      onChange={(value) =>
                         setNewItem((prev) => ({
                           ...prev,
-                          discount: parseFloat(e.target.value) || 0,
+                          discount: value,
                         }))
                       }
-                      className="text-right"
+                      totalAmount={newItem.unit_price}
+                      canAccess={{ resource: 'orders', action: 'itemUpdate' }}
                     />
                   </TableCell>
                   <TableCell className="text-right">
@@ -325,7 +323,9 @@ export function OrderItemsManager({
                   <TableCell className="text-right">
                     <CurrencyDisplay value={item.unit_price || 0} />
                   </TableCell>
-                  <TableCell className="text-right">{item.discount}%</TableCell>
+                  <TableCell className="text-right">
+                    <CurrencyDisplay value={item.discount} />
+                  </TableCell>
                   <TableCell className="text-right">
                     {(tenantTaxRate * 100).toFixed(0)}%
                   </TableCell>

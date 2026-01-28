@@ -14,8 +14,7 @@ export const cartItemEditSchema = z.object({
   ),
   discount: z
     .number()
-    .min(0, 'El descuento debe ser mayor o igual a 0')
-    .max(100, 'El descuento no puede ser mayor a 100%'),
+    .min(0, 'El descuento debe ser mayor o igual a 0'),
   description: z.string().optional(),
 })
 
@@ -32,7 +31,8 @@ export function calculateCartItemTotal(item: {
   total: number
 } {
   const subtotal = item.quantity * item.unit_price
-  const discountAmount = subtotal * ((item.discount || 0) / 100)
+  // El descuento es por unidad, así que multiplicamos por la cantidad
+  const discountAmount = (item.discount || 0) * item.quantity
   const total = subtotal - discountAmount
 
   return {

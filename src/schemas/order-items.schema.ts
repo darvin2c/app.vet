@@ -56,7 +56,8 @@ export function calculateOrderItemTotal(item: OrderItemCalculationSchema): {
   total: number
 } {
   const subtotal = item.quantity * item.unit_price
-  const discountAmount = subtotal * (item.discount / 100)
+  // Descuento es unitario, multiplicamos por la cantidad
+  const discountAmount = item.discount * item.quantity
   const subtotalAfterDiscount = subtotal - discountAmount
   const taxAmount = subtotalAfterDiscount * item.tax_rate
 

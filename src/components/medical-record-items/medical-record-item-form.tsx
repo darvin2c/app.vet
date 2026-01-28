@@ -1,6 +1,6 @@
 'use client'
 
-import { useFormContext } from 'react-hook-form'
+import { useFormContext, Controller } from 'react-hook-form'
 import {
   Field,
   FieldContent,
@@ -8,6 +8,7 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { DiscountInput } from '@/components/ui/discount-input'
 import { Textarea } from '@/components/ui/textarea'
 import { MedicalRecordItemFormData } from '@/schemas/medical-record-items.schema'
 import { ProductSelect } from '@/components/products/product-select'
@@ -20,6 +21,7 @@ export function MedicalRecordItemForm() {
     formState: { errors },
     setValue,
     watch,
+    control,
   } = useFormContext<MedicalRecordItemFormData>()
 
   const productId = watch('product_id')
@@ -79,13 +81,17 @@ export function MedicalRecordItemForm() {
       <Field>
         <FieldLabel htmlFor="discount">Descuento</FieldLabel>
         <FieldContent>
-          <Input
-            id="discount"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="0.00"
-            {...register('discount', { valueAsNumber: true })}
+          <Controller
+            control={control}
+            name="discount"
+            render={({ field }) => (
+              <DiscountInput
+                id="discount"
+                value={field.value || 0}
+                onChange={field.onChange}
+                totalAmount={watch('unit_price') || 0}
+              />
+            )}
           />
           <FieldError errors={[errors.discount]} />
         </FieldContent>

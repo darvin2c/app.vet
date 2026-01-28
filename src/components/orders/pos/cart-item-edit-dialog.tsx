@@ -36,6 +36,7 @@ import {
 } from '@/schemas/cart-item-edit.schema'
 import { TablesInsert, Tables } from '@/types/supabase.types'
 import { CurrencyInput } from '@/components/ui/currency-input'
+import { DiscountInput } from '@/components/ui/discount-input'
 import CanAccess from '@/components/ui/can-access'
 
 type OrderItem = Omit<TablesInsert<'order_items'>, 'tenant_id' | 'order_id'> & {
@@ -122,15 +123,19 @@ function CartItemEditForm({ item }: { item: OrderItem }) {
       </div>
 
       <Field>
-        <FieldLabel htmlFor="discount">Descuento (%)</FieldLabel>
+        <FieldLabel htmlFor="discount">Descuento</FieldLabel>
         <FieldContent>
-          <Input
-            id="discount"
-            type="number"
-            min="0"
-            max="100"
-            step="0.1"
-            {...form.register('discount', { valueAsNumber: true })}
+          <Controller
+            name="discount"
+            control={form.control}
+            render={({ field }) => (
+              <DiscountInput
+                value={field.value}
+                onChange={field.onChange}
+                totalAmount={unit_price}
+                canAccess={{ resource: 'orders', action: 'itemUpdate' }}
+              />
+            )}
           />
           <FieldError errors={[errors.discount]} />
         </FieldContent>
@@ -202,14 +207,11 @@ export function CartItemEditDialog({
     if (item && open) {
       const priceBase = item.price_base || 0
       const discountAmount = item.discount || 0
-      // Convert discount amount to percentage for the UI
-      const discountPercentage =
-        priceBase > 0 ? (discountAmount / priceBase) * 100 : 0
 
       form.reset({
         quantity: item.quantity || 1,
         unit_price: priceBase, // In the form, unit_price represents the base price
-        discount: Math.round(discountPercentage * 100) / 100, // Round to 2 decimals
+        discount: discountAmount,
         description: item.description || '',
       })
     }
@@ -218,14 +220,12 @@ export function CartItemEditDialog({
   const handleSave = (data: CartItemEditSchema) => {
     if (!item?.product_id) return
 
-    // Calculate discount amount from percentage
     const priceBase = data.unit_price
-    const discountPercentage = data.discount
-    const discountAmount = priceBase * (discountPercentage / 100)
-    
+    const discountAmount = data.discount
+
     // Calculate totals for local state update (store will also calculate, but we need to pass correct values)
     // Note: The store expects 'discount' to be the amount, not percentage
-    
+
     // Update the item in the POS store
     updateOrderItem(item.product_id, {
       quantity: data.quantity,
