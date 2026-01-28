@@ -32,10 +32,7 @@ export function ReferenceSidebar({
         {/* Contenido principal */}
         <main className="h-full">{children}</main>
       </SidebarInset>
-      <Sidebar
-        side="right"
-        collapsible="icon"
-      >
+      <Sidebar side="right" collapsible="icon">
         <SidebarContent>
           {navigationGroups.map((group) => (
             <SidebarGroup key={group.label} className="">

@@ -21,7 +21,8 @@ export default function DiscountInputDemo() {
       <div>
         <h1 className="text-3xl font-bold">Discount Input Demo</h1>
         <p className="text-muted-foreground">
-          A component to handle discounts in both fixed amount and percentage, always returning the fixed monetary value.
+          A component to handle discounts in both fixed amount and percentage,
+          always returning the fixed monetary value.
         </p>
       </div>
 
@@ -57,7 +58,9 @@ export default function DiscountInputDemo() {
                 <span className="font-mono">${totalAmount.toFixed(2)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Discount Value (Raw):</span>
+                <span className="text-muted-foreground">
+                  Discount Value (Raw):
+                </span>
                 <span className="font-mono">${discountValue.toFixed(2)}</span>
               </div>
               <div className="flex justify-between font-medium">
@@ -82,7 +85,7 @@ export default function DiscountInputDemo() {
             <CardTitle>Pre-filled Value</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-             <div className="space-y-2">
+            <div className="space-y-2">
               <Label>Total Amount</Label>
               <Input
                 type="number"
@@ -100,10 +103,16 @@ export default function DiscountInputDemo() {
               />
             </div>
 
-             <div className="bg-muted p-4 rounded-md text-sm">
-                <p>Try switching to % mode. It should show <strong>10.00%</strong> (100/1000).</p>
-                <p>Then change Total Amount to 2000. The discount value stays $100, so % should become <strong>5.00%</strong>.</p>
-             </div>
+            <div className="bg-muted p-4 rounded-md text-sm">
+              <p>
+                Try switching to % mode. It should show <strong>10.00%</strong>{' '}
+                (100/1000).
+              </p>
+              <p>
+                Then change Total Amount to 2000. The discount value stays $100,
+                so % should become <strong>5.00%</strong>.
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>

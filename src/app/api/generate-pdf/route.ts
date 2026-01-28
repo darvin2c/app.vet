@@ -50,19 +50,15 @@ export async function POST(request: NextRequest) {
         : 'http://localhost:3001'
 
     const printURL = `${baseURL}/orders/${orderId}/print`
-    console.log('🔗 URL de impresión:', printURL)
 
     const browser = await getBrowser()
-    console.log('🌐 Browser iniciado correctamente')
 
     const page = await browser.newPage()
 
     // Configurar el viewport para mejor renderizado
     await page.setViewport({ width: 1200, height: 800 })
-    console.log('📱 Viewport configurado: 1200x800')
 
     // Navegar a la página de impresión
-    console.log('⏳ Navegando a la página de impresión...')
     await page.goto(printURL, {
       waitUntil: 'networkidle0',
       timeout: 30000,
@@ -103,10 +99,7 @@ export async function POST(request: NextRequest) {
       displayHeaderFooter: false,
     })
 
-    console.log('✅ PDF generado exitosamente, tamaño:', pdf.length, 'bytes')
-
     await browser.close()
-    console.log('🔒 Browser cerrado')
 
     // Retornar el PDF como respuesta
     return new NextResponse(Buffer.from(pdf), {

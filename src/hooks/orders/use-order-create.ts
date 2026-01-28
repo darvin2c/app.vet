@@ -57,16 +57,16 @@ export default function useOrderCreate() {
 
       // Crear movimientos de producto
       if (createdItems && createdItems.length > 0) {
-        // Usamos any para evitar errores de tipo hasta que se actualicen los tipos de Supabase
-
-        const movements: any[] = createdItems.map((item) => ({
-          product_id: item.product_id,
-          quantity: -item.quantity,
-          tenant_id: currentTenant.id,
-          order_item_id: item.id,
-          note: 'Venta',
-          reference: `Orden #${createdOrder.order_number || createdOrder.id}`,
-        }))
+        const movements: TablesInsert<'product_movements'>[] = createdItems.map(
+          (item) => ({
+            product_id: item.product_id,
+            quantity: -item.quantity,
+            tenant_id: currentTenant.id,
+            order_item_id: item.id,
+            note: 'Venta',
+            reference: `Orden #${createdOrder.order_number || createdOrder.id}`,
+          })
+        )
 
         const { error: movementsError } = await supabase
           .from('product_movements')

@@ -11,9 +11,7 @@ import CanAccess from '@/components/ui/can-access'
 export default function SettingsPage() {
   return (
     <CanAccess resource="settings" action="read">
-      <PageBase
-        breadcrumbs={[{ label: 'Configuración' }]}
-      >
+      <PageBase breadcrumbs={[{ label: 'Configuración' }]}>
         <div className="space-y-6 max-w-5xl w-full mx-auto">
           <TenantGeneralInfoCard />
           <TenantLegalLocationCard />

@@ -39,17 +39,10 @@ export default function RolesPage() {
     <CanAccess resource="roles" action="read">
       <PageBase
         breadcrumbs={[{ label: 'Roles y Permisos' }]}
-        search={
-          <SearchInput
-            placeholder="Buscar rol"
-          />
-        }
+        search={<SearchInput placeholder="Buscar rol" />}
         actions={
           <>
-            <Filters
-              filters={filters}
-              triggerProps={{ variant: 'outline' }}
-            />
+            <Filters filters={filters} triggerProps={{ variant: 'outline' }} />
             <OrderBy
               config={orderByConfig}
               triggerProps={{ variant: 'outline' }}

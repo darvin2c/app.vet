@@ -55,9 +55,7 @@ export default function PetOrdersPage() {
       <OrderList
         filterConfig={orderFilterConfig}
         orderByConfig={orderOrderByConfig}
-        additionalFilters={[
-          { field: 'pet_id', operator: 'eq', value: petId },
-        ]}
+        additionalFilters={[{ field: 'pet_id', operator: 'eq', value: petId }]}
       />
     </PageBase>
   )

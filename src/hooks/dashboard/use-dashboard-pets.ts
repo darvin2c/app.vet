@@ -45,12 +45,7 @@ export function useDashboardPets({
   })
 
   const prevQuery = useQuery({
-    queryKey: [
-      'dashboard-pets',
-      currentTenant?.id,
-      prevStartDate,
-      prevEndDate,
-    ],
+    queryKey: ['dashboard-pets', currentTenant?.id, prevStartDate, prevEndDate],
     queryFn: async () => {
       if (!currentTenant?.id || !prevStartDate || !prevEndDate) return []
 

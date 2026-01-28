@@ -6,9 +6,7 @@ import CanAccess from '@/components/ui/can-access'
 export default function ReferencesPage() {
   return (
     <CanAccess resource="references" action="read">
-      <PageBase
-        breadcrumbs={[{ label: 'Referencias del Sistema' }]}
-      >
+      <PageBase breadcrumbs={[{ label: 'Referencias del Sistema' }]}>
         <ReferenceList />
       </PageBase>
     </CanAccess>

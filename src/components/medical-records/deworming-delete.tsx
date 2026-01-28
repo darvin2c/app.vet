@@ -52,7 +52,8 @@ export function DewormingDelete({
         description={
           <div className="space-y-2">
             <p>
-              Esta acción eliminará permanentemente el registro de desparasitación.
+              Esta acción eliminará permanentemente el registro de
+              desparasitación.
             </p>
             <p className="text-sm text-muted-foreground">
               Esta acción no se puede deshacer.

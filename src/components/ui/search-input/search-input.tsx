@@ -161,12 +161,7 @@ const SearchInput = React.forwardRef<HTMLInputElement, SearchProps>(
             {/* Right side elements */}
             {/* Loading spinner - highest priority */}
             {isLoading || isFetching ? (
-              <Loader2
-                className={cn(
-                  'animate-spin',
-                  iconSizeClasses[size]
-                )}
-              />
+              <Loader2 className={cn('animate-spin', iconSizeClasses[size])} />
             ) : null}
 
             {/* Clear button */}

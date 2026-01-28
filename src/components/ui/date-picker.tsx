@@ -481,13 +481,19 @@ export function DatePicker({
 
 type DateDisplayProps = Omit<React.ComponentProps<'span'>, 'children'> & {
   value?: Date | string | null
+  includeTime?: boolean
 }
 
-export function DateDisplay({ value, ...props }: DateDisplayProps) {
+export function DateDisplay({
+  value,
+  includeTime,
+  ...props
+}: DateDisplayProps) {
   if (!value) {
     return null
   }
-  return <span {...props}>{format(value, 'dd/MM/yyyy', { locale: es })}</span>
+  const dateFormat = includeTime ? 'dd/MM/yyyy HH:mm' : 'dd/MM/yyyy'
+  return <span {...props}>{format(value, dateFormat, { locale: es })}</span>
 }
 
 export default DatePicker

@@ -15,9 +15,7 @@ export default function PetProfileLayout({
   return (
     <SidebarProvider id="right" className="relative h-[calc(100vh-4rem)]">
       <SidebarInset className="overflow-hidden">
-        <main className="h-full">
-          {children}
-        </main>
+        <main className="h-full">{children}</main>
       </SidebarInset>
       <PetProfileSidebar petId={petId} />
     </SidebarProvider>

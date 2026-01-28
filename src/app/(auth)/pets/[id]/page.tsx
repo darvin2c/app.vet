@@ -40,13 +40,13 @@ export default function PetProfilePage() {
         { label: 'Información General' },
       ]}
     >
-       {petLoading ? (
-          <div>Cargando información...</div>
-       ) : !pet ? (
-          <div>No se encontró la mascota</div>
-       ) : (
-          <PetGeneralInfo pet={pet} />
-       )}
+      {petLoading ? (
+        <div>Cargando información...</div>
+      ) : !pet ? (
+        <div>No se encontró la mascota</div>
+      ) : (
+        <PetGeneralInfo pet={pet} />
+      )}
     </PageBase>
   )
 }

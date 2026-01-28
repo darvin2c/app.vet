@@ -5,9 +5,7 @@ import { SupplierBrandList } from '@/components/supplier-brands/supplier-brand-l
 export default function SupplierBrandsPage() {
   return (
     <CanAccess resource="supplier-brands" action="read">
-      <PageBase
-        breadcrumbs={[{ label: 'Marcas de Proveedores' }]}
-      >
+      <PageBase breadcrumbs={[{ label: 'Marcas de Proveedores' }]}>
         <SupplierBrandList />
       </PageBase>
     </CanAccess>

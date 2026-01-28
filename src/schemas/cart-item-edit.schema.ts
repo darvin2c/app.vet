@@ -12,9 +12,7 @@ export const cartItemEditSchema = z.object({
     },
     z.number().min(0, 'El precio unitario debe ser mayor o igual a 0')
   ),
-  discount: z
-    .number()
-    .min(0, 'El descuento debe ser mayor o igual a 0'),
+  discount: z.number().min(0, 'El descuento debe ser mayor o igual a 0'),
   description: z.string().optional(),
 })
 

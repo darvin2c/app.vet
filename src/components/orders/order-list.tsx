@@ -165,14 +165,11 @@ export function OrderList({
           Fecha
         </OrderByTableHeader>
       ),
-      cell: ({ row }: { row: Row<Order> }) => {
-        const date = new Date(row.getValue('created_at'))
-        return (
-          <div className="text-sm text-muted-foreground">
-            {format(date, 'dd/MM/yyyy HH:mm', { locale: es })}
-          </div>
-        )
-      },
+      cell: ({ row }: { row: Row<Order> }) => (
+        <div className="text-sm text-muted-foreground">
+          <DateDisplay value={row.getValue('created_at')} includeTime />
+        </div>
+      ),
     },
     {
       id: 'actions',
