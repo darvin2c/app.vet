@@ -31,4 +31,10 @@ export const ordersPerms: Perm[] = [
     description: 'Permiso para pagar órdenes',
     can: true,
   },
+  {
+    value: 'orders:itemUpdate',
+    label: 'Actualizar ítem',
+    description: 'Permiso para actualizar ítems precio y descuento de órdenes',
+    can: true,
+  },
 ]
