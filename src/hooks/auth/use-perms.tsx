@@ -19,7 +19,7 @@ export default function usePerms() {
   const canAccess = useCallback(
     (perm?: string) => {
       if (isSuperuser) return true // Superusuario: todo permitido
-      if (!perm) return false // Si el componente no definió permiso → no accede
+      if (!perm) return true // Si el componente no definió permiso → acceso permitido
 
       const perms = role?.perms || []
       if (perms.length === 0) return false // Sin permisos asignados → no accede

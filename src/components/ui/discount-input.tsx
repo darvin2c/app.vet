@@ -15,6 +15,8 @@ import {
 } from '@/components/ui/input-group'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { useCurrency } from '@/components/ui/currency-select'
+import usePerms from '@/hooks/auth/use-perms'
+import CanAccess, { CanAccessProps } from './can-access'
 
 type DiscountMode = 'fixed' | 'percentage'
 
@@ -24,6 +26,7 @@ interface DiscountInputProps
   onChange: (value: number) => void
   totalAmount: number
   currencySymbol?: string
+  canAccess?: CanAccessProps
 }
 
 export function DiscountInput({
@@ -34,11 +37,20 @@ export function DiscountInput({
   className,
   placeholder,
   disabled,
+  canAccess,
   ...props
 }: DiscountInputProps) {
   const { currency } = useCurrency()
+  const { canAccess: checkAccess } = usePerms()
   const symbol = currencySymbol ?? currency?.symbol ?? '$'
   const [mode, setMode] = React.useState<DiscountMode>('percentage')
+
+  const hasAccess = React.useMemo(() => {
+    if (!canAccess) return true
+    return checkAccess(`${canAccess.resource}:${canAccess.action}`)
+  }, [canAccess, checkAccess])
+
+  const isDisabled = disabled || !hasAccess
 
   // Mask for currency
   const currencyMaskOptions = React.useMemo(
@@ -143,14 +155,16 @@ export function DiscountInput({
       <InputGroupAddon align={'inline-start'}>
         {mode === 'fixed' ? symbol : '%'}
       </InputGroupAddon>
-      <InputGroupInput
-        ref={inputRef}
-        value={localValue}
-        onChange={handleInputChange}
-        placeholder={placeholder ?? '0.00'}
-        disabled={disabled}
-        {...props}
-      />
+      <CanAccess variant="disabled" {...canAccess}>
+        <InputGroupInput
+          ref={inputRef}
+          value={localValue}
+          onChange={handleInputChange}
+          placeholder={placeholder ?? '0.00'}
+          disabled={disabled}
+          {...props}
+        />
+      </CanAccess>
       <InputGroupAddon align="inline-end" className="p-0">
         <ToggleGroup
           value={mode}

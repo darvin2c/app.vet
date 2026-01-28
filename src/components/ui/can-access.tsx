@@ -3,17 +3,17 @@
 import usePerms from '@/hooks/auth/use-perms'
 import Forbidden, { ForbiddenProps } from './forbidden'
 
-type CanAccessProps = {
+export type CanAccessProps = {
   resource?: string
   action?: string
-} & ForbiddenProps
+}
 
 export default function CanAccess({
   resource,
   action,
   variant,
   children,
-}: CanAccessProps) {
+}: CanAccessProps & ForbiddenProps) {
   const { canAccess } = usePerms()
   const perm = !!resource && !!action ? `${resource}:${action}` : undefined
   const hasAccess = canAccess(perm)
