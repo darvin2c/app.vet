@@ -1,6 +1,14 @@
 'use client'
 
-import { ChevronsUpDown, LogOut, User } from 'lucide-react'
+import {
+  Check,
+  ChevronsUpDown,
+  LogOut,
+  Monitor,
+  Moon,
+  Sun,
+  User,
+} from 'lucide-react'
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -10,6 +18,9 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import {
@@ -21,12 +32,15 @@ import {
 import useUser, { useProfile } from '@/hooks/auth/use-user'
 import useLogout from '@/hooks/auth/use-logout'
 import Link from 'next/link'
+import { useTheme } from 'next-themes'
 
 export function UserNav() {
   const { isMobile } = useSidebar()
   const { mutate: logout } = useLogout()
   const { data: user } = useUser()
   const { data: profile } = useProfile()
+  const { setTheme, theme } = useTheme()
+
   const getFallback = ({
     first_name,
     last_name,
@@ -94,6 +108,34 @@ export function UserNav() {
                   Perfil
                 </Link>
               </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <div className="relative mr-2 flex h-4 w-4 items-center justify-center">
+                    <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  </div>
+                  Tema
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  <DropdownMenuItem onClick={() => setTheme('light')}>
+                    <Sun className="mr-2 h-4 w-4" />
+                    Claro
+                    {theme === 'light' && <Check className="ml-auto h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme('dark')}>
+                    <Moon className="mr-2 h-4 w-4" />
+                    Oscuro
+                    {theme === 'dark' && <Check className="ml-auto h-4 w-4" />}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => setTheme('system')}>
+                    <Monitor className="mr-2 h-4 w-4" />
+                    Sistema
+                    {theme === 'system' && (
+                      <Check className="ml-auto h-4 w-4" />
+                    )}
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => logout()}>
